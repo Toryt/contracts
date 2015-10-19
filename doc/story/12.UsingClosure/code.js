@@ -150,3 +150,10 @@ for (var j = -1; j < 10; j++) {
 /* Next: compare timing of this solution with the previous. Here we define the function over and over again with a
    closure. Previously, it was static. But since there is a lot of room for optimization and partial evaluation here,
    V8 might tackle that!. */
+
+/* Timing of this solution for fibonacci -1 to 18 (with error on 18): 16596.690000000002 http://jsfiddle.net/jandockx/g20h887f/ (13a)
+   Timing of previous solution for fibonacci -1 to 18 (with error on 18): 4.950000000000273 http://jsfiddle.net/jandockx/kd7z3y3o/ (13b)
+
+   That is a serious 1:3.xx factor difference in speed.
+
+   The VM does not tackle our "hack". We cannot do 12. */
