@@ -1,0 +1,489 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="true" />
+    <inspection_tool class="Annotator" enabled="false" level="INFO" enabled_by_default="false" />
+    <inspection_tool class="AssignmentResultUsedJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="AssignmentToForLoopParameterJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="AssignmentToFunctionParameterJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="BadExpressionStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="BreakStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="BreakStatementWithLabelJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ChainedEqualityJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ChainedFunctionCallJS" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="ERROR" enabled="false" />
+      <scope name="ppwcode" level="ERROR" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="CheckEmptyScriptTag" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CoffeeScriptSwitchStatementWithNoDefaultBranch" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CoffeeScriptUnusedLocalSymbols" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="CommaExpressionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ConditionalExpressionWithIdenticalBranchesJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ConfusingPlusesOrMinusesJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="ConstantConditionalExpressionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ConstantIfStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ConstantOnLHSOfComparisonJS" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="WARNING" enabled="false" />
+      <scope name="ppwcode" level="WARNING" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="ConstantOnRHSOfComparisonJS" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="ERROR" enabled="false" />
+      <scope name="ppwcode" level="ERROR" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="ContinueOrBreakFromFinallyBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ContinueStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ContinueStatementWithLabelJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="CssInvalidCharsetRule" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CssInvalidImport" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CssMissingSemicolon" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="CssOptimizeSimilarProperties" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="CssUnknownProperty" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myCustomPropertiesEnabled" value="true" />
+      <option name="myIgnoreVendorSpecificProperties" value="true" />
+      <option name="myCustomPropertiesList">
+        <value>
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="size" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="CssUnusedSymbol" enabled="true" level="INFO" enabled_by_default="true" />
+    <inspection_tool class="CyclicDependencyInspection" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="CyclomaticComplexityJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="10" />
+    </inspection_tool>
+    <inspection_tool class="DefaultNotLastCaseInSwitchJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="DivideByZeroJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="DocumentWriteJS" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="DuplicateCaseLabelJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="DuplicateConditionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="EmptyCatchBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="EmptyFinallyBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="EmptyStatementBodyJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true">
+        <option name="m_reportEmptyBlocks" value="true" />
+      </scope>
+      <scope name="ppwcode" level="ERROR" enabled="true">
+        <option name="m_reportEmptyBlocks" value="false" />
+      </scope>
+      <option name="m_reportEmptyBlocks" value="false" />
+    </inspection_tool>
+    <inspection_tool class="EmptyTryBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="EqualityComparisonWithCoercionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ExceptionCaughtLocallyJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="FallThroughInSwitchStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="WARNING" enabled="true" />
+      <scope name="ppwcode" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ForLoopReplaceableByWhileJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="WARNING" enabled="true">
+        <option name="m_ignoreLoopsWithoutConditions" value="false" />
+      </scope>
+      <scope name="ppwcode" level="WARNING" enabled="true">
+        <option name="m_ignoreLoopsWithoutConditions" value="false" />
+      </scope>
+      <option name="m_ignoreLoopsWithoutConditions" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ForLoopThatDoesntUseLoopVariableJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="FunctionNamingConventionJS" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="WARNING" enabled="true">
+        <option name="m_regex" value="[a-z][A-Za-z]*" />
+        <option name="m_minLength" value="4" />
+        <option name="m_maxLength" value="32" />
+      </scope>
+      <scope name="ppwcode" level="WARNING" enabled="true">
+        <option name="m_regex" value="[a-z][A-Za-z0-9]*" />
+        <option name="m_minLength" value="3" />
+        <option name="m_maxLength" value="32" />
+      </scope>
+      <option name="m_regex" value="[A-Za-z][A-Za-z0-9]*" />
+      <option name="m_minLength" value="3" />
+      <option name="m_maxLength" value="50" />
+    </inspection_tool>
+    <inspection_tool class="HtmlFormInputWithoutLabel" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="HtmlNonExistentInternetResource" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="2">
+            <item index="0" class="java.lang.String" itemvalue="design" />
+            <item index="1" class="java.lang.String" itemvalue="width" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="menu" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="IfStatementWithIdenticalBranchesJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="IfStatementWithTooManyBranchesJS" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="WARNING" enabled="true">
+        <option name="m_limit" value="3" />
+      </scope>
+      <scope name="ppwcode" level="WARNING" enabled="true">
+        <option name="m_limit" value="10" />
+      </scope>
+      <option name="m_limit" value="15" />
+    </inspection_tool>
+    <inspection_tool class="IncompatibleMaskJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="IncrementDecrementResultUsedJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="InfiniteLoopJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="InfiniteRecursionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="InnerHTMLJS" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <scope name="Application" level="WARNING" enabled="true" />
+      <scope name="ppwcode" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSBitwiseOperatorUsage" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSClosureCompilerSyntax" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSComparisonWithNaN" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSConsecutiveCommasInArrayLiteral" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSConstructorReturnsPrimitive" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSDeclarationsAtScopeStart" enabled="false" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Application" level="ERROR" enabled="false" />
+      <scope name="ppwcode" level="ERROR" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="JSDeprecatedSymbols" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <scope name="Application" level="WARNING" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSDuplicatedDeclaration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="JSHint" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSLastCommaInArrayLiteral" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="JSLint" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSMismatchedCollectionQueryUpdate" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="queries" value="trace,write,concat" />
+      <option name="updates" value="pop,push,shift,splice,unshift" />
+    </inspection_tool>
+    <inspection_tool class="JSReferencingMutableVariableFromClosure" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSUndeclaredVariable" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="myCheckGlobalDefinitions" value="true" />
+    </inspection_tool>
+    <inspection_tool class="JSUndefinedPropertyAssignment" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSUnfilteredForInLoop" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="JSUnnecessarySemicolon" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="JSUnusedGlobalSymbols" enabled="true" level="INFO" enabled_by_default="true" />
+    <inspection_tool class="JSUnusedLocalSymbols" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="myIgnoreUnusedCatchParameters" value="false" />
+    </inspection_tool>
+    <inspection_tool class="LabeledStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="LocalVariableNamingConventionJS" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="WARNING" enabled="true">
+        <option name="m_regex" value="[a-z][A-Za-z]*" />
+        <option name="m_minLength" value="1" />
+        <option name="m_maxLength" value="32" />
+      </scope>
+      <scope name="ppwcode" level="WARNING" enabled="true">
+        <option name="m_regex" value="[A-Za-z0-9]*" />
+        <option name="m_minLength" value="1" />
+        <option name="m_maxLength" value="32" />
+      </scope>
+      <option name="m_regex" value="_?[A-Za-z][A-Za-z0-9_]*" />
+      <option name="m_minLength" value="1" />
+      <option name="m_maxLength" value="50" />
+    </inspection_tool>
+    <inspection_tool class="LoopStatementThatDoesntLoopJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="LossyEncoding" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MagicNumberJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="MismatchedImportsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <scope name="Application" level="WARNING" enabled="true" />
+      <scope name="ppwcode" level="WARNING" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="NestedAssignmentJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="NestedFunctionCallJS" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="ERROR" enabled="false" />
+      <scope name="ppwcode" level="ERROR" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="NestedSwitchStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="NestingDepthJS" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="m_limit" value="3" />
+    </inspection_tool>
+    <inspection_tool class="NonBlockStatementBodyJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="NonShortCircuitBooleanExpressionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ObjectAllocationIgnoredJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="OctalIntegerJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ParameterNamingConventionJS" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="WARNING" enabled="true">
+        <option name="m_regex" value="[a-z][A-Za-z]*" />
+        <option name="m_minLength" value="1" />
+        <option name="m_maxLength" value="32" />
+      </scope>
+      <scope name="ppwcode" level="WARNING" enabled="true">
+        <option name="m_regex" value="[a-z][A-Za-z0-9]*" />
+        <option name="m_minLength" value="1" />
+        <option name="m_maxLength" value="32" />
+      </scope>
+      <option name="m_regex" value="[A-Za-z][A-Za-z0-9]*" />
+      <option name="m_minLength" value="1" />
+      <option name="m_maxLength" value="50" />
+    </inspection_tool>
+    <inspection_tool class="PointlessBitwiseExpressionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true">
+        <option name="m_ignoreExpressionsContainingConstants" value="false" />
+      </scope>
+      <scope name="ppwcode" level="ERROR" enabled="true">
+        <option name="m_ignoreExpressionsContainingConstants" value="false" />
+      </scope>
+      <option name="m_ignoreExpressionsContainingConstants" value="false" />
+    </inspection_tool>
+    <inspection_tool class="PointlessBooleanExpressionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ReplaceAssignmentWithOperatorAssignmentJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="RequiredAttributes" enabled="true" level="ERROR" enabled_by_default="true">
+      <option name="myAdditionalRequiredHtmlAttributes" value="" />
+    </inspection_tool>
+    <inspection_tool class="ReservedWordUsedAsNameJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ReturnFromFinallyBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ShiftOutOfRangeJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="SillyAssignmentJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="StatementsPerFunctionJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="m_limit" value="30" />
+    </inspection_tool>
+    <inspection_tool class="SwitchStatementWithNoDefaultBranchJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="TailRecursionJS" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="ERROR" enabled="false" />
+      <scope name="ppwcode" level="ERROR" enabled="false" />
+    </inspection_tool>
+    <inspection_tool class="TextLabelInSwitchStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ThisExpressionReferencesGlobalObjectJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="ThrowFromFinallyBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="TrivialConditionalJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="TrivialIfJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryContinueJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryLabelJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryLabelOnBreakStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryLabelOnContinueStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryLocalVariableJS" enabled="true" level="INFO" enabled_by_default="true">
+      <scope name="Application" level="WARNING" enabled="true">
+        <option name="m_ignoreImmediatelyReturnedVariables" value="false" />
+        <option name="m_ignoreAnnotatedVariables" value="false" />
+      </scope>
+      <scope name="ppwcode" level="WARNING" enabled="true">
+        <option name="m_ignoreImmediatelyReturnedVariables" value="true" />
+        <option name="m_ignoreAnnotatedVariables" value="false" />
+      </scope>
+      <option name="m_ignoreImmediatelyReturnedVariables" value="true" />
+      <option name="m_ignoreAnnotatedVariables" value="false" />
+    </inspection_tool>
+    <inspection_tool class="UnnecessaryReturnJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="UnterminatedStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true">
+        <option name="ignoreSemicolonAtEndOfBlock" value="false" />
+      </scope>
+      <scope name="ppwcode" level="ERROR" enabled="true">
+        <option name="ignoreSemicolonAtEndOfBlock" value="true" />
+      </scope>
+      <option name="ignoreSemicolonAtEndOfBlock" value="true" />
+    </inspection_tool>
+    <inspection_tool class="UnusedCatchParameterJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true">
+        <option name="m_ignoreCatchBlocksWithComments" value="false" />
+      </scope>
+      <scope name="ppwcode" level="ERROR" enabled="true">
+        <option name="m_ignoreCatchBlocksWithComments" value="false" />
+      </scope>
+      <option name="m_ignoreCatchBlocksWithComments" value="false" />
+    </inspection_tool>
+    <inspection_tool class="WithStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
+      <scope name="Application" level="ERROR" enabled="true" />
+      <scope name="ppwcode" level="ERROR" enabled="true" />
+    </inspection_tool>
+    <inspection_tool class="XmlUnboundNsPrefix" enabled="true" level="ERROR" enabled_by_default="true" />
+  </profile>
+</component>
