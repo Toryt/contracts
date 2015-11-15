@@ -218,9 +218,23 @@ Prism.eval.test.codeExecuted("data-output 3");
   Prism.eval.test.codeExecuted("data-output 4");</code>. You see? No output here.</p>
 
 <p>If the output methods are called with a second parameter, that second parameter is appended to the
-  <code class="language-html">id</code> to which the output will be added. This only works if
+  <code class="language-html">id</code> to which the output will be added, separated with a dash
+  (<code class="language-html">DATA_OUTPUT_ID-EXTRA_LABEL</code>). This only works if
   such an element exists in the page. If no such element is found, the output is added to the default
   element instead.</p>
+
+<pre><code class="language-javascript" data-eval="true" data-output="exampleDataOutput5">
+Prism.eval.info("example data-output 5 info alpha", "alpha");
+Prism.eval.info("example data-output 5 info 2", 2);
+Prism.eval.test.codeExecuted("data-output 5");
+</code></pre>
+
+<div id="exampleDataOutput5-alpha"></div>
+
+<div id="exampleDataOutput5-2"></div>
+
+<div id="exampleDataOutput5-not used"></div>
+
 
 
 
@@ -299,7 +313,7 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 
   setTimeout(
       function() {
-        var expectedExecuted = 20;
+        var expectedExecuted = 21;
         console.log("executed: " + Prism.eval.test.executed.join("; "));
         if (Prism.eval.test.executed.length !== expectedExecuted) {
           console.error("executed " + Prism.eval.test.executed.length + ", but expected " + expectedExecuted);
