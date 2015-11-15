@@ -9,12 +9,8 @@
   var logPrefix = "Prism-eval: ";
 
   function attribute(/*Node*/ codeElement, /*String*/ attributeName) {
-    return codeElement.getAttribute(evalAttributeName) ||
-      (codeElement.parentNode && codeElement.parentNode.getAttribute(evalAttributeName));
-  }
-
-  function insertAfter(/*Node*/ sibling, /*Node*/ newNode) {
-
+    return codeElement.getAttribute(attributeName) ||
+      (codeElement.parentNode && codeElement.parentNode.getAttribute(attributeName));
   }
 
   function prepareOutput(/*Node*/ codeElement) {
