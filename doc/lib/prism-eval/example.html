@@ -165,11 +165,11 @@ Prism.eval.test.codeShouldNotBeExecuted("data-eval twice empty");
   in the output tag.</p>
 
 <pre><code class="language-javascript" data-eval="true">
-  Prism.eval.log("example block log");
-  Prism.eval.info("example block info");
-  Prism.eval.warn("example block warn");
-  Prism.eval.error("example block error");
-  Prism.eval.test.codeExecuted("block output");
+Prism.eval.log("example block log");
+Prism.eval.info("example block info");
+Prism.eval.warn("example block warn");
+Prism.eval.error("example block error");
+Prism.eval.test.codeExecuted("block output");
 </code></pre>
 
 <p>(Note that the <code class="language-javascript">Prism.eval.logLevel</code>
@@ -178,13 +178,11 @@ Prism.eval.test.codeShouldNotBeExecuted("data-eval twice empty");
 <p>For an inline fragment, by default, a <code class="language-html">&lt;span&gt;</code> element is added after the
   <code class="language-html">&lt;code&gt;</code> block that shows all output from the element.
   Different output calls result in separate <code class="language-html">&lt;span&gt;</code> children
-  in the output tag: <code class="language-javascript" data-eval="true">
-  Prism.eval.log("example block log");
-  Prism.eval.info("example block info");
-  Prism.eval.warn("example block warn");
-  Prism.eval.error("example block error");
-  Prism.eval.test.codeExecuted("block output");
-  </code>.</p>
+  in the output tag: <code class="language-javascript" data-eval="true">Prism.eval.log("example inline log");
+  Prism.eval.info("example inline info");
+  Prism.eval.warn("example inline warn");
+  Prism.eval.error("example inline error");
+  Prism.eval.test.codeExecuted("inline output");</code>.</p>
 
 
 <p>However, if the <code class="language-html">&lt;code&gt;</code> block, or its parent, have an
@@ -196,7 +194,7 @@ Prism.eval.test.codeShouldNotBeExecuted("data-eval twice empty");
   get that <code class="language-html">id</code>.</p>
 
 
-<p>If the out methods are called with a second parameter, that second parameter is appended to the
+<p>If the output methods are called with a second parameter, that second parameter is appended to the
   <code class="language-html">id</code> to which the output will be added. This only works if
   such an element exists in the page. If no such element is found, the output is added to the default
   element instead.</p>
