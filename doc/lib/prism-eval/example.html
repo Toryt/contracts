@@ -142,6 +142,60 @@ Prism.eval.test.codeShouldNotBeExecuted("data-eval twice empty");
 </code></pre>
 
 
+
+
+<h1>Output</h1>
+
+<p>The plugin makes it possible to show output in the page in a separate element. To do this, call
+  <code class="language-javascript">Prism.eval.log(str)</code>,
+  <code class="language-javascript">Prism.eval.info(str)</code>,
+  <code class="language-javascript">Prism.eval.warn(str)</code>, or
+  <code class="language-javascript">Prism.eval.error(str)</code>.
+  In all cases, the CSS class <code class="language-html">prism-eval-output</code> is added
+  to the output element or elements, and the CSS class
+  <code class="language-html">prism-eval-log</code>,
+  <code class="language-html">prism-eval-info</code>,
+  <code class="language-html">prism-eval-warn</code>, or
+  <code class="language-html">prism-eval-error</code> is used for the child elements, respectively.</p>
+
+<p>By default, a <code class="language-html">&lt;div&gt;</code> element is added after the
+  <code class="language-html">&lt;pre&gt;</code> block that shows all output from the element.
+  Different output calls result in separate <code class="language-html">&lt;div&gt;</code> children
+  in the output tag.</p>
+
+<pre><code class="language-javascript" data-eval="true">
+  Prism.eval.log("example block log");
+  Prism.eval.info("example block info");
+  Prism.eval.warn("example block warn");
+  Prism.eval.error("example block error");
+  Prism.eval.test.codeExecuted("block output");
+</code></pre>
+
+<p>(Note that the <code class="language-javascript" data-eval="true">Prism.eval.logLevel</code>
+  is only used for internal reporting, and has nothing to do with output.)</p>
+
+<p>For an inline fragment, by default, a <code class="language-html">&lt;span&gt;</code> element is added after the
+  <code class="language-html">&lt;code&gt;</code> block that shows all output from the element.
+  Different output calls result in separate <code class="language-html">&lt;span&gt;</code> children
+  in the output tag.</p>
+
+<p>However, if the <code class="language-html">&lt;code&gt;</code> block, or its parent, have an
+  <code class="language-html">data-output</code> attribute, and an element is found in the page with
+  that <code class="language-html">id</code> in the page, that is used instead.</p>
+
+<p>If no element is found in the page with the <code class="language-html">id</code> specified in
+  <code class="language-html">data-output</code> attribute, the created output element will
+  get that <code class="language-html">id</code>.</p>
+
+
+<p>If the out methods are called with a second parameter, that second parameter is appended to the
+  <code class="language-html">id</code> to which the output will be added. This only works if
+  such an element exists in the page. If no such element is found, the output is added to the default
+  element instead.</p>
+
+
+
+
 <h1>Errors</h1>
 
 <p>Any uncaught exception results in an error message.</p>
@@ -205,7 +259,7 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 
   setTimeout(
       function() {
-        var expectedExecuted = 14;
+        var expectedExecuted = 15;
         console.log("executed: " + Prism.eval.test.executed.join("; "));
         if (Prism.eval.test.executed.length !== expectedExecuted) {
           console.error("executed " + Prism.eval.test.executed.length + ", but expected " + expectedExecuted);
