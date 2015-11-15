@@ -26,9 +26,21 @@
     if (!outputElement) {
       outputElement = document.createElement("span");
       outputElement.className = "prism-eval-output";
-      outputElement.textContent = "lalalala";
       codeElement.parentNode.insertBefore(outputElement, codeElement.nextSibling);
     }
+
+    function output(style, str) {
+      var line = document.createElement("span");
+      line.className = "prism-eval-" + style;
+      var text = document.createTextNode(str);
+      line.appendChild(text);
+      outputElement.appendChild(line);
+    }
+
+    Prism.eval.log = output.bind(null, "log");
+    Prism.eval.info = output.bind(null, "info");
+    Prism.eval.warn = output.bind(null, "warn");
+    Prism.eval.error = output.bind(null, "error");
   }
 
   Prism.eval = {

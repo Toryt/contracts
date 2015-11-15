@@ -29,6 +29,62 @@
       color: #c92c2c;
       tab-size: 4;
     }
+
+    div .prism-eval-log,
+    div .prism-eval-info,
+    div .prism-eval-warn,
+    div .prism-eval-error {
+      display: block;
+    }
+
+    span .prism-eval-log:before,
+    span .prism-eval-info:before,
+    span .prism-eval-warn:before,
+    span .prism-eval-error:before,
+    span .prism-eval-log:after,
+    span .prism-eval-info:after,
+    span .prism-eval-warn:after,
+    span .prism-eval-error:after,
+    span .prism-eval-log,
+    span .prism-eval-info,
+    span .prism-eval-warn,
+    span .prism-eval-error {
+      display: inline;
+    }
+
+    span .prism-eval-log:before,
+    span .prism-eval-info:before,
+    span .prism-eval-warn:before,
+    span .prism-eval-error:before,
+    span .prism-eval-log:after,
+    span .prism-eval-info:after,
+    span .prism-eval-warn:after,
+    span .prism-eval-error:after {
+      content: "—";
+      margin-left: 0.2em;
+      margin-right: 0.2em;
+    }
+
+    span .prism-eval-log,
+    span .prism-eval-info,
+    span .prism-eval-warn,
+    span .prism-eval-error {
+      margin-left: 0.3em;
+      margin-right: 0.3em;
+    }
+
+    .prism-eval-info {
+      color: blue;
+    }
+
+    .prism-eval-warn {
+      background-color: #fefadf;
+    }
+
+    .prism-eval-error {
+      color: red;
+      background-color: #feebeb;
+    }
   </style>
 </head>
 <body>
