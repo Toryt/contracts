@@ -268,6 +268,14 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 
 <pre data-src="example.js" data-eval="script"></pre>
 
+<p>The output of code loaded as script is always displayed in an element with
+  <code class="language-html">id=&quot;prism-eval-output&quot;</code>.
+  We cannot diversify here. You have to add such element yourself. It will not be created (this plugin
+  doesn't know where you want it if there are more scripts to execute). Therefor, the output
+  of the next included code is shown in the same output element:</p>
+
+<div id="prism-eval-output"></div>
+
 <p>Now, errors are not caught. You are on your own. See your console for the error.</p>
 
 <pre data-src="errorExample.js" data-eval="script"></pre>

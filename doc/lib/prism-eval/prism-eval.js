@@ -7,10 +7,51 @@
   var evalAttributeName = "data-eval";
   var outputIdAttributeName = "data-output";
   var logPrefix = "Prism-eval: ";
+  var outputClassName = "prism-eval-output";
+  var defaultOutputId = "prism-eval-output";
+  var defaultOutputNode = document.getElementById(defaultOutputId);
 
   Prism.eval = {
-    logLevel: "warn",
+    logLevel: "warn"
   };
+
+  function output(style, outputElement, str) {
+    var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
+    line.className = "prism-eval-" + style;
+    var text = document.createTextNode(str);
+    line.appendChild(text);
+    outputElement.appendChild(line);
+  }
+
+  var noOutput = (function noOutput(str) {
+    // NOP
+  }).bind(Prism.eval);
+
+  function prepareNoOutput() {
+    Prism.eval.log = noOutput;
+    Prism.eval.info = noOutput;
+    Prism.eval.warn = noOutput;
+    Prism.eval.error = noOutput;
+
+    return Prism.eval;
+  }
+
+  function defaultOutput() {
+    if (defaultOutputNode) {
+      Prism.eval.log = output.bind(Prism.eval, "log", defaultOutputNode);
+      Prism.eval.info = output.bind(Prism.eval, "info", defaultOutputNode);
+      Prism.eval.warn = output.bind(Prism.eval, "warn", defaultOutputNode);
+      Prism.eval.error = output.bind(Prism.eval, "error", defaultOutputNode);
+    }
+    else {
+      prepareNoOutput();
+    }
+  }
+
+  if (defaultOutputNode) {
+    defaultOutputNode.className = outputClassName;
+  }
+  defaultOutput(); // init output
 
   function attribute(/*Node*/ codeElement, /*String*/ attributeName) {
     return codeElement.getAttribute(attributeName) ||
@@ -18,27 +59,10 @@
   }
 
   function prepareOutput(/*Node*/ codeElement) {
-    var noOutput = (function noOutput(str) {
-      // NOP
-    }).bind(Prism.eval);
-
-    function output(style, str) {
-      var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
-      line.className = "prism-eval-" + style;
-      var text = document.createTextNode(str);
-      line.appendChild(text);
-      outputElement.appendChild(line);
-    }
-
     var baseOutputId = attribute(codeElement, outputIdAttributeName);
 
     if (baseOutputId === "none") {
-      Prism.eval.log = noOutput;
-      Prism.eval.info = noOutput;
-      Prism.eval.warn = noOutput;
-      Prism.eval.error = noOutput;
-
-      return Prism.eval;
+      return prepareNoOutput();
     }
 
     var outputElement;
@@ -59,21 +83,14 @@
       }
       outputSibling.parentNode.insertBefore(outputElement, outputSibling.nextSibling);
     }
-    outputElement.className = "prism-eval-output";
+    outputElement.className = outputClassName;
 
-    Prism.eval.log = output.bind(Prism.eval, "log");
-    Prism.eval.info = output.bind(Prism.eval, "info");
-    Prism.eval.warn = output.bind(Prism.eval, "warn");
-    Prism.eval.error = output.bind(Prism.eval, "error");
+    Prism.eval.log = output.bind(Prism.eval, "log", outputElement);
+    Prism.eval.info = output.bind(Prism.eval, "info", outputElement);
+    Prism.eval.warn = output.bind(Prism.eval, "warn", outputElement);
+    Prism.eval.error = output.bind(Prism.eval, "error", outputElement);
 
     return Prism.eval;
-  }
-
-  function breakDownOutput() {
-    delete Prism.eval.log;
-    delete Prism.eval.info;
-    delete Prism.eval.warn;
-    delete Prism.eval.error;
   }
 
   function debug(str) {
@@ -157,7 +174,7 @@
               output.error(exc);
             }
             finally {
-              breakDownOutput();
+              defaultOutput();
             }
           },
           0
@@ -168,7 +185,7 @@
         var script = document.createElement("script");
         script.async = true;
         script.src = fileHighLightSrc;
-        // no type, means JavaScript
+        // no type, means JavaScript; output will be defaultOutput
         document.getElementsByTagName("head")[0].appendChild(script);
       }
   });
