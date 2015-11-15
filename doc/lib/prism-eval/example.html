@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prism Eval Example</title>
+  <link href="../prism/prism.css" rel="stylesheet"/>
+</head>
+<body>
+
+
+<h1>Evaluation on the next tick</h1>
+
+<p>This plugin makes it possible to evaluate JavaScript that is highligthed. The code is evaluated on the next tick,
+after Prism has finished rendering the block.</p>
+
+<pre><code class="language-javascript" data-eval="true">
+Prism.eval.test.codeExecuted("first example");
+</code></pre>
+
+
+<h1>No Evaluation</h1>
+
+<p>Nothing happens when the language is not JavaScript:</p>
+
+<pre data-eval="true"><code class="language-css">
+code[class*="language"] {
+  max-height: inherit;
+  height: 100%;
+  padding: 0 1em;
+  display: block;
+  overflow: auto;
+}
+</code></pre>
+
+<p>An empty <code class="language-html">&lt;code&gt;</code> block is evaluated, but does nothing, as it obviously
+  contains no code.
+  It is logged as <code>info</code> (see console).</p>
+
+<pre data-eval="true"><code class="language-javascript"></code></pre>
+
+<p>An blank <code class="language-html">&lt;code&gt;</code> block is evaluated, but does nothing, as it
+  obviously contains no code. No code is valid code.</p>
+
+<pre data-eval="true"><code class="language-javascript">
+
+</code></pre>
+
+
+
+
+
+<h1>Evaluation when requested</h1>
+
+<p>When we find a <code class="language-html">&lt;code&gt;</code> block for JavaScript, to be interpreted by
+  Prism, with a truthy <code>data-eval</code>
+  attribute, on the <code class="language-html">&lt;code&gt;</code> or its parent element, the code
+  inside the block is evaluated.</p>
+
+
+
+<h2>Requested</h2>
+
+<p><code class="language-html">data-eval</code> can be set on the <code>&lt;code&gt;</code> element:</p>
+
+<pre><code class="language-javascript" data-eval="true">
+Prism.eval.test.codeExecuted("data-eval set on code");
+</code></pre>
+
+<p><code class="language-html">data-eval</code> can be set on the parent element:</p>
+
+<pre data-eval="true"><code class="language-javascript">
+Prism.eval.test.codeExecuted("data-eval set on parent of code");
+</code></pre>
+
+<p>It also works on in-line <code class="language-html">&lt;code&gt;</code>-blocks:
+  <code class="language-javascript" data-eval="true">Prism.eval.test.codeExecuted("in-line");</code>.</p>
+
+
+
+<h2>Not Requested</h2>
+
+<p>Without a <code class="language-html">data-eval</code> attribute, there is no evaluation:</p>
+
+<pre><code class="language-javascript">
+Prism.eval.test.codeShouldNotBeExecuted("data-eval not set");
+</code></pre>
+
+<p>When the <code class="language-html">data-eval</code> attribute is <em>falsy</em>, there is no evaluation. The empty
+  string is <em>falsy</em>:</p>
+
+<pre data-eval=""><code class="language-javascript">
+Prism.eval.test.codeShouldNotBeExecuted("data-eval empty string");
+</code></pre>
+
+
+
+<h2>Any String is <em>thruthy</em></h2>
+
+<p><code class="language-javascript">false</code> as an HTML attribute value is just a string, and thus <em>thruthy
+</em>:</p>
+
+<pre data-eval="false"><code class="language-javascript">
+Prism.eval.test.codeExecuted("data-eval false");
+</code></pre>
+
+<p><code class="language-javascript">0</code> as an HTML attribute value is just a string, and thus <em>thruthy</em>:
+</p>
+
+<pre data-eval="0"><code class="language-javascript">
+Prism.eval.test.codeExecuted("data-eval 0");
+</code></pre>
+
+<p>Remember: the string with one space is not an empty string.</p>
+
+<pre data-eval=" "><code class="language-javascript">
+Prism.eval.test.codeExecuted("data-eval one space");
+</code></pre>
+
+
+
+<h2>Precedence</h2>
+
+<p>When <code class="language-html">data-eval</code> is defined on both the
+  <code class="language-html">&lt;code&gt;</code>-tag and its parent,
+  the <em>thruthy</em> version gets precedence:</p>
+
+<pre data-eval="true"><code class="language-javascript" data-eval="">
+Prism.eval.test.codeExecuted("data-eval true, empty");
+</code></pre>
+
+<pre data-eval=""><code class="language-javascript" data-eval="true">
+Prism.eval.test.codeExecuted("data-eval empty, true");
+</code></pre>
+
+<p>Only when both occurences are <em>falsy</em>, there is no evaluation:</p>
+
+<pre data-eval=""><code class="language-javascript" data-eval="">
+Prism.eval.test.codeShouldNotBeExecuted("data-eval twice empty");
+</code></pre>
+
+
+<h1>Errors</h1>
+
+<p>Any uncaught exception results in an error message.</p>
+
+<pre><code class="language-javascript" data-eval="true">
+Prism.eval.test.codeExecuted("will throw an error (in html)");
+this.isNotJs();
+Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
+</code></pre>
+
+
+
+
+
+<h1>Evaluation of code with File Highlight</h1>
+
+<h2>data-eval=&quot;true&quot;</h2>
+
+<p>Evaluation also works with code included with the Prism File Highlight plugin.
+  The plugin first adds the text <q>Loading…</q>. Execution would fail
+  on that, as it is not JavaScript. Therefor, if the code to be executed is exactly
+  <code class="language-javascript">"Loading…"</code>, this plugin will not evaluate
+  the code. The code will be evaluated once it is loaded.</p>
+
+<pre data-src="example.js" data-eval="true"></pre>
+
+<p>Errors in included code are caught too:</p>
+
+<pre data-src="errorExample.js" data-eval="true"></pre>
+
+<h2>data-eval=&quot;script&quot;</h2>
+
+<p>If the value of <code class="language-html">data-eval</code> attribute is set to,
+  <code class="language-html">&quot;script&quot;</code>,
+  the code is not evaluated using <code class="language-javascript">eval()</code>,
+  but a <code class="language-html">&lt;script&gt;</code> tag to load
+  and evaluate is added to the <code class="language-html">&lt;head&gt;</code>.</p>
+
+<pre data-src="example.js" data-eval="script"></pre>
+
+<p>Now, errors are not caught. You are on your own. See your console for the error.</p>
+
+<pre data-src="errorExample.js" data-eval="script"></pre>
+
+
+<script src="../prism/prism.uncompressed.js"></script>
+<script src="prism-eval.js"></script>
+<script>
+  Prism.eval = {
+    error: function (str) {
+      console.error(str);
+    },
+    warn: function (str) {
+      console.warn(str);
+    },
+    info: function (str) {
+      console.info(str);
+    },
+    log: function (str) { // alias for debug
+      console.log(str);
+    },
+    debug: function (str) { // alias for debug
+      console.debug(str);
+    },
+    test: {
+      executed: [],
+      shouldNotBeExecuted: [],
+      codeExecuted: function(label) {
+        this.executed.push(label);
+        Prism.eval.log(label);
+      },
+      codeShouldNotBeExecuted: function (label) {
+        this.shouldNotBeExecuted.push(label);
+        Prism.eval.error(label);
+      }
+    }
+  };
+  setTimeout(
+      function() {
+        var expectedExecuted = 14;
+        console.log("executed: " + Prism.eval.test.executed.join("; "));
+        if (Prism.eval.test.executed.length !== expectedExecuted) {
+          console.error("executed " + Prism.eval.test.executed.length + ", but expected " + expectedExecuted);
+        }
+        if (Prism.eval.test.shouldNotBeExecuted.length !== 0) {
+          console.error("should not be executed " + Prism.eval.test.shouldNotBeExecuted.length + ", but expected 0");
+          console.log("should not be executed: " + Prism.eval.test.shouldNotBeExecuted);
+        }
+      },
+      3000
+  )
+</script>
+</body>
+</html>
