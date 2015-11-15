@@ -28,9 +28,12 @@
       else {
         outputElement = document.createElement("span");
       }
-      outputElement.className = "prism-eval-output";
+      if (baseOutputId) {
+        outputElement.id = baseOutputId;
+      }
       outputSibling.parentNode.insertBefore(outputElement, outputSibling.nextSibling);
     }
+    outputElement.className = "prism-eval-output";
 
     function output(style, str) {
       var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
