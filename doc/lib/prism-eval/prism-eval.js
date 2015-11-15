@@ -14,7 +14,29 @@
   }
 
   function prepareOutput(/*Node*/ codeElement) {
+    var noOutput = (function noOutput(str) {
+      // NOP
+    }).bind(Prism.eval);
+
+    function output(style, str) {
+      var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
+      line.className = "prism-eval-" + style;
+      var text = document.createTextNode(str);
+      line.appendChild(text);
+      outputElement.appendChild(line);
+    }
+
     var baseOutputId = attribute(codeElement, outputIdAttributeName);
+
+    if (baseOutputId === "none") {
+      Prism.eval.log = noOutput;
+      Prism.eval.info = noOutput;
+      Prism.eval.warn = noOutput;
+      Prism.eval.error = noOutput;
+
+      return Prism.eval;
+    }
+
     var outputElement;
     if (baseOutputId) {
       outputElement = document.getElementById(baseOutputId);
@@ -35,13 +57,6 @@
     }
     outputElement.className = "prism-eval-output";
 
-    function output(style, str) {
-      var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
-      line.className = "prism-eval-" + style;
-      var text = document.createTextNode(str);
-      line.appendChild(text);
-      outputElement.appendChild(line);
-    }
 
     Prism.eval.log = output.bind(null, "log");
     Prism.eval.info = output.bind(null, "info");
