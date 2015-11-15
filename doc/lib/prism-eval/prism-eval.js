@@ -24,13 +24,20 @@
       outputElement = document.getElementById(baseOutputId);
     }
     if (!outputElement) {
-      outputElement = document.createElement("span");
+      var outputSibling = codeElement;
+      if (codeElement.parentNode.nodeName.toLowerCase() === "pre") {
+        outputSibling = codeElement.parentNode;
+        outputElement = document.createElement("div");
+      }
+      else {
+        outputElement = document.createElement("span");
+      }
       outputElement.className = "prism-eval-output";
-      codeElement.parentNode.insertBefore(outputElement, codeElement.nextSibling);
+      outputSibling.parentNode.insertBefore(outputElement, outputSibling.nextSibling);
     }
 
     function output(style, str) {
-      var line = document.createElement("span");
+      var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
       line.className = "prism-eval-" + style;
       var text = document.createTextNode(str);
       line.appendChild(text);
