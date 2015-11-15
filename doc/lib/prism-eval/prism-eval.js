@@ -4,6 +4,33 @@
     return;
   }
 
+  var evalAttributeName = "data-eval";
+  var outputIdAttributeName = "data-output";
+  var logPrefix = "Prism-eval: ";
+
+  function attribute(/*Node*/ codeElement, /*String*/ attributeName) {
+    return codeElement.getAttribute(evalAttributeName) ||
+      (codeElement.parentNode && codeElement.parentNode.getAttribute(evalAttributeName));
+  }
+
+  function insertAfter(/*Node*/ sibling, /*Node*/ newNode) {
+
+  }
+
+  function prepareOutput(/*Node*/ codeElement) {
+    var baseOutputId = attribute(codeElement, outputIdAttributeName);
+    var outputElement;
+    if (baseOutputId) {
+      outputElement = document.getElementById(baseOutputId);
+    }
+    if (!outputElement) {
+      outputElement = document.createElement("span");
+      outputElement.className = "prism-eval-output";
+      outputElement.textContent = "lalalala";
+      codeElement.parentNode.insertBefore(outputElement, codeElement.nextSibling);
+    }
+  }
+
   Prism.eval = {
     logLevel: "warn",
     log: function (str) { // alias for debug
@@ -19,9 +46,6 @@
       console.error(str);
     }
   }
-
-  var evalAttributeName = "data-eval";
-  var logPrefix = "Prism-eval: ";
 
   function debug(str) {
     if (Prism.eval.logLevel === "debug") {
@@ -67,10 +91,7 @@
       return;
     }
 
-    var evalAttribute = env.element.getAttribute(evalAttributeName);
-    if (!evalAttribute) {
-      var evalAttribute = env.element.parentNode && env.element.parentNode.getAttribute(evalAttributeName);
-    }
+    var evalAttribute = attribute(env.element, evalAttributeName);
 
     if (!evalAttribute) {
       debug("called with an environment for JavaScript without a truthy data-eval attribute on <code> or its parent.");
@@ -95,6 +116,7 @@
           "doing eval");
         setTimeout(
           function () {
+            prepareOutput(env.element);
             try {
               debug("will evaluate: \"" + env.code + "\"");
               eval(env.code);
