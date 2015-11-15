@@ -8,6 +8,10 @@
   var outputIdAttributeName = "data-output";
   var logPrefix = "Prism-eval: ";
 
+  Prism.eval = {
+    logLevel: "warn",
+  };
+
   function attribute(/*Node*/ codeElement, /*String*/ attributeName) {
     return codeElement.getAttribute(attributeName) ||
       (codeElement.parentNode && codeElement.parentNode.getAttribute(attributeName));
@@ -65,20 +69,11 @@
     return Prism.eval;
   }
 
-  Prism.eval = {
-    logLevel: "warn",
-    log: function (str) { // alias for debug
-      console.log(str);
-    },
-    info: function (str) {
-      console.info(str);
-    },
-    warn: function (str) {
-      console.warn(str);
-    },
-    error: function (str) {
-      console.error(str);
-    }
+  function breakDownOutput() {
+    delete Prism.eval.log;
+    delete Prism.eval.info;
+    delete Prism.eval.warn;
+    delete Prism.eval.error;
   }
 
   function debug(str) {
@@ -160,6 +155,9 @@
               info("code: ");
               info(env.code);
               output.error(exc);
+            }
+            finally {
+              breakDownOutput();
             }
           },
           0
