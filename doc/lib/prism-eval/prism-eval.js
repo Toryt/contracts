@@ -57,11 +57,12 @@
     }
     outputElement.className = "prism-eval-output";
 
+    Prism.eval.log = output.bind(Prism.eval, "log");
+    Prism.eval.info = output.bind(Prism.eval, "info");
+    Prism.eval.warn = output.bind(Prism.eval, "warn");
+    Prism.eval.error = output.bind(Prism.eval, "error");
 
-    Prism.eval.log = output.bind(null, "log");
-    Prism.eval.info = output.bind(null, "info");
-    Prism.eval.warn = output.bind(null, "warn");
-    Prism.eval.error = output.bind(null, "error");
+    return Prism.eval;
   }
 
   Prism.eval = {
@@ -149,7 +150,7 @@
           "doing eval");
         setTimeout(
           function () {
-            prepareOutput(env.element);
+            var output = prepareOutput(env.element);
             try {
               debug("will evaluate: \"" + env.code + "\"");
               eval(env.code);
@@ -158,7 +159,7 @@
               info("evaluation resulted in an exception: " + (exc.message || exc));
               info("code: ");
               info(env.code);
-              console.warn(exc); // TODO show exc
+              output.error(exc);
             }
           },
           0

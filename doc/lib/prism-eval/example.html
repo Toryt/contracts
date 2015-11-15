@@ -235,6 +235,9 @@ this.isNotJs();
 Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 </code></pre>
 
+<p>It doesn't make sense to show a stack trace: since this is text that is evaluated, you
+  will only see the plugin's call of <code class="language-javascript">eval()</code>.</p>
+
 
 
 
