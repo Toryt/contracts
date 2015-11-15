@@ -18,6 +18,9 @@ Prism.eval.test.codeExecuted("first example");
 </code></pre>
 
 
+
+
+
 <h1>No Evaluation</h1>
 
 <p>Nothing happens when the language is not JavaScript:</p>
@@ -187,35 +190,19 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 <script src="../prism/prism.uncompressed.js"></script>
 <script src="prism-eval.js"></script>
 <script>
-  Prism.eval = {
-    error: function (str) {
-      console.error(str);
+  Prism.eval.test = {
+    executed: [],
+    shouldNotBeExecuted: [],
+    codeExecuted: function (label) {
+      this.executed.push(label);
+      Prism.eval.log(label);
     },
-    warn: function (str) {
-      console.warn(str);
-    },
-    info: function (str) {
-      console.info(str);
-    },
-    log: function (str) { // alias for debug
-      console.log(str);
-    },
-    debug: function (str) { // alias for debug
-      console.debug(str);
-    },
-    test: {
-      executed: [],
-      shouldNotBeExecuted: [],
-      codeExecuted: function(label) {
-        this.executed.push(label);
-        Prism.eval.log(label);
-      },
-      codeShouldNotBeExecuted: function (label) {
-        this.shouldNotBeExecuted.push(label);
-        Prism.eval.error(label);
-      }
+    codeShouldNotBeExecuted: function (label) {
+      this.shouldNotBeExecuted.push(label);
+      Prism.eval.error(label);
     }
   };
+
   setTimeout(
       function() {
         var expectedExecuted = 14;
@@ -228,8 +215,8 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
           console.log("should not be executed: " + Prism.eval.test.shouldNotBeExecuted);
         }
       },
-      3000
-  )
+      1000
+  );
 </script>
 </body>
 </html>

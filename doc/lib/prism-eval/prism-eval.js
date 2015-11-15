@@ -6,6 +6,18 @@
 
   Prism.eval = {
     logLevel: "warn",
+    log: function (str) { // alias for debug
+      console.log(str);
+    },
+    info: function (str) {
+      console.info(str);
+    },
+    warn: function (str) {
+      console.warn(str);
+    },
+    error: function (str) {
+      console.error(str);
+    }
   }
 
   var evalAttributeName = "data-eval";
