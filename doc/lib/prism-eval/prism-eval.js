@@ -4,19 +4,38 @@
     return;
   }
 
+  Prism.eval = {
+    logLevel: "warn",
+  }
+
   var evalAttributeName = "data-eval";
   var logPrefix = "Prism-eval: ";
 
   function debug(str) {
-    console.debug(logPrefix + str);
+    if (Prism.eval.logLevel === "debug") {
+      console.debug(logPrefix + str);
+    }
   }
 
   function info(str) {
-    console.info(logPrefix + str);
+    if (Prism.eval.logLevel === "debug" || Prism.eval.logLevel === "info") {
+      console.info(logPrefix + str);
+    }
+  }
+
+  function warn(str) {
+    if (Prism.eval.logLevel === "debug" || Prism.eval.logLevel === "info" || Prism.eval.logLevel === "warn") {
+      console.info(logPrefix + str);
+    }
   }
 
   function error(str) {
-    console.error(logPrefix + str);
+    if (Prism.eval.logLevel === "debug"
+      || Prism.eval.logLevel === "info"
+      || Prism.eval.logLevel === "warn"
+      || Prism.eval.logLevel === "error") {
+      console.error(logPrefix + str);
+    }
   }
 
   Prism.hooks.add("complete", function (env) {
@@ -50,11 +69,11 @@
     //var preSrc = env.element.parentNode && env.element.parentNode.getAttribute("data-src");
     //if (!preSrc) { // src in HTML
       if (!env.code) {
-        info("<code> element was setup to evaluate code mentioned in html, but there is no code.");
+        warn("<code> element was setup to evaluate code mentioned in html, but there is no code.");
         return;
       }
       if (env.code === "Loading…") {
-        info("<code> is loading (File HighLight).");
+        debug("<code> is loading (File HighLight).");
         return;
       }
       debug("there is code; eval on the next tick");
@@ -65,11 +84,13 @@
         setTimeout(
           function () {
             try {
-              debug("will evaluate:");
-              debug(env.code);
+              debug("will evaluate: \"" + env.code + "\"");
               eval(env.code);
             }
             catch (exc) {
+              info("evaluation resulted in an exception: " + (exc.message || exc));
+              info("code: ");
+              info(env.code);
               console.warn(exc); // TODO show exc
             }
           },
