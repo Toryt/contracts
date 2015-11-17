@@ -295,10 +295,13 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 
 <pre data-src="errorExample.js" data-eval="script"></pre>
 
-<p>Finally, labelled output also works for scripts, by appending the label to.
+<p>Labeled output also works for scripts, by appending the label to
+  <code class="language-html">prism-eval-output</code>, like so:
+  <code class="language-html">id=&quot;prism-eval-output-LABEL&quot;</code>.
   This output comes from the script above:</p>
 
-<div id="prism-eval-output-labelled"></div>
+<div id="prism-eval-output-labeled"></div>
+
 <p>The following output is created by a script that is included in a
   <code class="language-html">&lt;script&gt;</code>-tag, but not shown by Prism.
   That works also.</p>
