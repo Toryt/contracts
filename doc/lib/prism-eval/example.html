@@ -12,10 +12,11 @@
 <h1>Evaluation on the next tick</h1>
 
 <p>This plugin makes it possible to evaluate JavaScript that is highligthed. The code is evaluated on the next tick,
-after Prism has finished rendering the block.</p>
+after Prism has finished rendering the block. Output is shown.</p>
 
 <pre><code class="language-javascript" data-eval="true">
 Prism.eval.test.codeExecuted("first example");
+5 + 6;
 </code></pre>
 
 
@@ -162,7 +163,7 @@ Prism.eval.test.codeShouldNotBeExecuted("data-eval twice empty");
 <p>By default, a <code class="language-html">&lt;div&gt;</code> element is added after the
   <code class="language-html">&lt;pre&gt;</code> block that shows all output from the element.
   Different output calls result in separate <code class="language-html">&lt;div&gt;</code> children
-  in the output tag.</p>
+  in the output tag. The result is shown if it is not <code class="language-javascript">undefined</code>.</p>
 
 <pre><code class="language-javascript" data-eval="true">
 Prism.eval.log("example block log");
@@ -170,6 +171,7 @@ Prism.eval.info("example block info");
 Prism.eval.warn("example block warn");
 Prism.eval.error("example block error");
 Prism.eval.test.codeExecuted("block output");
+"a result to show";
 </code></pre>
 
 <p>(Note that the <code class="language-javascript">Prism.eval.logLevel</code>
@@ -184,7 +186,10 @@ Prism.eval.test.codeExecuted("block output");
   Prism.eval.error("example inline error");
   Prism.eval.test.codeExecuted("inline output");</code>.</p>
 
-<p>However, if the <code class="language-html">&lt;code&gt;</code> block, or its parent, have an
+<p>You can easily show the result of a JavaScript expression:
+  <code class="language-javascript" data-eval="true">Object.keys(Prism.eval).join(", ")</code>.</p>
+
+<p>If the <code class="language-html">&lt;code&gt;</code> block, or its parent, have an
   <code class="language-html">data-output</code> attribute, and an element is found in the page with
   that <code class="language-html">id</code> in the page, that is used instead. The following output:</p>
 
@@ -291,7 +296,8 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 
 <div id="prism-eval-output"></div>
 
-<p>Now, errors are not caught. You are on your own. See your console for the error.</p>
+<p>Now, errors are not caught. You are on your own. See your console for the error. The result of the script
+  (<code class="language-javascript">5 + 6</code>) cannot be shown.</p>
 
 <pre data-src="errorExample.js" data-eval="script"></pre>
 

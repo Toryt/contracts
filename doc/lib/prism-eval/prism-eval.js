@@ -44,6 +44,7 @@
     Prism.eval.info = noOutput;
     Prism.eval.warn = noOutput;
     Prism.eval.error = noOutput;
+    Prism.eval.result = noOutput;
 
     return Prism.eval;
   }
@@ -54,6 +55,7 @@
       Prism.eval.info = output.bind(Prism.eval, "info", defaultOutputNode, defaultOutputId);
       Prism.eval.warn = output.bind(Prism.eval, "warn", defaultOutputNode, defaultOutputId);
       Prism.eval.error = output.bind(Prism.eval, "error", defaultOutputNode, defaultOutputId);
+      Prism.eval.result = output.bind(Prism.eval, "result", defaultOutputNode, defaultOutputId);
     }
     else {
       prepareNoOutput();
@@ -101,6 +103,7 @@
     Prism.eval.info = output.bind(Prism.eval, "info", outputElement, baseOutputId);
     Prism.eval.warn = output.bind(Prism.eval, "warn", outputElement, baseOutputId);
     Prism.eval.error = output.bind(Prism.eval, "error", outputElement, baseOutputId);
+    Prism.eval.result = output.bind(Prism.eval, "result", outputElement, baseOutputId);
 
     return Prism.eval;
   }
@@ -159,47 +162,49 @@
     debug("The element is setup to execute code");
     //var preSrc = env.element.parentNode && env.element.parentNode.getAttribute("data-src");
     //if (!preSrc) { // src in HTML
-      if (!env.code) {
-        warn("<code> element was setup to evaluate code mentioned in html, but there is no code.");
-        return;
-      }
-      if (env.code === "Loading…") {
-        debug("<code> is loading (File HighLight).");
-        return;
-      }
-      debug("there is code; eval on the next tick");
-      var fileHighLightSrc = env.element.parentNode && env.element.parentNode.getAttribute("data-src");
-      if (!fileHighLightSrc || evalAttribute !== "script") {
-        debug("src in HTML, or src in external file via plugin file-highlight, but not ordered to do script; " +
-          "doing eval");
-        setTimeout(
-          function () {
-            var output = prepareOutput(env.element);
-            try {
-              debug("will evaluate: \"" + env.code + "\"");
-              eval(env.code);
+    if (!env.code) {
+      warn("<code> element was setup to evaluate code mentioned in html, but there is no code.");
+      return;
+    }
+    if (env.code === "Loading…") {
+      debug("<code> is loading (File HighLight).");
+      return;
+    }
+    debug("there is code; eval on the next tick");
+    var fileHighLightSrc = env.element.parentNode && env.element.parentNode.getAttribute("data-src");
+    if (!fileHighLightSrc || evalAttribute !== "script") {
+      debug("src in HTML, or src in external file via plugin file-highlight, but not ordered to do script; " +
+        "doing eval");
+      setTimeout(
+        function () {
+          var output = prepareOutput(env.element);
+          try {
+            debug("will evaluate: \"" + env.code + "\"");
+            var result = eval(env.code); // will also contain exception
+            if (result !== undefined) {
+              output.result(result);
             }
-            catch (exc) {
-              info("evaluation resulted in an exception: " + (exc.message || exc));
-              info("code: ");
-              info(env.code);
-              output.error(exc);
-            }
-            finally {
-              defaultOutput();
-            }
-          },
-          0
-        );
-      }
-      else {
-        debug("src not in the HTML, but in an external file via plugin file-highlight, and ordered to do script");
-        var script = document.createElement("script");
-        script.async = true;
-        script.src = fileHighLightSrc;
-        // no type, means JavaScript; output will be defaultOutput
-        document.getElementsByTagName("head")[0].appendChild(script);
-      }
+          }
+          catch (exc) {
+            info("Evaluation resulted in an exception: \"" + (exc.message || exc) + "\". Code: " + env.code);
+            result = null;
+            output.error(exc);
+          }
+          finally {
+            defaultOutput();
+          }
+        },
+        0
+      );
+    }
+    else {
+      debug("src not in the HTML, but in an external file via plugin file-highlight, and ordered to do script");
+      var script = document.createElement("script");
+      script.async = true;
+      script.src = fileHighLightSrc;
+      // no type, means JavaScript; output will be defaultOutput
+      document.getElementsByTagName("head")[0].appendChild(script);
+    }
   });
 
 }());
