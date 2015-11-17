@@ -15,15 +15,27 @@
     logLevel: "warn"
   };
 
-  function output(style, outputElement, str) {
+  /**
+   * Write in the element with id "outputElementId-label", of outputElementId and label
+   * exist, and the element exists, and in outputElement otherwise.
+   */
+  function output(style, outputElement, outputElementId, str, label) {
     var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
     line.className = "prism-eval-" + style;
     var text = document.createTextNode(str);
     line.appendChild(text);
-    outputElement.appendChild(line);
+    var actualElement = outputElement;
+    if (label && outputElementId) {
+      var labeledElement = document.getElementById(outputElementId + "-" + label);
+      if (labeledElement) {
+        labeledElement.className = outputClassName;
+        actualElement = labeledElement;
+      }
+    }
+    actualElement.appendChild(line);
   }
 
-  var noOutput = (function noOutput(str) {
+  var noOutput = (function noOutput(str, label) {
     // NOP
   }).bind(Prism.eval);
 
@@ -38,10 +50,10 @@
 
   function defaultOutput() {
     if (defaultOutputNode) {
-      Prism.eval.log = output.bind(Prism.eval, "log", defaultOutputNode);
-      Prism.eval.info = output.bind(Prism.eval, "info", defaultOutputNode);
-      Prism.eval.warn = output.bind(Prism.eval, "warn", defaultOutputNode);
-      Prism.eval.error = output.bind(Prism.eval, "error", defaultOutputNode);
+      Prism.eval.log = output.bind(Prism.eval, "log", defaultOutputNode, defaultOutputId);
+      Prism.eval.info = output.bind(Prism.eval, "info", defaultOutputNode, defaultOutputId);
+      Prism.eval.warn = output.bind(Prism.eval, "warn", defaultOutputNode, defaultOutputId);
+      Prism.eval.error = output.bind(Prism.eval, "error", defaultOutputNode, defaultOutputId);
     }
     else {
       prepareNoOutput();
@@ -85,10 +97,10 @@
     }
     outputElement.className = outputClassName;
 
-    Prism.eval.log = output.bind(Prism.eval, "log", outputElement);
-    Prism.eval.info = output.bind(Prism.eval, "info", outputElement);
-    Prism.eval.warn = output.bind(Prism.eval, "warn", outputElement);
-    Prism.eval.error = output.bind(Prism.eval, "error", outputElement);
+    Prism.eval.log = output.bind(Prism.eval, "log", outputElement, baseOutputId);
+    Prism.eval.info = output.bind(Prism.eval, "info", outputElement, baseOutputId);
+    Prism.eval.warn = output.bind(Prism.eval, "warn", outputElement, baseOutputId);
+    Prism.eval.error = output.bind(Prism.eval, "error", outputElement, baseOutputId);
 
     return Prism.eval;
   }
