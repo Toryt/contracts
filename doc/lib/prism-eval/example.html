@@ -299,11 +299,17 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
   This output comes from the script above:</p>
 
 <div id="prism-eval-output-labelled"></div>
+<p>The following output is created by a script that is included in a
+  <code class="language-html">&lt;script&gt;</code>-tag, but not shown by Prism.
+  That works also.</p>
+
+<div id="prism-eval-output-notShownByPrism"></div>
 
 
 <script src="../prism/prism.uncompressed.js"></script>
 <script src="prism-eval.js"></script>
 <script>
+<script src="codeNotShown.js"></script>
   Prism.eval.test = {
     executed: [],
     shouldNotBeExecuted: [],
