@@ -20,18 +20,29 @@
    * exist, and the element exists, and in outputElement otherwise.
    */
   function output(style, outputElement, outputElementId, str, label) {
+    var actualElement = outputElement;
+
+    if (label) {
+      if (!outputElementId) {
+        warn("output asked with label \"" + label + "\", but no data-ouput base specified (output: \""
+          + str + "\")");
+        return;
+      }
+      var labeledOutputElementId = outputElementId + "-" + label;
+      var labeledElement = document.getElementById(outputElementId + "-" + label);
+      if (!labeledElement) {
+        warn("output asked in element with id \"" + labeledOutputElementId + "\", but no such element exists"
+          + " (output: \"" + str + "\")");
+        return;
+      }
+      labeledElement.className = outputClassName;
+      actualElement = labeledElement;
+    }
+
     var line = document.createElement(outputElement.nodeName === "div" ? "div" : "span");
     line.className = "prism-eval-" + style;
     var text = document.createTextNode(str);
     line.appendChild(text);
-    var actualElement = outputElement;
-    if (label && outputElementId) {
-      var labeledElement = document.getElementById(outputElementId + "-" + label);
-      if (labeledElement) {
-        labeledElement.className = outputClassName;
-        actualElement = labeledElement;
-      }
-    }
     actualElement.appendChild(line);
   }
 
@@ -199,6 +210,10 @@
     }
     else {
       debug("src not in the HTML, but in an external file via plugin file-highlight, and ordered to do script");
+      if (!defaultOutputNode) {
+        warn("output of evaluation via script insertion requires an element with id \"" + defaultOutputId + "\"; no" +
+          " such element exists.");
+      }
       var script = document.createElement("script");
       script.async = true;
       script.src = fileHighLightSrc;

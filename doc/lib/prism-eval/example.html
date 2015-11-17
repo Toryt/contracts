@@ -274,6 +274,11 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 
 <pre data-src="example.js" data-eval="true"></pre>
 
+<p>The labeled output is not shown, because there is no output element with the label as
+  <code class="language-html">id</code> in this page, and no
+  <code class="language-html">data-output</code> was specified on the
+  <code class="language-html">pre</code> above. A warning for this is shown in the console.</p>
+
 <p>Errors in included code are caught too:</p>
 
 <pre data-src="errorExample.js" data-eval="true"></pre>
@@ -296,17 +301,17 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 
 <div id="prism-eval-output"></div>
 
-<p>Now, errors are not caught. You are on your own. See your console for the error. The result of the script
-  (<code class="language-javascript">5 + 6</code>) cannot be shown.</p>
-
-<pre data-src="errorExample.js" data-eval="script"></pre>
-
 <p>Labeled output also works for scripts, by appending the label to
   <code class="language-html">prism-eval-output</code>, like so:
   <code class="language-html">id=&quot;prism-eval-output-LABEL&quot;</code>.
   This output comes from the script above:</p>
 
 <div id="prism-eval-output-labeled"></div>
+
+<p>Now, errors are not caught. You are on your own. See your console for the error. The result of the script
+  (<code class="language-javascript">5 + 6</code>) cannot be shown.</p>
+
+<pre data-src="errorExample.js" data-eval="script"></pre>
 
 <p>The following output is created by a script that is included in a
   <code class="language-html">&lt;script&gt;</code>-tag, but not shown by Prism.
