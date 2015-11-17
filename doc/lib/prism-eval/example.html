@@ -315,10 +315,33 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 <div id="prism-eval-output-notShownByPrism"></div>
 
 
+
+
+
+<h1>Logging of plugin behavior</h1>
+
+<p>The logging level of the plugin behavior can be set by setting
+  <code class="language-javascript">Prism.eval.logLevel</code> to
+  <code class="language-javascript">"debug"</code>,
+  <code class="language-javascript">"info"</code>,
+  <code class="language-javascript">"warn"</code>, or
+  <code class="language-javascript">"error"</code>.
+  The default value is <code class="language-javascript">"warn"</code>.</p>
+<p>In this page,
+  <code class="language-javascript" data-eval="true" data-output="logLevel">Prism.eval.logLevel</code>
+  is <span id="logLevel"></span>.
+</p>
+
+
+
+
 <script src="../prism/prism.uncompressed.js"></script>
 <script src="prism-eval.js"></script>
 <script>
+  Prism.eval.logLevel = "debug";
+</script>
 <script src="codeNotShown.js"></script>
+<script>
   Prism.eval.test = {
     executed: [],
     shouldNotBeExecuted: [],
