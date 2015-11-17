@@ -122,7 +122,7 @@
 
   function warn(str) {
     if (Prism.eval.logLevel === "debug" || Prism.eval.logLevel === "info" || Prism.eval.logLevel === "warn") {
-      console.info(logPrefix + str);
+      console.warn(logPrefix + str);
     }
   }
 
