@@ -296,8 +296,8 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 <p>The output of code loaded as script is always displayed in an element with
   <code class="language-html">id=&quot;prism-eval-output&quot;</code>.
   We cannot diversify here. You have to add such element yourself. It will not be created (this plugin
-  doesn't know where you want it if there are more scripts to execute). Therefor, the output
-  of the next included code is shown in the same output element:</p>
+  doesn't know where you want it if there are more scripts to execute). As a consequence, the output
+  of the next included code is shown in the same output element below.</p>
 
 <div id="prism-eval-output"></div>
 
@@ -343,7 +343,7 @@ Prism.eval.test.codeShouldNotBeExecuted("will not be reached (in html)");
 <script src="../prism/prism.uncompressed.js"></script>
 <script src="prism-eval.js"></script>
 <script>
-  Prism.eval.logLevel = "debug";
+  Prism.eval.logLevel = "info";
 </script>
 <script src="codeNotShown.js"></script>
 <script>
