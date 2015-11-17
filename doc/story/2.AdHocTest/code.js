@@ -43,18 +43,18 @@ function fibonacci(n) {
 //----------------------------------------------------------
 
 try {
-  output("ok", "\"a\": " + fibonacci("a"));
+  Prism.eval.log("\"a\": " + fibonacci("a"), "callWithA");
 }
 catch (exc) {
-  output("fail", "\"a\": " + exc);
+  Prism.eval.error("\"a\": " + exc, "callWithA");
 }
 
 for (i = -1; i < 10; i++) {
   try {
-    output("ok", i + ": " + fibonacci(i));
+    Prism.eval.log(i + ": " + fibonacci(i), "callWithI");
   }
   catch (exc) {
-    output("fail", exc);
+    Prism.eval.error(i + ": " + exc, "callWithI");
   }
 }
 
