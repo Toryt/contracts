@@ -16,7 +16,7 @@ function fibonacci(n) {
   else if (n === 1) {
     result = 1;
   }
-  else if (n === 18) {
+  else if (n === 8) {
     result = -3; // wrong!
   }
   else {
@@ -39,24 +39,3 @@ function fibonacci(n) {
 
   return result;
 }
-
-//----------------------------------------------------------
-
-try {
-  Prism.eval.log("\"a\": " + fibonacci("a"), "callWithA");
-}
-catch (exc) {
-  Prism.eval.error("\"a\": " + exc, "callWithA");
-}
-
-for (i = -1; i < 10; i++) {
-  try {
-    Prism.eval.log(i + ": " + fibonacci(i), "callWithI");
-  }
-  catch (exc) {
-    Prism.eval.error(i + ": " + exc, "callWithI");
-  }
-}
-
-
-/* http://jsfiddle.net/jandockx/u7wchgcu/ */

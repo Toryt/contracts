@@ -7,11 +7,81 @@
 </head>
 <body>
 
-<pre data-src="code.js" data-eval="script"></pre>
-<div id="prism-eval-output"></div>
-<div id="prism-eval-output-callWithA"></div>
-<div id="prism-eval-output-callWithI"></div>
+<h1>Fibonacci</h1>
 
+<p>In this story that tells about creating contracts for JavaScript functions,
+  we will use one of the prototypical functions we all know as an example:
+  the <a href="https://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci</a> function.</p>
+<p>We start out with a simple, correct but naive, recursive implementation:</p>
+<pre id="fibonacci" class="line-numbers" data-line="2,2-3,5,5-6,9" data-src="code.js" data-eval="script"></pre>
+<p>The Fibonacci number of 0 is 0 (<a href="#fibonacci.2-3">line 2 – 3</a>),
+  the Fibonacci number of 1 is 1 (<a href="#fibonacci.2-3">line 5 – 6</a>).
+  The Fibonacci number of greater positive integers <var>n</var> is the sum of the
+  Fibonacci number of <var>n - 1</var> and <var>n - 2</var>
+  (<a href="#fibonacci.9">line 9</a>).</p>
+
+
+
+<h1>Test and demonstration</h1>
+
+<p>In the next chapters of this story, we will introduce contracts into this function.
+  Each time, we will evaluate the version we have with the same test and demonstration code.
+  In this code, we first call <code class="language-javascript">fibonacci</code>
+  with a character, and next with the numbers from -1 to 9.</p>
+
+
+<h2>Call with a Character</h2>
+
+<pre id="test" class="line-numbers" data-line="9,12,8-13" data-src="../exec1.js" data-eval="script"></pre>
+<p>First, we call the Fibonacci function with a character as parameter. That makes no sense.
+  The Fibonacci function is not defined for characters, only for positive integers.
+  The effect of this call with our naive implementation is:</p>
+<div id="prism-eval-output-callWithA"></div>
+<p>We get an error. That is to be expected. What is weird is that it is a
+  <code class="language-javascript">RangeError</code>. Huh?</p>
+<p>If you try to find out how we come to this result, you get a glimpse of why we need a better way
+  of doing things. We want the computer to tell us that we have called
+  <code class="language-javascript">fibonacci</code> with a character, and that only
+  positive integers are allowed. Instead we get some weird reference to a call stack size
+  that exceeds some maximum.</p>
+<p>Now imagine the other way around: you think your code is correct, but you get this weird error.
+  Try finding out from that cryptic message that you called <code class="language-javascript">fibonacci</code>
+  with a character by mistake. Sounds like an afternoon of fun.</p>
+<p>What actually happens is that, on execution of <code class="language-javascript">fibonacci(&quot;a&quot;)</code>,
+  we pass through both conditions
+  <a href="#fibonacci.2"><code class="language-javascript" data-eval="true">&quot;a&quot; === 0</code></a> and
+  <a href="#fibonacci.5"><code class="language-javascript" data-eval="true">&quot;a&quot; === 1</code></a>.
+  So we happily call
+  <a href="#fibonacci.9"><code class="language-javascript">fibonacci(&quot;a&quot; - 1)</code></a>.
+  <code class="language-javascript" data-eval="true" data-output="a_1">&quot;a&quot; - 1</code> evaluates to
+  <span id="a_1"></span>.
+  <code class="language-javascript">fibonacci(Number.NaN)</code> is called, and again
+  we pass through both conditions:
+  <a href="#fibonacci.2"><code class="language-javascript" data-eval="true">Number.NaN === 0</code></a> and
+  <a href="#fibonacci.5"><code class="language-javascript" data-eval="true">Number.NaN === 1</code></a>.
+  So we call
+  <a href="#fibonacci.9"><code class="language-javascript">fibonacci(Number.NaN - 1)</code></a>.
+  <code class="language-javascript" data-eval="true" data-output="a_nan">Number.NaN - 1</code> evaluates to
+  <span id="a_nan"></span> again. So we are actually calling
+  <code class="language-javascript">fibonacci(Number.NaN)</code> again. And again. And again.</p>
+<p><code class="prism-eval-error">Maximum call stack size exceeded</code> most often implies
+  an infinite recursion these days, and that is exactly what our coding mistake triggers.</p>
+
+
+<h2>Call with a -1, 0, …, 9</h2>
+
+<pre id="test" class="line-numbers" data-line="19,22,17-24" data-src="../exec1.js"></pre>
+<p>In this example, we call <code class="language-javascript">fibonacci</code>
+  with the integers from -1 to 9. The Fibonacci function is only defined for positive integers,
+  including 0, not for -1. We get an output line per number:</p>
+<div id="prism-eval-output-callWithI"></div>
+<p>As expected, the first call, with <code class="language-javascript">-1</code> fails.
+  Again, we get infinite recursion. It would be much easier if the computer would tell us
+  that we called the function with a parameter outside of the expected range.</p>
+<p>Next, we see a line for the calls from 0, …, 9, with a number as result.
+  But is this the correct result?</p>
+
+<div id="prism-eval-output"></div> <!-- not used -->
 <script src="../../lib/prism/prism.js"></script>
 </body>
 </html>

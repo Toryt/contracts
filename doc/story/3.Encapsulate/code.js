@@ -43,23 +43,3 @@ function fibonacci(n) {
 
   return result;
 }
-
-//----------------------------------------------------------
-
-try {
-  Prism.eval.log("\"a\": " + fibonacci("a"), "callWithA");
-}
-catch (exc) {
-  Prism.eval.error("\"a\": " + exc, "callWithA");
-}
-
-for (i = -1; i < 10; i++) {
-  try {
-    Prism.eval.log(i + ": " + fibonacci(i), "callWithI");
-  }
-  catch (exc) {
-    Prism.eval.error(i + ": " + exc, "callWithI");
-  }
-}
-
-/* http://jsfiddle.net/jandockx/2344a8md/ */
