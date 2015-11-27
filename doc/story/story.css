@@ -1,0 +1,27 @@
+.navigate {
+    display: block;
+    font-family: Helvetica,SansSerif;
+    font-size: 90%;
+    border-color: blue;
+    border-width: 1px;
+    border-style: solid;
+    padding: 5px;
+    width: 8em;
+    height: 16px;
+    text-align: center;
+    margin: 0;
+}
+
+.navigate a {
+    color: blue;
+    text-decoration: none;
+}
+
+.navigate.previous {
+    float: left;
+}
+
+.navigate.next {
+    float: right;
+    margin-bottom: 10px;
+}
