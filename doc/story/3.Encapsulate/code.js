@@ -32,7 +32,7 @@ function fibonacci(n) {
   else if (n === 1) {
     result = 1;
   }
-  else if (n === 18) {
+  else if (n === 8) {
     result = -3; // wrong!
   }
   else {

@@ -10,13 +10,37 @@
 
 <div class="navigate prev"><a href="../2.AdHocTest/index.html">Previous</a></div>
 
-<pre data-src="code.js" data-eval="script"></pre>
-<div id="prism-eval-output"></div>
+<p>Let's clean up a bit. We can start with making the structure that was represented by comments
+  explicit. You always should do that. Comment-structure means you're missing out on explicit
+  encapsulation. It is easy to put the <a href="#code.1-8">preconditions</a> and
+  <a href="#code.10-22">postconditions</a> in separate functions, and call them from the
+  <a href="#code.24-45">main function</a>, the <a href="#code.1-8">preconditions</a>
+  <a href="#code.26">at the start</a>, the <a href="#code.42">at the end</a>.</p>
+<p>Note that in these condition-functions we need to repeat the <a href="#code.24-45">main function</a>
+  parameters, in casu <code class="language-javascsript">n</code>. The
+  <a href="#code.10-22">postconditions</a> also need access to the
+  <code class="language-javascsript">result</code>. We'll at it as the last parameter for now.</p>
+
+<pre id="code" class="line-numbers" data-src="code.js" data-eval="script" data-line="1-8,10-22,24-45,26,42"></pre>
+
+<p>This is a true refactor. Nothing changes in the output of <code
+    class="language-javascript">fibonacci(&quot;a&quot;)</code>:</p>
+
 <div id="prism-eval-output-callWithA"></div>
+
+<p>And nothing changes in the output of the of <code class="language-javascript">fibonacci</code>
+  with the integers from -1 to 9:</p>
+
 <div id="prism-eval-output-callWithI"></div>
 
 <div class="navigate next"><a href="../4.SeparateConditions/index.html">Next</a></div>
 
+<div id="prism-eval-output"></div> <!-- not used -->
+
+
 <script src="../../lib/prism/prism.js"></script>
+<script src="code.js"></script>
+<script src="../exec1.js"></script>
+
 </body>
 </html>
