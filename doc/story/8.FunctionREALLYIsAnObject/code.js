@@ -48,23 +48,3 @@ fibonacci.verify = function verify(conditionPropertyName, n) {
 
 fibonacci.verifyPre = fibonacci.verify.bind(fibonacci, "pre");
 fibonacci.verifyPost = fibonacci.verify.bind(fibonacci, "post");
-
-//----------------------------------------------------------
-
-try {
-  output("ok", "\"a\": " + fibonacci("a"));
-}
-catch (exc) {
-  output("fail", "\"a\": " + exc);
-}
-
-for (i = -1; i < 10; i++) {
-  try {
-    output("ok", i + ": " + fibonacci(i));
-  }
-  catch (exc) {
-    output("fail", exc);
-  }
-}
-
-/* http://jsfiddle.net/jandockx/a4a4p9hn/ */

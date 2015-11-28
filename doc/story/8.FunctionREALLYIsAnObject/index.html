@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A Function is Really an Object</title>
+  <link href="../../lib/prism/prism.css" rel="stylesheet"/>
+  <link href="../story.css" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="navigate prev"><a href="../7.FunctionIsAnObject_Reprise/index.html">Previous</a></div>
+
+<p>But if <a href="#code.34-47"><code class="language-javascript">fibonacci.verify(conditions, …)</code></a>
+  is a function of the object &quot;fibonacci&quot;, it is actually a <em>method</em>. And
+  this object &quot;fibonacci&quot; already has 2 properties,
+  <a href="#code.24-27"><code class="language-javascript">fibonacci.pre</code></a>
+  and <a href="#code.28-32"><code class="language-javascript">fibonacci.post</code></a>.
+  The <a href="#code.34-47"><code class="language-javascript">fibonacci.verify()</code></a>
+  method should be able to use the collections of conditions directly. They are
+  <code class="language-javascript">this</code>-properties.</p>
+<p>The <a href="#code.34-47"><code class="language-javascript">fibonacci.verify()</code></a>
+  method is changed so that <a href="#code.39">it accesses the collections of conditions as
+  <code class="language-javascript">this</code>-properties</a>. Variation is necessary
+  to choose the appropriate set for pre- and postconditions. We regain that by
+  adding a <code class="language-javascript">conditionPropertyName</code>
+  parameter to the <a href="#code.34-47"><code class="language-javascript">fibonacci.verify()</code></a>
+  method. We could call it this way directly from <a href="#code.1-22">main function</a>, but
+  I believe it is cleaner to introduce 2 specific methods for that,
+  <a href="#code.49"><code class="language-javascript">fibonacci.verifyPre()</code></a>
+  and
+  <a href="#code.50"><code class="language-javascript">fibonacci.verifyPost()</code></a>,
+  as partial evaluation of
+  <a href="#code.34-47"><code class="language-javascript">fibonacci.verify()</code></a>.
+</p>
+
+<pre id="code" class="line-numbers" data-src="code.js" data-line="1-22,3,19,24-27,28-32,34-47,39,49,50"></pre>
+
+<p>Done.</p>
+
+<p>This is a true refactor. Nothing changes in the output of <code
+    class="language-javascript">fibonacci(&quot;a&quot;)</code>:</p>
+
+<div id="prism-eval-output-callWithA"></div>
+
+<p>And nothing changes in the output of the of <code class="language-javascript">fibonacci</code>
+  with the integers from -1 to 9:</p>
+
+<div id="prism-eval-output-callWithI"></div>
+
+
+<div class="navigate next"><a href="../9.ObjectsHavePrototypes/index.html">Next</a></div>
+
+<div id="prism-eval-output"></div> <!-- not used -->
+
+
+<script src="../../lib/prism/prism.js"></script>
+<script src="code.js"></script>
+<script src="../exec1.js"></script>
+
+</body>
+</html>
