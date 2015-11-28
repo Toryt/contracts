@@ -10,11 +10,64 @@
 
 <div class="navigate prev"><a href="../3.Encapsulate/index.html">Previous</a></div>
 
+<p>All nice and dandy, but this is still very ad hoc code, and we are looking for
+  a general structure to express and deal with pre- and postconditions. There
+  is much general structure in the tests: there is an expression, that needs
+  to evaluate to <code class="language-javascript">true</code>, or we need to signal
+  a violation. And when we need to signal a violation, 't would be nice if we could
+  express exactly which condition was violated, where, and how. In fact, the whole
+  shaboodle is always the same, except for the specific conditions.</p>
+<p>So, it seems obvious to list the conditions themselves as functions, and then have common code
+  to evaluate the conditions in the right place, signal violations if appropriate, and
+  do a bit of effort to report in detail.</p>
+<p>In this version, the <a href="#code.1-4">preconditions</a> and <a href="#code.6-10">postconditions</a>
+  are each enumerated in a set (represented as an
+  <code class="language-javascript">Array</code>) of functions, with the same parameters
+  as the <a href="#code.34-55">main function</a>, adding a <code class="language-javascript">result</code>
+  parameter for the <a href="#code.6-10">postconditions</a>.
+  <a href="#code.12-21"><code class="language-javascript">check_fibonacci_preconditions(n)</code></a>
+  and <a href="#code.12-21"><code class="language-javascript">check_fibonacci_postconditions(n, result)</code></a>
+  are a first version of the generalized checking. These functions are still called literally at the start
+  and end respectively of the
+  <a href="#code.34-55">main function</a>, like before.</p>
+
 <pre id="code" class="line-numbers" data-src="code.js" data-eval="script" data-line="1-4,6-10,12-21,23-32,34-55"></pre>
+
+<p>If you look at the code, it is immediately apparent that this way of expressing the conditions
+  without all the mechanisms to deal with them is very readable for a programmer.
+  There is a bit of syntactic overhead that is annoying: the <code class="language-javascript">function</code>
+  keyword, the <code class="language-javascript">return</code> statement, the curly braces, ….
+  But all this is resolved with <a href="http://es6-features.org/#ExpressionBodies">arrow functions
+  in ECMAScript 6</a>. So, hang on for browser support.</p>
+<p>In <a href="#code.12-21"><code class="language-javascript">check_fibonacci_preconditions(n)</code></a>
+  and <a href="#code.12-21"><code class="language-javascript">check_fibonacci_postconditions(n, result)</code></a>,
+  we handle all conditions of the respective set of conditions. First we
+  <code class="language-javascript">call()</code> the condition with the correct parameters
+  (since these are naked functions, there is no <code class="language-javascript">this</code> … yet).
+  The result of the expression evaluation is a <code class="language-javascript">Boolean</code>,
+  or at least, it is interpreted as such. If the result of the condition evaluation is
+  <code class="language-javascript">true</code>, we are done. Otherwise, we signal violation
+  by throwing.</p>
+<p>Now, in reporting, JavaScript has this beautiful feature where we can get the string of the
+  implementation of a function. There are several methods, and here we just use the default
+  <code class="language-javascript">toString()</code>. This way, we report exactly, and immediately,
+  what was violated. In the call <code class="language-javascript">fibonacci(&quot;a&quot;)</code>:</p>
 
 <div id="prism-eval-output-callWithA"></div>
 
+<p>The parameter must be an integer, and it isn't! By adding the actual parameter value, we also
+  see what value violated the condition.</p>
+
+<p>The same applies when calling <code class="language-javascript">fibonacci</code>
+  with the integers from -1 to 9, and for the postconditions:</p>
+
 <div id="prism-eval-output-callWithI"></div>
+
+<p>Much better. But there is still ad hoc code in the
+  <a href="#code.12-21"><code class="language-javascript">check_fibonacci_preconditions(n)</code></a>
+  and <a href="#code.12-21"><code class="language-javascript">check_fibonacci_postconditions(n, result)</code></a>
+  functions. For starters, they each reference a global variable by name, holding the set of conditions.
+  Yuck.</p>
 
 <div class="navigate next"><a href="../5.FunctionIsAnObject/index.html">Next</a></div>
 

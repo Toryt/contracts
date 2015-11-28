@@ -1,16 +1,16 @@
-var preconditions = [
+var fibonacci_preconditions = [
   function(n) {return Number.isInteger(n);},
   function(n) {return 0 <= n;}
 ];
 
-var postconditions = [
+var fibonacci_postconditions = [
   function(n, result) {return n !== 0 || result === 0;},
   function(n, result) {return n !== 1 || result === 1;},
   function(n, result) {return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);}
 ];
 
-function fibonacci_preconditions(n) {
-  preconditions.forEach(
+function check_fibonacci_preconditions(n) {
+  fibonacci_preconditions.forEach(
     function(condition) {
       var conditionResult = condition.call(null, n);
       if (!conditionResult) {
@@ -20,8 +20,8 @@ function fibonacci_preconditions(n) {
   );
 }
 
-function fibonacci_postconditions(n, result) {
-  postconditions.forEach(
+function check_fibonacci_postconditions(n, result) {
+  fibonacci_postconditions.forEach(
     function(condition) {
       var conditionResult = condition.call(null, n, result);
       if (!conditionResult) {
@@ -33,7 +33,7 @@ function fibonacci_postconditions(n, result) {
 
 function fibonacci(n) {
 
-  fibonacci_preconditions(n);
+  check_fibonacci_preconditions(n);
 
   var result;
   if (n === 0) {
@@ -49,7 +49,7 @@ function fibonacci(n) {
     result = fibonacci(n - 1) + fibonacci(n - 2);
   }
 
-  fibonacci_postconditions(n, result);
+  check_fibonacci_postconditions(n, result);
 
   return result;
 }
