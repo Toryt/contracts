@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>A Function is an Object, Reprise</title>
+  <link href="../../lib/prism/prism.css" rel="stylesheet"/>
+  <link href="../story.css" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="navigate prev"><a href="../6.OneVerify/index.html">Previous</a></div>
+
+<p>Let's pause for a moment. Let's not get ahead of ourselves.</p>
+<p>We're not being really object oriented here.
+  <code class="language-javascript">verify(conditions, …)</code> is a global function in the previous code.
+  Not good. It should be an object function of the
+  <a href="#code.1-22">subject function</a>:
+  <a href="#code.34-47"><code class="language-javascript">fibonacci.verify(conditions, …)</code></a>.</p>
+
+<pre id="code" class="line-numbers" data-src="code.js" data-line="1-22,34-47"></pre>
+
+<p>Done.</p>
+
+<p>This is a true refactor. Nothing changes in the output of <code
+    class="language-javascript">fibonacci(&quot;a&quot;)</code>:</p>
+
+<div id="prism-eval-output-callWithA"></div>
+
+<p>And nothing changes in the output of the of <code class="language-javascript">fibonacci</code>
+  with the integers from -1 to 9:</p>
+
+<div id="prism-eval-output-callWithI"></div>
+
+
+<div class="navigate next"><a href="../8.FunctionREALLYIsAnObject/index.html">Next</a></div>
+
+<div id="prism-eval-output"></div> <!-- not used -->
+
+
+<script src="../../lib/prism/prism.js"></script>
+<script src="code.js"></script>
+<script src="../exec1.js"></script>
+
+</body>
+</html>

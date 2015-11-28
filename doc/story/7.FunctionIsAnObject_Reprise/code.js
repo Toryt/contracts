@@ -9,7 +9,7 @@ function fibonacci(n) {
   else if (n === 1) {
     result = 1;
   }
-  else if (n === 9) {
+  else if (n === 8) {
     result = -3; // wrong!
   }
   else {
@@ -45,24 +45,3 @@ fibonacci.verify = function verify(conditions, n) {
     }
   );
 };
-
-//----------------------------------------------------------
-
-try {
-  output("ok", "\"a\": " + fibonacci("a"));
-}
-catch (exc) {
-  output("fail", "\"a\": " + exc);
-}
-
-for (i = -1; i < 10; i++) {
-  try {
-    output("ok", i + ": " + fibonacci(i));
-  }
-  catch (exc) {
-    output("fail", exc);
-  }
-}
-
-
-/* http://jsfiddle.net/jandockx/88rnexqd/ */
