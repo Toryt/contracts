@@ -44,12 +44,14 @@
   The effect of this call with our naive implementation is:</p>
 <div id="prism-eval-output-fibonacciWithA"></div>
 <p>We get an error. That is to be expected. What is weird is that it is a
-  <code class="language-javascript">RangeError</code>. Huh?</p>
+  <code class="language-javascript">RangeError</code> (Chrome, Safari), or a
+  <code class="language-javascript">InternalError</code> (Firefox). Huh?</p>
 <p>If you try to find out how we come to this result, you get a glimpse of why we need a better way
   of doing things. We want the computer to tell us that we have called
   <code class="language-javascript">fibonacci</code> with a character, and that only
   positive integers are allowed. Instead we get some weird reference to a call stack size
-  that exceeds some maximum.</p>
+  that exceeds some maximum (Chrome, Safari). Firefox is a bit more informative. It says
+  <span class="prism-eval-error">too much recursion</span>.</p>
 <p>Now imagine the other way around: you think your code is correct, but you get this weird error.
   Try finding out from that cryptic message that you called <code class="language-javascript">fibonacci</code>
   with a character by mistake. Sounds like an afternoon of fun.</p>
