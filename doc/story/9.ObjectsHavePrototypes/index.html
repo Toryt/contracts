@@ -18,19 +18,19 @@
 <p>The the <code class="language-javascript">fibonacci()</code> function is an object, so it has
   a prototype it shares with other functions:
   <code class="language-javascript">fibonacci.constructor.prototype</code>.
-  The <a href="#code.34-44"><code class="language-javascript">verify()</code></a> method should be
+  The <a href="#code.1-11"><code class="language-javascript">verify()</code></a> method should be
   defined there, so all functions can use it.</p>
-<p>The <a href="#code.46-49"><code class="language-javascript">verifyPre()</code></a>
-  and <a href="#code.50-53"><code class="language-javascript">verifyPost()</code></a>
+<p>The <a href="#code.13-16"><code class="language-javascript">verifyPre()</code></a>
+  and <a href="#code.17-20"><code class="language-javascript">verifyPost()</code></a>
   methods can be changed to be general too, and moved to the prototype.
-  This is also a bit cleaner: <a href="#code.34-44"><code class="language-javascript">verify()</code></a>
+  This is also a bit cleaner: <a href="#code.1-11"><code class="language-javascript">verify()</code></a>
   again has the set of conditions as parameter, and not the property name of that set.
   That is again encapsulated in
-  the <a href="#code.46-49"><code class="language-javascript">verifyPre()</code></a>
-  and <a href="#code.50-53"><code class="language-javascript">verifyPost()</code></a>
+  the <a href="#code.13-16"><code class="language-javascript">verifyPre()</code></a>
+  and <a href="#code.17-20"><code class="language-javascript">verifyPost()</code></a>
   methods.</p>
 
-<pre id="fibonacci" class="line-numbers" data-src="code.js" data-line="1-22,24-27,28-32,34-44,46-49,50-53"></pre>
+<pre id="code" class="line-numbers" data-src="code.js" data-line="1-11,13-16,17-20"></pre>
 
 <p>This is a true refactor. Nothing changes in the output of <code
     class="language-javascript">fibonacci(&quot;a&quot;)</code>:</p>
@@ -85,6 +85,7 @@
 
 
 <script src="../../lib/prism/prism.js"></script>
+<script src="../fibonacci.js"></script>
 <script src="code.js"></script>
 <script src="../factorial.js"></script>
 <script src="../execFibonacci.js"></script>

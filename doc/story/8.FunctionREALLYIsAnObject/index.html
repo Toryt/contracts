@@ -10,30 +10,33 @@
 
 <div class="navigate prev"><a href="../7.FunctionIsAnObject_Reprise/index.html">Previous</a></div>
 
-<p>But if <a href="#code.34-44"><code class="language-javascript">fibonacci.verify(conditions, …)</code></a>
+<p>But if <a href="#code.1-11"><code class="language-javascript">fibonacci.verify(conditions, …)</code></a>
   is a function of the object &quot;fibonacci&quot;, it is actually a <em>method</em>. And
   this object &quot;fibonacci&quot; already has 2 properties,
-  <a href="#code.24-27"><code class="language-javascript">fibonacci.pre</code></a>
-  and <a href="#code.28-32"><code class="language-javascript">fibonacci.post</code></a>.
-  The <a href="#code.34-44"><code class="language-javascript">fibonacci.verify()</code></a>
+  <a href="#fibonacci.24-27"><code class="language-javascript">fibonacci.pre</code></a>
+  and <a href="#fibonacci.28-32"><code class="language-javascript">fibonacci.post</code></a>.
+  The <a href="#code.1-11"><code class="language-javascript">fibonacci.verify()</code></a>
   method should be able to use the collections of conditions directly. They are
   <code class="language-javascript">this</code>-properties.</p>
-<p>The <a href="#code.34-44"><code class="language-javascript">fibonacci.verify()</code></a>
+
+<pre id="fibonacci" class="line-numbers" data-src="../fibonacci.js" data-line="1-22,3,19,24-27,28-32"></pre>
+
+<p>The <a href="#code.1-11"><code class="language-javascript">fibonacci.verify()</code></a>
   method is changed so that <a href="#code.36">it accesses the collections of conditions as
   <code class="language-javascript">this</code>-properties</a>. Variation is necessary
   to choose the appropriate set for pre- and postconditions. We regain that by
   adding a <code class="language-javascript">conditionPropertyName</code>
-  parameter to the <a href="#code.34-44"><code class="language-javascript">fibonacci.verify()</code></a>
-  method. We could call it this way directly from <a href="#code.1-22">main function</a>, but
+  parameter to the <a href="#code.1-11"><code class="language-javascript">fibonacci.verify()</code></a>
+  method. We could call it this way directly from the <a href="#fibonacci.1-22">main function</a>, but
   I believe it is cleaner to introduce 2 specific methods for that,
-  <a href="#code.46"><code class="language-javascript">fibonacci.verifyPre()</code></a>
+  <a href="#code.13"><code class="language-javascript">fibonacci.verifyPre()</code></a>
   and
-  <a href="#code.47"><code class="language-javascript">fibonacci.verifyPost()</code></a>,
+  <a href="#code.14"><code class="language-javascript">fibonacci.verifyPost()</code></a>,
   as partial evaluation of
-  <a href="#code.34-44"><code class="language-javascript">fibonacci.verify()</code></a>.
+  <a href="#code.1-11"><code class="language-javascript">fibonacci.verify()</code></a>.
 </p>
 
-<pre id="code" class="line-numbers" data-src="code.js" data-line="1-22,3,19,24-27,28-32,34-44,36,46,47"></pre>
+<pre id="code" class="line-numbers" data-src="code.js" data-line="1-11,3,13,14"></pre>
 
 <p>Done.</p>
 
@@ -54,6 +57,7 @@
 
 
 <script src="../../lib/prism/prism.js"></script>
+<script src="../fibonacci.js"></script>
 <script src="code.js"></script>
 <script src="../execFibonacci.js"></script>
 
