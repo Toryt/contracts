@@ -37,7 +37,7 @@
 <p>First, we call the Fibonacci function with a character as parameter. That makes no sense.
   The Fibonacci function is not defined for characters, only for positive integers.
   The effect of this call with our naive implementation is:</p>
-<div id="prism-eval-output-callWithA"></div>
+<div id="prism-eval-output-fibonacciWithA"></div>
 <p>We get an error. That is to be expected. What is weird is that it is a
   <code class="language-javascript">RangeError</code>. Huh?</p>
 <p>If you try to find out how we come to this result, you get a glimpse of why we need a better way
@@ -75,7 +75,7 @@
 <p>In this example, we call <code class="language-javascript">fibonacci</code>
   with the integers from -1 to 9. The Fibonacci function is only defined for positive integers,
   including 0, not for -1. We get an output line per number:</p>
-<div id="prism-eval-output-callWithI"></div>
+<div id="prism-eval-output-fibonacciWithI"></div>
 <p>As expected, the first call, with <code class="language-javascript">-1</code> fails.
   Again, we get infinite recursion. It would be much easier if the computer would tell us
   that we called the function with a parameter outside of the expected range.</p>
