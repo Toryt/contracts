@@ -14,12 +14,17 @@
   we will use one of the prototypical functions we all know as an example:
   the <a href="https://en.wikipedia.org/wiki/Fibonacci_number">Fibonacci</a> function.</p>
 <p>We start out with a simple, correct but naive, recursive implementation:</p>
-<pre id="fibonacci" class="line-numbers" data-line="2,2-3,5,5-6,9" data-src="code.js" data-eval="script"></pre>
-<p>The Fibonacci number of 0 is 0 (<a href="#fibonacci.2-3">line 2 – 3</a>),
-  the Fibonacci number of 1 is 1 (<a href="#fibonacci.2-3">line 5 – 6</a>).
-  The Fibonacci number of greater positive integers <var>n</var> is the sum of the
-  Fibonacci number of <var>n - 1</var> and <var>n - 2</var>
-  (<a href="#fibonacci.9">line 9</a>).</p>
+
+<pre id="fibonacci" class="line-numbers" data-line="2,2-4,5,5-6,8-10,12" data-src="../fibonacci.js"
+     data-eval="script"></pre>
+
+<p>The <a href="#fibonacci.2-4">Fibonacci number of 0 is 0</a>,
+  the <a href="#fibonacci.5-7">Fibonacci number of 1 is 1</a>.
+  The Fibonacci number of greater positive integers <var>n</var> is
+  <a href="#fibonacci.12">the sum of the
+  Fibonacci number of <var>n - 1</var> and <var>n - 2</var></a>.</p>
+<p>To add some spice, we deliberately add an error: <a href="#fibonacci.8-10">for <var>n === 8</var>,
+  we return <var>-3</var></a>, which is wrong.</p>
 
 
 
@@ -53,7 +58,7 @@
   <a href="#fibonacci.2"><code class="language-javascript" data-eval="true">&quot;a&quot; === 0</code></a> and
   <a href="#fibonacci.5"><code class="language-javascript" data-eval="true">&quot;a&quot; === 1</code></a>.
   So we happily call
-  <a href="#fibonacci.9"><code class="language-javascript">fibonacci(&quot;a&quot; - 1)</code></a>.
+  <a href="#fibonacci.12"><code class="language-javascript">fibonacci(&quot;a&quot; - 1)</code></a>.
   <code class="language-javascript" data-eval="true" data-output="a_1">&quot;a&quot; - 1</code> evaluates to
   <span id="a_1"></span>.
   <code class="language-javascript">fibonacci(Number.NaN)</code> is called, and again
@@ -61,7 +66,7 @@
   <a href="#fibonacci.2"><code class="language-javascript" data-eval="true">Number.NaN === 0</code></a> and
   <a href="#fibonacci.5"><code class="language-javascript" data-eval="true">Number.NaN === 1</code></a>.
   So we call
-  <a href="#fibonacci.9"><code class="language-javascript">fibonacci(Number.NaN - 1)</code></a>.
+  <a href="#fibonacci.12"><code class="language-javascript">fibonacci(Number.NaN - 1)</code></a>.
   <code class="language-javascript" data-eval="true" data-output="a_nan">Number.NaN - 1</code> evaluates to
   <span id="a_nan"></span> again. So we are actually calling
   <code class="language-javascript">fibonacci(Number.NaN)</code> again. And again. And again.</p>
