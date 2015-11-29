@@ -25,3 +25,7 @@
     float: right;
     margin-bottom: 10px;
 }
+
+.line-highlight.temporary {
+    background-color: rgba(0, 162, 255, 0.2);
+}
