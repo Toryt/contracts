@@ -32,10 +32,7 @@ fibonacci.post = [
 ];
 
 fibonacci.verify = function verify(conditionPropertyName, n) {
-  var args = [];
-  for (var i = 1; i < arguments.length; i++) {
-    args.push(arguments[i]);
-  }
+  var args = Array.prototype.slice.call(arguments, 1); // closure
   this[conditionPropertyName].forEach( // look Ma, a this!
     function(condition) {
       var conditionResult = condition.apply(null, args);
