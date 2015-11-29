@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Wait a Second …</title>
+  <link href="../../lib/prism/prism.css" rel="stylesheet"/>
+  <link href="../story.css" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="navigate prev"><a href="../10.FunctionHasAPrototype/index.html">Previous</a></div>
+
+<p>Wait a second … this also offers the opportunity to revert the subject function definitions
+  to their natural form. Remember that, in <a href="../2.AdHocTest/index.html">the first step</a>,
+  we needed to introduce an annoying, explicit
+  <a href="../2.AdHocTest/index.html#code.12"><code class="language-javascript">result</code></a>
+  variable, and change the control flow. Now it is clear that both, and by extension all,
+  subject function definitions, follow the same pattern: we first
+  <a href="#fibonacci.3">call <code class="language-javascript">verifyPre()</code>
+  with the actual arguments</a>, then
+  <a href="#fibonacci.5-17">execute the true body, remembering the
+  <code class="language-javascript">result</code></a>, then
+  <a href="#fibonacci.19">call <code class="language-javascript">verifyPost()</code>
+  with the actual arguments and the <code class="language-javascript">result</code></a>,
+  and finally <a href="#fibonacci.21">return the <code class="language-javascript">result</code></a>.</p>
+
+<pre id="fibonacciWithResult" class="line-numbers" data-src="../fibonacci.js" data-line="3,5-17,19,21"></pre>
+
+<p>Look. It's exactly the same for <code class="language-javascript">factorial(n)</code>:</p>
+
+<ul>
+  <li><a href="#factorial.3">Call <code class="language-javascript">verifyPre()</code>
+    with the actual arguments</a>.</li>
+  <li><a href="#factorial.5-14">Execute the true body, remembering the
+    <code class="language-javascript">result</code></a>.</li>
+  <li><a href="#factorial.16">Call <code class="language-javascript">verifyPost()</code>
+    with the actual arguments and the <code class="language-javascript">result</code></a>.</li>
+  <li><a href="#factorial.18">Return the <code class="language-javascript">result</code></a>.</li>
+</ul>
+
+<pre id="factorialWithResult" class="line-numbers" data-src="../factorial.js" data-line="3,5-14,16,18"></pre>
+
+<p>Let's add an <a href="#execute"><code class="language-javascript">execute</code></a>-method
+  to the <code class="language-javascript">Function.prototype</code>
+  to does this generally. It will be exactly like the existing functions
+  <code class="language-javascript">Function.prototype.call</code>
+  and <code class="language-javascript">Function.prototype.apply</code> that exist there already:</p>
+
+<pre id="execute" class="line-numbers" data-src="FunctionExecute.js" data-line="2,3,4-5,6"></pre>
+
+<ul>
+  <li><a href="#execute.2">Call <code class="language-javascript">verifyPre()</code>
+    with the actual arguments</a>.
+  </li>
+  <li><a href="#execute.3">Execute the true body, remembering the
+    <code class="language-javascript">result</code></a>.
+  </li>
+  <li><a href="#execute.4-5">Call <code class="language-javascript">verifyPost()</code>
+    with the actual arguments and the <code class="language-javascript">result</code></a>.
+  </li>
+  <li><a href="#execute.6">Return the <code class="language-javascript">result</code></a>.</li>
+</ul>
+
+<p>Note the beautiful application of
+  <a href="#execute.3"><code class="language-javascript">this.apply</code></a>:
+  <code class="language-javascript">this</code><em>is the subject function here</em>.</p>
+
+<h1>Does it work?</h1>
+
+<p>To verify whether this works, we need to change the implementation of the subject functions
+  back to the natural form (keeping in the intentional error for the actual value
+  <code class="language-javascript">8</code>).</p>
+
+<pre id="fibonacci" class="line-numbers" data-src="fibonacci.js" data-line="12"></pre>
+<pre id="factorial" class="line-numbers" data-src="factorial.js" data-line="9"></pre>
+
+<p>The contracts stay the same:</p>
+
+<pre id="fibonacciContract" class="line-numbers" data-src="../fibonacciContract.js"></pre>
+<pre id="factorialContract" class="line-numbers" data-src="../factorialContract.js"></pre>
+
+<p>Let's look at the output:</p>
+
+<div id="prism-eval-output-fibonacciWithA"></div>
+<div id="prism-eval-output-fibonacciWithI"></div>
+<div id="prism-eval-output-factorialWithA"></div>
+<div id="prism-eval-output-factorialWithI"></div>
+
+<p>That fails immensly, and it fails
+  <a href="../1.Clean/index.html"><em>exactly like it did in the beginning</em></a>, with the
+  cryptic <span class="prism-eval-error">InternalError: too much recursion</span>-message,
+  or something like that,
+  and wrong results just passing without a hitch.
+  Are we back to square one?</p>
+<p>Of course not. This is to be expected, as the
+  <a href="#fibonacci"><code class="language-javascript">fibonacci(n)</code></a>
+  and <a href="#fibonacci"><code class="language-javascript">factorial(n)</code></a>
+  functions we are now calling from our demo code are the exact same naive versions
+  we started with. It was the intention to revert to that form for these functions.
+  Here is the calling code:</p>
+
+<pre id="execFibonacci" class="line-numbers" data-src="../execFibonacci.js" data-line="9,19"></pre>
+<pre id="execFactorial" class="line-numbers" data-src="../execFactorial.js" data-line="9,19"></pre>
+
+<p>To get the effects we programmed, we shouldn't call
+  <a href="#execFibonacci.9"><code class="language-javascript">fibonacci(&quot;a&quot;)</code></a>
+  or <a href="#execFibonacci.19"><code class="language-javascript">fibonacci(i)</code></a>,
+  and <a href="#execFactorial.9"><code class="language-javascript">factorial(&quot;a&quot;)</code></a>
+  or <a href="#execFactorial.19"><code class="language-javascript">factorial(i)</code></a>,
+  respectively, but instead call
+  <a href="#execFibonacci2.9"><code class="language-javascript">fibonacci.execute(&quot;a&quot;)</code></a>
+  and <a href="#execFibonacci2.19"><code class="language-javascript">fibonacci.execute(i)</code></a>,
+  and <a href="#execFactorial2.9"><code class="language-javascript">factorial.execute(&quot;a&quot;)</code></a>
+  and <a href="#execFactorial2.19"><code class="language-javascript">factorial.execute(i)</code></a>.
+</p>
+
+<pre id="execFibonacci2" class="line-numbers" data-src="execFibonacci.js" data-line="9,19"></pre>
+<pre id="execFactorial2" class="line-numbers" data-src="execFactorial.js" data-line="9,19"></pre>
+
+<p>Now the output is:</p>
+
+<div id="prism-eval-output-fibonacciWithA2"></div>
+<div id="prism-eval-output-fibonacciWithI2"></div>
+<div id="prism-eval-output-factorialWithA2"></div>
+<div id="prism-eval-output-factorialWithI2"></div>
+
+<p>Hoorah! We get the feedback on violations we worked for so hard! We shouldn't call these functions
+  with a character as actual value, nor with a negative integer, and our implementation for
+  <code class="language-javascript">8</code> is wrong … But wait, shouldn't we also
+  get a violation report for our calls with the actual parameter <code class="language-javascript">9</code>?
+  We expect the same message as for our calls with the actual parameter
+  <code class="language-javascript">8</code>, but instead we do get a numeric result.</p>
+<p>And, oh horror!, <em>the results are wrong</em>:
+  <a href="http://www.wolframalpha.com/input/?i=fibonacci%289%29&x=0&y=0">fibonacci(9) = 34</a>,
+  not <var>10</var>,
+  <a href="http://www.wolframalpha.com/input/?i=factorial%289%29">9! = 362&nbsp;880</a>,
+  not <var>-27</var>! How is this possible?</p>
+<p>It is not only possible, but logical: in our naive implementation, if the recursive calls,
+  we call <a href="#fibonacci.12"><code class="language-javascript">fibonacci(n - 1)</code>
+  (and <code class="language-javascript">fibonacci(n - 2)</code>)</a>,
+  and <a href="#factorial.9"><code class="language-javascript">factorial(n - 1)</code></a>,
+  respectively. <em>We are calling the naive implementations themselves, not
+  <code class="language-javascript">fibonacci.execute()</code> or
+  <code class="language-javascript">factorial.execute()</code></em>. With these calls,
+  contracts aren't verified.</p>
+<p>This solution doesn't make sense. It was the intention to revert to the naive form for definition
+  of these functions, and now it turns out that we need to change it after all.
+  This lies bare the same problem from another viewpoint. As an outside programmer,
+  who wants to use this function, I have the choice whether to call
+  <code class="language-javascript">fibonacci()</code> and
+  <code class="language-javascript">factorial()</code> directly, and in doing so, to bypass
+  all contract verification, or to call <code class="language-javascript">fibonacci.execute()</code> and
+  <code class="language-javascript">factorial.execute()</code>, to get contract verification.</p>
+<p>But, is that really up to me as an outside programmer? First of all, I don't think it is.
+  Whether or not to execute the program, or parts of the program, with or without contract
+  verification, will probably depend on the context and the phase the code is used in.
+  You probably do want contract verification during development and unit testing, and QA, and possibly
+  during acceptance testing. And maybe even in production. Often, here a difference is made between
+  verifying preconditions (on in production) and postconditions (off in production).
+  In any case, this decision is probably taken somewhat higher in the foodchain. As a team leader,
+  project manager, architect, …, I don't want to a) leave this decision up to individual programmers,
+  nor b) being baked hard into the code.</p>
+<p>Furthermore, with this solution, whatever the global decision, by whomever made, for the recursive call,
+  it is made and baked in during development of these functions. When the global decision
+  is different, your stuck with the original decision in these recursive calls.</p>
+<p>It is clear that we need to find a way</p>
+<ul>
+  <li>to define the function with contracts, and keep the decision whether or not to verify them on
+    a call orthogonal to the definition; and</li>
+  <li>to do this so that the function can be called in the traditional way, whatever the decision.</li>
+</ul>
+
+<div class="navigate next"><a href="../12.UsingClosure/index.html#prism-eval-output-fibonacciWithA">Next</a></div>
+
+<div id="prism-eval-output"></div> <!-- not used -->
+
+
+<script src="../../lib/prism/prism.js"></script>
+<script src="../10.FunctionHasAPrototype/Function.js"></script>
+<script src="FunctionExecute.js"></script>
+<script src="fibonacci.js"></script>
+<script src="../fibonacciContract.js"></script>
+<script src="factorial.js"></script>
+<script src="../factorialContract.js"></script>
+<script src="../execFibonacci.js"></script>
+<script src="../execFactorial.js"></script>
+<script src="execFibonacci.js"></script>
+<script src="execFactorial.js"></script>
+
+</body>
+</html>
