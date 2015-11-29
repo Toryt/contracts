@@ -12,14 +12,19 @@
 
 <p>Quite trivial: instead of using global variables, that refer to the subject function by name
   (yuck), we can add the sets of conditions as properties of the function itself:
-  <a href="#code.46-49">preconditions with property name <code class="language-javascript">pre</code></a>,
-  <a href="#code.50-54">postconditions with property name <code class="language-javascript">post</code></a>.</p>
+  <a href="#fibonacciContract.1-4">preconditions with property name <code class="language-javascript">pre</code></a>,
+  <a href="#fibonacciContract.5-9">postconditions with property name <code class="language-javascript">post</code></a>.</p>
+
+<pre id="fibonacciContract" class="line-numbers" data-src="../fibonacciContract.js" data-eval="script"
+     data-line="1-4,5-9"></pre>
+
 <p>It does ruffle my stylistic feathers a bit that we can only define the conditions after we have
-  introduced the <a href="#code.23-44">main function</a>, but this kind of weird structure is not
+  introduced the <a href="#code.23-44">main function</a> (they are represented in a different order in this
+  text), but this kind of weird structure is not
   uncommon in JavaScript. Typically, you do some meta-programming around this …</p>
 
 <pre id="code" class="line-numbers" data-src="code.js" data-eval="script"
-     data-line="1-10,12-21,23-44,46-49,50-54"></pre>
+     data-line="1-10,12-21,23-44"></pre>
 
 <p><a href="#code.1-10"><code class="language-javascript">preconditions(conditions, n)</code></a>
   and <a href="#code.12-21"><code class="language-javascript">postconditions(conditions, n, result)</code></a>
@@ -46,6 +51,7 @@
 
 <script src="../../lib/prism/prism.js"></script>
 <script src="code.js"></script>
+<script src="../fibonacciContract.js"></script>
 <script src="../execFibonacci.js"></script>
 
 </body>

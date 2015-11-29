@@ -15,13 +15,13 @@
   <code class="language-javascript">verify(conditions, …)</code> is a global function in the previous code.
   Not good. It should be an object function of the
   <a href="#code.1-22">subject function</a>:
-  <a href="#code.34-47"><code class="language-javascript">fibonacci.verify(conditions, …)</code></a>.</p>
+  <a href="#code.24-37"><code class="language-javascript">fibonacci.verify(conditions, …)</code></a>.</p>
 
-<pre id="code" class="line-numbers" data-src="code.js" data-line="1-22,34-47"></pre>
+<pre id="code" class="line-numbers" data-src="code.js" data-line="1-22,24-37"></pre>
 
 <p>Done.</p>
 
-<p>This is a true refactor. Nothing changes in the output of <code
+<p>This is a true refactor. The contract definition is not changed. Nothing changes in the output of <code
     class="language-javascript">fibonacci(&quot;a&quot;)</code>:</p>
 
 <div id="prism-eval-output-fibonacciWithA"></div>
@@ -39,6 +39,7 @@
 
 <script src="../../lib/prism/prism.js"></script>
 <script src="code.js"></script>
+<script src="../fibonacciContract.js"></script>
 <script src="../execFibonacci.js"></script>
 
 </body>
