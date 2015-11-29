@@ -47,15 +47,19 @@
   <code class="language-javascript">factorial(n)</code>. It is very similar to
   <code class="language-javascript">fibonacci(n)</code>.</p>
 
-<pre id="factorial" class="line-numbers" data-src="../factorial.js" data-line="1-19,3,16,9-11,21-24,25-28"></pre>
+<pre id="factorial" class="line-numbers" data-src="../factorial.js"
+     data-line="1-19,3,16,9-11"></pre>
+
+<pre id="factorialContract" class="line-numbers" data-src="../factorialContract.js"
+     data-line="1-4,5-8"></pre>
 
 <p>The <a href="#factorial.1-19">subject function</a>
   calls <a href="#factorial.3"><code class="language-javascript">factorial.verifyPre</code></a>,
   remembers the result, and calls
   <a href="#factorial.16"><code class="language-javascript">factorial.verifyPost</code></a>
   with it, before returning it. After the definition of the
-  <a href="#factorial.1-19">subject function</a>, its <a href="#factorial.21-24">pre-</a>
-  and <a href="#factorial.25-28">postconditions</a>. I think they need no further explanation.</p>
+  <a href="#factorial.1-19">subject function</a>, its <a href="#factorialContract.1-4">pre-</a>
+  and <a href="#factorialContract.5-8">postconditions</a>. I think they need no further explanation.</p>
 
 <p>With the new funcion comes new test and demonstration code.</p>
 
@@ -89,6 +93,7 @@
 <script src="../fibonacciContract.js"></script>
 <script src="code.js"></script>
 <script src="../factorial.js"></script>
+<script src="../factorialContract.js"></script>
 <script src="../execFibonacci.js"></script>
 <script src="../execFactorial.js"></script>
 
