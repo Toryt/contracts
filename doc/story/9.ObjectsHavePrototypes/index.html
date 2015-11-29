@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>A Function is Really an Object</title>
+  <title>Objects Have Prototypes</title>
   <link href="../../lib/prism/prism.css" rel="stylesheet"/>
   <link href="../story.css" rel="stylesheet"/>
 </head>
@@ -10,20 +10,73 @@
 
 <div class="navigate prev"><a href="../8.FunctionREALLYIsAnObject/index.html">Previous</a></div>
 
+<p>So, we are doing OOP now. But then, let's do it seriously. The
+  <code class="language-javascript">verify()</code> method is completely independent of
+  the <code class="language-javascript">fibonacci()</code> function (apart from the pesky
+  explicit reference to the <code class="language-javascript">n</code>-parameter …
+  got to do something about that one of these chapters).</p>
+<p>The the <code class="language-javascript">fibonacci()</code> function is an object, so it has
+  a prototype it shares with other functions:
+  <code class="language-javascript">fibonacci.constructor.prototype</code>.
+  The <a href="#code.34-44"><code class="language-javascript">verify()</code></a> method should be
+  defined there, so all functions can use it.</p>
+<p>The <a href="#code.46-49"><code class="language-javascript">verifyPre()</code></a>
+  and <a href="#code.50-53"><code class="language-javascript">verifyPost()</code></a>
+  methods can be changed to be general too, and moved to the prototype.
+  This is also a bit cleaner: <a href="#code.34-44"><code class="language-javascript">verify()</code></a>
+  again has the set of conditions as parameter, and not the property name of that set.
+  That is again encapsulated in
+  the <a href="#code.46-49"><code class="language-javascript">verifyPre()</code></a>
+  and <a href="#code.50-53"><code class="language-javascript">verifyPost()</code></a>
+  methods.</p>
 
-<pre id="code" class="line-numbers" data-src="code.js" data-line="1-22,3,19,24-27,28-32,34-47,39,49,50"></pre>
-
-<p>Done.</p>
+<pre id="fibonacci" class="line-numbers" data-src="code.js" data-line="1-22,24-27,28-32,34-44,46-49,50-53"></pre>
 
 <p>This is a true refactor. Nothing changes in the output of <code
     class="language-javascript">fibonacci(&quot;a&quot;)</code>:</p>
 
-<div id="prism-eval-output-callWithA"></div>
+<div id="prism-eval-output-fibonacciWithA"></div>
 
 <p>And nothing changes in the output of the of <code class="language-javascript">fibonacci</code>
   with the integers from -1 to 9:</p>
 
-<div id="prism-eval-output-callWithI"></div>
+<div id="prism-eval-output-fibonacciWithI"></div>
+
+<p>We are now in the realms of general code. We need to show that this works with any function.
+  As a second example, I will use another well-known function,
+  <code class="language-javascript">factorial(n)</code>. It is very similar to
+  <code class="language-javascript">fibonacci(n)</code>.</p>
+
+<pre id="factorial" class="line-numbers" data-src="factorial.js" data-line="1-19,3,16,9-11,21-24,25-28"></pre>
+
+<p>The <a href="#factorial.1-19">subject function</a>
+  calls <a href="#factorial.3"><code class="language-javascript">factorial.verifyPre</code></a>,
+  remembers the result, and calls
+  <a href="#factorial.16"><code class="language-javascript">factorial.verifyPost</code></a>
+  with it, before returning it. After the definition of the
+  <a href="#factorial.1-19">subject function</a>, its <a href="#factorial.21-24">pre-</a>
+  and <a href="#factorial.25-28">postconditions</a>. I think they need no further explanation.</p>
+
+<p>With the new funcion comes new test and demonstration code.</p>
+
+<pre id="factorial-demo" class="line-numbers" data-src="../execFactorial.js"
+     data-line="5-13,15-24"></pre>
+
+<p>Again, we first <a href="#factorial-demo.5-13">call the function with a character as argument</a>,
+  which is wrong. What is wrong is clearly signalled in the output:</p>
+
+<div id="prism-eval-output-factorialWithA"></div>
+
+
+<p>The, we <a href="#factorial-demo.5-13">call the function with the integer -1 … 9</a>:</p>
+
+<div id="prism-eval-output-factorialWithI"></div>
+
+<p><code class="language-javascript">-1</code> reports a violation. Again, we put an
+  <a href="#factorial.9-11">error</a> in the <a href="#factorial.1-19">subject function</a>,
+  for <code class="language-javascript">factorial(8)</code>. That call fails. Because the
+  function is implemented recursively, <code class="language-javascript">factorial(9)</code>
+  fails to. All with expressive violation reports.</p>
 
 
 <div class="navigate next"><a href="../10.FunctionHasAPrototype/index.html">Next</a></div>
@@ -33,7 +86,9 @@
 
 <script src="../../lib/prism/prism.js"></script>
 <script src="code.js"></script>
-<script src="../exec1.js"></script>
+<script src="factorial.js"></script>
+<script src="../execFibonacci.js"></script>
+<script src="../execFactorial.js"></script>
 
 </body>
 </html>
