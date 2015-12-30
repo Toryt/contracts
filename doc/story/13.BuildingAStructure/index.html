@@ -186,7 +186,7 @@ Object.setPrototypeOf(contractFunctionInstance2, contractFunctionPrototype);
 
 <h3>Attempt 3</h3>
 
-<p>What if we don't start we a function to begin with, but with an object?</p>
+<p>What if we don't start with a function to begin with, but with an object?</p>
 
 <pre data-eval="true"><code class="language-javascript">
 contractFunctionInstance3 = {};
@@ -240,7 +240,7 @@ Object.setPrototypeOf(contractFunctionInstance3, contractFunctionPrototype);
   <code class="language-javascript" data-eval="true">contractFunctionInstance3.toSource()</code>
   (in other browsers, this doesn't work).</p>
 
-<p>This is a function:
+<p>This is a <code class="language-javascript">Function</code>:
   <code class="language-javascript" data-eval="true">contractFunctionInstance3 instanceof Function</code>,
   and it looks good:
   <code class="language-javascript" data-eval="true">Object.getPrototypeOf(contractFunctionInstance3) ===
@@ -267,7 +267,8 @@ Object.setPrototypeOf(contractFunctionInstance3, contractFunctionPrototype);
   and <code class="language-javascript" data-eval="true">typeof contractFunctionPrototype</code>.
   This makes clear that there is a big difference between <code class="language-javascript">instanceof</code>
   and <code class="language-javascript">typeof</code>. Only things with
-  <code class="language-javascript">typeof x === "function"</code> are executable in JavaScript.
+  <code class="language-javascript">typeof x === "function"</code>, i.e., primitive functions are executable in
+  JavaScript.
   And the <code class="language-javascript">typeof</code> cannot be manipulated …</p>
 
 <div class="navigate next"><a href="../14.BuildingContractFunctions/index.html">Next</a></div>
