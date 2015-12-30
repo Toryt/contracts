@@ -271,6 +271,57 @@ Object.setPrototypeOf(contractFunctionInstance3, contractFunctionPrototype);
   JavaScript.
   And the <code class="language-javascript">typeof</code> cannot be manipulated …</p>
 
+<p>So, it is clear, that if we want the result to be a primitive function, we need to repeat the implementation each
+  time, although it is the same each time.</p>
+
+<h3>Attempt 4</h3>
+
+<p>In other words, the approach of <code class="language-javascript">contractFunctionInstance1</code> is the only
+possible approach:</p>
+
+<pre data-eval="true"><code class="language-javascript">
+contractFunctionInstance4 = function() {
+  Prism.eval.log("common implementation executed");
+  return "common implementation execution result";
+};
+Object.setPrototypeOf(contractFunctionInstance4, contractFunctionPrototype);
+</code></pre>
+
+<p>Now, what is the sense of contract functions having a common prototype?
+  Of the 3 properties we foresee,
+  <code class="language-javascript" data-eval="true">Object.keys(contractFunctionPrototype)</code>,
+  <code class="language-javascript">contractFunctionPrototype.impl</code> cannot have a sensible
+  default value,
+  and <code class="language-javascript">contractFunctionPrototype.pre</code> and
+  <code class="language-javascript">contractFunctionPrototype.post</code> are just the empty set.
+  There is up until now, no common behavior for contract functions, except the behavior that we cannot
+  generalize.
+  Note that
+  <code class="language-javascript">Object.setPrototypeOf</code> is a very expensive call, according to
+  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf">MDN</a>.
+  It is also not possible to follow the guidance there, and use
+  <code class="language-javascript">Object.create</code> instead:</p>
+
+<pre data-eval="true"><code class="language-javascript">
+contractFunctionInstance4b = Object.create(contractFunctionPrototype, function() {
+  Prism.eval.log("common implementation executed");
+  return "common implementation execution result";
+});
+</code></pre>
+
+<p>We get the same error as above.
+  <code class="language-javascript" data-eval="true">contractFunctionInstance4b instanceof Function</code>,
+  but <code class="language-javascript" data-eval="true">typeof contractFunctionInstance4b</code>,
+  <code class="language-javascript" data-eval="true">typeof contractFunctionInstance4b === "function"</code>, so it
+  is not executable:</p>
+
+<pre data-eval="true"><code class="language-javascript">
+contractFunctionInstance4b();
+</code></pre>
+
+<p>As a result, even if there is to be common behavior, maybe we should use another technique that a common contract
+  function prototype.</p>
+
 <div class="navigate next"><a href="../14.BuildingContractFunctions/index.html">Next</a></div>
 
 <script src="../../lib/prism/prism.js"></script>
