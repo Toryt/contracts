@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Turn It Inside Out</title>
+  <link href="../../lib/prism/prism.css" rel="stylesheet"/>
+  <link href="../story.css" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="navigate prev"><a href="../13.BuildingAStructure/index.html">Previous</a></div>
+
+<p>What can we do with just building contract functions? Let's work on a builder function:</p>
+
+<pre><code class="language-javascript">
+function verify(conditions, n) {
+  var args = Array.prototype.slice.call(arguments, 1); // closure
+  conditions.forEach(
+    function(condition) {
+      var conditionResult = condition.apply(null, args);
+      if (!conditionResult) {
+        throw condition + " (n === " + n + ")";
+      }
+    }
+  );
+}
+
+function cfunc(impl, pre, post) {
+  function contractFunction() {
+    verifyPre(pre, arguments);
+    var result = impl.apply(this, arguments);
+    Array.prototype.push.call(arguments, result);
+    verifyPost(post, arguments);
+    return result;
+  }
+
+  contractFunction.pre = pre;
+  contractFunction.post = post;
+  contractFunction.impl = impl;
+
+  return contractFunction;
+}
+
+fibonacci = cfunc(
+  function(n) {
+    if (n === 0) {
+      return 0;
+    }
+    else if (n === 1) {
+      return 1;
+    }
+    else if (n === 8) {
+      return -3; // wrong!
+    }
+    else {
+      return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+  },
+  [
+    function(n) {return Number.isInteger(n);},
+    function(n) {return 0 <= n;}
+  ],
+  [
+    function(n, result) {return n !== 0 || result === 0;},
+    function(n, result) {return n !== 1 || result === 1;},
+    function(n, result) {return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);}
+  ]
+);
+</code></pre>
+
+
+<div id="prism-eval-output-fibonacciWithA"></div>
+
+<div id="prism-eval-output-fibonacciWithI"></div>
+
+<div id="prism-eval-output"></div>
+
+<div class="navigate next"><a href="../15.Contract/index.html">Next</a></div>
+
+<script src="../../lib/prism/prism.js"></script>
+<script src="code.js"></script>
+<script src="../execFibonacci.js"></script>
+</body>
+</html>
