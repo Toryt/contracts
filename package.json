@@ -1,0 +1,45 @@
+{
+  "name": "toryt-contracts",
+  "version": "0.0.0",
+  "description": "Design-by-Contract and Test-by-Contract for JavaScript",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "example": "example",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/toryt/contracts.git"
+  },
+  "keywords": [
+    "design-by-contract",
+    "test-by-contract",
+    "Toryt",
+    "unit",
+    "test",
+    "contract",
+    "contracts",
+    "precondition",
+    "postcondition",
+    "invariant"
+  ],
+  "author": {
+    "name": "Jan Dockx",
+    "email": "jandockx@gmail.com",
+    "url": "http://barnyrubble.tumblr.com/"
+  },
+  "contributors": [],
+  "license": "Apache-2.0",
+  "homepage": "https://bitbucket.org/toryt/contracts#readme",
+  "bugs": {
+    "url" : "https://bitbucket.org/toryt/contracts/issues?status=new&status=open"
+  },
+  "engines": {
+    "node": ">=5.9.1",
+    "npm": ">=3.7.3"
+  }
+}
