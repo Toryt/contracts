@@ -36,10 +36,17 @@
   "license": "Apache-2.0",
   "homepage": "https://bitbucket.org/toryt/contracts#readme",
   "bugs": {
-    "url" : "https://bitbucket.org/toryt/contracts/issues?status=new&status=open"
+    "url": "https://bitbucket.org/toryt/contracts/issues?status=new&status=open"
   },
   "engines": {
     "node": ">=5.9.1",
     "npm": ">=3.7.3"
+  },
+  "dependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
+  },
+  "devDependencies": {
+    "randomstring": "^1.1.4"
   }
 }
