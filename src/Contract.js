@@ -45,19 +45,28 @@ Contract.prototype = {
       conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
     }
   },
-  implementation: function(impl) {
+  implementation: function(implFunction) {
     var contract = this;
 
     function contractFunction() {
-      contract.verify(contract.pre, arguments);
-      var result = impl.apply(this, arguments);
-      Array.prototype.push.call(arguments, result);
-      contract.verify(contract.post, arguments);
-      return result;
+      contract.verify(contract.pre, this, arguments);
+      var extendedArgs;
+      try {
+        var result = implFunction.apply(this, arguments);
+        extendedArgs = Array.prototype.concat(arguments, [result]);
+        contract.verify(contract.post, this, extendedArgs);
+        return result;
+      }
+      catch(exception) {
+        // TODO this should be dealt with better
+        extendedArgs = Array.prototype.concat(arguments, [exception]);
+        contract.verify(contract.post, this, extendedArgs);
+        throw exception;
+      }
     }
 
-    contractFunction.contract = this;
-    contractFunction.impl = impl;
+    contractFunction.contract = contract;
+    contractFunction.implementation = implFunction;
 
     return contractFunction;
   }
