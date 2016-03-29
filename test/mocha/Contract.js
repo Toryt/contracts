@@ -51,15 +51,21 @@ describe("Contract", function() {
     expect(contract).to.have.property("implementation").that.is.a("function");
   }
 
-  function someConditions() {return ["shallow"];} // MUDO these must be generators!
-  function preCases() {return [null, someConditions()];}
-  function postCases() {return [null, someConditions()];}
+  var someConditions = [
+    function() {return [];},
+    function() {return ["shallow"];}
+  ];
+  var preCases = [
+    function() {return null;}
+  ].concat(someConditions);
+  var postCases = [
+    function() {return null;}
+  ].concat(someConditions);
 
-  function subjects() {
-    return x(preCases(), postCases()).map(function(args) {
-      return new Contract(args[0], args[1]);
-    });
-  }
+
+  var subjects = x(preCases, postCases).map(function(args) {
+    return new Contract(args[0](), args[1]());
+  });
 
   describe("#Contract()", function() {
 
@@ -89,14 +95,20 @@ describe("Contract", function() {
       });
     }
 
-    function constructorPreCases() {return preCases().concat([undefined]);}
-    function constructorPostCases() {return postCases().concat([undefined]);}
+    var constructorPreCases = [
+      function() {return undefined;}
+    ].concat(preCases);
+    var constructorPostCases = [
+      function() {return undefined;}
+    ].concat(postCases);
 
-    constructorPreCases().forEach(function(pre) {
-      constructorPostCases().forEach(function(post) {
+    constructorPreCases.forEach(function(pre) {
+      constructorPostCases.forEach(function(post) {
         describe("works for pre: " + pre + ", post: " + post, function() {
-          var result = new Contract(pre, post);
-          expectPost(pre, post, result);
+          var preconditions = pre();
+          var postconditions = post();
+          var result = new Contract(preconditions, postconditions);
+          expectPost(preconditions, postconditions, result);
         });
       });
     });
@@ -135,10 +147,15 @@ describe("Contract", function() {
       });
     }
 
-    function conditionCases() {return [function() {}];}
+    var conditionCases = [
+      function() {},
+      function() {return false;},
+      function() {return true;},
+      function() {throw "This condition fails with an error";}
+    ];
 
-    subjects().forEach(function(subject) {
-      conditionCases().forEach(function(condition) {
+    subjects.forEach(function(subject) {
+      conditionCases.forEach(function(condition) {
         describe("works for " + subject + " - " + condition, function() {
           var exception;
           try {
@@ -172,10 +189,12 @@ describe("Contract", function() {
       });
     }
 
-    function conditionsCases() {return [[]];}
+    var conditionsCases = [
+      function() {return [];}
+    ];
 
-    subjects().forEach(function(subject) {
-      conditionsCases().forEach(function(conditions) {
+    subjects.forEach(function(subject) {
+      conditionsCases.forEach(function(conditions) {
         describe("works for " + subject, function() {
           var exception;
           try {
