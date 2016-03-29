@@ -28,10 +28,10 @@ Contract.prototype = {
   constructor: Contract,
   pre: [],
   post: [],
-  verifyOne: function(condition, args) {
+  verifyOne: function(condition, self, args) {
     var conditionResult;
     try {
-      conditionResult = condition.apply(null, args);
+      conditionResult = condition.apply(self, args);
     }
     catch (err) {
       throw new ContractConditionMetaError(condition, args, err);

@@ -64,7 +64,7 @@ describe("Contract", function() {
 
 
   var subjects = x(preCases, postCases).map(function(args) {
-    return new Contract(args[0](), args[1]());
+    return function() {return new Contract(args[0](), args[1]());};
   });
 
   describe("#Contract()", function() {
@@ -115,56 +115,134 @@ describe("Contract", function() {
   });
 
   describe("#verifyOne()", function() {
-    function expectPost(subject, condition, exception) {
+    function expectPost(subject, condition, self, args, appliedSelf, appliedArgs, exception) {
       var outcome;
       try {
         outcome = condition.apply();
       }
       catch (err) {
         it("should throw a ContractConditionMetaError because the condition had an error", function(){
+          //noinspection BadExpressionStatementJS
           expect(exception).to.be.ok;
           expect(exception).to.be.instanceOf(ContractConditionMetaError);
           expect(exception.error).to.eql(err);
           expect(exception.condition).to.equal(condition);
-          // MUDO args
+          expect(exception.args).to.eql(args);
         });
         return;
       }
-      it("should have thrown an exception when the condition and evaluates to false, and not otherwise, " +
+      it("should have called the condition with the given this", function() {
+        expect(appliedSelf).to.equal(self);
+      });
+      it("should have called the condition with the given arguments", function() {
+        //noinspection BadExpressionStatementJS
+        expect(appliedArgs).to.be.ok;
+        //noinspection JSAnnotator,BadExpressionStatementJS
+        expect(appliedArgs).to.be.arguments;
+        if (!args) {
+          //noinspection BadExpressionStatementJS
+          expect(appliedArgs).to.be.empty;
+        }
+        else {
+          expect(appliedArgs).to.have.lengthOf(args.length);
+          for (var i = 0; i < args.length; i++) {
+            expect(appliedArgs[i]).to.equal(args[i]);
+          }
+        }
+      });
+      it("should throw an exception when the condition and evaluates to false, and not otherwise, " +
          "because the condition ended nominally",
         function() {
           expect(!exception).to.equal(!!outcome);
-          if (!outcome) {
+        }
+      );
+      if (!outcome) {
+        it("should throw a ContractConditionViolation that is correctly configured, " +
+           "because the condition evaluated to false nominally",
+          function() {
+            //noinspection BadExpressionStatementJS
             expect(exception).to.be.ok;
             expect(exception).to.be.instanceOf(ContractConditionViolation);
             expect(exception.condition).to.equal(condition);
-            // MUDO args
+            expect(exception.args).to.eql(args);
           }
-        }
-      );
+        );
+      }
+      else {
+        it("should not throw an exception, because the condition evaluated to true nominally", function() {
+          //noinspection BadExpressionStatementJS
+          expect(exception).to.not.be.ok;
+        });
+      }
       it("adheres to the invariants", function() {
         invariants(subject);
       });
     }
 
     var conditionCases = [
-      function() {},
-      function() {return false;},
-      function() {return true;},
-      function() {throw "This condition fails with an error";}
+      function() {
+        return function f() {
+          f.self = this;
+          f.args = arguments;
+          // no return
+        };
+      },
+      function() {
+        return function f() {
+          f.self = this;
+          f.args = arguments;
+          return false;
+        };
+      },
+      function() {
+        return function f() {
+          f.self = this;
+          f.args = arguments;
+          return true;
+        };
+      },
+      function() {
+        return function f() {
+          f.self = this;
+          f.args = arguments;
+          throw "This condition fails with an error";
+        };
+      }
     ];
 
-    subjects.forEach(function(subject) {
-      conditionCases.forEach(function(condition) {
-        describe("works for " + subject + " - " + condition, function() {
-          var exception;
-          try {
-            subject.verifyOne(condition); // MUDO args
-          }
-          catch (exc) {
-            exception = exc;
-          }
-          expectPost(subject, condition, exception);
+    var selfCases = [
+      function() {return undefined;},
+      function() {return null;},
+      function() {return {};}
+    ];
+
+    var argsCases = [
+      function() {return undefined;},
+      function() {return null;},
+      function() {return [];},
+      function() {return ["an argument"];},
+      function() {return ["an argument", "another argument"];}
+    ];
+
+    subjects.forEach(function(subjectGenerator) {
+      conditionCases.forEach(function(conditionGenerator) {
+        selfCases.forEach(function(selfGenerator) {
+          argsCases.forEach(function(argGenerator) {
+            var subject = subjectGenerator();
+            var condition = conditionGenerator();
+            var self = selfGenerator();
+            var args = argGenerator();
+            describe("works for " + subject + " - " + condition + " - " + self + " - " + args, function() {
+              var exception;
+              try {
+                subject.verifyOne(condition, self, args);
+              }
+              catch (exc) {
+                exception = exc;
+              }
+              expectPost(subject, condition, self, args, condition.self, condition.args, exception);
+            });
+          });
         });
       });
     });
