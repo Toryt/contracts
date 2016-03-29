@@ -62,10 +62,23 @@ describe("Contract", function() {
     function() {return null;}
   ].concat(someConditions);
 
-
   var subjects = x(preCases, postCases).map(function(args) {
     return function() {return new Contract(args[0](), args[1]());};
   });
+
+  var selfCases = [
+    function() {return undefined;},
+    function() {return null;},
+    function() {return {};}
+  ];
+
+  var argsCases = [
+    function() {return undefined;},
+    function() {return null;},
+    function() {return [];},
+    function() {return ["an argument"];},
+    function() {return ["an argument", "another argument"];}
+  ];
 
   describe("#Contract()", function() {
 
@@ -210,20 +223,6 @@ describe("Contract", function() {
       }
     ];
 
-    var selfCases = [
-      function() {return undefined;},
-      function() {return null;},
-      function() {return {};}
-    ];
-
-    var argsCases = [
-      function() {return undefined;},
-      function() {return null;},
-      function() {return [];},
-      function() {return ["an argument"];},
-      function() {return ["an argument", "another argument"];}
-    ];
-
     subjects.forEach(function(subjectGenerator) {
       conditionCases.forEach(function(conditionGenerator) {
         selfCases.forEach(function(selfGenerator) {
@@ -249,7 +248,7 @@ describe("Contract", function() {
   });
 
   describe("#verifyAll()", function() {
-    function expectPost(subject, conditions, exception) {
+    function expectPost(subject, conditions, self, args, appliedSelf, appliedArgs, exception) {
       it("evaluates all conditions up until the first failure", function() {
         var firstFailure;
         var firstFailureIndex;
@@ -271,17 +270,25 @@ describe("Contract", function() {
       function() {return [];}
     ];
 
-    subjects.forEach(function(subject) {
-      conditionsCases.forEach(function(conditions) {
-        describe("works for " + subject, function() {
-          var exception;
-          try {
-            subject.verifyAll(conditions);
-          }
-          catch(exc) {
-            exception = exc;
-          }
-          expectPost(subject, conditions, exception);
+    subjects.forEach(function(subjectGenerator) {
+      conditionsCases.forEach(function(conditionsGenerator) {
+        selfCases.forEach(function(selfGenerator) {
+          argsCases.forEach(function(argGenerator) {
+            var subject = subjectGenerator();
+            var conditions = conditionsGenerator();
+            var self = selfGenerator();
+            var args = argGenerator();
+            describe("works for " + subject + " - " + conditions + " - " + self + " - " + args, function() {
+              var exception;
+              try {
+                subject.verifyAll(conditions, self, args);
+              }
+              catch (exc) {
+                exception = exc;
+              }
+              expectPost(subject, conditions, self, args, conditions.self, conditions.args, exception);
+            });
+          });
         });
       });
     });

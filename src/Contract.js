@@ -40,8 +40,8 @@ Contract.prototype = {
       throw new ContractConditionViolation(condition, args);
     }
   },
-  verifyAll: function(conditions, args) {
-    conditions.forEach(function(condition) {this.verifyOne(condition, args);}, this);
+  verifyAll: function(conditions, self, args) {
+    conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
   },
   implementation: function(impl) {
     var contract = this;
