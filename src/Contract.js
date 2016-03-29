@@ -41,7 +41,9 @@ Contract.prototype = {
     }
   },
   verifyAll: function(conditions, self, args) {
-    conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
+    if (conditions) {
+      conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
+    }
   },
   implementation: function(impl) {
     var contract = this;
