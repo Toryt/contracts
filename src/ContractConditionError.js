@@ -14,17 +14,18 @@
  limitations under the License.
  */
 
-function conditionReport(condition, args) {
+function conditionReport(condition, self, args) {
   "use strict";
 
-  return condition + (args ? (" (" + Array.prototype.join.call(args, ", ") + ")") : " ()");
+  return self + "." + condition + (args ? (" (" + Array.prototype.join.call(args, ", ") + ")") : " ()");
 }
 
-function ContractConditionError(condition, args) {
+function ContractConditionError(condition, self, args) {
   "use strict";
 
-  Error.call(this, condition && conditionReport(condition, args));
+  Error.call(this, condition && conditionReport(condition, self, args));
   this.condition = condition;
+  this.self = self;
   this.args = args;
   // MUDO seal freeze
 }
@@ -32,11 +33,12 @@ function ContractConditionError(condition, args) {
 ContractConditionError.prototype = new Error();
 ContractConditionError.prototype.constructor = ContractConditionError;
 ContractConditionError.prototype.condition = null;
+ContractConditionError.prototype.self = null;
 ContractConditionError.prototype.args = null;
 ContractConditionError.prototype.report = function() {
   "use strict";
 
-  return conditionReport(this.condition, this.args);
+  return conditionReport(this.condition, this.self, this.args);
 };
 
 module.exports = ContractConditionError;

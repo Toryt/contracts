@@ -16,10 +16,10 @@
 
 var ContractConditionError = require("./ContractConditionError");
 
-function ContractConditionViolation(condition, args) {
+function ContractConditionViolation(condition, self, args) {
   "use strict";
 
-  ContractConditionError.call(this, condition, args);
+  ContractConditionError.call(this, condition, self, args);
   // MUDO seal freeze
 }
 

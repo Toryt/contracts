@@ -140,6 +140,7 @@ describe("Contract", function() {
           expect(exception).to.be.instanceOf(ContractConditionMetaError);
           expect(exception.error).to.eql(err);
           expect(exception.condition).to.equal(condition);
+          expect(exception.self).to.equal(self);
           expect(exception.args).to.eql(args);
         });
         return;
@@ -177,6 +178,7 @@ describe("Contract", function() {
             expect(exception).to.be.ok;
             expect(exception).to.be.instanceOf(ContractConditionViolation);
             expect(exception.condition).to.equal(condition);
+            expect(exception.self).to.equal(self);
             expect(exception.args).to.eql(args);
           }
         );

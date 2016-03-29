@@ -34,10 +34,10 @@ Contract.prototype = {
       conditionResult = condition.apply(self, args);
     }
     catch (err) {
-      throw new ContractConditionMetaError(condition, args, err);
+      throw new ContractConditionMetaError(condition, self, args, err);
     }
     if (!conditionResult) {
-      throw new ContractConditionViolation(condition, args);
+      throw new ContractConditionViolation(condition, self, args);
     }
   },
   verifyAll: function(conditions, self, args) {

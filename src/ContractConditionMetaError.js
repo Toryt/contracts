@@ -16,10 +16,10 @@
 
 var ContractConditionError = require("./ContractConditionError");
 
-function ContractConditionMetaError(condition, args, error) {
+function ContractConditionMetaError(condition, self, args, error) {
   "use strict";
 
-  ContractConditionError.call(this, condition, args);
+  ContractConditionError.call(this, condition, self, args);
   this.error = error;
   // MUDO seal freeze
 }
