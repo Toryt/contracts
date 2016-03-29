@@ -13,25 +13,35 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+"use strict";
+
+var ContractConditionMetaError = require("./ContractConditionMetaError");
+var ContractConditionViolation = require("./ContractConditionViolation");
 
 function Contract(pre, post) {
   this.pre = pre ? pre.slice() : [];
   this.post = post ? post.slice() : [];
+  // MUDO seal freeze
 }
 
 Contract.prototype = {
   constructor: Contract,
   pre: [],
   post: [],
-  verify: function verify(conditions, args) {
-    conditions.forEach(
-      function(condition) {
-        var conditionResult = condition.apply(null, args);
-        if (!conditionResult) {
-          throw condition + " (" + Array.prototype.join.call(args, ", ") + ")";
-        }
-      }
-    );
+  verifyOne: function(condition, args) {
+    var conditionResult;
+    try {
+      conditionResult = condition.apply(null, args);
+    }
+    catch (err) {
+      throw new ContractConditionMetaError(condition, args, err);
+    }
+    if (!conditionResult) {
+      throw new ContractConditionViolation(condition, args);
+    }
+  },
+  verifyAll: function(conditions, args) {
+    conditions.forEach(function(condition) {this.verifyOne(condition, args);}, this);
   },
   implementation: function(impl) {
     var contract = this;
