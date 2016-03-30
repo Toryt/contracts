@@ -14,31 +14,34 @@
  limitations under the License.
  */
 
-function conditionReport(condition, self, args) {
+module.exports = (function() {
   "use strict";
 
-  return self + "." + condition + (args ? (" (" + Array.prototype.join.call(args, ", ") + ")") : " ()");
-}
+  function conditionReport(condition, self, args) {
+    return self + "." + condition +
+           (args
+             ? ("(" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")")
+             : "()");
+  }
 
-function ConditionError(condition, self, args) {
-  "use strict";
+  function ConditionError(condition, self, args) {
+    Error.call(this, condition && conditionReport(condition, self, args));
+    this.condition = condition;
+    this.self = self;
+    this.args = args;
+    // MUDO seal freeze
+  }
 
-  Error.call(this, condition && conditionReport(condition, self, args));
-  this.condition = condition;
-  this.self = self;
-  this.args = args;
-  // MUDO seal freeze
-}
+  ConditionError.prototype = new Error();
+  ConditionError.prototype.constructor = ConditionError;
+  ConditionError.prototype.condition = null;
+  ConditionError.prototype.self = null;
+  ConditionError.prototype.args = null;
+  ConditionError.prototype.report = function() {
+    return conditionReport(this.condition, this.self, this.args);
+  };
 
-ConditionError.prototype = new Error();
-ConditionError.prototype.constructor = ConditionError;
-ConditionError.prototype.condition = null;
-ConditionError.prototype.self = null;
-ConditionError.prototype.args = null;
-ConditionError.prototype.report = function() {
-  "use strict";
+  ConditionError.report = conditionReport;
 
-  return conditionReport(this.condition, this.self, this.args);
-};
-
-module.exports = ConditionError;
+  return ConditionError;
+})();
