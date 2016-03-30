@@ -601,7 +601,7 @@ describe("Contract", function() {
         function(n, result) {return Contract.isInteger(result);},
         function(n, result) {return n !== 0 || result === 1;},
         function(n, result) {
-          function f(n) {return n < 1 ? 1 : n * f(n - 1)}
+          function f(n) {return n < 1 ? 1 : n * f(n - 1);}
           // Note: don't refer to a specific implementation ("fibonacci") in the contract!
 
           return n < 1 || result === f(n);
@@ -636,9 +636,11 @@ describe("Contract", function() {
 
     function failsOnPreconditionViolation(parameter, violatedCondition) {
       it("fails when a precondition is violated - " + parameter, function() {
+        var result;
+        var endsNominally = false;
         try {
-          var result = fibonacci(parameter);
-          throw "Should not have succeeded.";
+          result = fibonacci(parameter);
+          endsNominally = true;
         }
         catch (exception) {
           //noinspection BadExpressionStatementJS
@@ -648,6 +650,9 @@ describe("Contract", function() {
           expect(exception.self).not.to.be.ok;
           expect(exception.args[0]).to.equal(parameter);
         }
+        if (endsNominally) {
+          throw "Method ended nominally with result " + result + ", but expected an exception.";
+        }
       });
     }
 
@@ -656,24 +661,26 @@ describe("Contract", function() {
       expectPost(subject, subject.implementation(function() {}));
     });
     it("doesn't interfere when the implementation is correct", function() {
-      var result = fibonacci(5); // any exception will fail the test
+      var ignore = fibonacci(5); // any exception will fail the test
     });
     it("doesn't interfere when the implementation is correct too", function() {
-      var result = factorial(5); // any exception will fail the test
+      var ignore = factorial(5); // any exception will fail the test
     });
     it("can deal with alternative implementations", function() {
-      var result = factorialIterative(5); // any exception will fail the test
+      var ignore = factorialIterative(5); // any exception will fail the test
     });
     failsOnPreconditionViolation(undefined, fibonacci.contract.pre[0]);
     failsOnPreconditionViolation(null, fibonacci.contract.pre[0]);
-    failsOnPreconditionViolation("lala", fibonacci.contract.pre[0]);
+    failsOnPreconditionViolation("bar", fibonacci.contract.pre[0]);
     failsOnPreconditionViolation(-5, fibonacci.contract.pre[1]);
     // MUDO fails with meta error on pre error
     // MUDO fails with meta error on post error
     it("fails when a simple postcondition is violated", function() {
+      var result;
+      var endsNominally = false;
       try {
-        var result = fibonacciWrong(wrongParameter);
-        throw "Should not have succeeded.";
+        result = fibonacciWrong(wrongParameter);
+        endsNominally = true;
       }
       catch (exception) {
         //noinspection BadExpressionStatementJS
@@ -683,6 +690,9 @@ describe("Contract", function() {
         expect(exception.self).not.to.be.ok;
         expect(exception.args[0]).to.equal(wrongParameter);
         expect(exception.args[1]).to.equal(wrongResult);
+      }
+      if (endsNominally) {
+        throw "Method ended nominally with result " + result + ", but expected an exception.";
       }
     });
     it("fails when a postcondition is violated in a called function with a nested Violation", function() {
@@ -707,12 +717,17 @@ describe("Contract", function() {
       }
 
       var parameter = 6;
+      var result;
+      var endsNominally = false;
       try {
-        var result = fibonacciWrong(parameter);
-        throw "Should not have succeeded.";
+        result = fibonacciWrong(parameter);
+        endsNominally = true;
       }
       catch(exception) {
         expectViolation(exception, parameter);
+      }
+      if (endsNominally) {
+        throw "Method ended nominally with result " + result + ", but expected an exception.";
       }
     });
   });
