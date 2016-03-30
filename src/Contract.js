@@ -16,6 +16,8 @@
 module.exports = (function() {
   "use strict";
 
+  // MUDO add meta-preconditions
+
   var ContractConditionMetaError = require("./ContractConditionMetaError");
   var ContractConditionViolation = require("./ContractConditionViolation");
 
