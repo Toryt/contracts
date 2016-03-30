@@ -648,6 +648,9 @@
         return result;
       });
 
+      var intentionalError = "This precondition intentionally fails.";
+      var resultWhenMetaError = "This is the result or exception when we get a meta error";
+
       function callAndExpectException(func, parameter, expectException) {
         var result;
         var endsNominally = false;
@@ -677,6 +680,22 @@
         });
       }
 
+      function failsOnMetaError(functionWithAMetaError, conditionWithAMetaError, extraArg) {
+        var param = "a parameter";
+        callAndExpectException(functionWithAMetaError, param, function(exception) {
+          expect(exception).to.be.an.instanceOf(ContractConditionMetaError);
+          expect(exception.condition).to.equal(conditionWithAMetaError);
+          //noinspection BadExpressionStatementJS
+          expect(exception.self).not.to.be.ok;
+          expect(exception.args.length).to.equal(extraArg ? 2 : 1);
+          expect(exception.args[0]).to.equal(param);
+          if (extraArg) {
+            expect(exception.args[1]).to.equal(extraArg);
+          }
+          expect(exception.error).to.equal(intentionalError);
+        });
+      }
+
       it("returns a contract function that implements the contract", function() {
         var subject = new Contract();
         expectPost(subject, subject.implementation(function() {}));
@@ -694,8 +713,42 @@
       failsOnPreconditionViolation(null, fibonacci.contract.pre[0]);
       failsOnPreconditionViolation("bar", fibonacci.contract.pre[0]);
       failsOnPreconditionViolation(-5, fibonacci.contract.pre[1]);
-      // MUDO fails with meta error on pre error
-      // MUDO fails with meta error on post error
+      it("fails with a meta-error when a precondition is kaput", function() {
+        var contractWithAFailingPre = new Contract(
+          [function() {throw intentionalError;}]
+        );
+
+        failsOnMetaError(
+          contractWithAFailingPre.implementation(function() {return resultWhenMetaError;}),
+          contractWithAFailingPre.pre[0]
+        );
+      });
+      it("fails with a meta-error when a postcondition is kaput", function() {
+        var contractWithAFailingPost = new Contract(
+          [],
+          [function() {throw intentionalError;}]
+        );
+
+        failsOnMetaError(
+          contractWithAFailingPost.implementation(function() {return resultWhenMetaError;}),
+          contractWithAFailingPost.post[0],
+          resultWhenMetaError
+        );
+      });
+      it("fails with a meta-error when an exception condition is kaput", function() {
+        var contractWithAFailingExceptionCondition = new Contract(
+          [],
+          [],
+          [function() {throw intentionalError;}]
+        );
+        var anExceptedException = "This exception is expected.";
+
+        failsOnMetaError(
+          contractWithAFailingExceptionCondition.implementation(function() {throw anExceptedException;}),
+          contractWithAFailingExceptionCondition.exception[0],
+          anExceptedException
+        );
+      });
       it("fails when a simple postcondition is violated", function() {
         callAndExpectException(fibonacciWrong, wrongParameter, function(exception) {
           expect(exception).to.be.an.instanceOf(ContractConditionViolation);
