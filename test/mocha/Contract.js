@@ -559,8 +559,15 @@ describe("Contract", function() {
       [
         function(n, result) {return n !== 0 || result === 0;},
         function(n, result) {return n !== 1 || result === 1;},
-        function(n, result) {return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);}
-        // MUDO wrong: don't talk about a specific implementation in the contract!
+        function f(n, result) {
+          // Note: don't refer to a specific implementation ("fibonacci") in the contract!
+          function f(n) {return n < 2 ? n : f(n - 1) + f(n - 2);}
+
+          return n < 2 || result === f(n);
+        }
+      ],
+      [
+        function() {return false;}
       ]
     ).implementation(function(n) {
       return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
@@ -591,7 +598,15 @@ describe("Contract", function() {
       ],
       [
         function(n, result) {return n !== 0 || result === 1;},
-        function(n, result) {return n < 1 || result === n * factorial(n - 1);}
+        function(n, result) {
+          function f(n) {return n < 1 ? 1 : n * f(n - 1)}
+          // Note: don't refer to a specific implementation ("fibonacci") in the contract!
+
+          return n < 1 || result === f(n);
+        }
+      ],
+      [
+        function() {return false;}
       ]
     );
 
