@@ -104,6 +104,7 @@ Contract.prototype = {
 
     contractFunction.contract = contract;
     contractFunction.implementation = implFunction;
+    // MUDO freeze seal
 
     return contractFunction;
   }
