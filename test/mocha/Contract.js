@@ -651,11 +651,16 @@
       var intentionalError = "This precondition intentionally fails.";
       var resultWhenMetaError = "This is the result or exception when we get a meta error";
 
-      function callAndExpectException(func, parameter, expectException) {
+      function callAndExpectException(self, func, parameter, expectException) {
         var result;
         var endsNominally = false;
         try {
-          result = func(parameter);
+          if (!self) {
+            result = func(parameter);
+          }
+          else {
+            result = func.call(self, parameter);
+          }
           endsNominally = true;
         }
         catch (exception) {
@@ -668,25 +673,36 @@
         }
       }
 
-      function failsOnPreconditionViolation(parameter, violatedCondition) {
-        it("fails when a precondition is violated - " + parameter, function() {
-          callAndExpectException(fibonacci, parameter, function(exception) {
+      function failsOnPreconditionViolation(self, func, parameter, violatedCondition) {
+        it("fails when a precondition is violated - " + self + " - " + parameter, function() {
+          callAndExpectException(self, func, parameter, function(exception) {
             expect(exception).to.be.an.instanceOf(ContractConditionViolation);
             expect(exception.condition).to.equal(violatedCondition);
-            //noinspection BadExpressionStatementJS
-            expect(exception.self).not.to.be.ok;
+            if (!self) {
+              //noinspection BadExpressionStatementJS
+              expect(exception.self).not.to.be.ok;
+            }
+            else {
+              expect(exception.self).to.equal(self);
+            }
             expect(exception.args[0]).to.equal(parameter);
           });
         });
       }
 
-      function failsOnMetaError(functionWithAMetaError, conditionWithAMetaError, extraArg) {
+      function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArg) {
         var param = "a parameter";
-        callAndExpectException(functionWithAMetaError, param, function(exception) {
+        callAndExpectException(self, functionWithAMetaError, param, function(exception) {
           expect(exception).to.be.an.instanceOf(ContractConditionMetaError);
           expect(exception.condition).to.equal(conditionWithAMetaError);
           //noinspection BadExpressionStatementJS
-          expect(exception.self).not.to.be.ok;
+          if (!self) {
+            //noinspection BadExpressionStatementJS
+            expect(exception.self).not.to.be.ok;
+          }
+          else {
+            expect(exception.self).to.equal(self);
+          }
           expect(exception.args.length).to.equal(extraArg ? 2 : 1);
           expect(exception.args[0]).to.equal(param);
           if (extraArg) {
@@ -695,6 +711,51 @@
           expect(exception.error).to.equal(intentionalError);
         });
       }
+
+      function expectDeepViolation(self, exc, parameter) {
+        //noinspection BadExpressionStatementJS
+        expect(exc).to.be.ok;
+        expect(exc).to.be.an.instanceOf(ContractConditionViolation);
+        expect(exc.args[0]).to.equal(parameter);
+        //noinspection BadExpressionStatementJS
+        if (!self) {
+          //noinspection BadExpressionStatementJS
+          expect(exc.self).not.to.be.ok;
+        }
+        else {
+          expect(exc.self).to.equal(self);
+        }
+        if (parameter === wrongParameter) {
+          expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
+          expect(exc.args[1]).to.equal(wrongResult);
+        }
+        else {
+          expect(exc.condition).to.equal(fibonacciWrong.contract.exception[0]);
+          expectDeepViolation(self, exc.args[1], parameter - 1); // counting down
+        }
+      }
+
+      var argumentsOfWrongType = [undefined, null, "bar"];
+      var self = {
+        aProperty: "a property value",
+        fibonacci: fibonacci.contract.implementation(function(n) {
+          return n <= 1 ? n : this.fibonacci(n - 1) + this.fibonacci(n - 2);
+        }),
+        fibonacciWrong: fibonacci.contract.implementation(function(n) {
+          if (n === 0) {
+            return 0;
+          }
+          else if (n === 1) {
+            return 1;
+          }
+          else if (n === 4) {
+            return -3; // wrong!
+          }
+          else {
+            return this.fibonacciWrong(n - 1) + this.fibonacciWrong(n - 2);
+          }
+        })
+      };
 
       it("returns a contract function that implements the contract", function() {
         var subject = new Contract();
@@ -709,17 +770,39 @@
       it("can deal with alternative implementations", function() {
         var ignore = factorialIterative(5); // any exception will fail the test
       });
-      failsOnPreconditionViolation(undefined, fibonacci.contract.pre[0]);
-      failsOnPreconditionViolation(null, fibonacci.contract.pre[0]);
-      failsOnPreconditionViolation("bar", fibonacci.contract.pre[0]);
-      failsOnPreconditionViolation(-5, fibonacci.contract.pre[1]);
+      it("works with a method that is correct", function() {
+        var ignore = self.fibonacci(5); // any exception will fail the test
+      });
+      argumentsOfWrongType.forEach(function(wrongArg) {
+        failsOnPreconditionViolation(undefined, fibonacci, wrongArg, fibonacci.contract.pre[0]);
+      });
+      failsOnPreconditionViolation(undefined, fibonacci, -5, fibonacci.contract.pre[1]);
+      argumentsOfWrongType.forEach(function(wrongArg) {
+        failsOnPreconditionViolation(self, self.fibonacci, wrongArg, fibonacci.contract.pre[0]);
+      });
+      failsOnPreconditionViolation(self, self.fibonacci, -5, fibonacci.contract.pre[1]);
       it("fails with a meta-error when a precondition is kaput", function() {
         var contractWithAFailingPre = new Contract(
           [function() {throw intentionalError;}]
         );
 
         failsOnMetaError(
+          undefined,
           contractWithAFailingPre.implementation(function() {return resultWhenMetaError;}),
+          contractWithAFailingPre.pre[0]
+        );
+      });
+      it("fails with a meta-error when a precondition is kaput when it is a method", function() {
+        var contractWithAFailingPre = new Contract(
+          [function() {throw intentionalError;}]
+        );
+        var self = {
+          method: contractWithAFailingPre.implementation(function() {return resultWhenMetaError;})
+        };
+
+        failsOnMetaError(
+          self,
+          self.method,
           contractWithAFailingPre.pre[0]
         );
       });
@@ -730,7 +813,24 @@
         );
 
         failsOnMetaError(
+          undefined,
           contractWithAFailingPost.implementation(function() {return resultWhenMetaError;}),
+          contractWithAFailingPost.post[0],
+          resultWhenMetaError
+        );
+      });
+      it("fails with a meta-error when a postcondition is kaput when it is a method", function() {
+        var contractWithAFailingPost = new Contract(
+          [],
+          [function() {throw intentionalError;}]
+        );
+        var self = {
+          method: contractWithAFailingPost.implementation(function() {return resultWhenMetaError;})
+        };
+
+        failsOnMetaError(
+          self,
+          self.method,
           contractWithAFailingPost.post[0],
           resultWhenMetaError
         );
@@ -744,13 +844,32 @@
         var anExceptedException = "This exception is expected.";
 
         failsOnMetaError(
+          undefined,
           contractWithAFailingExceptionCondition.implementation(function() {throw anExceptedException;}),
           contractWithAFailingExceptionCondition.exception[0],
           anExceptedException
         );
       });
+      it("fails with a meta-error when an exception condition is kaput when it is a method", function() {
+        var contractWithAFailingExceptionCondition = new Contract(
+          [],
+          [],
+          [function() {throw intentionalError;}]
+        );
+        var anExceptedException = "This exception is expected.";
+        var self = {
+          method: contractWithAFailingExceptionCondition.implementation(function() {throw anExceptedException;})
+        };
+
+        failsOnMetaError(
+          self,
+          self.method,
+          contractWithAFailingExceptionCondition.exception[0],
+          anExceptedException
+        );
+      });
       it("fails when a simple postcondition is violated", function() {
-        callAndExpectException(fibonacciWrong, wrongParameter, function(exception) {
+        callAndExpectException(undefined, fibonacciWrong, wrongParameter, function(exception) {
           expect(exception).to.be.an.instanceOf(ContractConditionViolation);
           expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
           //noinspection BadExpressionStatementJS
@@ -759,30 +878,26 @@
           expect(exception.args[1]).to.equal(wrongResult);
         });
       });
+      it("fails when a simple postcondition is violated when it is a method", function() {
+        callAndExpectException(self, self.fibonacciWrong, wrongParameter, function(exception) {
+          expect(exception).to.be.an.instanceOf(ContractConditionViolation);
+          expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
+          //noinspection BadExpressionStatementJS
+          expect(exception.self).to.equal(self);
+          expect(exception.args[0]).to.equal(wrongParameter);
+          expect(exception.args[1]).to.equal(wrongResult);
+        });
+      });
       it("fails when a postcondition is violated in a called function with a nested Violation", function() {
         var parameter = 6;
-        callAndExpectException(fibonacciWrong, parameter, function(exception) {
-          function expectViolation(exc, parameter) {
-            //noinspection BadExpressionStatementJS
-            expect(exc).to.be.ok;
-            expect(exc).to.be.an.instanceOf(ContractConditionViolation);
-            if (parameter === wrongParameter) {
-              expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
-              //noinspection BadExpressionStatementJS
-              expect(exc.self).not.to.be.ok;
-              expect(exc.args[0]).to.equal(parameter);
-              expect(exc.args[1]).to.equal(wrongResult);
-            }
-            else {
-              expect(exc.condition).to.equal(fibonacciWrong.contract.exception[0]);
-              //noinspection BadExpressionStatementJS
-              expect(exc.self).not.to.be.ok;
-              expect(exc.args[0]).to.equal(parameter);
-              expectViolation(exc.args[1], parameter - 1); // counting down
-            }
-          }
-
-          expectViolation(exception, parameter);
+        callAndExpectException(undefined, fibonacciWrong, parameter, function(exception) {
+          expectDeepViolation(undefined, exception, parameter);
+        });
+      });
+      it("fails when a postcondition is violated in a called function with a nested Violation when it is a method", function() {
+        var parameter = 6;
+        callAndExpectException(self, self.fibonacciWrong, parameter, function(exception) {
+          expectDeepViolation(self, exception, parameter);
         });
       });
     });

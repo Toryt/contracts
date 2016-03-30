@@ -100,7 +100,6 @@ module.exports = (function() {
         contract.verifyAll(contract.pre, this, arguments);
         var result;
         var exception;
-        // TODO this should be dealt with better
         try {
           result = implFunction.apply(this, arguments);
         }
