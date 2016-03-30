@@ -52,9 +52,10 @@ var tc = {
 };
 
 
-function Contract(pre, post) {
+function Contract(pre, post, exception) {
   this.pre = pre ? pre.slice() : [];
   this.post = post ? post.slice() : [];
+  this.exception = exception ? exception.slice() : [];
   // MUDO seal freeze
 }
 
@@ -98,10 +99,11 @@ Contract.prototype = {
         exception = exc;
       }
       extendedArgs.push(exception || result);
-      contract.verifyAll(contract.post, this, extendedArgs);
       if (exception) {
+        contract.verifyAll(contract.exception, this, extendedArgs);
         throw exception;
       }
+      contract.verifyAll(contract.post, this, extendedArgs);
       return result;
     }
 

@@ -46,6 +46,8 @@ describe("Contract", function() {
     expect(contract.pre).to.be.an("array");
     expect(contract).to.have.ownProperty("post"); // array not shared
     expect(contract.post).to.be.an("array");
+    expect(contract).to.have.ownProperty("exception"); // array not shared
+    expect(contract.exception).to.be.an("array");
     expect(contract).to.have.property("verifyOne").that.is.a("function");
     expect(contract).to.have.property("verifyAll").that.is.a("function");
     expect(contract).to.have.property("implementation").that.is.a("function");
@@ -61,9 +63,12 @@ describe("Contract", function() {
   var postCases = [
     function() {return null;}
   ].concat(someConditions);
+  var exceptionCases = [
+    function() {return null;}
+  ].concat(someConditions);
 
-  var subjects = x(preCases, postCases).map(function(args) {
-    return function() {return new Contract(args[0](), args[1]());};
+  var subjects = x(preCases, postCases, exceptionCases).map(function(args) {
+    return function() {return new Contract(args[0](), args[1](), args[2]());};
   });
 
   var selfCases = [
@@ -143,7 +148,7 @@ describe("Contract", function() {
 
   describe("#Contract()", function() {
 
-    function expectPost(pre, post, result) {
+    function expectPost(pre, post, exception, result) {
       it("has a shallow copy of the given pre-conditions", function() {
         if (!pre) {
           expect(result.pre).to.eql([]);
@@ -164,6 +169,16 @@ describe("Contract", function() {
           // TODO consider adding getter that slices
         }
       });
+      it("has a shallow copy of the given exception-conditions", function() {
+        if (!exception) {
+          expect(result.exception).to.eql([]);
+        }
+        else {
+          expect(result.exception).to.eql(exception);
+          expect(result.exception).to.not.equal(exception); // it must be copy, don't share the array
+          // TODO consider adding getter that slices
+        }
+      });
       it("adheres to the invariants", function() {
         invariants(result);
       });
@@ -175,14 +190,20 @@ describe("Contract", function() {
     var constructorPostCases = [
       function() {return undefined;}
     ].concat(postCases);
+    var constructorExceptionCases = [
+      function() {return undefined;}
+    ].concat(exceptionCases);
 
     constructorPreCases.forEach(function(pre) {
       constructorPostCases.forEach(function(post) {
-        describe("works for pre: " + pre + ", post: " + post, function() {
-          var preconditions = pre();
-          var postconditions = post();
-          var result = new Contract(preconditions, postconditions);
-          expectPost(preconditions, postconditions, result);
+        constructorExceptionCases.forEach(function(exception) {
+          describe("works for pre: " + pre + ", post: " + post + ", exception: " + exception, function() {
+            var preConditions = pre();
+            var postConditions = post();
+            var exceptionConditions = exception();
+            var result = new Contract(preConditions, postConditions, exceptionConditions);
+            expectPost(preConditions, postConditions, exceptionConditions, result);
+          });
         });
       });
     });
@@ -545,6 +566,8 @@ describe("Contract", function() {
       return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
     });
 
+    var wrongParameter = 4;
+    var wrongResult = -3;
 
     var fibonacciWrong = fibonacci.contract.implementation(function(n) {
       if (n === 0) {
@@ -631,9 +654,8 @@ describe("Contract", function() {
     // MUDO fails with meta error on pre error
     // MUDO fails with meta error on post error
     it("fails when a simple postcondition is violated", function() {
-      var parameter = 4;
       try {
-        var result = fibonacciWrong(parameter);
+        var result = fibonacciWrong(wrongParameter);
         throw "Should not have succeeded.";
       }
       catch (exception) {
@@ -642,22 +664,38 @@ describe("Contract", function() {
         expect(exception.condition).to.equal(fibonacciWrong.contract.post[2]);
         //noinspection BadExpressionStatementJS
         expect(exception.self).not.to.be.ok;
-        expect(exception.args[0]).to.equal(parameter);
+        expect(exception.args[0]).to.equal(wrongParameter);
+        expect(exception.args[1]).to.equal(wrongResult);
       }
     });
-    it("fails when a postcondition is violated", function() {
-      var parameter = 5;
+    it("fails when a postcondition is violated in a called function with a nested Violation", function() {
+      function expectViolation(exc, parameter) {
+        //noinspection BadExpressionStatementJS
+        expect(exc).to.be.ok;
+        expect(exc).to.be.an.instanceOf(ContractConditionViolation);
+        if (parameter === wrongParameter) {
+          expect(exc.condition).to.equal(fibonacciWrong.contract.post[2]);
+          //noinspection BadExpressionStatementJS
+          expect(exc.self).not.to.be.ok;
+          expect(exc.args[0]).to.equal(parameter);
+          expect(exc.args[1]).to.equal(wrongResult);
+        }
+        else {
+          expect(exc.condition).to.equal(fibonacciWrong.contract.exception[0]);
+          //noinspection BadExpressionStatementJS
+          expect(exc.self).not.to.be.ok;
+          expect(exc.args[0]).to.equal(parameter);
+          expectViolation(exc.args[1], parameter - 1);
+        }
+      }
+
+      var parameter = 6;
       try {
         var result = fibonacciWrong(parameter);
         throw "Should not have succeeded.";
       }
       catch(exception) {
-        //noinspection BadExpressionStatementJS
-        expect(exception).to.be.ok;
-        expect(exception.condition).to.equal(fibonacciWrong.contract.post[2]); // MUDO SHOULD BE A META ERROR? FAILS ON 4, not ON 5
-        //noinspection BadExpressionStatementJS
-        expect(exception.self).not.to.be.ok;
-        expect(exception.args[0]).to.equal(parameter);
+        expectViolation(exception, parameter);
       }
     });
   });
