@@ -80,6 +80,67 @@ describe("Contract", function() {
     function() {return ["an argument", "another argument"];}
   ];
 
+  describe("Contract.isAContractFunction", function() {
+    var thingsThatAreNotAFunctionNorAContract = [
+      undefined,
+      null,
+      "",
+      "lala",
+      0,
+      -1,
+      true,
+      false,
+      /lala/,
+      {},
+      new Date()
+    ];
+
+    function createSubject(contract, implementation) {
+      var subject = function() {};
+      if (contract) {
+        subject.contract = contract;
+      }
+      if (implementation) {
+        subject.implementation = implementation;
+      }
+      return subject;
+    }
+
+    it("says no on any thing that is not a function", function() {
+      thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(thing)).not.to.be.ok;
+      });
+    });
+    it("says no if there is no Contract property, with or without an implementation", function() {
+      thingsThatAreNotAFunctionNorAContract.concat([function() {}]).forEach(function(thing) {
+        var subject = createSubject(thing);
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(subject)).not.to.be.ok;
+        subject = createSubject(thing, function() {});
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(subject)).not.to.be.ok;
+      });
+    });
+    it("says no if there is no implementation property, with or without a Contract", function() {
+      thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
+        var subject = createSubject(null, thing);
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(subject)).not.to.be.ok;
+        subject = createSubject(new Contract(), thing);
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(subject)).not.to.be.ok;
+      });
+    });
+    it("says yes if there is an implementation Function, and a Contract", function() {
+      var subject = function() {};
+      subject.contract = new Contract();
+      subject.implementation = function() {};
+      //noinspection BadExpressionStatementJS
+      expect(Contract.isAContractFunction(subject)).to.be.ok;
+    });
+  });
+
   describe("#Contract()", function() {
 
     function expectPost(pre, post, result) {
