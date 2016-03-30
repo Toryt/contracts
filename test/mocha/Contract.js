@@ -196,6 +196,7 @@ describe("Contract", function() {
           var subject = new Contract();
           //noinspection BadExpressionStatementJS
           expect(subject.isImplementedBy(thing)).not.to.be.ok;
+          invariants(subject);
         });
     });
     it("says no if the argument is a contract function for another contract", function() {
@@ -205,6 +206,7 @@ describe("Contract", function() {
       f.implementation = function() {};
       //noinspection BadExpressionStatementJS
       expect(subject.isImplementedBy(f)).not.to.be.ok;
+      invariants(subject);
     });
     it("says yes if the argument is a contract function for the contract", function() {
       var subject = new Contract();
@@ -213,6 +215,7 @@ describe("Contract", function() {
       f.implementation = function() {};
       //noinspection BadExpressionStatementJS
       expect(subject.isImplementedBy(f)).to.be.ok;
+      invariants(subject);
     });
   });
 
