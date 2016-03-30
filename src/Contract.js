@@ -86,20 +86,23 @@ Contract.prototype = {
     var contract = this;
 
     function contractFunction() {
-      contract.verify(contract.pre, this, arguments);
-      var extendedArgs;
+      var extendedArgs = Array.prototype.slice.call(arguments);
+      contract.verifyAll(contract.pre, this, arguments);
+      var result;
+      var exception;
+      // TODO this should be dealt with better
       try {
-        var result = implFunction.apply(this, arguments);
-        extendedArgs = Array.prototype.concat(arguments, [result]);
-        contract.verify(contract.post, this, extendedArgs);
-        return result;
+        result = implFunction.apply(this, arguments);
       }
-      catch(exception) {
-        // TODO this should be dealt with better
-        extendedArgs = Array.prototype.concat(arguments, [exception]);
-        contract.verify(contract.post, this, extendedArgs);
+      catch(exc) {
+        exception = exc;
+      }
+      extendedArgs.push(exception || result);
+      contract.verifyAll(contract.post, this, extendedArgs);
+      if (exception) {
         throw exception;
       }
+      return result;
     }
 
     contractFunction.contract = contract;

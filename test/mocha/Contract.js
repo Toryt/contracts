@@ -522,4 +522,143 @@ describe("Contract", function() {
       });
     });
   });
+
+  describe("#implementation", function() {
+    function expectPost(contract, result) {
+      //noinspection BadExpressionStatementJS
+      expect(contract.isImplementedBy(result)).to.be.ok;
+      invariants(contract);
+    }
+
+    var fibonacci = new Contract(
+      [
+        function(n) {return Number.isInteger(n);},
+        function(n) {return 0 <= n;}
+      ],
+      [
+        function(n, result) {return n !== 0 || result === 0;},
+        function(n, result) {return n !== 1 || result === 1;},
+        function(n, result) {return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);}
+        // MUDO wrong: don't talk about a specific implementation in the contract!
+      ]
+    ).implementation(function(n) {
+      return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+    });
+
+
+    var fibonacciWrong = fibonacci.contract.implementation(function(n) {
+      if (n === 0) {
+        return 0;
+      }
+      else if (n === 1) {
+        return 1;
+      }
+      else if (n === 4) {
+        return -3; // wrong!
+      }
+      else {
+        return fibonacciWrong(n - 1) + fibonacciWrong(n - 2);
+      }
+    });
+
+    var factorialContract = new Contract(
+      [
+        function(n) {return Number.isInteger(n);},
+        function(n) {return 0 <= n;}
+      ],
+      [
+        function(n, result) {return n !== 0 || result === 1;},
+        function(n, result) {return n < 1 || result === n * factorial(n - 1);}
+      ]
+    );
+
+    var factorial = factorialContract.implementation(function(n) {
+      if (n <= 0) {
+        return 1;
+      }
+      else {
+        return n * factorial(n - 1);
+      }
+    });
+
+    var factorialIterative = factorialContract.implementation(function(n) {
+      if (n === 8) {
+        return -3; // wrong!
+      }
+      var result = 1;
+      var next = 1;
+      while (next <= n) {
+        result *= next;
+        next++;
+      }
+      return result;
+    });
+
+    function failsOnPreconditionViolation(parameter, violatedCondition) {
+      it("fails when a precondition is violated - " + parameter, function() {
+        try {
+          var result = fibonacci(parameter);
+          throw "Should not have succeeded.";
+        }
+        catch (exception) {
+          //noinspection BadExpressionStatementJS
+          expect(exception).to.be.ok;
+          expect(exception.condition).to.equal(violatedCondition);
+          //noinspection BadExpressionStatementJS
+          expect(exception.self).not.to.be.ok;
+          expect(exception.args[0]).to.equal(parameter);
+        }
+      });
+    }
+
+    it("returns a contract function that implements the contract", function() {
+      var subject = new Contract();
+      expectPost(subject, subject.implementation(function() {}));
+    });
+    it("doesn't interfere when the implementation is correct", function() {
+      var result = fibonacci(5); // any exception will fail the test
+    });
+    it("doesn't interfere when the implementation is correct too", function() {
+      var result = factorial(5); // any exception will fail the test
+    });
+    it("can deal with alternative implementations", function() {
+      var result = factorialIterative(5); // any exception will fail the test
+    });
+    failsOnPreconditionViolation(undefined, fibonacci.contract.pre[0]);
+    failsOnPreconditionViolation(null, fibonacci.contract.pre[0]);
+    failsOnPreconditionViolation("lala", fibonacci.contract.pre[0]);
+    failsOnPreconditionViolation(-5, fibonacci.contract.pre[1]);
+    // MUDO fails with meta error on pre error
+    // MUDO fails with meta error on post error
+    it("fails when a simple postcondition is violated", function() {
+      var parameter = 4;
+      try {
+        var result = fibonacciWrong(parameter);
+        throw "Should not have succeeded.";
+      }
+      catch (exception) {
+        //noinspection BadExpressionStatementJS
+        expect(exception).to.be.ok;
+        expect(exception.condition).to.equal(fibonacciWrong.contract.post[2]);
+        //noinspection BadExpressionStatementJS
+        expect(exception.self).not.to.be.ok;
+        expect(exception.args[0]).to.equal(parameter);
+      }
+    });
+    it("fails when a postcondition is violated", function() {
+      var parameter = 5;
+      try {
+        var result = fibonacciWrong(parameter);
+        throw "Should not have succeeded.";
+      }
+      catch(exception) {
+        //noinspection BadExpressionStatementJS
+        expect(exception).to.be.ok;
+        expect(exception.condition).to.equal(fibonacciWrong.contract.post[2]); // MUDO SHOULD BE A META ERROR? FAILS ON 4, not ON 5
+        //noinspection BadExpressionStatementJS
+        expect(exception.self).not.to.be.ok;
+        expect(exception.args[0]).to.equal(parameter);
+      }
+    });
+  });
 });
