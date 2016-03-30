@@ -62,6 +62,9 @@ Contract.prototype = {
   constructor: Contract,
   pre: [],
   post: [],
+  isImplementedBy: function(f) {
+    return Contract.isAContractFunction(f) && f.contract === this;
+  },
   verifyOne: function(condition, self, args) {
     var conditionResult;
     try {

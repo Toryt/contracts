@@ -80,21 +80,21 @@ describe("Contract", function() {
     function() {return ["an argument", "another argument"];}
   ];
 
-  describe("Contract.isAContractFunction", function() {
-    var thingsThatAreNotAFunctionNorAContract = [
-      undefined,
-      null,
-      "",
-      "lala",
-      0,
-      -1,
-      true,
-      false,
-      /lala/,
-      {},
-      new Date()
-    ];
+  var thingsThatAreNotAFunctionNorAContract = [
+    undefined,
+    null,
+    "",
+    "lala",
+    0,
+    -1,
+    true,
+    false,
+    /lala/,
+    {},
+    new Date()
+  ];
 
+  describe("Contract.isAContractFunction", function() {
     function createSubject(contract, implementation) {
       var subject = function() {};
       if (contract) {
@@ -185,6 +185,34 @@ describe("Contract", function() {
           expectPost(preconditions, postconditions, result);
         });
       });
+    });
+  });
+
+  describe("#isImplementedBy()", function() {
+    it("says no if the argument is not a contract function", function() {
+      thingsThatAreNotAFunctionNorAContract
+        .concat(["function() {}"])
+        .forEach(function(thing) {
+          var subject = new Contract();
+          //noinspection BadExpressionStatementJS
+          expect(subject.isImplementedBy(thing)).not.to.be.ok;
+        });
+    });
+    it("says no if the argument is a contract function for another contract", function() {
+      var subject = new Contract();
+      var f = function() {};
+      f.contract = new Contract();
+      f.implementation = function() {};
+      //noinspection BadExpressionStatementJS
+      expect(subject.isImplementedBy(f)).not.to.be.ok;
+    });
+    it("says yes if the argument is a contract function for the contract", function() {
+      var subject = new Contract();
+      var f = function() {};
+      f.contract = subject;
+      f.implementation = function() {};
+      //noinspection BadExpressionStatementJS
+      expect(subject.isImplementedBy(f)).to.be.ok;
     });
   });
 
