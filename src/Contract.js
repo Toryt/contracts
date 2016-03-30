@@ -48,6 +48,14 @@ var tc = {
       result = "object";
     }
     return result; // return String
+  },
+
+  isInteger: function(value) {
+    return Number.isInteger
+      ? Number.isInteger(value)
+      : typeof value === "number"
+        && isFinite(value)
+        && Math.floor(value) === value;
   }
 };
 
@@ -118,5 +126,9 @@ Contract.prototype = {
 Contract.isAContractFunction = function(f) {
   return tc.typeOf(f) === "function" && f.contract instanceof Contract && tc.typeOf(f.implementation) === "function";
 };
+
+// MUDO temporary
+Contract.typeOf = tc.typeOf;
+Contract.isInteger = tc.isInteger;
 
 module.exports = Contract;

@@ -89,7 +89,7 @@ describe("Contract", function() {
     undefined,
     null,
     "",
-    "lala",
+    "foo",
     0,
     -1,
     true,
@@ -553,10 +553,11 @@ describe("Contract", function() {
 
     var fibonacci = new Contract(
       [
-        function(n) {return Number.isInteger(n);},
+        function(n) {return Contract.isInteger(n);},
         function(n) {return 0 <= n;}
       ],
       [
+        function(n, result) {return Contract.isInteger(result);},
         function(n, result) {return n !== 0 || result === 0;},
         function(n, result) {return n !== 1 || result === 1;},
         function f(n, result) {
@@ -593,10 +594,11 @@ describe("Contract", function() {
 
     var factorialContract = new Contract(
       [
-        function(n) {return Number.isInteger(n);},
+        function(n) {return Contract.isInteger(n);},
         function(n) {return 0 <= n;}
       ],
       [
+        function(n, result) {return Contract.isInteger(result);},
         function(n, result) {return n !== 0 || result === 1;},
         function(n, result) {
           function f(n) {return n < 1 ? 1 : n * f(n - 1)}
@@ -676,7 +678,7 @@ describe("Contract", function() {
       catch (exception) {
         //noinspection BadExpressionStatementJS
         expect(exception).to.be.ok;
-        expect(exception.condition).to.equal(fibonacciWrong.contract.post[2]);
+        expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
         //noinspection BadExpressionStatementJS
         expect(exception.self).not.to.be.ok;
         expect(exception.args[0]).to.equal(wrongParameter);
@@ -689,7 +691,7 @@ describe("Contract", function() {
         expect(exc).to.be.ok;
         expect(exc).to.be.an.instanceOf(ContractConditionViolation);
         if (parameter === wrongParameter) {
-          expect(exc.condition).to.equal(fibonacciWrong.contract.post[2]);
+          expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
           //noinspection BadExpressionStatementJS
           expect(exc.self).not.to.be.ok;
           expect(exc.args[0]).to.equal(parameter);
