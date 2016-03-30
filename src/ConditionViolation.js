@@ -14,18 +14,16 @@
  limitations under the License.
  */
 
-var ContractConditionError = require("./ContractConditionError");
+var ConditionError = require("./ConditionError");
 
-function ContractConditionMetaError(condition, self, args, error) {
+function ConditionViolation(condition, self, args) {
   "use strict";
 
-  ContractConditionError.call(this, condition, self, args);
-  this.error = error;
+  ConditionError.call(this, condition, self, args);
   // MUDO seal freeze
 }
 
-ContractConditionMetaError.prototype = new ContractConditionError();
-ContractConditionMetaError.prototype.constructor = ContractConditionMetaError;
-ContractConditionMetaError.prototype.error = null;
+ConditionViolation.prototype = new ConditionError();
+ConditionViolation.prototype.constructor = ConditionViolation;
 
-module.exports = ContractConditionMetaError;
+module.exports = ConditionViolation;

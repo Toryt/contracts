@@ -18,8 +18,8 @@ module.exports = (function() {
 
   // MUDO add meta-preconditions
 
-  var ContractConditionMetaError = require("./ContractConditionMetaError");
-  var ContractConditionViolation = require("./ContractConditionViolation");
+  var ConditionMetaError = require("./ConditionMetaError");
+  var ConditionViolation = require("./ConditionViolation");
 
   var tc = {
     /**
@@ -83,10 +83,10 @@ module.exports = (function() {
         conditionResult = condition.apply(self, args);
       }
       catch (err) {
-        throw new ContractConditionMetaError(condition, self, args, err);
+        throw new ConditionMetaError(condition, self, args, err);
       }
       if (!conditionResult) {
-        throw new ContractConditionViolation(condition, self, args);
+        throw new ConditionViolation(condition, self, args);
       }
     },
     verifyAll: function(conditions, self, args) {

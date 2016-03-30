@@ -18,8 +18,8 @@
 
   var expect = require("chai").expect;
   var Contract = require("../../src/Contract");
-  var ContractConditionMetaError = require("../../src/ContractConditionMetaError");
-  var ContractConditionViolation = require("../../src/ContractConditionViolation");
+  var ConditionMetaError = require("../../src/ConditionMetaError");
+  var ConditionViolation = require("../../src/ConditionViolation");
 
   function x() {
     if (arguments.length <= 0) {
@@ -248,10 +248,10 @@
           outcome = condition.apply();
         }
         catch (err) {
-          it("should throw a ContractConditionMetaError because the condition had an error", function() {
+          it("should throw a ConditionMetaError because the condition had an error", function() {
             //noinspection BadExpressionStatementJS
             expect(exception).to.be.ok;
-            expect(exception).to.be.instanceOf(ContractConditionMetaError);
+            expect(exception).to.be.instanceOf(ConditionMetaError);
             expect(exception.error).to.eql(err);
             expect(exception.condition).to.equal(condition);
             expect(exception.self).to.equal(self);
@@ -285,12 +285,12 @@
           }
         );
         if (!outcome) {
-          it("should throw a ContractConditionViolation that is correctly configured, " +
+          it("should throw a ConditionViolation that is correctly configured, " +
              "because the condition evaluated to false nominally",
             function() {
               //noinspection BadExpressionStatementJS
               expect(exception).to.be.ok;
-              expect(exception).to.be.instanceOf(ContractConditionViolation);
+              expect(exception).to.be.instanceOf(ConditionViolation);
               expect(exception.condition).to.equal(condition);
               expect(exception.self).to.equal(self);
               expect(exception.args).to.eql(args);
@@ -397,14 +397,14 @@
           expect(!!exception).to.equal(!!firstFailure);
         });
         if (thrown) {
-          it("throws a ContractConditionMetaError if one of the conditions fails", function() {
-            expect(exception).to.be.instanceOf(ContractConditionMetaError);
+          it("throws a ConditionMetaError if one of the conditions fails", function() {
+            expect(exception).to.be.instanceOf(ConditionMetaError);
             expect(exception.condition).to.equal(firstFailure);
           });
         }
         else if (firstFailure) {
-          it("throws a ContractConditionViolation if one of the conditions evaluates nominally to false", function() {
-            expect(exception).to.be.instanceOf(ContractConditionViolation);
+          it("throws a ConditionViolation if one of the conditions evaluates nominally to false", function() {
+            expect(exception).to.be.instanceOf(ConditionViolation);
             expect(exception.condition).to.equal(firstFailure);
           });
         }
@@ -676,7 +676,7 @@
       function failsOnPreconditionViolation(self, func, parameter, violatedCondition) {
         it("fails when a precondition is violated - " + self + " - " + parameter, function() {
           callAndExpectException(self, func, parameter, function(exception) {
-            expect(exception).to.be.an.instanceOf(ContractConditionViolation);
+            expect(exception).to.be.an.instanceOf(ConditionViolation);
             expect(exception.condition).to.equal(violatedCondition);
             if (!self) {
               //noinspection BadExpressionStatementJS
@@ -693,7 +693,7 @@
       function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArg) {
         var param = "a parameter";
         callAndExpectException(self, functionWithAMetaError, param, function(exception) {
-          expect(exception).to.be.an.instanceOf(ContractConditionMetaError);
+          expect(exception).to.be.an.instanceOf(ConditionMetaError);
           expect(exception.condition).to.equal(conditionWithAMetaError);
           //noinspection BadExpressionStatementJS
           if (!self) {
@@ -715,7 +715,7 @@
       function expectDeepViolation(self, exc, parameter) {
         //noinspection BadExpressionStatementJS
         expect(exc).to.be.ok;
-        expect(exc).to.be.an.instanceOf(ContractConditionViolation);
+        expect(exc).to.be.an.instanceOf(ConditionViolation);
         expect(exc.args[0]).to.equal(parameter);
         //noinspection BadExpressionStatementJS
         if (!self) {
@@ -870,7 +870,7 @@
       });
       it("fails when a simple postcondition is violated", function() {
         callAndExpectException(undefined, fibonacciWrong, wrongParameter, function(exception) {
-          expect(exception).to.be.an.instanceOf(ContractConditionViolation);
+          expect(exception).to.be.an.instanceOf(ConditionViolation);
           expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
           //noinspection BadExpressionStatementJS
           expect(exception.self).not.to.be.ok;
@@ -880,7 +880,7 @@
       });
       it("fails when a simple postcondition is violated when it is a method", function() {
         callAndExpectException(self, self.fibonacciWrong, wrongParameter, function(exception) {
-          expect(exception).to.be.an.instanceOf(ContractConditionViolation);
+          expect(exception).to.be.an.instanceOf(ConditionViolation);
           expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
           //noinspection BadExpressionStatementJS
           expect(exception.self).to.equal(self);

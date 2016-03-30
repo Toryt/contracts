@@ -20,7 +20,7 @@ function conditionReport(condition, self, args) {
   return self + "." + condition + (args ? (" (" + Array.prototype.join.call(args, ", ") + ")") : " ()");
 }
 
-function ContractConditionError(condition, self, args) {
+function ConditionError(condition, self, args) {
   "use strict";
 
   Error.call(this, condition && conditionReport(condition, self, args));
@@ -30,15 +30,15 @@ function ContractConditionError(condition, self, args) {
   // MUDO seal freeze
 }
 
-ContractConditionError.prototype = new Error();
-ContractConditionError.prototype.constructor = ContractConditionError;
-ContractConditionError.prototype.condition = null;
-ContractConditionError.prototype.self = null;
-ContractConditionError.prototype.args = null;
-ContractConditionError.prototype.report = function() {
+ConditionError.prototype = new Error();
+ConditionError.prototype.constructor = ConditionError;
+ConditionError.prototype.condition = null;
+ConditionError.prototype.self = null;
+ConditionError.prototype.args = null;
+ConditionError.prototype.report = function() {
   "use strict";
 
   return conditionReport(this.condition, this.self, this.args);
 };
 
-module.exports = ContractConditionError;
+module.exports = ConditionError;
