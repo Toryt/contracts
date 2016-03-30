@@ -648,25 +648,32 @@
         return result;
       });
 
+      function callAndExpectException(func, parameter, expectException) {
+        var result;
+        var endsNominally = false;
+        try {
+          result = func(parameter);
+          endsNominally = true;
+        }
+        catch (exception) {
+          //noinspection BadExpressionStatementJS
+          expect(exception).to.be.ok;
+          expectException(exception);
+        }
+        if (endsNominally) {
+          throw "Method ended nominally with result " + result + ", but expected an exception.";
+        }
+      }
+
       function failsOnPreconditionViolation(parameter, violatedCondition) {
         it("fails when a precondition is violated - " + parameter, function() {
-          var result;
-          var endsNominally = false;
-          try {
-            result = fibonacci(parameter);
-            endsNominally = true;
-          }
-          catch (exception) {
-            //noinspection BadExpressionStatementJS
-            expect(exception).to.be.ok;
+          callAndExpectException(fibonacci, parameter, function(exception) {
+            expect(exception).to.be.an.instanceOf(ContractConditionViolation);
             expect(exception.condition).to.equal(violatedCondition);
             //noinspection BadExpressionStatementJS
             expect(exception.self).not.to.be.ok;
             expect(exception.args[0]).to.equal(parameter);
-          }
-          if (endsNominally) {
-            throw "Method ended nominally with result " + result + ", but expected an exception.";
-          }
+          });
         });
       }
 
@@ -690,59 +697,40 @@
       // MUDO fails with meta error on pre error
       // MUDO fails with meta error on post error
       it("fails when a simple postcondition is violated", function() {
-        var result;
-        var endsNominally = false;
-        try {
-          result = fibonacciWrong(wrongParameter);
-          endsNominally = true;
-        }
-        catch (exception) {
-          //noinspection BadExpressionStatementJS
-          expect(exception).to.be.ok;
+        callAndExpectException(fibonacciWrong, wrongParameter, function(exception) {
+          expect(exception).to.be.an.instanceOf(ContractConditionViolation);
           expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
           //noinspection BadExpressionStatementJS
           expect(exception.self).not.to.be.ok;
           expect(exception.args[0]).to.equal(wrongParameter);
           expect(exception.args[1]).to.equal(wrongResult);
-        }
-        if (endsNominally) {
-          throw "Method ended nominally with result " + result + ", but expected an exception.";
-        }
+        });
       });
       it("fails when a postcondition is violated in a called function with a nested Violation", function() {
-        function expectViolation(exc, parameter) {
-          //noinspection BadExpressionStatementJS
-          expect(exc).to.be.ok;
-          expect(exc).to.be.an.instanceOf(ContractConditionViolation);
-          if (parameter === wrongParameter) {
-            expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
-            //noinspection BadExpressionStatementJS
-            expect(exc.self).not.to.be.ok;
-            expect(exc.args[0]).to.equal(parameter);
-            expect(exc.args[1]).to.equal(wrongResult);
-          }
-          else {
-            expect(exc.condition).to.equal(fibonacciWrong.contract.exception[0]);
-            //noinspection BadExpressionStatementJS
-            expect(exc.self).not.to.be.ok;
-            expect(exc.args[0]).to.equal(parameter);
-            expectViolation(exc.args[1], parameter - 1);
-          }
-        }
-
         var parameter = 6;
-        var result;
-        var endsNominally = false;
-        try {
-          result = fibonacciWrong(parameter);
-          endsNominally = true;
-        }
-        catch (exception) {
+        callAndExpectException(fibonacciWrong, parameter, function(exception) {
+          function expectViolation(exc, parameter) {
+            //noinspection BadExpressionStatementJS
+            expect(exc).to.be.ok;
+            expect(exc).to.be.an.instanceOf(ContractConditionViolation);
+            if (parameter === wrongParameter) {
+              expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
+              //noinspection BadExpressionStatementJS
+              expect(exc.self).not.to.be.ok;
+              expect(exc.args[0]).to.equal(parameter);
+              expect(exc.args[1]).to.equal(wrongResult);
+            }
+            else {
+              expect(exc.condition).to.equal(fibonacciWrong.contract.exception[0]);
+              //noinspection BadExpressionStatementJS
+              expect(exc.self).not.to.be.ok;
+              expect(exc.args[0]).to.equal(parameter);
+              expectViolation(exc.args[1], parameter - 1); // counting down
+            }
+          }
+
           expectViolation(exception, parameter);
-        }
-        if (endsNominally) {
-          throw "Method ended nominally with result " + result + ", but expected an exception.";
-        }
+        });
       });
     });
   });
