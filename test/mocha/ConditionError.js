@@ -83,5 +83,25 @@
       });
     });
 
+    describe("#report()", function() {
+      selfCases.forEach(function(self) {
+        argsCases.forEach(function(args) {
+          it("produces a string with all toppings from an instance with " + self + " - " + args, function() {
+            var conditionError = new ConditionError(conditionCase, self, args);
+            var result = conditionError.report();
+            console.log(result + "\n");
+            expect(result).to.be.a("string");
+            expect(result).to.contain("" + conditionCase);
+            if (args) {
+              Array.prototype.forEach.call(args, function(arg) {
+                expect(result).to.contain("" + arg);
+              });
+            }
+            expect(result).to.contain("" + self);
+          });
+        });
+      });
+    });
+
   });
 })();
