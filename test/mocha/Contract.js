@@ -18,6 +18,7 @@
   "use strict";
 
   var expect = require("chai").expect;
+  var util = require("../../src/util");
   var Contract = require("../../src/Contract");
   var ConditionMetaError = require("../../src/ConditionMetaError");
   var ConditionViolation = require("../../src/ConditionViolation");
@@ -567,11 +568,11 @@
 
       var fibonacci = new Contract(
         [
-          function(n) {return Contract.isInteger(n);},
+          function(n) {return util.isInteger(n);},
           function(n) {return 0 <= n;}
         ],
         [
-          function(n, result) {return Contract.isInteger(result);},
+          function(n, result) {return util.isInteger(result);},
           function(n, result) {return n !== 0 || result === 0;},
           function(n, result) {return n !== 1 || result === 1;},
           function f(n, result) {
@@ -608,11 +609,11 @@
 
       var factorialContract = new Contract(
         [
-          function(n) {return Contract.isInteger(n);},
+          function(n) {return util.isInteger(n);},
           function(n) {return 0 <= n;}
         ],
         [
-          function(n, result) {return Contract.isInteger(result);},
+          function(n, result) {return util.isInteger(result);},
           function(n, result) {return n !== 0 || result === 1;},
           function(n, result) {
             function f(n) {return n < 1 ? 1 : n * f(n - 1);}
