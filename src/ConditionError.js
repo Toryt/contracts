@@ -34,20 +34,26 @@ module.exports = (function() {
    * - condition is mandatory, and always a Function
    * - self can be anything, and is optional
    * - args is mandatory, and an Arguments instance
+   *
+   * MUDO better doc
    */
   function ConditionError(condition, self, args) {
     util.pre(function() {return condition && util.typeOf(condition) === "function";});
     util.pre(function() {return args && util.typeOf(args) === "arguments";});
 
     Error.call(this, condition && conditionReport(condition, self, args));
-    this.condition = condition;
-    this.self = self;
-    this.args = args;
-    // MUDO seal freeze
+    this._setAndFreezeProperty("condition", condition);
+    this._setAndFreezeProperty("self", self);
+    this._setAndFreezeProperty("args", args);
   }
 
   ConditionError.prototype = new Error();
   ConditionError.prototype.constructor = ConditionError;
+  ConditionError.prototype._setAndFreezeProperty = function(propertyName, value) {
+    util.pre(function() {return propertyName && util.typeOf(propertyName) === "string";});
+
+    util.setAndFreezeProperty(this, propertyName, value);
+  };
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;

@@ -61,6 +61,19 @@
        if (!condition()) {
          throw new Error("Precondition violation in Toryt Contracts: " + condition);
        }
+     },
+
+     setAndFreezeProperty: function(obj, propName, value) {
+       Object.defineProperty(
+         obj,
+         propName,
+         {
+           configurable: false,
+           enumerable: true,
+           writable: false,
+           value: value
+         }
+       );
      }
    };
 
