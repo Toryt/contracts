@@ -20,12 +20,21 @@ module.exports = (function() {
   var util = require("./util");
 
   function conditionReport(condition, self, args) {
+    util.pre(function() {return condition && util.typeOf(condition) === "function";});
+    util.pre(function() {return args && util.typeOf(args) === "arguments";});
+
     return self + "." + condition +
            (args
              ? ("(" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")")
              : "()");
   }
 
+  /**
+   * Invariant:
+   * - condition is mandatory, and always a Function
+   * - self can be anything, and is optional
+   * - args is mandatory, and an Arguments instance
+   */
   function ConditionError(condition, self, args) {
     util.pre(function() {return condition && util.typeOf(condition) === "function";});
     util.pre(function() {return args && util.typeOf(args) === "arguments";});
