@@ -57,9 +57,11 @@
            && Math.floor(value) === value;
      },
 
-     pre: function(/*Function*/ condition) {
-       if (!condition()) {
-         throw new Error("Precondition violation in Toryt Contracts: " + condition);
+     pre: function(/*Object?*/ self, /*Function*/ condition) {
+       var shiftedCondition = condition || self;
+       var shiftedSelf = condition ? self : undefined;
+       if (!shiftedCondition.apply(self)) {
+         throw new Error("Precondition violation in Toryt Contracts: " + shiftedCondition);
        }
      },
 

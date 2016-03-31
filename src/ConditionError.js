@@ -31,15 +31,15 @@ module.exports = (function() {
 
   /**
    * Invariant:
-   * - condition is mandatory, and always a Function
+   * - condition is mandatory (expect when the instance is used as a prototype), and always a Function
    * - self can be anything, and is optional
-   * - args is mandatory, and an Arguments instance
+   * - args is mandatory (expect when the instance is used as a prototype), and an Arguments instance
    *
    * MUDO better doc
    */
   function ConditionError(condition, self, args) {
-    util.pre(function() {return condition && util.typeOf(condition) === "function";});
-    util.pre(function() {return args && util.typeOf(args) === "arguments";});
+    this._pre(function() {return !condition || util.typeOf(condition) === "function";});
+    this._pre(function() {return !args || util.typeOf(args) === "arguments";});
 
     Error.call(this, condition && conditionReport(condition, self, args));
     this._setAndFreezeProperty("condition", condition);
@@ -49,8 +49,16 @@ module.exports = (function() {
 
   ConditionError.prototype = new Error();
   ConditionError.prototype.constructor = ConditionError;
+  ConditionError.prototype.isCivilised = function() {
+    return this.condition && this.args;
+  };
+  ConditionError.prototype._pre = function(condition) {
+    util.pre(function() {return condition && util.typeOf(condition) === "function";});
+
+    util.pre(this, condition);
+  };
   ConditionError.prototype._setAndFreezeProperty = function(propertyName, value) {
-    util.pre(function() {return propertyName && util.typeOf(propertyName) === "string";});
+    this._pre(function() {return propertyName && util.typeOf(propertyName) === "string";});
 
     util.setAndFreezeProperty(this, propertyName, value);
   };
@@ -58,6 +66,11 @@ module.exports = (function() {
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;
   ConditionError.prototype.report = function() {
+    this._pre(function() {
+      //noinspection JSPotentiallyInvalidUsageOfThis
+      return this.isCivilised();
+    });
+
     return conditionReport(this.condition, this.self, this.args);
   };
 
