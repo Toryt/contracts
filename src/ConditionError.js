@@ -17,6 +17,8 @@
 module.exports = (function() {
   "use strict";
 
+  var util = require("./util");
+
   function conditionReport(condition, self, args) {
     return self + "." + condition +
            (args
@@ -25,6 +27,9 @@ module.exports = (function() {
   }
 
   function ConditionError(condition, self, args) {
+    util.pre(function() {return condition && util.typeOf(condition) === "function";});
+    util.pre(function() {return args && util.typeOf(args) === "arguments";});
+
     Error.call(this, condition && conditionReport(condition, self, args));
     this.condition = condition;
     this.self = self;

@@ -22,11 +22,7 @@
 
   describe("ConditionError", function() {
 
-    var conditionCases = [
-      null,
-      undefined,
-      function() {return "This simulates a condition";}
-    ];
+    var conditionCase = function() {return "This simulates a condition";};
 
     var selfCases = [
       undefined,
@@ -43,36 +39,48 @@
       function() {return "This simulates a self";}
     ];
 
+    function args() {return arguments;}
+
     var argsCases = [
-      undefined,
-      null,
-      [],
-      ["one argument"],
-      selfCases
+      args([]),
+      args(["one argument"]),
+      args.call(null, selfCases)
     ];
 
     describe("#ConditionError.report()", function() {
-      conditionCases.forEach(function(condition) {
-        selfCases.forEach(function(self) {
-          argsCases.forEach(function(args) {
-            it("produces a string with all toppings for " + condition + " - " + self + " - " + args, function() {
-              var result = ConditionError.report(condition, self, args);
-              console.log(result + "\n");
-              expect(result).to.be.a("string");
-              expect(result).to.contain("" + condition);
-              if (args) {
-                args.forEach(function(arg) {
-                  expect(result).to.contain("" + arg);
-                });
-              }
-              expect(result).to.contain("" + self);
-            });
+      selfCases.forEach(function(self) {
+        argsCases.forEach(function(args) {
+          it("produces a string with all toppings for " + self + " - " + args, function() {
+            var result = ConditionError.report(conditionCase, self, args);
+            console.log(result + "\n");
+            expect(result).to.be.a("string");
+            expect(result).to.contain("" + conditionCase);
+            if (args) {
+              Array.prototype.forEach.call(args, function(arg) {
+                expect(result).to.contain("" + arg);
+              });
+            }
+            expect(result).to.contain("" + self);
           });
         });
       });
     });
 
     describe("#ConditionError()", function() {
+      selfCases.forEach(function(self) {
+        argsCases.forEach(function(args) {
+          it("creates an instance with all toppings for " + self + " - " + args, function() {
+            var conditionError = new ConditionError(conditionCase, self, args);
+            expect(conditionError).to.be.an.instanceOf(ConditionError);
+            expect(conditionError).to.have.property("condition").that.is.a("function");
+            expect(conditionError.condition).equal(conditionCase);
+            expect(conditionError).to.have.property("self");
+            expect(conditionError.self).equal(self);
+            expect(conditionError).to.have.property("args").that.is.an("arguments");
+            expect(conditionError.args).equal(args);
+          });
+        });
+      });
     });
 
   });
