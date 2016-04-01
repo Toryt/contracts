@@ -21,7 +21,7 @@ module.exports = (function() {
   var ConditionError = require("../../src/ConditionError");
   var util = require("../../src/util");
   var testUtil = require("./testUtil");
-  
+
   function expectInvariants(conditionError) {
     expect(conditionError).to.be.an.instanceOf(ConditionError);
     expect(conditionError).to.have.property("condition").that.is.a("function");
@@ -36,65 +36,31 @@ module.exports = (function() {
     expect(conditionError).to.be.extensible;
   }
 
-  describe("ConditionError", function() {
+  var conditionCase = function() {return "This simulates a condition";};
 
-    var conditionCase = function() {return "This simulates a condition";};
+  var selfCases = [
+    undefined,
+    null,
+    4,
+    -1,
+    "",
+    "A string",
+    new Date(),
+    true,
+    false,
+    {},
+    /foo/,
+    function() {return "This simulates a self";}
+  ];
+  
+  var argsCases = [
+    [],
+    ["one argument"],
+    selfCases
+  ];
+  argsCases = argsCases.concat(argsCases.map(function(c) {return arguments;}));
 
-    var selfCases = [
-      undefined,
-      null,
-      4,
-      -1,
-      "",
-      "A string",
-      new Date(),
-      true,
-      false,
-      {},
-      /foo/,
-      function() {return "This simulates a self";}
-    ];
-
-    var argsCases = [
-      [],
-      ["one argument"],
-      selfCases
-    ];
-
-    argsCases = argsCases.concat(argsCases.map(function(c) {return arguments;}));
-
-    describe("#ConditionError.report()", function() {
-      selfCases.forEach(function(self) {
-        argsCases.forEach(function(args) {
-          it("produces a string with all toppings for " + self + " - " + args, function() {
-            var result = ConditionError.report(conditionCase, self, args);
-            console.log(result + "\n");
-            expect(result).to.be.a("string");
-            expect(result).to.contain("" + conditionCase);
-            if (args) {
-              Array.prototype.forEach.call(args, function(arg) {
-                expect(result).to.contain("" + arg);
-              });
-            }
-            expect(result).to.contain("" + self);
-          });
-        });
-      });
-    });
-
-    describe("#ConditionError()", function() {
-      selfCases.forEach(function(self) {
-        argsCases.forEach(function(args) {
-          it("creates an instance with all toppings for " + self + " - " + args, function() {
-            var conditionError = new ConditionError(conditionCase, self, args);
-            expectInvariants(conditionError);
-            expect(conditionError.condition).equal(conditionCase);
-            expect(conditionError.self).equal(self);
-            expect(conditionError.args).equal(args);
-          });
-        });
-      });
-    });
+  function generatePrototypeMethodsDescription() {
 
     describe("#_setAndFreezeProperty()", function() {
       it("sets a property, and freezes it", function() {
@@ -129,7 +95,50 @@ module.exports = (function() {
       });
     });
 
+  }
+
+  describe("ConditionError", function() {
+
+    describe("#ConditionError.report()", function() {
+      selfCases.forEach(function(self) {
+        argsCases.forEach(function(args) {
+          it("produces a string with all toppings for " + self + " - " + args, function() {
+            var result = ConditionError.report(conditionCase, self, args);
+            console.log(result + "\n");
+            expect(result).to.be.a("string");
+            expect(result).to.contain("" + conditionCase);
+            if (args) {
+              Array.prototype.forEach.call(args, function(arg) {
+                expect(result).to.contain("" + arg);
+              });
+            }
+            expect(result).to.contain("" + self);
+          });
+        });
+      });
+    });
+
+    describe("#ConditionError()", function() {
+      selfCases.forEach(function(self) {
+        argsCases.forEach(function(args) {
+          it("creates an instance with all toppings for " + self + " - " + args, function() {
+            var conditionError = new ConditionError(conditionCase, self, args);
+            expectInvariants(conditionError);
+            expect(conditionError.condition).equal(conditionCase);
+            expect(conditionError.self).equal(self);
+            expect(conditionError.args).equal(args);
+          });
+        });
+      });
+    });
+
+    generatePrototypeMethodsDescription();
+
   });
 
-  return expectInvariants;
+  return {
+    generatePrototypeMethodsDescription: generatePrototypeMethodsDescription,
+    expectInvariants: expectInvariants
+  };
+
 })();
