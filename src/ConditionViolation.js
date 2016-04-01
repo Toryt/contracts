@@ -14,16 +14,17 @@
  limitations under the License.
  */
 
-var ConditionError = require("./ConditionError");
-
-function ConditionViolation(condition, self, args) {
+module.exports = (function() {
   "use strict";
 
-  ConditionError.call(this, condition, self, args);
-  // MUDO seal freeze
-}
+  var ConditionError = require("./ConditionError");
 
-ConditionViolation.prototype = new ConditionError();
-ConditionViolation.prototype.constructor = ConditionViolation;
+  function ConditionViolation(condition, self, args) {
+    ConditionError.call(this, condition, self, args);
+  }
 
-module.exports = ConditionViolation;
+  ConditionViolation.prototype = new ConditionError();
+  ConditionViolation.prototype.constructor = ConditionViolation;
+
+  return ConditionViolation;
+})();
