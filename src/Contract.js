@@ -21,10 +21,9 @@ module.exports = (function() {
   var ConditionViolation = require("./ConditionViolation");
 
   function Contract(pre, post, exception) {
-    this.pre = pre ? pre.slice() : [];
-    this.post = post ? post.slice() : [];
-    this.exception = exception ? exception.slice() : [];
-    // MUDO seal freeze
+    this._setAndFreezeProperty("pre", pre ? pre.slice() : []);
+    this._setAndFreezeProperty("post", post ? post.slice() : []);
+    this._setAndFreezeProperty("exception", exception ? exception.slice() : []);
   }
 
   Contract.prototype = {
@@ -36,6 +35,12 @@ module.exports = (function() {
       util.pre(function() {return condition && util.typeOf(condition) === "function";});
 
       util.pre(this, condition);
+    },
+    _setAndFreezeProperty: function(propertyName, value) {
+      // MUDO test or generalize
+      this._pre(function() {return propertyName && util.typeOf(propertyName) === "string";});
+
+      util.setAndFreezeProperty(this, propertyName, value);
     },
     isImplementedBy: function(f) {
       return Contract.isAContractFunction(f) && f.contract === this;
@@ -49,10 +54,14 @@ module.exports = (function() {
         conditionResult = condition.apply(self, args);
       }
       catch (err) {
-        throw new ConditionMetaError(condition, self, args, err);
+        var cme = new ConditionMetaError(condition, self, args, err);
+        Object.freeze(cme);
+        throw cme;
       }
       if (!conditionResult) {
-        throw new ConditionViolation(condition, self, args);
+        var cv = new ConditionViolation(condition, self, args);
+        Object.freeze(cv);
+        throw cv;
       }
     },
     verifyAll: function(conditions, self, args) {
@@ -70,6 +79,7 @@ module.exports = (function() {
       this._pre(function() {return implFunction && util.typeOf(implFunction) === "function";});
 
       var contract = this;
+      Object.freeze(contract);
 
       function contractFunction() {
         var extendedArgs = Array.prototype.slice.call(arguments);
@@ -91,9 +101,8 @@ module.exports = (function() {
         return result;
       }
 
-      contractFunction.contract = contract;
-      contractFunction.implementation = implFunction;
-      // MUDO freeze seal
+      util.setAndFreezeProperty(contractFunction, "contract", contract);
+      util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
 
       return contractFunction;
     }
@@ -102,7 +111,10 @@ module.exports = (function() {
   Contract.isAContractFunction = function(f) {
     return util.typeOf(f) === "function"
            && f.contract instanceof Contract
-           && util.typeOf(f.implementation) === "function";
+           && util.isFrozenOwnProperty(f, "contract")
+           && Object.isFrozen(f.contract)
+           && util.typeOf(f.implementation) === "function"
+           && util.isFrozenOwnProperty(f, "implementation");
   };
 
   return Contract;

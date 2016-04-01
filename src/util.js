@@ -76,6 +76,13 @@
            value: value
          }
        );
+     },
+
+     isFrozenOwnProperty: function(obj, propName) {
+       var descriptor = Object.getOwnPropertyDescriptor(obj, propName);
+       return descriptor.enumerable === true
+              && descriptor.configurable === false
+              && descriptor.writable === false;
      }
    };
 

@@ -19,38 +19,23 @@
 
   var expect = require("chai").expect;
   var util = require("../../src/util");
+  var testUtil = require("./testUtil");
   var Contract = require("../../src/Contract");
   var ConditionMetaError = require("../../src/ConditionMetaError");
   var ConditionViolation = require("../../src/ConditionViolation");
-
-  function x() {
-    if (arguments.length <= 0) {
-      return [];
-    }
-    return Array.prototype.reduce.call(
-      arguments,
-      function(acc, arrayI) {
-        var ret = [];
-        acc.forEach(function(elementSoFar) {
-          arrayI.forEach(function(elementOfI) {
-            ret.push(elementSoFar.concat([elementOfI]));
-          });
-        });
-        return ret;
-      },
-      [[]]
-    );
-  }
 
   describe("Contract", function() {
 
     function invariants(contract) {
       expect(contract).to.have.ownProperty("pre"); // array not shared
       expect(contract.pre).to.be.an("array");
+      testUtil.expectFrozenProperty(contract, "pre");
       expect(contract).to.have.ownProperty("post"); // array not shared
       expect(contract.post).to.be.an("array");
+      testUtil.expectFrozenProperty(contract, "post");
       expect(contract).to.have.ownProperty("exception"); // array not shared
       expect(contract.exception).to.be.an("array");
+      testUtil.expectFrozenProperty(contract, "exception");
       expect(contract).to.have.property("verifyOne").that.is.a("function");
       expect(contract).to.have.property("verifyAll").that.is.a("function");
       expect(contract).to.have.property("implementation").that.is.a("function");
@@ -70,7 +55,7 @@
       function() {return null;}
     ].concat(someConditions);
 
-    var subjects = x(preCases, postCases, exceptionCases).map(function(args) {
+    var subjects = testUtil.x(preCases, postCases, exceptionCases).map(function(args) {
       return function() {return new Contract(args[0](), args[1](), args[2]());};
     });
 
@@ -141,10 +126,35 @@
           expect(Contract.isAContractFunction(subject)).not.to.be.ok;
         });
       });
-      it("says yes if there is an implementation Function, and a Contract", function() {
+      it("says no if there is an implementation Function, and a Contract, but the contract property is not frozen", function() {
         var subject = function() {};
         subject.contract = new Contract();
+        Object.freeze(subject.contract);
+        util.setAndFreezeProperty(subject, "implementation", function() {});
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(subject)).not.to.be.ok;
+      });
+      it("says no if there is an implementation Function, and a Contract, but the implementation is not frozen", function() {
+        var subject = function() {};
+        util.setAndFreezeProperty(subject, "contract", new Contract());
+        Object.freeze(subject.contract);
         subject.implementation = function() {};
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(subject)).not.to.be.ok;
+      });
+      it("says no if the contract is not frozen", function() {
+        var subject = function() {};
+        util.setAndFreezeProperty(subject, "contract", new Contract());
+        util.setAndFreezeProperty(subject, "implementation", function() {});
+        //noinspection BadExpressionStatementJS
+        expect(Contract.isAContractFunction(subject)).not.to.be.ok;
+      });
+      it("says yes if there is an implementation Function, and a Contract, and both properties are frozen," +
+         "and the contract is frozen", function() {
+        var subject = function() {};
+        util.setAndFreezeProperty(subject, "contract", new Contract());
+        Object.freeze(subject.contract);
+        util.setAndFreezeProperty(subject, "implementation", function() {});
         //noinspection BadExpressionStatementJS
         expect(Contract.isAContractFunction(subject)).to.be.ok;
       });
@@ -235,9 +245,10 @@
       });
       it("says yes if the argument is a contract function for the contract", function() {
         var subject = new Contract();
+        Object.freeze(subject);
         var f = function() {};
-        f.contract = subject;
-        f.implementation = function() {};
+        util.setAndFreezeProperty(f, "contract", subject);
+        util.setAndFreezeProperty(f, "implementation", function() {});
         //noinspection BadExpressionStatementJS
         expect(subject.isImplementedBy(f)).to.be.ok;
         invariants(subject);
@@ -255,6 +266,8 @@
             //noinspection BadExpressionStatementJS
             expect(exception).to.be.ok;
             expect(exception).to.be.instanceOf(ConditionMetaError);
+            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+            expect(exception).to.be.frozen;
             expect(exception.error).to.eql(err);
             expect(exception.condition).to.equal(condition);
             expect(exception.self).to.equal(self);
@@ -288,6 +301,8 @@
               //noinspection BadExpressionStatementJS
               expect(exception).to.be.ok;
               expect(exception).to.be.instanceOf(ConditionViolation);
+              //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+              expect(exception).to.be.frozen;
               expect(exception.condition).to.equal(condition);
               expect(exception.self).to.equal(self);
               expect(exception.args).to.eql(args);
@@ -396,12 +411,16 @@
         if (thrown) {
           it("throws a ConditionMetaError if one of the conditions fails", function() {
             expect(exception).to.be.instanceOf(ConditionMetaError);
+            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+            expect(exception).to.be.frozen;
             expect(exception.condition).to.equal(firstFailure);
           });
         }
         else if (firstFailure) {
           it("throws a ConditionViolation if one of the conditions evaluates nominally to false", function() {
             expect(exception).to.be.instanceOf(ConditionViolation);
+            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+            expect(exception).to.be.frozen;
             expect(exception.condition).to.equal(firstFailure);
           });
         }
@@ -555,6 +574,8 @@
       function expectPost(contract, result) {
         //noinspection BadExpressionStatementJS
         expect(contract.isImplementedBy(result)).to.be.ok;
+        //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+        expect(contract).to.be.frozen;
         invariants(contract);
       }
 
@@ -751,7 +772,7 @@
         })
       };
 
-      it("returns a contract function that implements the contract", function() {
+      it("returns a contract function that implements the contract, which is frozen", function() {
         var subject = new Contract();
         expectPost(subject, subject.implementation(function() {}));
       });

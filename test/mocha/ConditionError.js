@@ -20,29 +20,18 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var ConditionError = require("../../src/ConditionError");
   var util = require("../../src/util");
-
-
-  function expectFrozenProperty(subject, propertyName) {
-    //noinspection JSUnresolvedFunction
-    expect(subject).to.have.ownPropertyDescriptor(propertyName);
-    //noinspection JSUnresolvedFunction
-    expect(subject).ownPropertyDescriptor(propertyName).to.have.property('enumerable', true);
-    //noinspection JSUnresolvedFunction
-    expect(subject).ownPropertyDescriptor(propertyName).to.have.property('configurable', false);
-    //noinspection JSUnresolvedFunction
-    expect(subject).ownPropertyDescriptor(propertyName).to.have.property('writable', false);
-  }
-
+  var testUtil = require("./testUtil");
+  
   function expectInvariants(conditionError) {
     expect(conditionError).to.be.an.instanceOf(ConditionError);
     expect(conditionError).to.have.property("condition").that.is.a("function");
-    expectFrozenProperty(conditionError, "condition");
+    testUtil.expectFrozenProperty(conditionError, "condition");
     expect(conditionError).to.have.property("self");
-    expectFrozenProperty(conditionError, "self");
+    testUtil.expectFrozenProperty(conditionError, "self");
     //noinspection BadExpressionStatementJS
     expect(conditionError).to.have.property("args").that.is.ok;
     expect(util.typeOf(conditionError.args)).to.satisfy(function(t) {return t === "arguments" || t === "array";});
-    expectFrozenProperty(conditionError, "args");
+    testUtil.expectFrozenProperty(conditionError, "args");
     //noinspection JSUnresolvedVariable,BadExpressionStatementJS
     expect(conditionError).to.be.extensible;
   }
@@ -113,7 +102,7 @@ module.exports = (function() {
         var propertyName = "a new property";
         var propertyValue = "a new value";
         subject._setAndFreezeProperty(propertyName, propertyValue);
-        expectFrozenProperty(subject, propertyName);
+        testUtil.expectFrozenProperty(subject, propertyName);
         expect(subject[propertyName]).to.equal(propertyValue);
         expectInvariants(subject);
       });
