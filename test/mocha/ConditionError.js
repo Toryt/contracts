@@ -19,6 +19,8 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var ConditionError = require("../../src/ConditionError");
+  var util = require("../../src/util");
+
 
   function expectFrozenProperty(subject, propertyName) {
     //noinspection JSUnresolvedFunction
@@ -37,7 +39,9 @@ module.exports = (function() {
     expectFrozenProperty(conditionError, "condition");
     expect(conditionError).to.have.property("self");
     expectFrozenProperty(conditionError, "self");
-    expect(conditionError).to.have.property("args").that.is.an("arguments");
+    //noinspection BadExpressionStatementJS
+    expect(conditionError).to.have.property("args").that.is.ok;
+    expect(util.typeOf(conditionError.args)).to.satisfy(function(t) {return t === "arguments" || t === "array";});
     expectFrozenProperty(conditionError, "args");
     //noinspection JSUnresolvedVariable,BadExpressionStatementJS
     expect(conditionError).to.be.extensible;
@@ -62,13 +66,13 @@ module.exports = (function() {
       function() {return "This simulates a self";}
     ];
 
-    function args() {return arguments;}
-
     var argsCases = [
-      args([]),
-      args(["one argument"]),
-      args.call(null, selfCases)
+      [],
+      ["one argument"],
+      selfCases
     ];
+
+    argsCases = argsCases.concat(argsCases.map(function(c) {return arguments;}));
 
     describe("#ConditionError.report()", function() {
       selfCases.forEach(function(self) {

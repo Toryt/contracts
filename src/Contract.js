@@ -16,8 +16,6 @@
 module.exports = (function() {
   "use strict";
 
-  // MUDO add meta-preconditions
-
   var util = require("./util");
   var ConditionMetaError = require("./ConditionMetaError");
   var ConditionViolation = require("./ConditionViolation");
@@ -33,10 +31,19 @@ module.exports = (function() {
     constructor: Contract,
     pre: [],
     post: [],
+    _pre: function(condition) {
+      // MUDO test or generalize
+      util.pre(function() {return condition && util.typeOf(condition) === "function";});
+
+      util.pre(this, condition);
+    },
     isImplementedBy: function(f) {
       return Contract.isAContractFunction(f) && f.contract === this;
     },
     verifyOne: function(condition, self, args) {
+      this._pre(function() {return condition && util.typeOf(condition) === "function";});
+      this._pre(function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
+
       var conditionResult;
       try {
         conditionResult = condition.apply(self, args);
@@ -49,11 +56,19 @@ module.exports = (function() {
       }
     },
     verifyAll: function(conditions, self, args) {
+      this._pre(function() {
+        return conditions
+               && util.typeOf(conditions) === "array"
+               && conditions.every(function(c) {return c && util.typeOf(c) === "function";});});
+      this._pre(function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
+
       if (conditions) {
         conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
       }
     },
     implementation: function(implFunction) {
+      this._pre(function() {return implFunction && util.typeOf(implFunction) === "function";});
+
       var contract = this;
 
       function contractFunction() {

@@ -80,12 +80,13 @@
       function() {return {};}
     ];
 
+    function args() {return arguments;}
+
     var argsCases = [
-      function() {return undefined;},
-      function() {return null;},
-      function() {return [];},
-      function() {return ["an argument"];},
-      function() {return ["an argument", "another argument"];}
+      function() {return args();},
+      function() {return args("an argument");},
+      function() {return args("an argument", "another argument");},
+      function() {return ["an argument in an array"];}
     ];
 
     var thingsThatAreNotAFunctionNorAContract = [
@@ -269,15 +270,9 @@
           expect(appliedArgs).to.be.ok;
           //noinspection JSAnnotator,BadExpressionStatementJS
           expect(appliedArgs).to.be.arguments;
-          if (!args) {
-            //noinspection BadExpressionStatementJS
-            expect(appliedArgs).to.be.empty;
-          }
-          else {
-            expect(appliedArgs).to.have.lengthOf(args.length);
-            for (var i = 0; i < args.length; i++) {
-              expect(appliedArgs[i]).to.equal(args[i]);
-            }
+          expect(appliedArgs).to.have.lengthOf(args.length);
+          for (var i = 0; i < args.length; i++) {
+            expect(appliedArgs[i]).to.equal(args[i]);
           }
         });
         it("should throw an exception when the condition and evaluates to false, and not otherwise, " +
@@ -367,7 +362,7 @@
 
     describe("#verifyAll()", function() {
       function expectPost(subject, conditions, self, args, exception) {
-        if (!conditions || conditions.length <= 0) {
+        if (conditions.length <= 0) {
           it("doesn't throw an exception if there are no conditions", function() {
             //noinspection BadExpressionStatementJS
             expect(exception).not.to.be.ok;
@@ -450,9 +445,6 @@
       }
 
       var conditionsCases = [
-        function() {return undefined;},
-        function() {return null;},
-        function() {return [];},
         function() {return [];},
         function() {
           return [

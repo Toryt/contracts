@@ -21,7 +21,7 @@ module.exports = (function() {
 
   function conditionReport(condition, self, args) {
     util.pre(function() {return condition && util.typeOf(condition) === "function";});
-    util.pre(function() {return args && util.typeOf(args) === "arguments";});
+    util.pre(function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
 
     return self + "." + condition +
            (args
@@ -33,13 +33,13 @@ module.exports = (function() {
    * Invariant:
    * - condition is mandatory (expect when the instance is used as a prototype), and always a Function
    * - self can be anything, and is optional
-   * - args is mandatory (expect when the instance is used as a prototype), and an Arguments instance
+   * - args is mandatory (expect when the instance is used as a prototype), and an Arguments or Array instance
    *
    * MUDO better doc
    */
   function ConditionError(condition, self, args) {
     this._pre(function() {return !condition || util.typeOf(condition) === "function";});
-    this._pre(function() {return !args || util.typeOf(args) === "arguments";});
+    this._pre(function() {return !args || util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     Error.call(this, condition && conditionReport(condition, self, args));
     this._setAndFreezeProperty("condition", condition);
