@@ -266,6 +266,8 @@
             //noinspection BadExpressionStatementJS
             expect(exception).to.be.ok;
             expect(exception).to.be.instanceOf(ConditionMetaError);
+            //noinspection BadExpressionStatementJS
+            expect(exception.isCivilized()).to.be.ok;
             //noinspection JSUnresolvedVariable,BadExpressionStatementJS
             expect(exception).to.be.frozen;
             expect(exception.error).to.eql(err);
@@ -301,6 +303,8 @@
               //noinspection BadExpressionStatementJS
               expect(exception).to.be.ok;
               expect(exception).to.be.instanceOf(ConditionViolation);
+              //noinspection BadExpressionStatementJS
+              expect(exception.isCivilized()).to.be.ok;
               //noinspection JSUnresolvedVariable,BadExpressionStatementJS
               expect(exception).to.be.frozen;
               expect(exception.condition).to.equal(condition);
@@ -411,6 +415,8 @@
         if (thrown) {
           it("throws a ConditionMetaError if one of the conditions fails", function() {
             expect(exception).to.be.instanceOf(ConditionMetaError);
+            //noinspection BadExpressionStatementJS
+            expect(exception.isCivilized()).to.be.ok;
             //noinspection JSUnresolvedVariable,BadExpressionStatementJS
             expect(exception).to.be.frozen;
             expect(exception.condition).to.equal(firstFailure);
@@ -419,6 +425,8 @@
         else if (firstFailure) {
           it("throws a ConditionViolation if one of the conditions evaluates nominally to false", function() {
             expect(exception).to.be.instanceOf(ConditionViolation);
+            //noinspection BadExpressionStatementJS
+            expect(exception.isCivilized()).to.be.ok;
             //noinspection JSUnresolvedVariable,BadExpressionStatementJS
             expect(exception).to.be.frozen;
             expect(exception.condition).to.equal(firstFailure);
