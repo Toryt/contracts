@@ -60,14 +60,6 @@ module.exports = (function() {
       set: undefined
     }
   );
-  ConditionMetaError.prototype.report = function() {
-    // no weaker precondition
-    var superResult = ConditionError.prototype.report.call(this);
-    superResult += " threw \"";
-    superResult += ((this.error && this.error.message) || this.error);
-    superResult += "\"";
-    return superResult;
-  };
 
   ConditionMetaError.createMessage = function(condition, self, args, error) {
     util.pre(function() {return util.typeOf(condition) === "function";});

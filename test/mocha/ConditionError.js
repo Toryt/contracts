@@ -122,29 +122,6 @@ module.exports = (function() {
       });
     });
 
-    describe("#report()", function() {
-      allSubjectGenerators.forEach(function(subjectGenerator) {
-        var subjectContext = subjectGenerator();
-        var subject = subjectContext.subject;
-        it(
-          "produces a string with all toppings from an instance with " + subjectContext.description,
-          function() {
-            var result = subject.report();
-            console.log(result + "\n");
-            expect(result).to.be.a("string");
-            expect(result).to.contain("" + subject.condition);
-            if (subject.args) {
-              Array.prototype.forEach.call(subject.args, function(arg) {
-                expect(result).to.contain("" + arg);
-              });
-            }
-            expect(result).to.contain("" + subject.self);
-            expectInvariants(subject);
-          }
-        );
-      });
-    });
-
   }
 
   describe("ConditionError", function() {
@@ -166,25 +143,6 @@ module.exports = (function() {
             Array.prototype.forEach(function(arg) {
               expect(result).to.contain("" + arg);
             });
-          });
-        });
-      });
-    });
-
-    describe("#ConditionError.report()", function() {
-      selfCases.forEach(function(self) {
-        argsCases.forEach(function(args) {
-          it("produces a string with all toppings for " + self + " - " + args, function() {
-            var result = ConditionError.report(conditionCase, self, args);
-            console.log(result + "\n");
-            expect(result).to.be.a("string");
-            expect(result).to.contain("" + conditionCase);
-            if (args) {
-              Array.prototype.forEach.call(args, function(arg) {
-                expect(result).to.contain("" + arg);
-              });
-            }
-            expect(result).to.contain("" + self);
           });
         });
       });

@@ -59,16 +59,6 @@ module.exports = (function() {
 
   var util = require("./util");
 
-  function conditionReport(condition, self, args) {
-    util.pre(function() {return condition && util.typeOf(condition) === "function";});
-    util.pre(function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
-
-    return self + "." + condition +
-           (args
-             ? ("(" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")")
-             : "()");
-  }
-
   /**
    * Invariant:
    * - condition is mandatory, and always a Function
@@ -124,14 +114,6 @@ module.exports = (function() {
       set: undefined
     }
   );
-  ConditionError.prototype.report = function() {
-    this._pre(function() {
-      //noinspection JSPotentiallyInvalidUsageOfThis
-      return this.isCivilized();
-    });
-
-    return conditionReport(this.condition, this.self, this.args);
-  };
 
   /**
    * This method is called in the constructor to generate the message for the error being created.
@@ -146,7 +128,6 @@ module.exports = (function() {
            " was called on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
   };
-  ConditionError.report = conditionReport;
 
   return ConditionError;
 })();
