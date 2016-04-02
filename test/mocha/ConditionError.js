@@ -66,7 +66,7 @@ module.exports = (function() {
   ];
   argsCases = argsCases.concat(argsCases.map(function(c) {return arguments;}));
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectsGenerator) {
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
     describe("#_setAndFreezeProperty()", function() {
       it("sets a property, and freezes it", function() {
@@ -83,23 +83,24 @@ module.exports = (function() {
     // MUDO isCivilised
 
     describe("#report()", function() {
-      selfCases.forEach(function(self) {
-        argsCases.forEach(function(args) {
-          it("produces a string with all toppings from an instance with " + self + " - " + args, function() {
-            var subject = new ConditionError(conditionCase, self, args);
+      allSubjectGenerators.forEach(function(subjectGenerator) {
+        var subject = subjectGenerator();
+        it(
+          "produces a string with all toppings from an instance with " + subject.self + " - " + subject.args,
+          function() {
             var result = subject.report();
             console.log(result + "\n");
             expect(result).to.be.a("string");
-            expect(result).to.contain("" + conditionCase);
-            if (args) {
-              Array.prototype.forEach.call(args, function(arg) {
+            expect(result).to.contain("" + subject.condition);
+            if (subject.args) {
+              Array.prototype.forEach.call(subject.args, function(arg) {
                 expect(result).to.contain("" + arg);
               });
             }
-            expect(result).to.contain("" + self);
+            expect(result).to.contain("" + subject.self);
             expectInvariants(subject);
-          });
-        });
+          }
+        );
       });
     });
 
@@ -141,7 +142,10 @@ module.exports = (function() {
     generatePrototypeMethodsDescriptions(
       function () {
         return new ConditionError(conditionCase, null, argsCases[0]);
-      }
+      },
+      testUtil.x([conditionCase], selfCases, argsCases).map(function(parameters) {
+        return function () {return new ConditionError(parameters[0], parameters[1], parameters[2])};
+      })
     );
 
   });

@@ -32,8 +32,8 @@ module.exports = (function() {
     conditionErrorTest.expectConstructorPost(result, condition, self, args);
   }
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectsGenerator) {
-    conditionErrorTest.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectsGenerator);
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+    conditionErrorTest.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
   }
 
   describe("ConditionViolation", function() {
@@ -53,7 +53,12 @@ module.exports = (function() {
     generatePrototypeMethodsDescriptions(
       function() {
         return new ConditionViolation(conditionErrorTest.conditionCase, null, conditionErrorTest.argsCases[0]);
-      }
+      },
+      testUtil
+        .x([conditionErrorTest.conditionCase], conditionErrorTest.selfCases, conditionErrorTest.argsCases)
+        .map(function(parameters) {
+          return function() {return new ConditionViolation(parameters[0], parameters[1], parameters[2])};
+        })
     );
 
   });
