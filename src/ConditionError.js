@@ -70,23 +70,27 @@ module.exports = (function() {
 
   /**
    * Invariant:
-   * - condition is mandatory (expect when the instance is used as a prototype), and always a Function
+   * - condition is mandatory, and always a Function
    * - self can be anything, and is optional
-   * - args is mandatory (expect when the instance is used as a prototype), and an Arguments or Array instance
+   * - args is mandatory, and an Arguments or Array instance
    *
    * MUDO better doc
    */
   function ConditionError(condition, self, args) {
-    this._pre(function() {return !condition || util.typeOf(condition) === "function";});
-    this._pre(function() {return !args || util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+    this._pre(function() {return util.typeOf(condition) === "function";});
+    this._pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
-    this._setAndFreezeProperty("message", condition && conditionReport(condition, self, args));
+    var message = this._createMessage.apply(undefined, arguments);
+    this._setAndFreezeProperty("message", message);
     this._setAndFreezeProperty("condition", condition);
     this._setAndFreezeProperty("self", self);
     this._setAndFreezeProperty("args", args);
+    var stackSource = new Error(message);
+    stackSource.name = this.name;
+    this._setAndFreezeProperty("stack", stackSource.stack);
   }
 
-  ConditionError.prototype = new Error();
+  ConditionError.prototype = new Error("This is a dummy message in the ConditionError prototype.");
   ConditionError.prototype.constructor = ConditionError;
   ConditionError.prototype.name = "Contract Condition Error";
   ConditionError.prototype.isCivilized = function() {
@@ -101,6 +105,12 @@ module.exports = (function() {
     this._pre(function() {return propertyName && util.typeOf(propertyName) === "string";});
 
     util.setAndFreezeProperty(this, propertyName, value);
+  };
+  ConditionError.prototype._createMessage = function(condition, self, args) { // MUDO test
+    return "Error concerning condition " + condition +
+           " while function " + "A FUNCTION" +
+           " was called on " + self +
+           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
   };
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;

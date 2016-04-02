@@ -18,6 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var ConditionError = require("./ConditionError");
+  var util = require("./util");
 
   /**
    * error must be optional
@@ -26,17 +27,40 @@ module.exports = (function() {
    * Therefor, a ConditionMetaError is also civilized
    */
   function ConditionMetaError(condition, self, args, error) {
-    ConditionError.call(this, condition, self, args);
+    this._pre(function() {return util.typeOf(condition) === "function";});
+    this._pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+
+    ConditionError.apply(this, arguments);
     if (error) {
       Object.freeze(error);
     }
     this._setAndFreezeProperty("error", error);
+    // MUDO add the error trace to this trace 
   }
 
-  ConditionMetaError.prototype = new ConditionError();
+  ConditionMetaError.prototype = new ConditionError(
+    function() {return "This is a dummy condition in the ConditionMetaError prototype."},
+    undefined,
+    []
+  );
   ConditionMetaError.prototype.constructor = ConditionMetaError;
   ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
   ConditionMetaError.prototype.error = null;
+  ConditionMetaError.prototype._createMessage = function(condition, self, args, error) {
+    return "An error occurred while evaluating " + condition +
+           " when function " + "A FUNCTION" +
+           " was called on " + self +
+           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + "): " +
+           error;
+  };
+  ConditionMetaError.prototype.report = function() {
+    // no weaker precondition
+    var superResult = ConditionError.prototype.report.call(this);
+    superResult += " threw \"";
+    superResult += ((this.error && this.error.message) || this.error);
+    superResult += "\"";
+    return superResult;
+  };
 
   return ConditionMetaError;
 })();

@@ -18,14 +18,28 @@ module.exports = (function() {
   "use strict";
 
   var ConditionError = require("./ConditionError");
+  var util = require("./util");
 
   function ConditionViolation(condition, self, args) {
-    ConditionError.call(this, condition, self, args);
+    this._pre(function() {return util.typeOf(condition) === "function";});
+    this._pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+
+    ConditionError.apply(this, arguments);
   }
 
-  ConditionViolation.prototype = new ConditionError();
+  ConditionViolation.prototype = new ConditionError(
+    function() {return "This is a dummy condition in the ConditionViolation prototype."},
+    undefined,
+    []
+  );
   ConditionViolation.prototype.constructor = ConditionViolation;
   ConditionViolation.prototype.name = "Contract Condition Violation";
+  ConditionViolation.prototype._createMessage = function(condition, self, args) {
+    return "Condition " + condition +
+           " was violated while function " + "A FUNCTION" +
+           " was called on " + self +
+           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
+  };
 
   return ConditionViolation;
 })();

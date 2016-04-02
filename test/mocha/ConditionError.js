@@ -25,7 +25,7 @@ module.exports = (function() {
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionError);
     var startOfStack = subject.name + ": " + subject.message;
-    //MUDO expect(subject.stack.indexOf(startOfStack)).to.equal(0);
+    expect(subject.stack.indexOf(startOfStack)).to.equal(0);
     expect(subject).to.have.property("condition").that.is.a("function");
     testUtil.expectFrozenProperty(subject, "condition");
     expect(subject).to.have.property("self");
@@ -44,7 +44,7 @@ module.exports = (function() {
     expect(result.args).equal(args);
   }
 
-  var conditionCase = function() {return "This simulates a condition";}; // MUDO not mandatory!
+  var conditionCase = function() {return "This simulates a condition";};
 
   var selfCases = [
     undefined,
@@ -61,7 +61,7 @@ module.exports = (function() {
     function() {return "This simulates a self";}
   ];
 
-  var argsCases = [ // MUDO not mandatory!
+  var argsCases = [
     [],
     ["one argument"],
     selfCases

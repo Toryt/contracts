@@ -578,6 +578,7 @@
       });
     });
 
+    //noinspection FunctionTooLongJS
     describe("#implementation", function() {
       function expectPost(contract, result) {
         //noinspection BadExpressionStatementJS
@@ -923,13 +924,11 @@
       });
 
       /* Uncomment to demonstrate what happens when a contract fails: */
-      //self.fibonacci(undefined);
-      //self.fibonacci(null);
-      //self.fibonacci("bar");
-      //self.fibonacci(-5);
-      //self.fibonacciWrong(wrongParameter);
-      //self.fibonacciWrong(5);
-      //contractWithAFailingPre.implementation(function() {return resultWhenMetaError;})(1);
+      // self.fibonacci(undefined);
+      // self.fibonacci(-5);
+      // self.fibonacciWrong(wrongParameter);
+      // self.fibonacciWrong(5);
+      // contractWithAFailingPre.implementation(function() {return resultWhenMetaError;})(1);
     });
   });
 })();
