@@ -78,19 +78,6 @@ module.exports = (function() {
 
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
-    // MUDO move
-    // describe("#_setAndFreezeProperty()", function() {
-    //   it("sets a property, and freezes it", function() {
-    //     var subject = oneSubjectGenerator();
-    //     var propertyName = "a new property";
-    //     var propertyValue = "a new value";
-    //     subject._setAndFreezeProperty(propertyName, propertyValue);
-    //     testUtil.expectFrozenProperty(subject, propertyName);
-    //     expect(subject[propertyName]).to.equal(propertyValue);
-    //     expectInvariants(subject);
-    //   });
-    // });
-
     describe("#isCivilized", function() {
       allSubjectGenerators.forEach(function(subjectGenerator) {
         var subjectContext = subjectGenerator();
