@@ -22,18 +22,24 @@ module.exports = (function() {
   var util = require("../../src/util");
   var testUtil = require("./testUtil");
 
-  function expectInvariants(conditionError) {
-    expect(conditionError).to.be.an.instanceOf(ConditionError);
-    expect(conditionError).to.have.property("condition").that.is.a("function");
-    testUtil.expectFrozenProperty(conditionError, "condition");
-    expect(conditionError).to.have.property("self");
-    testUtil.expectFrozenProperty(conditionError, "self");
+  function expectInvariants(subject) {
+    expect(subject).to.be.an.instanceOf(ConditionError);
+    expect(subject).to.have.property("condition").that.is.a("function");
+    testUtil.expectFrozenProperty(subject, "condition");
+    expect(subject).to.have.property("self");
+    testUtil.expectFrozenProperty(subject, "self");
     //noinspection BadExpressionStatementJS
-    expect(conditionError).to.have.property("args").that.is.ok;
-    expect(util.typeOf(conditionError.args)).to.satisfy(function(t) {return t === "arguments" || t === "array";});
-    testUtil.expectFrozenProperty(conditionError, "args");
+    expect(subject).to.have.property("args").that.is.ok;
+    expect(util.typeOf(subject.args)).to.satisfy(function(t) {return t === "arguments" || t === "array";});
+    testUtil.expectFrozenProperty(subject, "args");
     //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-    expect(conditionError).to.be.extensible;
+    expect(subject).to.be.extensible;
+  }
+
+  function expectConstructorPost(result, condition, self, args) {
+    expect(result.condition).equal(condition);
+    expect(result.self).equal(self);
+    expect(result.args).equal(args);
   }
 
   var conditionCase = function() {return "This simulates a condition";};
@@ -52,7 +58,7 @@ module.exports = (function() {
     /foo/,
     function() {return "This simulates a self";}
   ];
-  
+
   var argsCases = [
     [],
     ["one argument"],
@@ -73,6 +79,8 @@ module.exports = (function() {
         expectInvariants(subject);
       });
     });
+
+    // MUDO isCivilised
 
     describe("#report()", function() {
       selfCases.forEach(function(self) {
@@ -122,11 +130,9 @@ module.exports = (function() {
       selfCases.forEach(function(self) {
         argsCases.forEach(function(args) {
           it("creates an instance with all toppings for " + self + " - " + args, function() {
-            var conditionError = new ConditionError(conditionCase, self, args);
-            expectInvariants(conditionError);
-            expect(conditionError.condition).equal(conditionCase);
-            expect(conditionError.self).equal(self);
-            expect(conditionError.args).equal(args);
+            var result = new ConditionError(conditionCase, self, args);
+            expectConstructorPost(result, conditionCase, self, args);
+            expectInvariants(result);
           });
         });
       });
@@ -137,8 +143,12 @@ module.exports = (function() {
   });
 
   return {
-    generatePrototypeMethodsDescription: generatePrototypeMethodsDescription,
-    expectInvariants: expectInvariants
+    selfCases: selfCases,
+    argsCases: argsCases,
+    conditionCase: conditionCase,
+    expectConstructorPost: expectConstructorPost,
+    expectInvariants: expectInvariants,
+    generatePrototypeMethodsDescription: generatePrototypeMethodsDescription
   };
 
 })();
