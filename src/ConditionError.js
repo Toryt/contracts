@@ -50,7 +50,7 @@ module.exports = (function() {
   ConditionError.prototype = new Error();
   ConditionError.prototype.constructor = ConditionError;
   ConditionError.prototype.isCivilized = function() {
-    return this.condition && this.args;
+    return !!(this.condition && this.args);
   };
   ConditionError.prototype._pre = function(condition) {
     util.pre(function() {return condition && util.typeOf(condition) === "function";});

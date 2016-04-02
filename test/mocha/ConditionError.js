@@ -80,7 +80,37 @@ module.exports = (function() {
       });
     });
 
-    // MUDO isCivilized
+    describe("#isCivilized", function() {
+      allSubjectGenerators.forEach(function(subjectGenerator) {
+        var subjectContext = subjectGenerator();
+        var subject = subjectContext.subject;
+        it("determines civilization as expected from an instance with " + subjectContext.description, function() {
+          var result = subject.isCivilized();
+          expect(result).to.be.a("boolean");
+          /* Postcondition is an implication: subtypes might add more
+
+             (result === true) ==> (this.condition && this.args),
+             which is the same as
+             (result === false) || (this.condition && this.args)
+             this.condition && this.args || (result === false)
+             !(!this.condition || !this.args) || (result === false)
+             (!this.condition || !this.args) ==> (result === false)
+
+             A false result doesn't imply anything. It could be because there is no condition, or no args,
+             but it also might be because of any other reason.
+             When there is a condition and there are args, the result does not necessarily has be true.
+             There might be other conditions that need to apply for that.
+           */
+          if (result) {
+            //noinspection BadExpressionStatementJS
+            expect(subject.condition).to.be.ok;
+            //noinspection BadExpressionStatementJS
+            expect(subject.args).to.be.ok;
+          }
+          expectInvariants(subject);
+        });
+      });
+    });
 
     describe("#report()", function() {
       allSubjectGenerators.forEach(function(subjectGenerator) {
