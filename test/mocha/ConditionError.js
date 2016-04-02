@@ -42,7 +42,7 @@ module.exports = (function() {
     expect(result.args).equal(args);
   }
 
-  var conditionCase = function() {return "This simulates a condition";};
+  var conditionCase = function() {return "This simulates a condition";}; // MUDO not mandatory!
 
   var selfCases = [
     undefined,
@@ -59,7 +59,7 @@ module.exports = (function() {
     function() {return "This simulates a self";}
   ];
 
-  var argsCases = [
+  var argsCases = [ // MUDO not mandatory!
     [],
     ["one argument"],
     selfCases
@@ -80,13 +80,14 @@ module.exports = (function() {
       });
     });
 
-    // MUDO isCivilised
+    // MUDO isCivilized
 
     describe("#report()", function() {
       allSubjectGenerators.forEach(function(subjectGenerator) {
-        var subject = subjectGenerator();
+        var subjectContext = subjectGenerator();
+        var subject = subjectContext.subject;
         it(
-          "produces a string with all toppings from an instance with " + subject.self + " - " + subject.args,
+          "produces a string with all toppings from an instance with " + subjectContext.description,
           function() {
             var result = subject.report();
             console.log(result + "\n");
@@ -144,7 +145,12 @@ module.exports = (function() {
         return new ConditionError(conditionCase, null, argsCases[0]);
       },
       testUtil.x([conditionCase], selfCases, argsCases).map(function(parameters) {
-        return function () {return new ConditionError(parameters[0], parameters[1], parameters[2])};
+        return function() {
+          return {
+            subject: new ConditionError(parameters[0], parameters[1], parameters[2]),
+            description: parameters.join(" - ")
+          };
+        };
       })
     );
 

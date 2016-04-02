@@ -49,7 +49,7 @@ module.exports = (function() {
 
   ConditionError.prototype = new Error();
   ConditionError.prototype.constructor = ConditionError;
-  ConditionError.prototype.isCivilised = function() {
+  ConditionError.prototype.isCivilized = function() {
     return this.condition && this.args;
   };
   ConditionError.prototype._pre = function(condition) {
@@ -68,7 +68,7 @@ module.exports = (function() {
   ConditionError.prototype.report = function() {
     this._pre(function() {
       //noinspection JSPotentiallyInvalidUsageOfThis
-      return this.isCivilised();
+      return this.isCivilized();
     });
 
     return conditionReport(this.condition, this.self, this.args);

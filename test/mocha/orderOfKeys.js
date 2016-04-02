@@ -164,4 +164,41 @@ describe("syntax", function() {
       expect(count).to.equal(3); // undefined and function not stringified
     });
   });
+
+  function throwTest(toThrow) {
+    var endedNominally;
+    try {
+      //noinspection ExceptionCaughtLocallyJS
+      throw toThrow;
+      //noinspection UnreachableCodeJS
+      endedNominally = true;
+    }
+    catch (thrown) {
+      endedNominally = false;
+      expect(thrown).to.equal(toThrow);
+    }
+    //noinspection BadExpressionStatementJS
+    expect(endedNominally).not.to.be.ok;
+  }
+
+  describe("#throw", function() {
+    it("can throw a truthy thing", function() {
+      throwTest("a string to throw");
+    });
+    it("can throw \"\"", function() {
+      throwTest("");
+    });
+    it("can throw false", function() {
+      throwTest(false);
+    });
+    it("can throw 0", function() {
+      throwTest(0);
+    });
+    it("can throw undefined", function() {
+      throwTest(undefined);
+    });
+    it("can throw null", function() {
+      throwTest(null);
+    });
+  });
 });

@@ -14,18 +14,28 @@
  limitations under the License.
  */
 
-var ConditionError = require("./ConditionError");
-
-function ConditionMetaError(condition, self, args, error) {
+module.exports = (function() {
   "use strict";
 
-  ConditionError.call(this, condition, self, args);
-  this.error = error;
-  // MUDO seal freeze
-}
+  var ConditionError = require("./ConditionError");
 
-ConditionMetaError.prototype = new ConditionError();
-ConditionMetaError.prototype.constructor = ConditionMetaError;
-ConditionMetaError.prototype.error = null;
+  /**
+   * error must be optional
+   * - to make it possible to use this as the prototype for more special types
+   * - because in JavaScript, also undefined and null can be thrown
+   * Therefor, a ConditionMetaError is also civilized
+   */
+  function ConditionMetaError(condition, self, args, error) {
+    ConditionError.call(this, condition, self, args);
+    if (error) {
+      Object.freeze(error);
+    }
+    this._setAndFreezeProperty("error", error);
+  }
 
-module.exports = ConditionMetaError;
+  ConditionMetaError.prototype = new ConditionError();
+  ConditionMetaError.prototype.constructor = ConditionMetaError;
+  ConditionMetaError.prototype.error = null;
+
+  return ConditionMetaError;
+})();
