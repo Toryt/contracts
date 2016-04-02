@@ -35,6 +35,7 @@ module.exports = (function() {
 
   ConditionMetaError.prototype = new ConditionError();
   ConditionMetaError.prototype.constructor = ConditionMetaError;
+  ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
   ConditionMetaError.prototype.error = null;
 
   return ConditionMetaError;

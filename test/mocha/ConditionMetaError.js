@@ -66,6 +66,7 @@ module.exports = (function() {
               var result = new ConditionMetaError(conditionErrorTest.conditionCase, self, args, error);
               expectConstructorPost(result, conditionErrorTest.conditionCase, self, args, error);
               expectInvariants(result);
+              expect(result.name).to.equal("Contract Condition Meta-Error");
             });
           });
         });

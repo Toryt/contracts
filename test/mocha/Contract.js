@@ -671,7 +671,6 @@
         return result;
       });
 
-      var intentionalError = "This precondition intentionally fails.";
       var resultWhenMetaError = "This is the result or exception when we get a meta error";
 
       function callAndExpectException(self, func, parameter, expectException) {
@@ -780,6 +779,12 @@
         })
       };
 
+      var intentionalError = "This precondition intentionally fails.";
+
+      var contractWithAFailingPre = new Contract(
+        [function() {throw intentionalError;}]
+      );
+
       it("returns a contract function that implements the contract, which is frozen", function() {
         var subject = new Contract();
         expectPost(subject, subject.implementation(function() {}));
@@ -805,10 +810,6 @@
       });
       failsOnPreconditionViolation(self, self.fibonacci, -5, fibonacci.contract.pre[1]);
       it("fails with a meta-error when a precondition is kaput", function() {
-        var contractWithAFailingPre = new Contract(
-          [function() {throw intentionalError;}]
-        );
-
         failsOnMetaError(
           undefined,
           contractWithAFailingPre.implementation(function() {return resultWhenMetaError;}),
@@ -816,9 +817,6 @@
         );
       });
       it("fails with a meta-error when a precondition is kaput when it is a method", function() {
-        var contractWithAFailingPre = new Contract(
-          [function() {throw intentionalError;}]
-        );
         var self = {
           method: contractWithAFailingPre.implementation(function() {return resultWhenMetaError;})
         };
@@ -923,6 +921,15 @@
           expectDeepViolation(self, exception, parameter);
         });
       });
+
+      /* Uncomment to demonstrate what happens when a contract fails: */
+      //self.fibonacci(undefined);
+      //self.fibonacci(null);
+      //self.fibonacci("bar");
+      //self.fibonacci(-5);
+      //self.fibonacciWrong(wrongParameter);
+      //self.fibonacciWrong(5);
+      //contractWithAFailingPre.implementation(function() {return resultWhenMetaError;})(1);
     });
   });
 })();

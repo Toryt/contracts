@@ -25,6 +25,7 @@ module.exports = (function() {
 
   ConditionViolation.prototype = new ConditionError();
   ConditionViolation.prototype.constructor = ConditionViolation;
+  ConditionViolation.prototype.name = "Contract Condition Violation";
 
   return ConditionViolation;
 })();

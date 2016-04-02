@@ -24,6 +24,8 @@ module.exports = (function() {
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionError);
+    var startOfStack = subject.name + ": " + subject.message;
+    //MUDO expect(subject.stack.indexOf(startOfStack)).to.equal(0);
     expect(subject).to.have.property("condition").that.is.a("function");
     testUtil.expectFrozenProperty(subject, "condition");
     expect(subject).to.have.property("self");
@@ -165,6 +167,7 @@ module.exports = (function() {
             var result = new ConditionError(conditionCase, self, args);
             expectConstructorPost(result, conditionCase, self, args);
             expectInvariants(result);
+            expect(result.name).to.equal("Contract Condition Error");
           });
         });
       });

@@ -45,6 +45,7 @@ module.exports = (function() {
             var result = new ConditionViolation(conditionErrorTest.conditionCase, self, args);
             expectConstructorPost(result, conditionErrorTest.conditionCase, self, args);
             expectInvariants(result);
+            expect(result.name).to.equal("Contract Condition Violation");
           });
         });
       });
