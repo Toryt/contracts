@@ -24,6 +24,7 @@ module.exports = (function() {
   var conditionErrorTest = require("./ConditionError");
 
   function expectInvariants(subject) {
+    expect(subject).to.be.an.instanceOf(ConditionViolation);
     conditionErrorTest.expectInvariants(subject);
   }
 
@@ -31,8 +32,8 @@ module.exports = (function() {
     conditionErrorTest.expectConstructorPost(result, condition, self, args);
   }
 
-  function generatePrototypeMethodsDescription() {
-    conditionErrorTest.generatePrototypeMethodsDescription();
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectsGenerator) {
+    conditionErrorTest.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectsGenerator);
   }
 
   describe("ConditionViolation", function() {
@@ -49,14 +50,18 @@ module.exports = (function() {
       });
     });
 
-    generatePrototypeMethodsDescription(/*MUDO*/);
+    generatePrototypeMethodsDescriptions(
+      function() {
+        return new ConditionViolation(conditionErrorTest.conditionCase, null, conditionErrorTest.argsCases[0]);
+      }
+    );
 
   });
 
   var test = {
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost,
-    generatePrototypeMethodsDescription: generatePrototypeMethodsDescription
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
   };
   Object.setPrototypeOf(test, conditionErrorTest);
   return test;

@@ -66,11 +66,11 @@ module.exports = (function() {
   ];
   argsCases = argsCases.concat(argsCases.map(function(c) {return arguments;}));
 
-  function generatePrototypeMethodsDescription() {
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectsGenerator) {
 
     describe("#_setAndFreezeProperty()", function() {
       it("sets a property, and freezes it", function() {
-        var subject = new ConditionError(conditionCase, null, argsCases[0]);
+        var subject = oneSubjectGenerator();
         var propertyName = "a new property";
         var propertyValue = "a new value";
         subject._setAndFreezeProperty(propertyName, propertyValue);
@@ -138,7 +138,11 @@ module.exports = (function() {
       });
     });
 
-    generatePrototypeMethodsDescription();
+    generatePrototypeMethodsDescriptions(
+      function () {
+        return new ConditionError(conditionCase, null, argsCases[0]);
+      }
+    );
 
   });
 
@@ -148,7 +152,7 @@ module.exports = (function() {
     conditionCase: conditionCase,
     expectConstructorPost: expectConstructorPost,
     expectInvariants: expectInvariants,
-    generatePrototypeMethodsDescription: generatePrototypeMethodsDescription
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
   };
 
 })();
