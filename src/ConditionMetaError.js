@@ -27,14 +27,14 @@ module.exports = (function() {
    * Therefor, a ConditionMetaError is also civilized
    */
   function ConditionMetaError(condition, self, args, error) {
-    this._pre(function() {return util.typeOf(condition) === "function";});
-    this._pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+    util.pre(this, function() {return util.typeOf(condition) === "function";});
+    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     ConditionError.apply(this, arguments);
     if (error) {
       Object.freeze(error);
     }
-    this._setAndFreezeProperty("error", error);
+    util.setAndFreezeProperty(this, "error", error);
   }
 
   ConditionMetaError.prototype = new ConditionError(

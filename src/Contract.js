@@ -21,33 +21,21 @@ module.exports = (function() {
   var ConditionViolation = require("./ConditionViolation");
 
   function Contract(pre, post, exception) {
-    this._setAndFreezeProperty("pre", pre ? pre.slice() : []);
-    this._setAndFreezeProperty("post", post ? post.slice() : []);
-    this._setAndFreezeProperty("exception", exception ? exception.slice() : []);
+    util.setAndFreezeProperty(this, "pre", pre ? pre.slice() : []);
+    util.setAndFreezeProperty(this, "post", post ? post.slice() : []);
+    util.setAndFreezeProperty(this, "exception", exception ? exception.slice() : []);
   }
 
   Contract.prototype = {
     constructor: Contract,
     pre: [],
     post: [],
-    _pre: function(condition) {
-      // MUDO test or generalize
-      util.pre(function() {return condition && util.typeOf(condition) === "function";});
-
-      util.pre(this, condition);
-    },
-    _setAndFreezeProperty: function(propertyName, value) {
-      // MUDO test or generalize
-      this._pre(function() {return propertyName && util.typeOf(propertyName) === "string";});
-
-      util.setAndFreezeProperty(this, propertyName, value);
-    },
     isImplementedBy: function(f) {
       return Contract.isAContractFunction(f) && f.contract === this;
     },
     verifyOne: function(condition, self, args) {
-      this._pre(function() {return condition && util.typeOf(condition) === "function";});
-      this._pre(function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
+      util.pre(this, function() {return condition && util.typeOf(condition) === "function";});
+      util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
 
       var conditionResult;
       try {
@@ -65,18 +53,18 @@ module.exports = (function() {
       }
     },
     verifyAll: function(conditions, self, args) {
-      this._pre(function() {
+      util.pre(this, function() {
         return conditions
                && util.typeOf(conditions) === "array"
                && conditions.every(function(c) {return c && util.typeOf(c) === "function";});});
-      this._pre(function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
+      util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
 
       if (conditions) {
         conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
       }
     },
     implementation: function(implFunction) {
-      this._pre(function() {return implFunction && util.typeOf(implFunction) === "function";});
+      util.pre(this, function() {return implFunction && util.typeOf(implFunction) === "function";});
 
       var contract = this;
       Object.freeze(contract);

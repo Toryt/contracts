@@ -68,18 +68,18 @@ module.exports = (function() {
    * MUDO better doc
    */
   function ConditionError(condition, self, args) {
-    this._pre(function() {return util.typeOf(condition) === "function";});
-    this._pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+    util.pre(this, function() {return util.typeOf(condition) === "function";});
+    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     var message = this.constructor.createMessage.apply(undefined, arguments);
-    this._setAndFreezeProperty("message", message);
-    this._setAndFreezeProperty("condition", condition);
-    this._setAndFreezeProperty("self", self);
-    this._setAndFreezeProperty("args", args);
+    util.setAndFreezeProperty(this, "message", message);
+    util.setAndFreezeProperty(this, "condition", condition);
+    util.setAndFreezeProperty(this, "self", self);
+    util.setAndFreezeProperty(this, "args", args);
     var stackSource = new Error(message);
     stackSource.name = this.name;
     Object.freeze(stackSource);
-    this._setAndFreezeProperty("_stackSource", stackSource);
+    util.setAndFreezeProperty(this, "_stackSource", stackSource);
   }
 
   ConditionError.prototype = new Error("This is a dummy message in the ConditionError prototype.");
@@ -87,16 +87,6 @@ module.exports = (function() {
   ConditionError.prototype.name = "Contract Condition Error";
   ConditionError.prototype.isCivilized = function() {
     return !!(this.condition && this.args);
-  };
-  ConditionError.prototype._pre = function(condition) {
-    util.pre(function() {return condition && util.typeOf(condition) === "function";});
-
-    util.pre(this, condition);
-  };
-  ConditionError.prototype._setAndFreezeProperty = function(propertyName, value) {
-    this._pre(function() {return propertyName && util.typeOf(propertyName) === "string";});
-
-    util.setAndFreezeProperty(this, propertyName, value);
   };
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;

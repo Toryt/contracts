@@ -21,8 +21,8 @@ module.exports = (function() {
   var util = require("./util");
 
   function ConditionViolation(condition, self, args) {
-    this._pre(function() {return util.typeOf(condition) === "function";});
-    this._pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+    util.pre(this, function() {return util.typeOf(condition) === "function";});
+    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     ConditionError.apply(this, arguments);
   }
