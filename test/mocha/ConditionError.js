@@ -24,8 +24,6 @@ module.exports = (function() {
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionError);
-    var startOfStack = subject.name + ": " + subject.message;
-    expect(subject.stack.indexOf(startOfStack)).to.equal(0);
     expect(subject).to.have.property("condition").that.is.a("function");
     testUtil.expectFrozenProperty(subject, "condition");
     expect(subject).to.have.property("self");
@@ -34,6 +32,16 @@ module.exports = (function() {
     expect(subject).to.have.property("args").that.is.ok;
     expect(util.typeOf(subject.args)).to.satisfy(function(t) {return t === "arguments" || t === "array";});
     testUtil.expectFrozenProperty(subject, "args");
+    expect(subject).to.have.ownProperty("_stackSource");
+    expect(subject._stackSource).to.be.instanceOf(Error);
+    expect(subject._stackSource).to.have.property("name").that.equals(subject.name);
+    expect(subject._stackSource).to.have.property("message").that.equals(subject.message);
+    testUtil.expectFrozenProperty(subject, "_stackSource");
+    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+    expect(subject._stackSource).to.be.frozen;
+    expect(subject).to.have.property("stack");
+    var startOfStack = subject.name + ": " + subject.message;
+    expect(subject.stack.indexOf(startOfStack)).to.equal(0);
     //noinspection JSUnresolvedVariable,BadExpressionStatementJS
     expect(subject).to.be.extensible;
   }

@@ -35,7 +35,6 @@ module.exports = (function() {
       Object.freeze(error);
     }
     this._setAndFreezeProperty("error", error);
-    // MUDO add the error trace to this trace 
   }
 
   ConditionMetaError.prototype = new ConditionError(
@@ -46,6 +45,21 @@ module.exports = (function() {
   ConditionMetaError.prototype.constructor = ConditionMetaError;
   ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
   ConditionMetaError.prototype.error = null;
+  Object.defineProperty(
+    ConditionError.prototype,
+    "stack",
+    {
+      configurable: true,
+      enumerable: true,
+      get: function() {
+        var stack = this._stackSource.stack;
+        stack += "Caused by:\n";
+        stack += this.error && (this.error.stack || ("" + this.error));
+        return stack;
+      },
+      set: undefined
+    }
+  );
   ConditionMetaError.prototype.report = function() {
     // no weaker precondition
     var superResult = ConditionError.prototype.report.call(this);

@@ -36,6 +36,7 @@ module.exports = (function() {
        we want to create an Error-instance as prototype for a custom error type. That is obviously never
        the stack trace we want.
        Some platforms offer a method to fill out the stack trace.
+       this.stack = "A String" does nothing on node.
 
      Errors support the following properties common over all platforms:
      - message
@@ -87,7 +88,8 @@ module.exports = (function() {
     this._setAndFreezeProperty("args", args);
     var stackSource = new Error(message);
     stackSource.name = this.name;
-    this._setAndFreezeProperty("stack", stackSource.stack);
+    Object.freeze(stackSource);
+    this._setAndFreezeProperty("_stackSource", stackSource);
   }
 
   ConditionError.prototype = new Error("This is a dummy message in the ConditionError prototype.");
@@ -109,6 +111,19 @@ module.exports = (function() {
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;
+  ConditionError.prototype._stackSource = null;
+  Object.defineProperty(
+    ConditionError.prototype,
+    "stack",
+    {
+      configurable: true,
+      enumerable: true,
+      get: function() {
+        return this._stackSource.stack;
+      },
+      set: undefined
+    }
+  );
   ConditionError.prototype.report = function() {
     this._pre(function() {
       //noinspection JSPotentiallyInvalidUsageOfThis
@@ -122,7 +137,7 @@ module.exports = (function() {
    * This method is called in the constructor to generate the message for the error being created.
    * It is called with the same arguments as the constructor.
    */
-  ConditionError.createMessage = function(condition, self, args) { // MUDO test
+  ConditionError.createMessage = function(condition, self, args) {
     util.pre(function() {return util.typeOf(condition) === "function";});
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
