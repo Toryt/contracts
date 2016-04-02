@@ -38,6 +38,28 @@ module.exports = (function() {
 
   describe("ConditionViolation", function() {
 
+    describe("#ConditionViolation.createMessage", function() {
+      it("has a function createMessage()", function() {
+        expect(ConditionViolation).to.have.property("createMessage").that.is.a("function");
+      });
+    });
+
+    describe("#ConditionViolation.createMessage()", function() {
+      conditionErrorTest.selfCases.forEach(function(self) {
+        conditionErrorTest.argsCases.forEach(function(args) {
+          it("works when called with " + self + " - " + args, function() {
+            var result = ConditionViolation.createMessage(conditionErrorTest.conditionCase, self, args);
+            expect(result).to.be.a("string");
+            expect(result).to.contain("" + conditionErrorTest.conditionCase);
+            expect(result).to.contain("" + self);
+            Array.prototype.forEach(function(arg) {
+              expect(result).to.contain("" + arg);
+            });
+          });
+        });
+      });
+    });
+
     describe("#ConditionViolation()", function() {
       conditionErrorTest.selfCases.forEach(function(self) {
         conditionErrorTest.argsCases.forEach(function(args) {
@@ -46,6 +68,7 @@ module.exports = (function() {
             expectConstructorPost(result, conditionErrorTest.conditionCase, self, args);
             expectInvariants(result);
             expect(result.name).to.equal("Contract Condition Violation");
+            expect(result.message).to.equal(ConditionViolation.createMessage(conditionErrorTest.conditionCase, self, args));
           });
         });
       });

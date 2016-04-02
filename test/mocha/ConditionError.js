@@ -141,6 +141,28 @@ module.exports = (function() {
 
   describe("ConditionError", function() {
 
+    describe("#ConditionError.createMessage", function() {
+      it("has a function createMessage()", function() {
+        expect(ConditionError).to.have.property("createMessage").that.is.a("function");
+      });
+    });
+
+    describe("#ConditionError.createMessage()", function() {
+      selfCases.forEach(function(self) {
+        argsCases.forEach(function(args) {
+          it("works when called with " + self + " - " + args, function() {
+            var result = ConditionError.createMessage(conditionCase, self, args);
+            expect(result).to.be.a("string");
+            expect(result).to.contain("" + conditionCase);
+            expect(result).to.contain("" + self);
+            Array.prototype.forEach(function(arg) {
+              expect(result).to.contain("" + arg);
+            });
+          });
+        });
+      });
+    });
+
     describe("#ConditionError.report()", function() {
       selfCases.forEach(function(self) {
         argsCases.forEach(function(args) {
@@ -168,6 +190,7 @@ module.exports = (function() {
             expectConstructorPost(result, conditionCase, self, args);
             expectInvariants(result);
             expect(result.name).to.equal("Contract Condition Error");
+            expect(result.message).to.equal(ConditionError.createMessage(conditionCase, self, args));
           });
         });
       });

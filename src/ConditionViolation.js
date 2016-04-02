@@ -34,7 +34,11 @@ module.exports = (function() {
   );
   ConditionViolation.prototype.constructor = ConditionViolation;
   ConditionViolation.prototype.name = "Contract Condition Violation";
-  ConditionViolation.prototype._createMessage = function(condition, self, args) {
+
+  ConditionViolation.createMessage = function(condition, self, args) {
+    util.pre(function() {return util.typeOf(condition) === "function";});
+    util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+
     return "Condition " + condition +
            " was violated while function " + "A FUNCTION" +
            " was called on " + self +

@@ -80,7 +80,7 @@ module.exports = (function() {
     this._pre(function() {return util.typeOf(condition) === "function";});
     this._pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
-    var message = this._createMessage.apply(undefined, arguments);
+    var message = this.constructor.createMessage.apply(undefined, arguments);
     this._setAndFreezeProperty("message", message);
     this._setAndFreezeProperty("condition", condition);
     this._setAndFreezeProperty("self", self);
@@ -106,12 +106,6 @@ module.exports = (function() {
 
     util.setAndFreezeProperty(this, propertyName, value);
   };
-  ConditionError.prototype._createMessage = function(condition, self, args) { // MUDO test
-    return "Error concerning condition " + condition +
-           " while function " + "A FUNCTION" +
-           " was called on " + self +
-           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
-  };
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;
@@ -124,6 +118,19 @@ module.exports = (function() {
     return conditionReport(this.condition, this.self, this.args);
   };
 
+  /**
+   * This method is called in the constructor to generate the message for the error being created.
+   * It is called with the same arguments as the constructor.
+   */
+  ConditionError.createMessage = function(condition, self, args) { // MUDO test
+    util.pre(function() {return util.typeOf(condition) === "function";});
+    util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+
+    return "Error concerning condition " + condition +
+           " while function " + "A FUNCTION" + // MUDO FUNCTION
+           " was called on " + self +
+           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
+  };
   ConditionError.report = conditionReport;
 
   return ConditionError;

@@ -46,13 +46,6 @@ module.exports = (function() {
   ConditionMetaError.prototype.constructor = ConditionMetaError;
   ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
   ConditionMetaError.prototype.error = null;
-  ConditionMetaError.prototype._createMessage = function(condition, self, args, error) {
-    return "An error occurred while evaluating " + condition +
-           " when function " + "A FUNCTION" +
-           " was called on " + self +
-           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + "): " +
-           error;
-  };
   ConditionMetaError.prototype.report = function() {
     // no weaker precondition
     var superResult = ConditionError.prototype.report.call(this);
@@ -60,6 +53,17 @@ module.exports = (function() {
     superResult += ((this.error && this.error.message) || this.error);
     superResult += "\"";
     return superResult;
+  };
+
+  ConditionMetaError.createMessage = function(condition, self, args, error) {
+    util.pre(function() {return util.typeOf(condition) === "function";});
+    util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+
+    return "An error occurred while evaluating " + condition +
+           " when function " + "A FUNCTION" +
+           " was called on " + self +
+           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + "): " +
+           error;
   };
 
   return ConditionMetaError;
