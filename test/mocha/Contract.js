@@ -18,7 +18,7 @@
   "use strict";
 
   var expect = require("chai").expect;
-  var util = require("../../src/util");
+  var util = require("../../src/_private/util");
   var testUtil = require("./testUtil");
   var Contract = require("../../src/Contract");
   var ConditionMetaError = require("../../src/ConditionMetaError");

@@ -57,7 +57,7 @@ module.exports = (function() {
      than where we create the custom error.
    */
 
-  var util = require("./util");
+  var util = require("./_private/util");
 
   /**
    * Invariant:
