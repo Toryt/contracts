@@ -94,7 +94,38 @@
       });
     });
 
- // MUDO 3 tests to go
+    var truthy = function() {return true;};
+    var falsy = function() {return undefined;};
+
+    function escape(str) {
+      var result = str.replace(/\(/g, "\\(");
+      result = result.replace(/\)/g, "\\)");
+      result = result.replace(/\{}/g, "\\{");
+      return result;
+    }
+
+    describe("#pre()", function() {
+      it("ends nominally with a condition that returns true without self", function() {
+        util.pre(truthy);
+      });
+      [undefined, null, {a: 4}].forEach(function(self) {
+        it("ends nominally with a condition that returns true with self === " + self, function() {
+          util.pre(self, truthy);
+        });
+      });
+      it("throws with a condition that returns false without self", function() {
+        expect(function() {util.pre(falsy);})
+          .to.throw(Error, new RegExp("^Precondition violation in Toryt Contracts: " + escape("" + falsy) + "$"));
+      });
+      [undefined, null, {a: 4}].forEach(function(self) {
+        it("throws with a condition that returns false with self === " + self, function() {
+          expect(function() {util.pre(self, falsy);})
+            .to.throw(Error, new RegExp("^Precondition violation in Toryt Contracts: " + escape("" + falsy) + "$"));
+        });
+      });
+    });
+
+ // MUDO 2 tests to go
 
     // MUDO move
     // describe("#_setAndFreezeProperty()", function() {
