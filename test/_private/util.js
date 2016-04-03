@@ -41,8 +41,8 @@
     {subject: false, expected: "boolean"}
   ];
 
-  describe("_private", function() {
-    describe("util", function() {
+  // describe("_private", function() {
+    describe("_private/util", function() {
 
       describe("#typeof()", function() {
         stuff.forEach(function(record) {
@@ -186,5 +186,5 @@
       });
 
     });
-  });
+  // });
 })();
