@@ -1,5 +1,5 @@
 {
-  "name": "toryt-contracts",
+  "name": "toryt-contracts-I",
   "version": "0.0.0",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
   "main": "index.js",
@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/**/*.js"
   },
   "repository": {
     "type": "git",
