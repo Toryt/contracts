@@ -16,7 +16,7 @@
 module.exports = (function() {
   "use strict";
 
-  var util = require("./_private/util");
+  var util = require("./../_private/util");
   var ConditionMetaError = require("./ConditionMetaError");
   var ConditionViolation = require("./ConditionViolation");
 

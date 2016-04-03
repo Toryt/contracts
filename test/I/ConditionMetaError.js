@@ -18,7 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var expect = require("chai").expect;
-  var ConditionMetaError = require("../../src/ConditionMetaError");
+  var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var conditionErrorTest = require("./ConditionError");

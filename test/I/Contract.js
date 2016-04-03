@@ -20,9 +20,9 @@
   var expect = require("chai").expect;
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
-  var Contract = require("../../src/Contract");
-  var ConditionMetaError = require("../../src/ConditionMetaError");
-  var ConditionViolation = require("../../src/ConditionViolation");
+  var Contract = require("../../src/I/Contract");
+  var ConditionMetaError = require("../../src/I/ConditionMetaError");
+  var ConditionViolation = require("../../src/I/ConditionViolation");
 
   // describe("I", function() {
     describe("I/Contract", function() {

@@ -18,7 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var expect = require("chai").expect;
-  var ConditionViolation = require("../../src/ConditionViolation");
+  var ConditionViolation = require("../../src/I/ConditionViolation");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var conditionErrorTest = require("./ConditionError");

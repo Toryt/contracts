@@ -18,7 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var ConditionError = require("./ConditionError");
-  var util = require("./_private/util");
+  var util = require("./../_private/util");
 
   /**
    * error must be optional
