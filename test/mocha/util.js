@@ -137,7 +137,52 @@
       });
     });
 
-    // MUDO 1 tests to go
+    describe("#isFrozenOwnProperty()", function() {
+      var propName = "test prop name";
+      var propValue = "dummy value";
+      var truths = [true, false];
+      testUtil.x(truths, truths, truths).forEach(function(values) {
+        var subject = {};
+        Object.defineProperty(
+          subject,
+          propName,
+          {
+            configurable: values[0],
+            enumerable: values[1],
+            writable: values[2],
+            value: propValue
+          }
+        );
+        var specialized = {};
+        Object.setPrototypeOf(specialized, subject);
+        expect(specialized[propName]).to.equal(propValue); // check inheritance - test code validity
+        var result = util.isFrozenOwnProperty(subject, propName);
+        var specializedResult = util.isFrozenOwnProperty(specialized, propName);
+        if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
+          it ("reports true if the property is an own property, " +
+              "and it is enumerable, not configurable and not writable", function() {
+            //noinspection BadExpressionStatementJS
+            expect(result).to.be.true;
+          });
+        }
+        else {
+          it("reports false if the property is an own property, and" +
+             " enumerable === " + values[1] +
+             " configurable === " + values[0] +
+             " writable === " + values[2], function() {
+            //noinspection BadExpressionStatementJS
+            expect(result).not.to.be.ok;
+          });
+        }
+        it("reports false if the property is not an own property, and" +
+           " enumerable === " + values[1] +
+           " configurable === " + values[0] +
+           " writable === " + values[2], function() {
+          //noinspection BadExpressionStatementJS
+          expect(specializedResult).not.to.be.ok;
+        });
+      });
+    });
 
   });
 })();
