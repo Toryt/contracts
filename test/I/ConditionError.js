@@ -112,59 +112,61 @@ module.exports = (function() {
 
   }
 
-  describe("ConditionError", function() {
+  // describe("I", function() {
+    describe("I/ConditionError", function() {
 
-    describe("#ConditionError.createMessage", function() {
-      it("has a function createMessage()", function() {
-        expect(ConditionError).to.have.property("createMessage").that.is.a("function");
+      describe("#ConditionError.createMessage", function() {
+        it("has a function createMessage()", function() {
+          expect(ConditionError).to.have.property("createMessage").that.is.a("function");
+        });
       });
-    });
 
-    describe("#ConditionError.createMessage()", function() {
-      selfCases.forEach(function(self) {
-        argsCases.forEach(function(args) {
-          it("works when called with " + self + " - " + args, function() {
-            var result = ConditionError.createMessage(conditionCase, self, args);
-            expect(result).to.be.a("string");
-            expect(result).to.contain("" + conditionCase);
-            expect(result).to.contain("" + self);
-            Array.prototype.forEach(function(arg) {
-              expect(result).to.contain("" + arg);
+      describe("#ConditionError.createMessage()", function() {
+        selfCases.forEach(function(self) {
+          argsCases.forEach(function(args) {
+            it("works when called with " + self + " - " + args, function() {
+              var result = ConditionError.createMessage(conditionCase, self, args);
+              expect(result).to.be.a("string");
+              expect(result).to.contain("" + conditionCase);
+              expect(result).to.contain("" + self);
+              Array.prototype.forEach(function(arg) {
+                expect(result).to.contain("" + arg);
+              });
             });
           });
         });
       });
-    });
 
-    describe("#ConditionError()", function() {
-      selfCases.forEach(function(self) {
-        argsCases.forEach(function(args) {
-          it("creates an instance with all toppings for " + self + " - " + args, function() {
-            var result = new ConditionError(conditionCase, self, args);
-            expectConstructorPost(result, conditionCase, self, args);
-            expectInvariants(result);
-            expect(result.name).to.equal("Contract Condition Error");
-            expect(result.message).to.equal(ConditionError.createMessage(conditionCase, self, args));
+      describe("#ConditionError()", function() {
+        selfCases.forEach(function(self) {
+          argsCases.forEach(function(args) {
+            it("creates an instance with all toppings for " + self + " - " + args, function() {
+              var result = new ConditionError(conditionCase, self, args);
+              expectConstructorPost(result, conditionCase, self, args);
+              expectInvariants(result);
+              expect(result.name).to.equal("Contract Condition Error");
+              expect(result.message).to.equal(ConditionError.createMessage(conditionCase, self, args));
+            });
           });
         });
       });
-    });
 
-    generatePrototypeMethodsDescriptions(
-      function () {
-        return new ConditionError(conditionCase, null, argsCases[0]);
-      },
-      testUtil.x([conditionCase], selfCases, argsCases).map(function(parameters) {
-        return function() {
-          return {
-            subject: new ConditionError(parameters[0], parameters[1], parameters[2]),
-            description: parameters.join(" - ")
+      generatePrototypeMethodsDescriptions(
+        function () {
+          return new ConditionError(conditionCase, null, argsCases[0]);
+        },
+        testUtil.x([conditionCase], selfCases, argsCases).map(function(parameters) {
+          return function() {
+            return {
+              subject: new ConditionError(parameters[0], parameters[1], parameters[2]),
+              description: parameters.join(" - ")
+            };
           };
-        };
-      })
-    );
+        })
+      );
 
-  });
+    });
+  // });
 
   return {
     selfCases: selfCases,
