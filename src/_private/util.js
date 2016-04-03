@@ -78,7 +78,6 @@
        );
      },
 
-     // MUDO test
      defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
        Object.defineProperty(
          prototype,

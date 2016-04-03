@@ -138,6 +138,21 @@
         });
       });
 
+      describe("#defineFrozenReadOnlyArrayProperty", function() {
+        it("sets a frozen read-only property, with a getter", function() {
+          var subject = {a: 4};
+          Object.setPrototypeOf(subject, {});
+          var propertyName = "a new property";
+          var privatePropertyName = "_" + propertyName;
+          var array = [1, 2, 3];
+          util.setAndFreezeProperty(subject, privatePropertyName, array);
+          util.defineFrozenReadOnlyArrayProperty(Object.getPrototypeOf(subject), propertyName, privatePropertyName);
+          testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propertyName, privatePropertyName);
+          expect(subject[propertyName]).to.eql(array);
+          expect(subject[propertyName]).to.not.equal(array);
+        });
+      });
+
       describe("#isFrozenOwnProperty()", function() {
         var propName = "test prop name";
         var propValue = "dummy value";
