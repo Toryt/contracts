@@ -19,6 +19,7 @@
 
   var expect = require("chai").expect;
   var util = require("../../src/util");
+  var testUtil = require("./testUtil");
 
   //noinspection JSPrimitiveTypeWrapperUsage,JSHint
   var stuff = [
@@ -125,21 +126,18 @@
       });
     });
 
- // MUDO 2 tests to go
+    describe("#setAndFreezeProperty()", function() {
+      it("sets a property, and freezes it", function() {
+        var subject = {a: 4};
+        var propertyName = "a new property";
+        var propertyValue = "a new value";
+        util.setAndFreezeProperty(subject, propertyName, propertyValue);
+        testUtil.expectFrozenProperty(subject, propertyName);
+        expect(subject[propertyName]).to.equal(propertyValue);
+      });
+    });
 
-    // MUDO move
-    // describe("#_setAndFreezeProperty()", function() {
-    //   it("sets a property, and freezes it", function() {
-    //     var subject = oneSubjectGenerator();
-    //     var propertyName = "a new property";
-    //     var propertyValue = "a new value";
-    //     subject._setAndFreezeProperty(propertyName, propertyValue);
-    //     testUtil.expectFrozenProperty(subject, propertyName);
-    //     expect(subject[propertyName]).to.equal(propertyValue);
-    //     expectInvariants(subject);
-    //   });
-    // });
-
+    // MUDO 1 tests to go
 
   });
 })();
