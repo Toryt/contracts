@@ -30,6 +30,7 @@ module.exports = (function() {
       expect(subject.error).to.be.frozen;
     }
     conditionErrorTest.expectInvariants(subject);
+    expect(subject.stack).to.contain("" + subject.error);
   }
 
   function expectConstructorPost(result, condition, self, args, error) {
