@@ -20,7 +20,7 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var ConditionError = require("../../src/ConditionError");
   var util = require("../../src/_private/util");
-  var testUtil = require("./testUtil");
+  var testUtil = require("../_testUtil");
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionError);

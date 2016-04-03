@@ -19,7 +19,7 @@
 
   var expect = require("chai").expect;
   var util = require("../../src/_private/util");
-  var testUtil = require("./../mocha/testUtil");
+  var testUtil = require("../_testUtil");
 
   //noinspection JSPrimitiveTypeWrapperUsage,JSHint
   var stuff = [

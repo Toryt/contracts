@@ -20,7 +20,7 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var ConditionMetaError = require("../../src/ConditionMetaError");
   var util = require("../../src/_private/util");
-  var testUtil = require("./testUtil");
+  var testUtil = require("../_testUtil");
   var conditionErrorTest = require("./ConditionError");
 
   function expectInvariants(subject) {
