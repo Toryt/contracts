@@ -78,6 +78,22 @@
        );
      },
 
+     // MUDO test
+     defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
+       Object.defineProperty(
+         prototype,
+         propName,
+         {
+           configurable: false,
+           enumerable: true,
+           get: function() {
+             return this[privatePropName].slice();
+           },
+           set: undefined
+         }
+       );
+     },
+
      isFrozenOwnProperty: function(obj, propName) {
        var descriptor = Object.getOwnPropertyDescriptor(obj, propName);
        return descriptor

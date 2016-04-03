@@ -21,15 +21,16 @@ module.exports = (function() {
   var ConditionViolation = require("./ConditionViolation");
 
   function Contract(pre, post, exception) {
-    util.setAndFreezeProperty(this, "pre", pre ? pre.slice() : []);
-    util.setAndFreezeProperty(this, "post", post ? post.slice() : []);
-    util.setAndFreezeProperty(this, "exception", exception ? exception.slice() : []);
+    util.setAndFreezeProperty(this, "_pre", pre ? pre.slice() : []);
+    util.setAndFreezeProperty(this, "_post", post ? post.slice() : []);
+    util.setAndFreezeProperty(this, "_exception", exception ? exception.slice() : []);
   }
 
   Contract.prototype = {
     constructor: Contract,
-    pre: [],
-    post: [],
+    _pre: null,
+    _post: null,
+    _exception: null,
     isImplementedBy: function(f) {
       return Contract.isAContractFunction(f) && f.contract === this;
     },
@@ -95,6 +96,9 @@ module.exports = (function() {
       return contractFunction;
     }
   };
+  util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "pre", "_pre");
+  util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "post", "_post");
+  util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "exception", "_exception");
 
   Contract.isAContractFunction = function(f) {
     return util.typeOf(f) === "function"

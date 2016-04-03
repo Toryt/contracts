@@ -28,15 +28,9 @@
     describe("I/Contract", function() {
 
       function invariants(contract) {
-        expect(contract).to.have.ownProperty("pre"); // array not shared
-        expect(contract.pre).to.be.an("array");
-        testUtil.expectFrozenProperty(contract, "pre");
-        expect(contract).to.have.ownProperty("post"); // array not shared
-        expect(contract.post).to.be.an("array");
-        testUtil.expectFrozenProperty(contract, "post");
-        expect(contract).to.have.ownProperty("exception"); // array not shared
-        expect(contract.exception).to.be.an("array");
-        testUtil.expectFrozenProperty(contract, "exception");
+        testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(contract, "pre", "_pre");
+        testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(contract, "post", "_post");
+        testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(contract, "exception", "_exception");
         expect(contract).to.have.property("verifyOne").that.is.a("function");
         expect(contract).to.have.property("verifyAll").that.is.a("function");
         expect(contract).to.have.property("implementation").that.is.a("function");
@@ -164,35 +158,26 @@
       describe("#Contract()", function() {
 
         function expectPost(pre, post, exception, result) {
-          it("has a shallow copy of the given pre-conditions", function() {
-            if (!pre) {
-              expect(result.pre).to.eql([]);
+          function expectArrayPost(array, propName, privatePropName) {
+            if (!array) {
+              expect(result[propName]).to.eql([]);
             }
             else {
-              expect(result.pre).to.eql(pre);
-              expect(result.pre).to.not.equal(pre);  // it must be copy, don't share the array
-              // TODO consider adding getter that slices
+              expect(result[privatePropName]).to.eql(array);
+              expect(result[privatePropName]).to.not.equal(array);  // it must be copy, don't share the array
+              expect(result[propName]).to.eql(array);
+              expect(result[propName]).to.not.equal(result[privatePropName]);  // it must be copy, don't share the array
             }
+          }
+
+          it("has a shallow copy of the given pre-conditions", function() {
+            expectArrayPost(pre, "pre", "_pre");
           });
           it("has a shallow copy of the given post-conditions", function() {
-            if (!post) {
-              expect(result.post).to.eql([]);
-            }
-            else {
-              expect(result.post).to.eql(post);
-              expect(result.post).to.not.equal(post); // it must be copy, don't share the array
-              // TODO consider adding getter that slices
-            }
+            expectArrayPost(post, "post", "_post");
           });
           it("has a shallow copy of the given exception-conditions", function() {
-            if (!exception) {
-              expect(result.exception).to.eql([]);
-            }
-            else {
-              expect(result.exception).to.eql(exception);
-              expect(result.exception).to.not.equal(exception); // it must be copy, don't share the array
-              // TODO consider adding getter that slices
-            }
+            expectArrayPost(exception, "exception", "_exception");
           });
           it("adheres to the invariants", function() {
             invariants(result);

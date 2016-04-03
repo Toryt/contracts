@@ -38,8 +38,8 @@
        [[]]
      );
    }
-   
-   function expectFrozenProperty(subject, propertyName) {
+
+   function expectOwnFrozenProperty(subject, propertyName) {
      //noinspection JSUnresolvedFunction
      expect(subject).to.have.ownPropertyDescriptor(propertyName);
      //noinspection JSUnresolvedFunction
@@ -50,9 +50,35 @@
      expect(subject).ownPropertyDescriptor(propertyName).to.have.property("writable", false);
    }
 
+   function expectFrozenReadOnlyArrayPropertyOnPrototype(subject, propertyName) {
+     var prototype = Object.getPrototypeOf(subject);
+     //noinspection JSUnresolvedFunction
+     expect(prototype).to.have.ownPropertyDescriptor(propertyName);
+     //noinspection JSUnresolvedFunction
+     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("enumerable", true);
+     //noinspection JSUnresolvedFunction
+     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("configurable", false);
+     //noinspection JSUnresolvedFunction
+     expect(prototype).ownPropertyDescriptor(propertyName).not.to.have.property("writable");
+     //noinspection JSUnresolvedFunction
+     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("get").that.is.a("function");
+     //noinspection JSUnresolvedFunction,BadExpressionStatementJS
+     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("set").that.is.not.ok;
+   }
+
+   function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propName, privatePropName) {
+     expect(subject).to.have.ownProperty(privatePropName); // array not shared
+     expect(subject).to.have.property(privatePropName).that.is.an("array");
+     this.expectOwnFrozenProperty(subject, privatePropName);
+     expect(subject).to.have.property(propName).that.is.an("array");
+     this.expectFrozenReadOnlyArrayPropertyOnPrototype(subject, "pre");
+   }
+
    return {
      x: x,
-     expectFrozenProperty: expectFrozenProperty
+     expectOwnFrozenProperty: expectOwnFrozenProperty,
+     expectFrozenReadOnlyArrayPropertyOnPrototype: expectFrozenReadOnlyArrayPropertyOnPrototype,
+     expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField
    };
 
  })();

@@ -133,7 +133,7 @@
           var propertyName = "a new property";
           var propertyValue = "a new value";
           util.setAndFreezeProperty(subject, propertyName, propertyValue);
-          testUtil.expectFrozenProperty(subject, propertyName);
+          testUtil.expectOwnFrozenProperty(subject, propertyName);
           expect(subject[propertyName]).to.equal(propertyValue);
         });
       });
