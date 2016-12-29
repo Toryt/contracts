@@ -38,12 +38,12 @@
     "url": "https://bitbucket.org/toryt/contracts/issues?status=new&status=open"
   },
   "engines": {
-    "node": ">=5.9.1",
-    "npm": ">=3.7.3"
+    "node": ">=6.9.2",
+    "npm": ">=3.10.8"
   },
   "dependencies": {
     "chai": "^3.5.0",
-    "mocha": "^2.4.5"
+    "mocha": "^3.2.0"
   },
   "devDependencies": {
     "randomstring": "^1.1.4"
