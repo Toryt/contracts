@@ -18,6 +18,7 @@
   "use strict";
 
   var expect = require("chai").expect;
+  var testUtil = require("../_testUtil");
   var orderOfKeysCommon = require("./_orderOfKeysCommon");
 
   // describe("js", function() {
@@ -118,6 +119,36 @@
         });
         it("can throw null", function() {
           throwTest(null);
+        });
+      });
+
+      describe("#typeof", function() {
+        [
+          undefined,
+          null,
+          4,
+          -1,
+          "",
+          "A string",
+          new Date(),
+          true,
+          false,
+          {},
+          /foo/,
+          function() {},
+          [],
+          new ReferenceError(),
+          Math,
+          JSON,
+          new Number(4),
+          new String("abc"),
+          new Boolean(false),
+          Object,
+          arguments
+        ].forEach(function(a) {
+          it("reports the typeof " + a, function() {
+            testUtil.log(a + ": " + typeof a);
+          });
         });
       });
     });

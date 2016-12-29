@@ -49,6 +49,15 @@
        return result; // return String
      },
 
+     /**
+      * p is a true primitive, i.e., not null, undefined, an object (which implies, not a Date, Math or JSON, nor any
+      * Error, and not an array or arguments, and wrapped primitives), not a function. p is a true string, number or
+      * boolean.
+      */
+     isPrimitive: function(p) {
+       return (p !== null) && 0 <= ["number", "string", "boolean"].indexOf(typeof p);
+     },
+
      isInteger: function(value) {
        return Number.isInteger
          ? Number.isInteger(value)

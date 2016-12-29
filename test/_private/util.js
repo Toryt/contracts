@@ -25,23 +25,26 @@
 
   //noinspection JSPrimitiveTypeWrapperUsage,JSHint
   var stuff = [
-    {subject: undefined, expected: "undefined"},
-    {subject: null, expected: "null"},
-    {subject: {a: 4}, expected: "object"},
-    {subject: [1, 2, 3], expected: "array"},
-    {subject: function() {}, expected: "function"},
-    {subject: new ReferenceError(), expected: "error"},
-    {subject: new Date(), expected: "date"},
-    {subject: /a-z/, expected: "regexp"},
-    {subject: Math, expected: "math"},
-    {subject: JSON, expected: "json"},
-    {subject: new Number(4), expected: "number"},
-    {subject: 4, expected: "number"},
-    {subject: new String("abc"), expected: "string"},
-    {subject: "abc", expected: "string"},
-    {subject: new Boolean(true), expected: "boolean"},
-    {subject: false, expected: "boolean"},
-    {subject: getGlobal(), expected: "object"}
+    {subject: undefined, expected: "undefined", isPrimitive: false},
+    {subject: null, expected: "null", isPrimitive: false},
+    {subject: {a: 4}, expected: "object", isPrimitive: false},
+    {subject: [1, 2, 3], expected: "array", isPrimitive: false},
+    {subject: function() {}, expected: "function", isPrimitive: false},
+    {subject: new ReferenceError(), expected: "error", isPrimitive: false},
+    {subject: new Date(), expected: "date", isPrimitive: false},
+    {subject: /a-z/, expected: "regexp", isPrimitive: false},
+    {subject: Math, expected: "math", isPrimitive: false},
+    {subject: JSON, expected: "json", isPrimitive: false},
+    {subject: new Number(4), expected: "number", isPrimitive: false},
+    {subject: 4, expected: "number", isPrimitive: true},
+    {subject: new String("abc"), expected: "string", isPrimitive: false},
+    {subject: "abc", expected: "string", isPrimitive: true},
+    {subject: new String(""), expected: "string", isPrimitive: false},
+    {subject: "", expected: "string", isPrimitive: true},
+    {subject: new Boolean(true), expected: "boolean", isPrimitive: false},
+    {subject: false, expected: "boolean", isPrimitive: true},
+    {subject: getGlobal(), expected: "object", isPrimitive: false},
+    {subject: arguments, expected: "arguments", isPrimitive: false}
   ];
 
   // describe("_private", function() {
@@ -53,6 +56,16 @@
             var result = util.typeOf(record.subject);
             expect(result).to.be.a("string");
             expect(result).to.equal(record.expected);
+          });
+        });
+      });
+
+      describe("#isPrimitive()", function() {
+        stuff.forEach(function(record) {
+          it("correctly decides whether the argument is a primitive for " + record.subject, function() {
+            var result = util.isPrimitive(record.subject);
+            expect(result).to.be.a("boolean");
+            expect(result).to.be.equal(record.isPrimitive);
           });
         });
       });
