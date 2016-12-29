@@ -75,7 +75,7 @@
      },
 
      setAndFreezeProperty: function(obj, propName, value) {
-       this.pre(function() {return util.typeOf(obj) === "object";});
+       this.pre(function() {return !util.isPrimitive(obj);});
        this.pre(function() {return util.typeOf(propName) === "string";});
 
        Object.defineProperty(
@@ -91,7 +91,7 @@
      },
 
      defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
-       this.pre(function() {return util.typeOf(prototype) === "object";});
+       this.pre(function() {return !util.isPrimitive(prototype);});
        this.pre(function() {return util.typeOf(propName) === "string";});
        this.pre(function() {return util.typeOf(privatePropName) === "string";});
        this.pre(function() {return propName !== privatePropName;});
