@@ -157,6 +157,7 @@
           var propertyName = "a new property";
           util.setAndFreezeProperty(subject, propertyName);
           testUtil.expectOwnFrozenProperty(subject, propertyName);
+          //noinspection BadExpressionStatementJS
           expect(subject[propertyName]).to.be.undefined;
         });
       });
