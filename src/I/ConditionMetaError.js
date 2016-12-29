@@ -21,6 +21,8 @@ module.exports = (function() {
   var util = require("./../_private/util");
 
   /**
+   * The condition could not be evaluated. There is probably a programming error in the condition itself.
+   *
    * error must be optional
    * - to make it possible to use this as the prototype for more special types
    * - because in JavaScript, also undefined and null can be thrown
