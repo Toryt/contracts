@@ -97,6 +97,8 @@
      },
 
      isFrozenOwnProperty: function(obj, propName) {
+       this.pre(function() {return obj !== null && obj !== undefined;});
+
        var descriptor = Object.getOwnPropertyDescriptor(obj, propName);
        return descriptor
               && descriptor.enumerable === true
