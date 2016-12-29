@@ -21,6 +21,8 @@
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 
+  var getGlobal = new Function("return this;");
+
   //noinspection JSPrimitiveTypeWrapperUsage,JSHint
   var stuff = [
     {subject: undefined, expected: "undefined"},
@@ -38,7 +40,8 @@
     {subject: new String("abc"), expected: "string"},
     {subject: "abc", expected: "string"},
     {subject: new Boolean(true), expected: "boolean"},
-    {subject: false, expected: "boolean"}
+    {subject: false, expected: "boolean"},
+    {subject: getGlobal(), expected: "object"}
   ];
 
   // describe("_private", function() {
