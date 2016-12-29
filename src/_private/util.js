@@ -82,6 +82,11 @@
      },
 
      defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
+       this.pre(function() {return util.typeOf(prototype) === "object";});
+       this.pre(function() {return util.typeOf(propName) === "string";});
+       this.pre(function() {return util.typeOf(privatePropName) === "string";});
+       this.pre(function() {return propName !== privatePropName;});
+
        Object.defineProperty(
          prototype,
          propName,

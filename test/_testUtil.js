@@ -75,6 +75,9 @@
      this.expectOwnFrozenProperty(subject, privatePropName);
      expect(subject).to.have.property(propName).that.is.an("array");
      this.expectFrozenReadOnlyArrayPropertyOnPrototype(subject, propName);
+     expect(function() {
+       subject[propName] = 42 + " some outlandish other value";
+     }).to.throw(TypeError);
    }
 
    return {
