@@ -86,7 +86,7 @@
             obj,
             propName,
             {
-              configurable: false,
+              configurable: true,
               enumerable: true,
               writable: false,
               value: 42
@@ -123,6 +123,7 @@
             else {
               defineAProp(obj);
               expect(obj).to.have.ownProperty(propName);
+              delete obj[propName]; // cleanup
             }
           });
         });
