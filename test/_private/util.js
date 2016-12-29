@@ -109,6 +109,12 @@
         return result;
       }
 
+      var truthySelf = {truth: true};
+
+      var falsySelf = {truth: undefined};
+
+      function selfCondition() {return this.truth;}
+
       describe("#pre()", function() {
         it("ends nominally with a condition that returns true without self", function() {
           util.pre(truthy);
@@ -127,6 +133,13 @@
             expect(function() {util.pre(self, falsy);})
               .to.throw(Error, new RegExp("^Precondition violation in Toryt Contracts: " + escape("" + falsy) + "$"));
           });
+        });
+        it("correctly uses self when given, with a nominal end with a condition that returns true", function() {
+          util.pre(truthySelf, selfCondition);
+        });
+        it("correctly uses self when given, throwing with a condition that returns false", function() {
+          expect(function() {util.pre(falsySelf, selfCondition);})
+            .to.throw(Error, new RegExp("^Precondition violation in Toryt Contracts: " + escape("" + selfCondition) + "$"));
         });
       });
 
