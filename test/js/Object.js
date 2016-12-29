@@ -128,6 +128,48 @@
           });
         });
       });
+
+      describe("Object.getOwnPropertyDescriptor()", function() {
+        var propName = "aProperty";
+
+        function defineAProp(obj) {
+          Object.getOwnPropertyDescriptor(obj, propName);
+        }
+
+        [
+          undefined,
+          null,
+          4,
+          -1,
+          "",
+          "A string",
+          new Date(),
+          true,
+          false,
+          {},
+          /foo/,
+          function() {return "This simulates a self";},
+          [],
+          new ReferenceError(),
+          Math,
+          JSON,
+          new Number(4),
+          new String("abc"),
+          new Boolean(false)
+        ].forEach(function(obj) {
+          it("gets a property from " +
+             obj + " if it is not null or undefined, and fails to do so if it is primitive", function() {
+            var type = typeof obj;
+            if (obj === null || obj === undefined) {
+              expect(function() {Object.getOwnPropertyDescriptor(obj, propName);}).to.throw(TypeError);
+            }
+            else {
+              var result = Object.getOwnPropertyDescriptor(obj, propName);
+              expect(result).not.to.be.ok;
+            }
+          });
+        });
+      });
     });
   // });
 })();
