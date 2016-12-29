@@ -49,7 +49,7 @@
 
       describe("#typeof()", function() {
         stuff.forEach(function(record) {
-          it("should return the expected string for " + record.subject, function() {
+          it("should return \"" + record.expected + "\" for " + record.subject, function() {
             var result = util.typeOf(record.subject);
             expect(result).to.be.a("string");
             expect(result).to.equal(record.expected);
