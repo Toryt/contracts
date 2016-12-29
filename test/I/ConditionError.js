@@ -147,6 +147,7 @@ module.exports = (function() {
               expectConstructorPost(result, conditionCase, self, args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Condition Error");
+              testUtil.log("result.stack: %s", result.stack);
             });
           });
         });
