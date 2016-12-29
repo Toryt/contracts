@@ -44,8 +44,6 @@ module.exports = (function() {
     expect(subject.stack.indexOf(startOfStack)).to.equal(0);
     //noinspection JSUnresolvedVariable,BadExpressionStatementJS
     expect(subject).to.be.extensible;
-    expect(subject).to.have.property("message")
-      .that.equals(subject.constructor.createMessage(subject.condition, subject.self, subject.args));
   }
 
   function expectConstructorPost(result, condition, self, args) {
@@ -148,6 +146,7 @@ module.exports = (function() {
               expectInvariants(result);
               expect(result.name).to.equal("Contract Condition Error");
               testUtil.log("result.stack: %s", result.stack);
+              expect(result.message).to.equal(ConditionError.createMessage(conditionCase, self, args));
             });
           });
         });
