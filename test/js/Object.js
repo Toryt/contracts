@@ -77,6 +77,56 @@
           );
         });
       });
+
+      describe("Object.defineProperty()", function() {
+        var propName = "aProperty";
+
+        function defineAProp(obj) {
+          Object.defineProperty(
+            obj,
+            propName,
+            {
+              configurable: false,
+              enumerable: true,
+              writable: false,
+              value: 42
+            }
+          );
+        }
+
+        [
+          undefined,
+          null,
+          4,
+          -1,
+          "",
+          "A string",
+          new Date(),
+          true,
+          false,
+          {},
+          /foo/,
+          function() {return "This simulates a self";},
+          [],
+          new ReferenceError(),
+          Math,
+          JSON,
+          new Number(4),
+          new String("abc"),
+          new Boolean(false)
+        ].forEach(function(obj) {
+          it("sets a property on " + obj + " if it is non-primitive, and fails to do so if it is primitive", function() {
+            var type = typeof obj;
+            if (obj === null || type === "undefined" || type === "number" || type === "boolean" || type === "string") {
+              expect(function() {defineAProp(obj);}).to.throw(TypeError);
+            }
+            else {
+              defineAProp(obj);
+              expect(obj).to.have.ownProperty(propName);
+            }
+          });
+        });
+      });
     });
   // });
 })();
