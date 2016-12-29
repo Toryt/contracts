@@ -240,7 +240,7 @@
             expect(specializedResult).not.to.be.ok;
           });
         });
-        var notObjects = [0, false];
+        var notObjects = [0, false, "", "lala"];
         notObjects.forEach(function(notAnObject) {
           // cannot set a property on primitives
           it("reports false if the first parameter is a primitive (" + util.typeOf(notAnObject) + ")", function() {
