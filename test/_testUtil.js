@@ -80,11 +80,21 @@
      }).to.throw(TypeError);
    }
 
+   var doLog = true;
+
+   function log() {
+     if (doLog) {
+       console.log.apply(undefined, arguments);
+       console.log();
+     }
+   }
+
    return {
      x: x,
      expectOwnFrozenProperty: expectOwnFrozenProperty,
      expectFrozenReadOnlyArrayPropertyOnPrototype: expectFrozenReadOnlyArrayPropertyOnPrototype,
-     expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField
+     expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
+     log: log
    };
 
  })();

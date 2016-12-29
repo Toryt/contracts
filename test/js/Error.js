@@ -18,31 +18,23 @@
   "use strict";
 
   var expect = require("chai").expect;
+  var testUtil = require("../_testUtil");
 
   var message = "A message";
-
-  var doLog = true;
-
-  function log() {
-    if (doLog) {
-      console.log.apply(undefined, arguments);
-      console.log();
-    }
-  }
 
   // describe("js", function() {
     describe("js/Error", function() {
       describe("#message", function() {
         it("has the expected message", function() {
           var subject = new Error(message);
-          log("message: %s", subject.message);
+          testUtil.log("message: %s", subject.message);
           expect(subject.message).to.equal(message);
         });
       });
       describe("#name", function() {
         it("has the expected name", function() {
           var subject = new Error(message);
-          log("name: %s", subject.name);
+          testUtil.log("name: %s", subject.name);
           expect(subject.name).to.equal("Error");
         });
       });
@@ -50,7 +42,7 @@
         it("return the name and the message, separated by a colon", function() {
           var subject = new Error(message);
           var result = subject.toString();
-          log("toString(): %s", result);
+          testUtil.log("toString(): %s", result);
           expect(result).to.be.a("string");
           expect(result).to.equal("Error: " + message);
         });
@@ -58,7 +50,7 @@
       describe("#fileName", function() {
         it("has no file name in node", function() {
           var subject = new Error(message);
-          log("fileName: %s", subject.fileName);
+          testUtil.log("fileName: %s", subject.fileName);
           //noinspection BadExpressionStatementJS
           expect(subject.fileName).not.to.be.ok; // not supported in node
         });
@@ -66,7 +58,7 @@
       describe("#lineNumber", function() {
         it("has no line number in node", function() {
           var subject = new Error(message);
-          log("lineNumber: %s", subject.lineNumber);
+          testUtil.log("lineNumber: %s", subject.lineNumber);
           //noinspection BadExpressionStatementJS
           expect(subject.lineNumber).not.to.be.ok; // not supported in node
         });
@@ -74,7 +66,7 @@
       describe("#columnNumber", function() {
         it("has no column number in node", function() {
           var subject = new Error(message);
-          log("columnNumber: %s", subject.columnNumber);
+          testUtil.log("columnNumber: %s", subject.columnNumber);
           //noinspection BadExpressionStatementJS
           expect(subject.columnNumber).not.to.be.ok; // not supported in node
         });
@@ -83,7 +75,7 @@
         it("has a stack, is a string, that starts with the toString()", function() {
           var subject = new Error(message);
           var stack = subject.stack;
-          log("stack: %s", subject.stack);
+          testUtil.log("stack: %s", subject.stack);
           //noinspection BadExpressionStatementJS
           expect(stack).to.be.ok; // not supported in old IE
           expect(stack).to.be.a("string");
@@ -103,7 +95,7 @@
             throwAnError();
           }
           catch(err) {
-            log("err.stack: %s", err.stack);
+            testUtil.log("err.stack: %s", err.stack);
             //noinspection BadExpressionStatementJS
             expect(err.stack).to.be.ok; // not supported in old IE
             expect(err.stack.indexOf("createAnError")).to.be.at.least(0);
@@ -156,10 +148,11 @@
             }
           }
           catch (err2) {
-            log("err.stack: %s", err2.stack);
+            testUtil.log("err.stack: %s", err2.stack);
             //noinspection BadExpressionStatementJS
             expect(err2.stack).to.be.ok; // not supported in old IE
             expect(err2.stack.indexOf("createAnError")).to.be.below(0);
+            expect(err2.stack.indexOf("throwAnError")).to.be.below(0);
             expect(err2.stack.indexOf("captureTheStackTrace1")).to.be.at.least(0);
             expect(err2.stack.indexOf("captureTheStackTrace2")).to.be.at.least(0);
             expect(err2.stack.indexOf("captureTheStackTrace3")).to.be.at.least(0);
