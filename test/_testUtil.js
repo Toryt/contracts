@@ -48,6 +48,9 @@
      expect(subject).ownPropertyDescriptor(propertyName).to.have.property("configurable", false);
      //noinspection JSUnresolvedFunction
      expect(subject).ownPropertyDescriptor(propertyName).to.have.property("writable", false);
+     expect(function() {
+       subject[propertyName] = 42 + " some outlandish other value";
+     }).to.throw(TypeError);
    }
 
    function expectFrozenReadOnlyArrayPropertyOnPrototype(subject, propertyName) {

@@ -144,13 +144,20 @@
       });
 
       describe("#setAndFreezeProperty()", function() {
-        it("sets a property, and freezes it", function() {
+        it("sets a property, with a value, and freezes it", function() {
           var subject = {a: 4};
           var propertyName = "a new property";
           var propertyValue = "a new value";
           util.setAndFreezeProperty(subject, propertyName, propertyValue);
           testUtil.expectOwnFrozenProperty(subject, propertyName);
           expect(subject[propertyName]).to.equal(propertyValue);
+        });
+        it("sets a property, without a value, and freezes it", function() {
+          var subject = {a: 4};
+          var propertyName = "a new property";
+          util.setAndFreezeProperty(subject, propertyName);
+          testUtil.expectOwnFrozenProperty(subject, propertyName);
+          expect(subject[propertyName]).to.be.undefined;
         });
       });
 

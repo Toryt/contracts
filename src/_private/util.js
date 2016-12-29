@@ -66,6 +66,9 @@
      },
 
      setAndFreezeProperty: function(obj, propName, value) {
+       this.pre(function() {return util.typeOf(obj) === "object";});
+       this.pre(function() {return util.typeOf(propName) === "string";});
+
        Object.defineProperty(
          obj,
          propName,
