@@ -68,7 +68,7 @@ module.exports = (function() {
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     return "An error occurred while evaluating " + condition +
-           " when function " + "A FUNCTION" +
+           " when function " + "A FUNCTION" + // MUDO FUNCTION
            " was called on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + "): " +
            error;
