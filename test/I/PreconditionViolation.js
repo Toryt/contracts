@@ -61,7 +61,9 @@ module.exports = (function() {
               conditionViolationTest.expectConstructorPost(result, conditionViolationTest.conditionCase, self, args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Precondition Violation");
-              expect(result.message).to.equal(PreconditionViolation.createMessage(conditionViolationTest.conditionCase, self, args));
+              expect(result.message).to.equal(
+                PreconditionViolation.createMessage(conditionViolationTest.conditionCase, self, args)
+              );
             });
           });
         });
@@ -69,7 +71,11 @@ module.exports = (function() {
 
       conditionViolationTest.generatePrototypeMethodsDescriptions(
         function() {
-          return new PreconditionViolation(conditionViolationTest.conditionCase, null, conditionViolationTest.argsCases[0]);
+          return new PreconditionViolation(
+            conditionViolationTest.conditionCase,
+            null,
+            conditionViolationTest.argsCases[0]
+          );
         },
         testUtil
           .x([conditionViolationTest.conditionCase], conditionViolationTest.selfCases, conditionViolationTest.argsCases)
