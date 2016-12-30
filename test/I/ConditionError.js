@@ -162,14 +162,16 @@ module.exports = (function() {
         function () {
           return new ConditionError(conditionCase, null, argsCases[0]);
         },
-        testUtil.x([conditionCase], selfCases, argsCases).map(function(parameters) {
-          return function() {
-            return {
-              subject: new ConditionError(parameters[0], parameters[1], parameters[2]),
-              description: parameters.join(" - ")
+        testUtil
+          .x(selfCases, argsCases)
+          .map(function(parameters) {
+            return function() {
+              return {
+                subject: new ConditionError(conditionCase, parameters[0], parameters[1]),
+                description: parameters.join(" - ")
+              };
             };
-          };
-        })
+          })
       );
 
     });

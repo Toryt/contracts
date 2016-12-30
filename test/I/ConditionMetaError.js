@@ -116,12 +116,17 @@ module.exports = (function() {
           );
         },
         testUtil
-          .x([conditionErrorTest.conditionCase], conditionErrorTest.selfCases, conditionErrorTest.argsCases, errorCases)
+          .x(conditionErrorTest.selfCases, conditionErrorTest.argsCases, errorCases)
           .map(function(parameters) {
-            return function() {return {
-              subject: new ConditionMetaError(parameters[0], parameters[1], parameters[2], parameters[3]),
-              description: parameters.join(" - ")
-            };};
+            return function() {
+              return {
+                subject: new ConditionMetaError(conditionErrorTest.conditionCase,
+                                                parameters[0],
+                                                parameters[1],
+                                                parameters[2]),
+                description: parameters.join(" - ")
+              };
+            };
           })
       );
 
