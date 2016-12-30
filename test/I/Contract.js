@@ -80,7 +80,10 @@
         false,
         /lala/,
         {},
-        new Date()
+        new Date(),
+        new Number(42),
+        new Boolean(true),
+        new String("lalala")
       ];
 
       describe("Contract.isAContractFunction", function() {
