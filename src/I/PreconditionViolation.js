@@ -40,7 +40,7 @@ module.exports = (function() {
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     return "Precondition " + condition +
-           " of function " + "A FUNCTION" + " was violated by " + "THE CULPRIT - CALLING FUNCTION" +
+           " of function " + "A FUNCTION" + " was violated by " + "THE CULPRIT - CALLING FUNCTION" + // MUDO
            " by calling it on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
   };

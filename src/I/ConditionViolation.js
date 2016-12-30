@@ -44,7 +44,7 @@ module.exports = (function() {
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     return "Condition " + condition +
-           " was violated while function " + "A FUNCTION" +
+           " was violated while function " + "A FUNCTION" + // MUDO function
            " was called on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
   };
