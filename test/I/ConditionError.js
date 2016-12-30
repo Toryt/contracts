@@ -74,7 +74,13 @@ module.exports = (function() {
     ["one argument"],
     selfCases
   ];
-  argsCases = argsCases.concat(argsCases.map(function(c) {return arguments;}));
+  argsCases = argsCases.concat(argsCases.map(function(c) {
+    function asArgs(args) {
+      return arguments;
+    }
+
+    return asArgs.apply(undefined, c);
+  }));
 
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
