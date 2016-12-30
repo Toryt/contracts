@@ -50,7 +50,11 @@ module.exports = (function() {
     false,
     new Date(),
     /foo/,
-    function() {}
+    function() {},
+    new Number("abc"),
+    new Boolean(false),
+    new String("lalala"),
+    arguments
   ];
 
   // describe("I", function() {
