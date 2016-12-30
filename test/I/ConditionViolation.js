@@ -61,7 +61,9 @@ module.exports = (function() {
               conditionErrorTest.expectConstructorPost(result, conditionErrorTest.conditionCase, self, args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Condition Violation");
-              expect(result.message).to.equal(ConditionViolation.createMessage(conditionErrorTest.conditionCase, self, args));
+              expect(result.message).to.equal(
+                ConditionViolation.createMessage(conditionErrorTest.conditionCase, self, args)
+              );
             });
           });
         });
