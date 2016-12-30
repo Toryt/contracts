@@ -53,10 +53,6 @@ module.exports = (function() {
     function() {}
   ];
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
-    conditionErrorTest.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
-  }
-
   // describe("I", function() {
     describe("I/ConditionMetaError", function() {
 
@@ -106,7 +102,7 @@ module.exports = (function() {
         });
       });
 
-      generatePrototypeMethodsDescriptions(
+      conditionErrorTest.generatePrototypeMethodsDescriptions(
         function() {
           return new ConditionMetaError(
             conditionErrorTest.conditionCase,
@@ -136,8 +132,7 @@ module.exports = (function() {
   var test = {
     errorCases: errorCases,
     expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+    expectConstructorPost: expectConstructorPost
   };
   Object.setPrototypeOf(test, conditionErrorTest);
   return test;
