@@ -60,6 +60,9 @@ module.exports = (function() {
   var util = require("./../_private/util");
 
   /**
+   * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
+   * ConditionError itself is to be considered abstract.
+   *
    * Invariant:
    * - condition is mandatory, and always a Function
    * - self can be anything, and is optional
