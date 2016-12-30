@@ -28,14 +28,6 @@ module.exports = (function() {
     conditionErrorTest.expectInvariants(subject);
   }
 
-  function expectConstructorPost(result, condition, self, args) {
-    conditionErrorTest.expectConstructorPost(result, condition, self, args);
-  }
-
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
-    conditionErrorTest.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
-  }
-
   // describe("I", function() {
     describe("I/ConditionViolation", function() {
 
@@ -66,7 +58,7 @@ module.exports = (function() {
           conditionErrorTest.argsCases.forEach(function(args) {
             it("creates an instance with all toppings for " + self + " - " + args, function() {
               var result = new ConditionViolation(conditionErrorTest.conditionCase, self, args);
-              expectConstructorPost(result, conditionErrorTest.conditionCase, self, args);
+              conditionErrorTest.expectConstructorPost(result, conditionErrorTest.conditionCase, self, args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Condition Violation");
               expect(result.message).to.equal(ConditionViolation.createMessage(conditionErrorTest.conditionCase, self, args));
@@ -75,7 +67,7 @@ module.exports = (function() {
         });
       });
 
-      generatePrototypeMethodsDescriptions(
+      conditionErrorTest.generatePrototypeMethodsDescriptions(
         function() {
           return new ConditionViolation(conditionErrorTest.conditionCase, null, conditionErrorTest.argsCases[0]);
         },
@@ -95,9 +87,7 @@ module.exports = (function() {
   // });
 
   var test = {
-    expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+    expectInvariants: expectInvariants
   };
   Object.setPrototypeOf(test, conditionErrorTest);
   return test;
