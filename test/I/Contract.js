@@ -629,7 +629,7 @@
             function(n, result) {
               function f(n) {return n < 1 ? 1 : n * f(n - 1);}
 
-              // Note: don't refer to a specific implementation ("fibonacci") in the contract!
+              // Note: don't refer to a specific implementation in the contract!
 
               return n < 1 || result === f(n);
             }
