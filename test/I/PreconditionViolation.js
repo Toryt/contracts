@@ -78,11 +78,11 @@ module.exports = (function() {
           );
         },
         testUtil
-          .x([conditionViolationTest.conditionCase], conditionViolationTest.selfCases, conditionViolationTest.argsCases)
+          .x(conditionViolationTest.selfCases, conditionViolationTest.argsCases)
           .map(function(parameters) {
             return function() {
               return {
-                subject: new PreconditionViolation(parameters[0], parameters[1], parameters[2]),
+                subject: new PreconditionViolation(conditionViolationTest.conditionCase, parameters[0], parameters[1]),
                 description: parameters.join(" - ")
               };
             };
