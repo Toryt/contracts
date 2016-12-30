@@ -20,6 +20,10 @@ module.exports = (function() {
   var ConditionError = require("./ConditionError");
   var util = require("./../_private/util");
 
+  /**
+   * Super type for objects that are thrown to signal a condition violation.
+   * This is intented to be abstract.
+   */
   function ConditionViolation(condition, self, args) {
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
