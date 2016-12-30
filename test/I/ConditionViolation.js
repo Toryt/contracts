@@ -74,11 +74,11 @@ module.exports = (function() {
           return new ConditionViolation(conditionErrorTest.conditionCase, null, conditionErrorTest.argsCases[0]);
         },
         testUtil
-          .x([conditionErrorTest.conditionCase], conditionErrorTest.selfCases, conditionErrorTest.argsCases)
+          .x(conditionErrorTest.selfCases, conditionErrorTest.argsCases)
           .map(function(parameters) {
             return function() {
               return {
-                subject: new ConditionViolation(parameters[0], parameters[1], parameters[2]),
+                subject: new ConditionViolation(conditionErrorTest.conditionCase, parameters[0], parameters[1]),
                 description: parameters.join(" - ")
               };
             };
