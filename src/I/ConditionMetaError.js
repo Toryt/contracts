@@ -55,8 +55,8 @@ module.exports = (function() {
       enumerable: true,
       get: function() {
         var stack = this._stackSource.stack;
-        stack += "Caused by:\n";
-        stack += this.error ? this.error.stack : ("" + this.error);
+        stack += "\nCaused by:\n";
+        stack += this.error && this.error.stack ? this.error.stack : ("" + this.error);
         return stack;
       },
       set: undefined
