@@ -56,7 +56,7 @@ module.exports = (function() {
       get: function() {
         var stack = this._stackSource.stack;
         stack += "Caused by:\n";
-        stack += this.error && (this.error.stack || ("" + this.error));
+        stack += this.error ? this.error.stack : ("" + this.error);
         return stack;
       },
       set: undefined
