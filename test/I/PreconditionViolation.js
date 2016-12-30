@@ -28,14 +28,6 @@ module.exports = (function() {
     conditionViolationTest.expectInvariants(subject);
   }
 
-  function expectConstructorPost(result, condition, self, args) {
-    conditionViolationTest.expectConstructorPost(result, condition, self, args);
-  }
-
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
-    conditionViolationTest.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
-  }
-
   // describe("I", function() {
     describe("I/PreconditionViolation", function() {
 
@@ -66,7 +58,7 @@ module.exports = (function() {
           conditionViolationTest.argsCases.forEach(function(args) {
             it("creates an instance with all toppings for " + self + " - " + args, function() {
               var result = new PreconditionViolation(conditionViolationTest.conditionCase, self, args);
-              expectConstructorPost(result, conditionViolationTest.conditionCase, self, args);
+              conditionViolationTest.expectConstructorPost(result, conditionViolationTest.conditionCase, self, args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Precondition Violation");
               expect(result.message).to.equal(PreconditionViolation.createMessage(conditionViolationTest.conditionCase, self, args));
@@ -75,7 +67,7 @@ module.exports = (function() {
         });
       });
 
-      generatePrototypeMethodsDescriptions(
+      conditionViolationTest.generatePrototypeMethodsDescriptions(
         function() {
           return new PreconditionViolation(conditionViolationTest.conditionCase, null, conditionViolationTest.argsCases[0]);
         },
@@ -95,9 +87,7 @@ module.exports = (function() {
   // });
 
   var test = {
-    expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+    expectInvariants: expectInvariants
   };
   Object.setPrototypeOf(test, conditionViolationTest);
   return test;
