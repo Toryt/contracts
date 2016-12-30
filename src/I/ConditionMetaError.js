@@ -26,7 +26,7 @@ module.exports = (function() {
    * error must be optional
    * - to make it possible to use this as the prototype for more special types
    * - because in JavaScript, also undefined and null can be thrown
-   * Therefor, a ConditionMetaError is also civilized
+   * Therefor, a ConditionMetaError is also civilized if the error is falsy.
    */
   function ConditionMetaError(condition, self, args, error) {
     util.pre(this, function() {return util.typeOf(condition) === "function";});
