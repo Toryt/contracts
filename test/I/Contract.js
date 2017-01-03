@@ -237,6 +237,13 @@ module.exports = (function() {
         });
       });
 
+      describe("Contract.dummyImplementation", function() {
+        it("returns a function that is a contract function", function() {
+          var result = Contract.dummyImplementation();
+          expect(result).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
+        });
+      });
+
       describe("#Contract()", function() {
         constructorPreCases.forEach(function(pre) {
           constructorPostCases.forEach(function(post) {

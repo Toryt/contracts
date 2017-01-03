@@ -20,10 +20,15 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var ConditionError = require("../../src/I/ConditionError");
   var util = require("../../src/_private/util");
+  var Contract = require("../../src/I/Contract");
   var testUtil = require("../_testUtil");
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionError);
+    expect(subject).to.have.property("contractFunction").that.satisfies(function(cf) {
+      return Contract.isAContractFunction(cf);
+    });
+    testUtil.expectOwnFrozenProperty(subject, "contractFunction");
     expect(subject).to.have.property("condition").that.is.a("function");
     testUtil.expectOwnFrozenProperty(subject, "condition");
     expect(subject).to.have.property("self");
@@ -46,7 +51,8 @@ module.exports = (function() {
     expect(subject).to.be.extensible;
   }
 
-  function expectConstructorPost(result, condition, self, args) {
+  function expectConstructorPost(result, contractFunction, condition, self, args) {
+    expect(result.contractFunction).equal(contractFunction);
     expect(result.condition).equal(condition);
     expect(result.self).equal(self);
     expect(result.args).equal(args);
@@ -131,8 +137,10 @@ module.exports = (function() {
         selfCases.forEach(function(self) {
           argsCases.forEach(function(args) {
             it("works when called with " + self + " - " + args, function() {
-              var result = ConditionError.createMessage(conditionCase, self, args);
+              var contractFunction = Contract.dummyImplementation();
+              var result = ConditionError.createMessage(contractFunction, conditionCase, self, args);
               expect(result).to.be.a("string");
+              expect(result).to.contain(contractFunction.displayName);
               expect(result).to.contain("" + conditionCase);
               expect(result).to.contain("" + self);
               Array.prototype.forEach(function(arg) {
@@ -147,12 +155,13 @@ module.exports = (function() {
         selfCases.forEach(function(self) {
           argsCases.forEach(function(args) {
             it("creates an instance with all toppings for " + self + " - " + args, function() {
-              var result = new ConditionError(conditionCase, self, args);
-              expectConstructorPost(result, conditionCase, self, args);
+              var contractFunction = Contract.dummyImplementation();
+              var result = new ConditionError(contractFunction, conditionCase, self, args);
+              expectConstructorPost(result, contractFunction, conditionCase, self, args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Condition Error");
+              expect(result.message).to.equal(ConditionError.createMessage(contractFunction, conditionCase, self, args));
               testUtil.log("result.stack: %s", result.stack);
-              expect(result.message).to.equal(ConditionError.createMessage(conditionCase, self, args));
             });
           });
         });
@@ -167,7 +176,7 @@ module.exports = (function() {
           .map(function(parameters) {
             return function() {
               return {
-                subject: new ConditionError(conditionCase, parameters[0], parameters[1]),
+                subject: new ConditionError(Contract.dummyImplementation(), conditionCase, parameters[0], parameters[1]),
                 description: parameters.join(" - ")
               };
             };

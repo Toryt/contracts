@@ -21,6 +21,7 @@
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var ImplementableContract = require("../../src/I/ImplementableContract");
+  var Contract = require("../../src/I/Contract");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var ConditionViolation = require("../../src/I/ConditionViolation");
   var contractTest = require("./Contract");
@@ -74,7 +75,7 @@
       });
 
       describe("#verifyOne()", function() {
-        function expectPost(subject, condition, self, args, appliedSelf, appliedArgs, exception) {
+        function expectPost(subject, contractFunction, condition, self, args, appliedSelf, appliedArgs, exception) {
           var outcome;
           try {
             outcome = condition.apply();
@@ -88,6 +89,7 @@
               expect(exception.isCivilized()).to.be.ok;
               //noinspection JSUnresolvedVariable,BadExpressionStatementJS
               expect(exception).to.be.frozen;
+              expect(exception.contractFunction).to.equal(contractFunction);
               expect(exception.error).to.eql(err);
               expect(exception.condition).to.equal(condition);
               expect(exception.self).to.equal(self);
@@ -125,6 +127,7 @@
                 expect(exception.isCivilized()).to.be.ok;
                 //noinspection JSUnresolvedVariable,BadExpressionStatementJS
                 expect(exception).to.be.frozen;
+                expect(exception.contractFunction).to.equal(contractFunction);
                 expect(exception.condition).to.equal(condition);
                 expect(exception.self).to.equal(self);
                 expect(exception.args).to.eql(args);
@@ -173,24 +176,23 @@
           }
         ];
 
-        subjects.forEach(function(subjectGenerator) {
-          conditionCases.forEach(function(conditionGenerator) {
-            selfCases.forEach(function(selfGenerator) {
-              argsCases.forEach(function(argGenerator) {
-                var subject = subjectGenerator();
-                var condition = conditionGenerator();
-                var self = selfGenerator();
-                var args = argGenerator();
-                describe("works for " + subject + " - " + condition + " - " + self + " - " + args, function() {
-                  var exception;
-                  try {
-                    subject.verifyOne(condition, self, args);
-                  }
-                  catch (exc) {
-                    exception = exc;
-                  }
-                  expectPost(subject, condition, self, args, condition.self, condition.args, exception);
-                });
+        conditionCases.forEach(function(conditionGenerator) {
+          selfCases.forEach(function(selfGenerator) {
+            argsCases.forEach(function(argGenerator) {
+              var subject = new ImplementableContract();
+              var condition = conditionGenerator();
+              var self = selfGenerator();
+              var args = argGenerator();
+              var contractFunction = Contract.dummyImplementation();
+              describe("works for " + subject + " - " + condition + " - " + self + " - " + args, function() {
+                var exception;
+                try {
+                  subject.verifyOne(contractFunction, condition, self, args);
+                }
+                catch (exc) {
+                  exception = exc;
+                }
+                expectPost(subject, contractFunction, condition, self, args, condition.self, condition.args, exception);
               });
             });
           });
@@ -198,7 +200,7 @@
       });
 
       describe("#verifyAll()", function() {
-        function expectPost(subject, conditions, self, args, exception) {
+        function expectPost(subject, contractFunction, conditions, self, args, exception) {
           if (conditions.length <= 0) {
             it("doesn't throw an exception if there are no conditions", function() {
               //noinspection BadExpressionStatementJS
@@ -238,6 +240,9 @@
               //noinspection JSUnresolvedVariable,BadExpressionStatementJS
               expect(exception).to.be.frozen;
               expect(exception.condition).to.equal(firstFailure);
+              expect(exception.contractFunction).to.equal(contractFunction);
+              expect(exception.self).to.equal(self);
+              expect(exception.args).to.eql(args);
             });
           }
           else if (firstFailure) {
@@ -248,6 +253,9 @@
               //noinspection JSUnresolvedVariable,BadExpressionStatementJS
               expect(exception).to.be.frozen;
               expect(exception.condition).to.equal(firstFailure);
+              expect(exception.contractFunction).to.equal(contractFunction);
+              expect(exception.self).to.equal(self);
+              expect(exception.args).to.eql(args);
             });
           }
           else {
@@ -372,24 +380,23 @@
           }
         ];
 
-        subjects.forEach(function(subjectGenerator) {
-          conditionsCases.forEach(function(conditionsGenerator) {
-            selfCases.forEach(function(selfGenerator) {
-              argsCases.forEach(function(argGenerator) {
-                var subject = subjectGenerator();
-                var conditions = conditionsGenerator();
-                var self = selfGenerator();
-                var args = argGenerator();
-                describe("works for " + subject + " - " + conditions + " - " + self + " - " + args, function() {
-                  var exception;
-                  try {
-                    subject.verifyAll(conditions, self, args);
-                  }
-                  catch (exc) {
-                    exception = exc;
-                  }
-                  expectPost(subject, conditions, self, args, exception);
-                });
+        conditionsCases.forEach(function(conditionsGenerator) {
+          selfCases.forEach(function(selfGenerator) {
+            argsCases.forEach(function(argGenerator) {
+              var subject = new ImplementableContract();
+              var conditions = conditionsGenerator();
+              var self = selfGenerator();
+              var args = argGenerator();
+              var contractFunction = Contract.dummyImplementation();
+              describe("works for " + subject + " - " + conditions + " - " + self + " - " + args, function() {
+                var exception;
+                try {
+                  subject.verifyAll(contractFunction, conditions, self, args);
+                }
+                catch (exc) {
+                  exception = exc;
+                }
+                expectPost(subject, contractFunction, conditions, self, args, exception);
               });
             });
           });
@@ -613,7 +620,7 @@
           })
         };
 
-        var intentionalError = "This precondition intentionally fails.";
+        var intentionalError = new Error("This precondition intentionally fails.");
 
         var contractWithAFailingPre = new ImplementableContract(
           [function() {throw intentionalError;}]

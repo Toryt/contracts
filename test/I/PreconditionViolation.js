@@ -19,6 +19,7 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var PreconditionViolation = require("../../src/I/PreconditionViolation");
+  var Contract = require("../../src/I/Contract");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var conditionViolationTest = require("./ConditionViolation");
@@ -41,8 +42,10 @@ module.exports = (function() {
         conditionViolationTest.selfCases.forEach(function(self) {
           conditionViolationTest.argsCases.forEach(function(args) {
             it("works when called with " + self + " - " + args, function() {
-              var result = PreconditionViolation.createMessage(conditionViolationTest.conditionCase, self, args);
+              var contractFunction = Contract.dummyImplementation();
+              var result = PreconditionViolation.createMessage(contractFunction, conditionViolationTest.conditionCase, self, args);
               expect(result).to.be.a("string");
+              expect(result).to.contain(contractFunction.displayName);
               expect(result).to.contain("" + conditionViolationTest.conditionCase);
               expect(result).to.contain("" + self);
               Array.prototype.forEach(function(arg) {
@@ -57,12 +60,17 @@ module.exports = (function() {
         conditionViolationTest.selfCases.forEach(function(self) {
           conditionViolationTest.argsCases.forEach(function(args) {
             it("creates an instance with all toppings for " + self + " - " + args, function() {
-              var result = new PreconditionViolation(conditionViolationTest.conditionCase, self, args);
-              conditionViolationTest.expectConstructorPost(result, conditionViolationTest.conditionCase, self, args);
+              var contractFunction = Contract.dummyImplementation();
+              var result = new PreconditionViolation(contractFunction, conditionViolationTest.conditionCase, self, args);
+              conditionViolationTest.expectConstructorPost(result,
+                                                           contractFunction,
+                                                           conditionViolationTest.conditionCase,
+                                                           self,
+                                                           args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Precondition Violation");
               expect(result.message).to.equal(
-                PreconditionViolation.createMessage(conditionViolationTest.conditionCase, self, args)
+                PreconditionViolation.createMessage(contractFunction, conditionViolationTest.conditionCase, self, args)
               );
             });
           });
@@ -82,7 +90,10 @@ module.exports = (function() {
           .map(function(parameters) {
             return function() {
               return {
-                subject: new PreconditionViolation(conditionViolationTest.conditionCase, parameters[0], parameters[1]),
+                subject: new PreconditionViolation(Contract.dummyImplementation(),
+                                                   conditionViolationTest.conditionCase,
+                                                   parameters[0],
+                                                   parameters[1]),
                 description: parameters.join(" - ")
               };
             };

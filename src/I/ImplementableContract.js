@@ -31,7 +31,12 @@ module.exports = (function() {
 
   ImplementableContract.prototype = new Contract();
   ImplementableContract.prototype.constructor = ImplementableContract;
-  ImplementableContract.prototype.verifyOne = function(condition, self, args) {
+  /**
+   * Verify one condition.
+   * This is a static function. It doesn't use this.
+   */
+  ImplementableContract.prototype.verifyOne = function(contractFunction, condition, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return condition && util.typeOf(condition) === "function";});
     util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
 
@@ -40,17 +45,22 @@ module.exports = (function() {
       conditionResult = condition.apply(self, args);
     }
     catch (err) {
-      var cme = new ConditionMetaError(condition, self, args, err);
+      var cme = new ConditionMetaError(contractFunction, condition, self, args, err);
       Object.freeze(cme);
       throw cme;
     }
     if (!conditionResult) {
-      var cv = new ConditionViolation(condition, self, args);
+      var cv = new ConditionViolation(contractFunction, condition, self, args);
       Object.freeze(cv);
       throw cv;
     }
   };
-  ImplementableContract.prototype.verifyAll = function(conditions, self, args) {
+  /**
+   * Verify conditions, until one fails.
+   * This is a static function. It doesn't use this.
+   */
+  ImplementableContract.prototype.verifyAll = function(contractFunction, conditions, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(this, function() {
       return conditions
              && util.typeOf(conditions) === "array"
@@ -58,7 +68,7 @@ module.exports = (function() {
     util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
 
     if (conditions) {
-      conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
+      conditions.forEach(function(condition) {this.verifyOne(contractFunction, condition, self, args);}, this);
     }
   };
   ImplementableContract.prototype.implementation = function(implFunction) {
@@ -69,7 +79,7 @@ module.exports = (function() {
 
     function contractFunction() {
       var extendedArgs = Array.prototype.slice.call(arguments);
-      contract.verifyAll(contract.pre, this, arguments);
+      contract.verifyAll(contractFunction, contract.pre, this, arguments);
       var result;
       var exception;
       try {
@@ -80,10 +90,10 @@ module.exports = (function() {
       }
       extendedArgs.push(exception || result);
       if (exception) {
-        contract.verifyAll(contract.exception, this, extendedArgs);
+        contract.verifyAll(contractFunction, contract.exception, this, extendedArgs);
         throw exception;
       }
-      contract.verifyAll(contract.post, this, extendedArgs);
+      contract.verifyAll(contractFunction, contract.post, this, extendedArgs);
       return result;
     }
 

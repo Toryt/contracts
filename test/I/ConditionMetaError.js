@@ -19,6 +19,7 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
+  var Contract = require("../../src/I/Contract");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var conditionErrorTest = require("./ConditionError");
@@ -33,11 +34,12 @@ module.exports = (function() {
     expect(subject.stack).to.contain("" + subject.error);
   }
 
-  function expectConstructorPost(result, condition, self, args, error) {
-    conditionErrorTest.expectConstructorPost(result, condition, self, args);
+  function expectConstructorPost(result, contractFunction, condition, self, args, error) {
+    conditionErrorTest.expectConstructorPost(result, contractFunction, condition, self, args);
     expect(result.error).to.equal(error);
   }
 
+  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
   var errorCases = [
     new Error(),
     undefined,
@@ -51,7 +53,7 @@ module.exports = (function() {
     new Date(),
     /foo/,
     function() {},
-    new Number("abc"),
+    new Number(42),
     new Boolean(false),
     new String("lalala"),
     arguments
@@ -71,8 +73,10 @@ module.exports = (function() {
           conditionErrorTest.argsCases.forEach(function(args) {
             errorCases.forEach(function(error) {
               it("works when called with " + self + " - " + args, function() {
-                var result = ConditionMetaError.createMessage(conditionErrorTest.conditionCase, self, args, error);
+                var contractFunction = Contract.dummyImplementation();
+                var result = ConditionMetaError.createMessage(contractFunction, conditionErrorTest.conditionCase, self, args, error);
                 expect(result).to.be.a("string");
+                expect(result).to.contain(contractFunction.displayName);
                 expect(result).to.contain("" + conditionErrorTest.conditionCase);
                 expect(result).to.contain("" + self);
                 Array.prototype.forEach(function(arg) {
@@ -90,16 +94,19 @@ module.exports = (function() {
           conditionErrorTest.argsCases.forEach(function(args) {
             errorCases.forEach(function(error) {
               it("creates an instance with all toppings for " + self + " - " + args + " - " + error, function() {
-                var result = new ConditionMetaError(conditionErrorTest.conditionCase, self, args, error);
-                expectConstructorPost(result, conditionErrorTest.conditionCase, self, args, error);
+                var contractFunction = Contract.dummyImplementation();
+                var result = new ConditionMetaError(contractFunction, conditionErrorTest.conditionCase, self, args, error);
+                expectConstructorPost(result, contractFunction, conditionErrorTest.conditionCase, self, args, error);
                 expectInvariants(result);
                 expect(result.name).to.equal("Contract Condition Meta-Error");
                 expect(result.message).to.equal(ConditionMetaError.createMessage(
+                  contractFunction,
                   conditionErrorTest.conditionCase,
                   self,
                   args,
                   error
                 ));
+                testUtil.log("result.stack: %s", result.stack);
               });
             });
           });
@@ -120,7 +127,8 @@ module.exports = (function() {
           .map(function(parameters) {
             return function() {
               return {
-                subject: new ConditionMetaError(conditionErrorTest.conditionCase,
+                subject: new ConditionMetaError(Contract.dummyImplementation(),
+                                                conditionErrorTest.conditionCase,
                                                 parameters[0],
                                                 parameters[1],
                                                 parameters[2]),

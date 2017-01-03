@@ -19,6 +19,7 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var ConditionViolation = require("../../src/I/ConditionViolation");
+  var Contract = require("../../src/I/Contract");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var conditionErrorTest = require("./ConditionError");
@@ -41,8 +42,10 @@ module.exports = (function() {
         conditionErrorTest.selfCases.forEach(function(self) {
           conditionErrorTest.argsCases.forEach(function(args) {
             it("works when called with " + self + " - " + args, function() {
-              var result = ConditionViolation.createMessage(conditionErrorTest.conditionCase, self, args);
+              var contractFunction = Contract.dummyImplementation();
+              var result = ConditionViolation.createMessage(contractFunction, conditionErrorTest.conditionCase, self, args);
               expect(result).to.be.a("string");
+              expect(result).to.contain(contractFunction.displayName);
               expect(result).to.contain("" + conditionErrorTest.conditionCase);
               expect(result).to.contain("" + self);
               Array.prototype.forEach(function(arg) {
@@ -57,12 +60,17 @@ module.exports = (function() {
         conditionErrorTest.selfCases.forEach(function(self) {
           conditionErrorTest.argsCases.forEach(function(args) {
             it("creates an instance with all toppings for " + self + " - " + args, function() {
-              var result = new ConditionViolation(conditionErrorTest.conditionCase, self, args);
-              conditionErrorTest.expectConstructorPost(result, conditionErrorTest.conditionCase, self, args);
+              var contractFunction = Contract.dummyImplementation();
+              var result = new ConditionViolation(contractFunction, conditionErrorTest.conditionCase, self, args);
+              conditionErrorTest.expectConstructorPost(result,
+                                                       contractFunction,
+                                                       conditionErrorTest.conditionCase,
+                                                       self,
+                                                       args);
               expectInvariants(result);
               expect(result.name).to.equal("Contract Condition Violation");
               expect(result.message).to.equal(
-                ConditionViolation.createMessage(conditionErrorTest.conditionCase, self, args)
+                ConditionViolation.createMessage(contractFunction, conditionErrorTest.conditionCase, self, args)
               );
             });
           });
@@ -78,7 +86,10 @@ module.exports = (function() {
           .map(function(parameters) {
             return function() {
               return {
-                subject: new ConditionViolation(conditionErrorTest.conditionCase, parameters[0], parameters[1]),
+                subject: new ConditionViolation(Contract.dummyImplementation(),
+                                                conditionErrorTest.conditionCase,
+                                                parameters[0],
+                                                parameters[1]),
                 description: parameters.join(" - ")
               };
             };

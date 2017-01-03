@@ -58,24 +58,28 @@ module.exports = (function() {
    */
 
   var util = require("./../_private/util");
+  var Contract = require("./Contract");
 
   /**
    * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
    * ConditionError itself is to be considered abstract.
    *
    * Invariant:
+   * - contractFunction, and always a Contract Function
    * - condition is mandatory, and always a Function
    * - self can be anything, and is optional
    * - args is mandatory, and an Arguments or Array instance
    *
    * MUDO better doc
    */
-  function ConditionError(condition, self, args) {
+  function ConditionError(contractFunction, condition, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     var message = this.constructor.createMessage.apply(undefined, arguments);
     util.setAndFreezeProperty(this, "message", message);
+    util.setAndFreezeProperty(this, "contractFunction", contractFunction);
     util.setAndFreezeProperty(this, "condition", condition);
     util.setAndFreezeProperty(this, "self", self);
     util.setAndFreezeProperty(this, "args", args);
@@ -89,8 +93,11 @@ module.exports = (function() {
   ConditionError.prototype.constructor = ConditionError;
   ConditionError.prototype.name = "Contract Condition Error";
   ConditionError.prototype.isCivilized = function() {
-    return !!(this.condition && this.args);
+    return Contract.isAContractFunction(this.contractFunction) &&
+           util.typeOf(this.condition) === "function" &&
+           (util.typeOf(this.args) === "arguments" || util.typeOf(this.args) === "array");
   };
+  ConditionError.prototype.contractFunction = null;
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;
@@ -102,7 +109,9 @@ module.exports = (function() {
       configurable: true,
       enumerable: true,
       get: function() {
-        return this._stackSource.stack;
+        var result = this._stackSource.stack.split("\n");
+        result.splice(1, 2);
+        return result.join("\n");
       },
       set: undefined
     }
@@ -112,12 +121,13 @@ module.exports = (function() {
    * This method is called in the constructor to generate the message for the error being created.
    * It is called with the same arguments as the constructor.
    */
-  ConditionError.createMessage = function(condition, self, args) {
+  ConditionError.createMessage = function(contractFunction, condition, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(function() {return util.typeOf(condition) === "function";});
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     return "Error concerning condition " + condition +
-           " while function " + "A FUNCTION" + // MUDO FUNCTION
+           " while " + contractFunction.displayName +
            " was called on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
   };

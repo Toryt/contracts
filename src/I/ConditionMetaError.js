@@ -18,6 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var ConditionError = require("./ConditionError");
+  var Contract = require("./Contract");
   var util = require("./../_private/util");
 
   /**
@@ -28,7 +29,8 @@ module.exports = (function() {
    * - because in JavaScript, also undefined and null can be thrown
    * Therefor, a ConditionMetaError is also civilized if the error is falsy.
    */
-  function ConditionMetaError(condition, self, args, error) {
+  function ConditionMetaError(contractFunction, condition, self, args, error) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
@@ -40,6 +42,7 @@ module.exports = (function() {
   }
 
   ConditionMetaError.prototype = new ConditionError(
+    Contract.dummyImplementation(),
     function() {return "This is a dummy condition in the ConditionMetaError prototype."},
     undefined,
     []
@@ -48,27 +51,29 @@ module.exports = (function() {
   ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
   ConditionMetaError.prototype.error = null;
   Object.defineProperty(
-    ConditionError.prototype,
+    ConditionMetaError.prototype,
     "stack",
     {
       configurable: true,
       enumerable: true,
       get: function() {
-        var stack = this._stackSource.stack;
-        stack += "\nCaused by:\n";
-        stack += this.error && this.error.stack ? this.error.stack : ("" + this.error);
-        return stack;
+        var stack = this._stackSource.stack.split("\n");
+        stack.splice(1, 2);
+        stack.push("Caused by:");
+        stack.push(this.error && this.error.stack ? this.error.stack : ("" + this.error));
+        return stack.join("\n");
       },
       set: undefined
     }
   );
 
-  ConditionMetaError.createMessage = function(condition, self, args, error) {
+  ConditionMetaError.createMessage = function(contractFunction, condition, self, args, error) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(function() {return util.typeOf(condition) === "function";});
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     return "An error occurred while evaluating " + condition +
-           " when function " + "A FUNCTION" + // MUDO FUNCTION
+           " when " + contractFunction.displayName +
            " was called on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + "): " +
            error;

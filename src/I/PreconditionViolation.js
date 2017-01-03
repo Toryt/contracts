@@ -18,9 +18,11 @@ module.exports = (function() {
   "use strict";
 
   var ConditionViolation = require("./ConditionViolation");
+  var Contract = require("./Contract");
   var util = require("./../_private/util");
 
-  function PreconditionViolation(condition, self, args) {
+  function PreconditionViolation(contractFunction, condition, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
@@ -28,6 +30,7 @@ module.exports = (function() {
   }
 
   PreconditionViolation.prototype = new ConditionViolation(
+    Contract.dummyImplementation(),
     function() {return "This is a dummy condition in the PreconditionViolation prototype."},
     undefined,
     []
@@ -35,12 +38,13 @@ module.exports = (function() {
   PreconditionViolation.prototype.constructor = PreconditionViolation;
   PreconditionViolation.prototype.name = "Contract Precondition Violation";
 
-  PreconditionViolation.createMessage = function(condition, self, args) {
+  PreconditionViolation.createMessage = function(contractFunction, condition, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(function() {return util.typeOf(condition) === "function";});
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     return "Precondition " + condition +
-           " of function " + "A FUNCTION" + " was violated by " + "THE CULPRIT - CALLING FUNCTION" + // MUDO
+           " of " + contractFunction.displayName + " was violated by " + "THE CULPRIT - CALLING FUNCTION" + // MUDO
            " by calling it on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
   };

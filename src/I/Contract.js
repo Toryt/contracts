@@ -63,6 +63,18 @@ module.exports = (function() {
            && util.isFrozenOwnProperty(f, "displayName")
            && f.displayName === contractFunctionDisplayName(f.implementation);
   };
+  Contract.dummyImplementation = function() {
+    function dummyImplementation() {return "This is a dummy contract implementation.";}
+
+    var dummyContract = new Contract();
+    Object.freeze(dummyContract);
+    var contractFunction = function() {};
+    util.setAndFreezeProperty(contractFunction, "contract", dummyContract);
+    util.setAndFreezeProperty(contractFunction, "implementation", dummyImplementation);
+    util.setAndFreezeProperty(contractFunction, "name", dummyImplementation.name);
+    util.setAndFreezeProperty(contractFunction, "displayName", contractFunctionDisplayName(dummyImplementation));
+    return contractFunction;
+  };
 
   return Contract;
 })();
