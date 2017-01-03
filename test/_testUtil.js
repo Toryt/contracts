@@ -53,8 +53,18 @@
      }).to.throw(TypeError);
    }
 
-   function expectFrozenReadOnlyArrayPropertyOnPrototype(subject, propertyName) {
-     var prototype = Object.getPrototypeOf(subject);
+   function prototypeThatHasOwnPropertyDescriptor(subject, propertyname) {
+     if (!subject) {
+       return subject;
+     }
+     if (Object.getOwnPropertyDescriptor(subject, propertyname)) {
+       return subject;
+     }
+     return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyname);
+   }
+
+   function expectFrozenReadOnlyArrayPropertyOnAPrototype(subject, propertyName) {
+     var prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName);
      //noinspection JSUnresolvedFunction
      expect(prototype).to.have.ownPropertyDescriptor(propertyName);
      //noinspection JSUnresolvedFunction
@@ -74,7 +84,7 @@
      expect(subject).to.have.property(privatePropName).that.is.an("array");
      this.expectOwnFrozenProperty(subject, privatePropName);
      expect(subject).to.have.property(propName).that.is.an("array");
-     this.expectFrozenReadOnlyArrayPropertyOnPrototype(subject, propName);
+     this.expectFrozenReadOnlyArrayPropertyOnAPrototype(subject, propName);
      expect(function() {
        subject[propName] = 42 + " some outlandish other value";
      }).to.throw(TypeError);
@@ -92,7 +102,7 @@
    return {
      x: x,
      expectOwnFrozenProperty: expectOwnFrozenProperty,
-     expectFrozenReadOnlyArrayPropertyOnPrototype: expectFrozenReadOnlyArrayPropertyOnPrototype,
+     expectFrozenReadOnlyArrayPropertyOnAPrototype: expectFrozenReadOnlyArrayPropertyOnAPrototype,
      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
      log: log
    };

@@ -17,8 +17,6 @@ module.exports = (function() {
   "use strict";
 
   var util = require("./../_private/util");
-  var ConditionMetaError = require("./ConditionMetaError");
-  var ConditionViolation = require("./ConditionViolation");
 
   var displayNamePrefix = "contract function";
 
@@ -29,6 +27,9 @@ module.exports = (function() {
     return "contract function" + (displayName ? " " + displayName : "");
   }
 
+  /**
+   * Abstract definition of a function Contract.
+   */
   function Contract(pre, post, exception) {
     util.setAndFreezeProperty(this, "_pre", pre ? pre.slice() : []);
     util.setAndFreezeProperty(this, "_post", post ? post.slice() : []);
@@ -42,69 +43,6 @@ module.exports = (function() {
     _exception: null,
     isImplementedBy: function(f) {
       return Contract.isAContractFunction(f) && f.contract === this;
-    },
-    verifyOne: function(condition, self, args) {
-      util.pre(this, function() {return condition && util.typeOf(condition) === "function";});
-      util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
-
-      var conditionResult;
-      try {
-        conditionResult = condition.apply(self, args);
-      }
-      catch (err) {
-        var cme = new ConditionMetaError(condition, self, args, err);
-        Object.freeze(cme);
-        throw cme;
-      }
-      if (!conditionResult) {
-        var cv = new ConditionViolation(condition, self, args);
-        Object.freeze(cv);
-        throw cv;
-      }
-    },
-    verifyAll: function(conditions, self, args) {
-      util.pre(this, function() {
-        return conditions
-               && util.typeOf(conditions) === "array"
-               && conditions.every(function(c) {return c && util.typeOf(c) === "function";});});
-      util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
-
-      if (conditions) {
-        conditions.forEach(function(condition) {this.verifyOne(condition, self, args);}, this);
-      }
-    },
-    implementation: function(implFunction) {
-      util.pre(this, function() {return implFunction && util.typeOf(implFunction) === "function";});
-
-      var contract = this;
-      Object.freeze(contract);
-
-      function contractFunction() {
-        var extendedArgs = Array.prototype.slice.call(arguments);
-        contract.verifyAll(contract.pre, this, arguments);
-        var result;
-        var exception;
-        try {
-          result = implFunction.apply(this, arguments);
-        }
-        catch (exc) {
-          exception = exc;
-        }
-        extendedArgs.push(exception || result);
-        if (exception) {
-          contract.verifyAll(contract.exception, this, extendedArgs);
-          throw exception;
-        }
-        contract.verifyAll(contract.post, this, extendedArgs);
-        return result;
-      }
-
-      util.setAndFreezeProperty(contractFunction, "contract", contract);
-      util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
-      util.setAndFreezeProperty(contractFunction, "name", implFunction.name);
-      util.setAndFreezeProperty(contractFunction, "displayName", contractFunctionDisplayName(implFunction));
-
-      return contractFunction;
     }
   };
   util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "pre", "_pre");
