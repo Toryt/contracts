@@ -646,6 +646,10 @@
           invariants(contract);
         }
 
+        function fibonacciImpl(n) {
+          return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+        }
+
         var fibonacci = new Contract(
           [
             function(n) {return util.isInteger(n);},
@@ -665,8 +669,13 @@
           [
             function() {return false;}
           ]
-        ).implementation(function(n) {
-          return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+        ).implementation(fibonacciImpl);
+
+        it("returns a different contract function when called with the same implementation", function() {
+          var fibonacci2 = fibonacci.contract.implementation(fibonacciImpl);
+          expect(fibonacci2).to.not.equal(fibonacci);
+          expect(fibonacci2).to.have.property("contract").that.equals(fibonacci.contract);
+          expect(fibonacci2).to.have.property("implementation").that.equals(fibonacci.implementation);
         });
 
         var wrongParameter = 4;
@@ -685,6 +694,12 @@
           else {
             return fibonacciWrong(n - 1) + fibonacciWrong(n - 2);
           }
+        });
+
+        it("returns a different contract function with a different implementation", function() {
+          expect(fibonacciWrong).to.not.equal(fibonacci);
+          expect(fibonacciWrong).to.have.property("contract").that.equals(fibonacci.contract);
+          expect(fibonacciWrong).to.have.property("implementation").that.not.equals(fibonacci.contract);
         });
 
         var factorialContract = new Contract(
