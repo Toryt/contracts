@@ -34,6 +34,8 @@ module.exports = (function() {
   /**
    * Verify one condition.
    * This is a static function. It doesn't use this.
+   *
+   * MUDO MOVE to ConditionViolation
    */
   ImplementableContract.prototype.verifyOne = function(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
@@ -58,6 +60,8 @@ module.exports = (function() {
   /**
    * Verify conditions, until one fails.
    * This is a static function. It doesn't use this.
+   *
+   * MUDO MOVE to ConditionViolation
    */
   ImplementableContract.prototype.verifyAll = function(contractFunction, conditions, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
