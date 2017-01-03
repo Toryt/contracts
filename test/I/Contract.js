@@ -86,6 +86,65 @@
         new String("lalala")
       ];
 
+      describe("Contract.contractFunctionDisplayName", function() {
+        it("returns the expected display name with a named function", function() {
+          function namedFunction() {}
+
+          var result = Contract.contractFunctionDisplayName(namedFunction);
+          expect(result).to.be.equal(Contract.displayNamePrefix + " namedFunction");
+        });
+
+        it("returns the expected display name with a named function with a display name", function() {
+          function namedFunction() {}
+          var displayName = "display name";
+          namedFunction.displayName = displayName;
+
+          var result = Contract.contractFunctionDisplayName(namedFunction);
+          expect(result).to.be.equal(Contract.displayNamePrefix + " " + displayName);
+        });
+
+        it("returns the expected display name with an anonymous function", function() {
+          var anonymousFunction = function() {};
+
+          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          // in ES6, this function has the name of the variable
+          // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          expect(result).to.be.equal(Contract.displayNamePrefix + " anonymousFunction");
+        });
+
+        it("returns the expected display name with an anonymous function with a display name", function() {
+          var f = function() {};
+          var displayName = "display name";
+          f.displayName = displayName;
+
+          var result = Contract.contractFunctionDisplayName(f);
+          expect(result).to.be.equal(Contract.displayNamePrefix + " " + displayName);
+        });
+
+        it("returns the expected display name with an anonymous function as a method", function() {
+          var obj = {
+            anonymousFunction: function() {}
+          };
+
+          var result = Contract.contractFunctionDisplayName(obj.anonymousFunction);
+          // in ES6, this function has the name of the variable
+          // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          expect(result).to.be.equal(Contract.displayNamePrefix + " anonymousFunction");
+        });
+
+        it("returns the expected display name with an named function function as a method", function() {
+          var obj = {
+            f: function namedFunction() {}
+          };
+
+          var result = Contract.contractFunctionDisplayName(obj.f);
+          // in ES6, this function has the name of the variable
+          // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          expect(result).to.be.equal(Contract.displayNamePrefix + " namedFunction");
+        });
+
+      });
+
       describe("Contract.isAContractFunction", function() {
         function createSubject(contract, implementation) {
           var subject = function() {};
@@ -147,12 +206,17 @@
           //noinspection BadExpressionStatementJS
           expect(Contract.isAContractFunction(subject)).not.to.be.ok;
         });
-        it("says yes if there is an implementation Function, and a Contract, and both properties are frozen," +
-           "and the contract is frozen", function() {
-          var subject = function() {};
+        it("says yes if there is an implementation Function, and a Contract, and both properties are frozen, " +
+           "and the contract is frozen, and the name of the subject is the same as of the implementation, and " +
+           "it has the expected display name", function() {
+          function subject() {}
+          function implementationFunction() {}
+
           util.setAndFreezeProperty(subject, "contract", new Contract());
           Object.freeze(subject.contract);
-          util.setAndFreezeProperty(subject, "implementation", function() {});
+          util.setAndFreezeProperty(subject, "implementation", implementationFunction);
+          util.setAndFreezeProperty(subject, "name", implementationFunction.name);
+          util.setAndFreezeProperty(subject, "displayName", Contract.contractFunctionDisplayName(implementationFunction));
           //noinspection BadExpressionStatementJS
           expect(Contract.isAContractFunction(subject)).to.be.ok;
         });
@@ -233,11 +297,16 @@
           invariants(subject);
         });
         it("says yes if the argument is a contract function for the contract", function() {
+          function implementationFunction() {}
+
           var subject = new Contract();
           Object.freeze(subject);
           var f = function() {};
           util.setAndFreezeProperty(f, "contract", subject);
-          util.setAndFreezeProperty(f, "implementation", function() {});
+          util.setAndFreezeProperty(f, "implementation", implementationFunction);
+          util.setAndFreezeProperty(f, "name", implementationFunction.name);
+          util.setAndFreezeProperty(f, "displayName", Contract.contractFunctionDisplayName(implementationFunction));
+
           //noinspection BadExpressionStatementJS
           expect(subject.isImplementedBy(f)).to.be.ok;
           invariants(subject);

@@ -20,6 +20,15 @@ module.exports = (function() {
   var ConditionMetaError = require("./ConditionMetaError");
   var ConditionViolation = require("./ConditionViolation");
 
+  var displayNamePrefix = "contract function";
+
+  function contractFunctionDisplayName(f) {
+    util.pre(function() {return util.typeOf(f) === "function";});
+
+    var displayName = f.displayName || f.name;
+    return "contract function" + (displayName ? " " + displayName : "");
+  }
+
   function Contract(pre, post, exception) {
     util.setAndFreezeProperty(this, "_pre", pre ? pre.slice() : []);
     util.setAndFreezeProperty(this, "_post", post ? post.slice() : []);
@@ -92,6 +101,8 @@ module.exports = (function() {
 
       util.setAndFreezeProperty(contractFunction, "contract", contract);
       util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
+      util.setAndFreezeProperty(contractFunction, "name", implFunction.name);
+      util.setAndFreezeProperty(contractFunction, "displayName", contractFunctionDisplayName(implFunction));
 
       return contractFunction;
     }
@@ -100,13 +111,19 @@ module.exports = (function() {
   util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "post", "_post");
   util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "exception", "_exception");
 
+  Contract.displayNamePrefix = displayNamePrefix;
+  Contract.contractFunctionDisplayName = contractFunctionDisplayName;
   Contract.isAContractFunction = function(f) {
     return util.typeOf(f) === "function"
            && f.contract instanceof Contract
            && util.isFrozenOwnProperty(f, "contract")
            && Object.isFrozen(f.contract)
            && util.typeOf(f.implementation) === "function"
-           && util.isFrozenOwnProperty(f, "implementation");
+           && util.isFrozenOwnProperty(f, "implementation")
+           && util.isFrozenOwnProperty(f, "name")
+           && f.name === f.implementation.name
+           && util.isFrozenOwnProperty(f, "displayName")
+           && f.displayName === contractFunctionDisplayName(f.implementation);
   };
 
   return Contract;
