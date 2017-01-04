@@ -579,7 +579,7 @@
           //noinspection BadExpressionStatementJS
           expect(exc).to.be.ok;
           expect(exc).to.be.an.instanceOf(ConditionViolation);
-          expect(exc.args[0]).to.equal(parameter);
+          expect(exc.args[0]).to.equal(wrongParameter);
           //noinspection BadExpressionStatementJS
           if (!self) {
             //noinspection BadExpressionStatementJS
@@ -588,14 +588,7 @@
           else {
             expect(exc.self).to.equal(self);
           }
-          if (parameter === wrongParameter) {
-            expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
-            expect(exc.args[1]).to.equal(wrongResult);
-          }
-          else {
-            expect(exc.condition).to.equal(fibonacciWrong.contract.exception[0]);
-            expectDeepViolation(self, exc.args[1], parameter - 1); // counting down
-          }
+          expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
         }
 
         var argumentsOfWrongType = [undefined, null, "bar"];

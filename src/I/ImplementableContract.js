@@ -18,8 +18,10 @@ module.exports = (function() {
 
   var util = require("./../_private/util");
   var Contract = require("./Contract");
+  var ConditionError = require("./ConditionError");
   var ConditionMetaError = require("./ConditionMetaError");
   var ConditionViolation = require("./ConditionViolation");
+  var PreconditionViolation = require("./PreconditionViolation");
 
   /**
    * The separation between Contract and ImplementableContract is necessary to break a dependency
@@ -90,6 +92,9 @@ module.exports = (function() {
         result = implFunction.apply(this, arguments);
       }
       catch (exc) {
+        if (exc instanceof ConditionError) { // necessary to report only the deepest failure clearly
+          throw exc;
+        }
         exception = exc;
       }
       extendedArgs.push(exception || result);
