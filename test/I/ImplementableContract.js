@@ -426,11 +426,9 @@
             function(n, result) {return util.isInteger(result);},
             function(n, result) {return n !== 0 || result === 0;},
             function(n, result) {return n !== 1 || result === 1;},
-            function f(n, result) {
+            function(n, result, fibonacci) {
               // Note: don't refer to a specific implementation ("fibonacci") in the ImplementableContract!
-              function f(n) {return n < 2 ? n : f(n - 1) + f(n - 2);}
-
-              return n < 2 || result === f(n);
+              return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);
             }
           ],
           [
@@ -553,7 +551,7 @@
           });
         }
 
-        function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArg) {
+        function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
           var param = "a parameter";
           callAndExpectException(self, functionWithAMetaError, param, function(exception) {
             expect(exception).to.be.an.instanceOf(ConditionMetaError);
@@ -566,10 +564,12 @@
             else {
               expect(exception.self).to.equal(self);
             }
-            expect(exception.args.length).to.equal(extraArg ? 2 : 1);
+            expect(exception.args.length).to.equal(extraArgs ? extraArgs.length + 1 : 1);
             expect(exception.args[0]).to.equal(param);
-            if (extraArg) {
-              expect(exception.args[1]).to.equal(extraArg);
+            if (extraArgs) {
+              expect(exception.args[1]).to.equal(extraArgs[0]);
+              expect(exception.args[2]).to.satisfy(function(f) {return Contract.isAContractFunction(f);});
+              // MUDO we actually don't want the extraArgs in the exception, do we? That is confusing. We want separate properties
             }
             expect(exception.error).to.equal(intentionalError);
           });
@@ -667,11 +667,12 @@
             [function() {throw intentionalError;}]
           );
 
+          var implementation = contractWithAFailingPost.implementation(function() {return resultWhenMetaError;});
           failsOnMetaError(
             undefined,
-            contractWithAFailingPost.implementation(function() {return resultWhenMetaError;}),
+            implementation,
             contractWithAFailingPost.post[0],
-            resultWhenMetaError
+            [resultWhenMetaError, implementation]
           );
         });
         it("fails with a meta-error when a postcondition is kaput when it is a method", function() {
@@ -687,7 +688,7 @@
             self,
             self.method,
             contractWithAFailingPost.post[0],
-            resultWhenMetaError
+            [resultWhenMetaError, self.method.bind(self)]
           );
         });
         it("fails with a meta-error when an exception condition is kaput", function() {
@@ -697,12 +698,12 @@
             [function() {throw intentionalError;}]
           );
           var anExceptedException = "This exception is expected.";
-
+          var implementation = contractWithAFailingExceptionCondition.implementation(function() {throw anExceptedException;});
           failsOnMetaError(
             undefined,
-            contractWithAFailingExceptionCondition.implementation(function() {throw anExceptedException;}),
+            implementation,
             contractWithAFailingExceptionCondition.exception[0],
-            anExceptedException
+            [anExceptedException, implementation]
           );
         });
         it("fails with a meta-error when an exception condition is kaput when it is a method", function() {
@@ -720,7 +721,7 @@
             self,
             self.method,
             contractWithAFailingExceptionCondition.exception[0],
-            anExceptedException
+            [anExceptedException, self.method.bind(self)]
           );
         });
         it("fails when a simple postcondition is violated", function() {

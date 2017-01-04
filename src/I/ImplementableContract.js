@@ -98,6 +98,7 @@ module.exports = (function() {
         exception = exc;
       }
       extendedArgs.push(exception || result);
+      extendedArgs.push(contractFunction.bind(this));
       if (exception) {
         contract.verifyAll(contractFunction, contract.exception, this, extendedArgs);
         throw exception;
@@ -106,10 +107,22 @@ module.exports = (function() {
       return result;
     }
 
+    function bind() {
+      var bound = Function.prototype.bind.apply(this, arguments);
+      var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
+      util.setAndFreezeProperty(bound, "contract", this.contract);
+      util.setAndFreezeProperty(bound, "implementation", boundImplementation);
+      util.setAndFreezeProperty(bound, "name", boundImplementation.name);
+      util.setAndFreezeProperty(bound, "displayName", Contract.contractFunctionDisplayName(boundImplementation));
+      bound.bind = this.bind;
+      return bound;
+    }
+
     util.setAndFreezeProperty(contractFunction, "contract", contract);
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
     util.setAndFreezeProperty(contractFunction, "name", implFunction.name);
     util.setAndFreezeProperty(contractFunction, "displayName", Contract.contractFunctionDisplayName(implFunction));
+    contractFunction.bind = bind;
 
     return contractFunction;
   };
