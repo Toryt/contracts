@@ -80,6 +80,7 @@ module.exports = (function() {
       conditionViolationTest.generatePrototypeMethodsDescriptions(
         function() {
           return new PreconditionViolation(
+            Contract.dummyImplementation(),
             conditionViolationTest.conditionCase,
             null,
             conditionViolationTest.argsCases[0]
