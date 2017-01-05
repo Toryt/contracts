@@ -18,85 +18,10 @@ module.exports = (function() {
   "use strict";
 
   var expect = require("chai").expect;
+  var common = require("./ContractCommon");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var Contract = require("../../src/I/Contract");
-
-  var someConditions = [
-    function() {return [];},
-    function() {return ["shallow"];}
-  ];
-  var preCases = [
-    function() {return null;}
-  ].concat(someConditions);
-  var postCases = [
-    function() {return null;}
-  ].concat(someConditions);
-  var exceptionCases = [
-    function() {return null;}
-  ].concat(someConditions);
-
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-  var thingsThatAreNotAFunctionNorAContract = [
-    undefined,
-    null,
-    "",
-    "foo",
-    0,
-    -1,
-    true,
-    false,
-    /lala/,
-    {},
-    new Date(),
-    new Number(42),
-    new Boolean(true),
-    new String("lalala")
-  ];
-
-  var constructorPreCases = [
-    function() {return undefined;}
-  ].concat(preCases);
-  var constructorPostCases = [
-    function() {return undefined;}
-  ].concat(postCases);
-  var constructorExceptionCases = [
-    function() {return undefined;}
-  ].concat(exceptionCases);
-
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(Contract);
-    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "pre", "_pre");
-    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "post", "_post");
-    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "exception", "_exception");
-  }
-
-  function expectConstructorPost(pre, post, exception, result) {
-    function expectArrayPost(array, propName, privatePropName) {
-      if (!array) {
-        expect(result[propName]).to.eql([]);
-      }
-      else {
-        expect(result[privatePropName]).to.eql(array);
-        expect(result[privatePropName]).to.not.equal(array);  // it must be copy, don't share the array
-        expect(result[propName]).to.eql(array);
-        expect(result[propName]).to.not.equal(result[privatePropName]);  // it must be copy, don't share the array
-      }
-    }
-
-    it("has a shallow copy of the given pre-conditions", function() {
-      expectArrayPost(pre, "pre", "_pre");
-    });
-    it("has a shallow copy of the given post-conditions", function() {
-      expectArrayPost(post, "post", "_post");
-    });
-    it("has a shallow copy of the given exception-conditions", function() {
-      expectArrayPost(exception, "exception", "_exception");
-    });
-    it("adheres to the invariants", function() {
-      expectInvariants(result);
-    });
-  }
 
   // describe("I", function() {
     describe("I/Contract", function() {
@@ -173,13 +98,13 @@ module.exports = (function() {
         }
 
         it("says no on any thing that is not a function", function() {
-          thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
+          common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
             //noinspection BadExpressionStatementJS
             expect(Contract.isAContractFunction(thing)).not.to.be.ok;
           });
         });
         it("says no if there is no Contract property, with or without an implementation", function() {
-          thingsThatAreNotAFunctionNorAContract.concat([function() {}]).forEach(function(thing) {
+          common.thingsThatAreNotAFunctionNorAContract.concat([function() {}]).forEach(function(thing) {
             var subject = createSubject(thing);
             //noinspection BadExpressionStatementJS
             expect(Contract.isAContractFunction(subject)).not.to.be.ok;
@@ -189,7 +114,7 @@ module.exports = (function() {
           });
         });
         it("says no if there is no implementation property, with or without a Contract", function() {
-          thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
+          common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
             var subject = createSubject(null, thing);
             //noinspection BadExpressionStatementJS
             expect(Contract.isAContractFunction(subject)).not.to.be.ok;
@@ -245,15 +170,15 @@ module.exports = (function() {
       });
 
       describe("#Contract()", function() {
-        constructorPreCases.forEach(function(pre) {
-          constructorPostCases.forEach(function(post) {
-            constructorExceptionCases.forEach(function(exception) {
+        common.constructorPreCases.forEach(function(pre) {
+          common.constructorPostCases.forEach(function(post) {
+            common.constructorExceptionCases.forEach(function(exception) {
               describe("works for pre: " + pre + ", post: " + post + ", exception: " + exception, function() {
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
                 var result = new Contract(preConditions, postConditions, exceptionConditions);
-                expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
+                common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
               });
             });
           });
@@ -262,13 +187,13 @@ module.exports = (function() {
 
       describe("#isImplementedBy()", function() {
         it("says no if the argument is not a contract function", function() {
-          thingsThatAreNotAFunctionNorAContract
+          common.thingsThatAreNotAFunctionNorAContract
             .concat(["function() {}"])
             .forEach(function(thing) {
               var subject = new Contract();
               //noinspection BadExpressionStatementJS
               expect(subject.isImplementedBy(thing)).not.to.be.ok;
-              expectInvariants(subject);
+              common.expectInvariants(subject);
             });
         });
         it("says no if the argument is a contract function for another contract", function() {
@@ -278,7 +203,7 @@ module.exports = (function() {
           f.implementation = function() {};
           //noinspection BadExpressionStatementJS
           expect(subject.isImplementedBy(f)).not.to.be.ok;
-          expectInvariants(subject);
+          common.expectInvariants(subject);
         });
         it("says yes if the argument is a contract function for the contract", function() {
           function implementationFunction() {}
@@ -293,7 +218,7 @@ module.exports = (function() {
 
           //noinspection BadExpressionStatementJS
           expect(subject.isImplementedBy(f)).to.be.ok;
-          expectInvariants(subject);
+          common.expectInvariants(subject);
         });
       });
 
@@ -301,15 +226,15 @@ module.exports = (function() {
   // });
 
   return {
-    preCases: preCases,
-    postCases: postCases,
-    exceptionCases: exceptionCases,
-    thingsThatAreNotAFunctionNorAContract: thingsThatAreNotAFunctionNorAContract,
-    constructorPreCases: constructorPreCases,
-    constructorPostCases: constructorPostCases,
-    constructorExceptionCases: constructorExceptionCases,
-    expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost
+    preCases: common.preCases,
+    postCases: common.postCases,
+    exceptionCases: common.exceptionCases,
+    thingsThatAreNotAFunctionNorAContract: common.thingsThatAreNotAFunctionNorAContract,
+    constructorPreCases: common.constructorPreCases,
+    constructorPostCases: common.constructorPostCases,
+    constructorExceptionCases: common.constructorExceptionCases,
+    expectInvariants: common.expectInvariants,
+    expectConstructorPost: common.expectConstructorPost
   };
 
 })();
