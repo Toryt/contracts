@@ -18,17 +18,17 @@
   "use strict";
 
   var expect = require("chai").expect;
+  var common = require("./ImplementableContractCommon");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var ImplementableContract = require("../../src/I/ImplementableContract");
   var Contract = require("../../src/I/Contract");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var ConditionViolation = require("../../src/I/ConditionViolation");
-  var contractTest = require("./Contract");
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ImplementableContract);
-    contractTest.expectInvariants(subject);
+    common.expectInvariants(subject);
     expect(subject).to.have.property("implementation").that.is.a("function");
   }
 
@@ -36,21 +36,21 @@
     describe("I/ImplementableContract", function() {
 
       var subjects = testUtil
-        .x(contractTest.preCases, contractTest.postCases, contractTest.exceptionCases)
+        .x(common.preCases, common.postCases, common.exceptionCases)
         .map(function(args) {
           return function() {return new ImplementableContract(args[0](), args[1](), args[2]());};
         });
 
       describe("#ImplementableContract()", function() {
-        contractTest.constructorPreCases.forEach(function(pre) {
-          contractTest.constructorPostCases.forEach(function(post) {
-            contractTest.constructorExceptionCases.forEach(function(exception) {
+        common.constructorPreCases.forEach(function(pre) {
+          common.constructorPostCases.forEach(function(post) {
+            common.constructorExceptionCases.forEach(function(exception) {
               describe("works for pre: " + pre + ", post: " + post + ", exception: " + exception, function() {
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
                 var result = new ImplementableContract(preConditions, postConditions, exceptionConditions);
-                contractTest.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
+                common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
               });
             });
           });
@@ -420,11 +420,5 @@
       });
     });
   // });
-
-  var test = {
-    expectInvariants: expectInvariants
-  };
-  Object.setPrototypeOf(test, contractTest);
-  return test;
 
 })();

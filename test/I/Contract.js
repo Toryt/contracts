@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function() {
   "use strict";
 
   var expect = require("chai").expect;
@@ -224,17 +224,5 @@ module.exports = (function() {
 
     });
   // });
-
-  return {
-    preCases: common.preCases,
-    postCases: common.postCases,
-    exceptionCases: common.exceptionCases,
-    thingsThatAreNotAFunctionNorAContract: common.thingsThatAreNotAFunctionNorAContract,
-    constructorPreCases: common.constructorPreCases,
-    constructorPostCases: common.constructorPostCases,
-    constructorExceptionCases: common.constructorExceptionCases,
-    expectInvariants: common.expectInvariants,
-    expectConstructorPost: common.expectConstructorPost
-  };
 
 })();
