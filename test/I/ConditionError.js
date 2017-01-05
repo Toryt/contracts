@@ -47,8 +47,6 @@ module.exports = (function() {
     expect(subject).to.have.property("stack");
     var startOfStack = subject.name + ": " + subject.message;
     expect(subject.stack.indexOf(startOfStack)).to.equal(0);
-    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-    expect(subject).to.be.extensible;
   }
 
   function expectConstructorPost(result, contractFunction, condition, self, args) {
@@ -56,6 +54,8 @@ module.exports = (function() {
     expect(result.condition).equal(condition);
     expect(result.self).equal(self);
     expect(result.args).equal(args);
+    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+    expect(result).to.be.extensible;
   }
 
   var conditionCase = function() {return "This simulates a condition";};
