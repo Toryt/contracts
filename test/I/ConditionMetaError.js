@@ -14,50 +14,14 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function() {
   "use strict";
 
   var expect = require("chai").expect;
+  var common = require("./ConditionMetaErrorCommon");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var Contract = require("../../src/I/Contract");
-  var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
-  var conditionErrorTest = require("./ConditionError");
-
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(ConditionMetaError);
-    if (subject.error) {
-      //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-      expect(subject.error).to.be.frozen;
-    }
-    conditionErrorTest.expectInvariants(subject);
-    expect(subject.stack).to.contain("" + subject.error);
-  }
-
-  function expectConstructorPost(result, contractFunction, condition, self, args, error) {
-    conditionErrorTest.expectConstructorPost(result, contractFunction, condition, self, args);
-    expect(result.error).to.equal(error);
-  }
-
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-  var errorCases = [
-    new Error(),
-    undefined,
-    null,
-    1,
-    0,
-    "a string that is used as an error",
-    "",
-    true,
-    false,
-    new Date(),
-    /foo/,
-    function() {},
-    new Number(42),
-    new Boolean(false),
-    new String("lalala"),
-    arguments
-  ];
 
   // describe("I", function() {
     describe("I/ConditionMetaError", function() {
@@ -69,15 +33,15 @@ module.exports = (function() {
       });
 
       describe("#ConditionMetaError.createMessage()", function() {
-        conditionErrorTest.selfCases.forEach(function(self) {
-          conditionErrorTest.argsCases.forEach(function(args) {
-            errorCases.forEach(function(error) {
+        common.selfCases.forEach(function(self) {
+          common.argsCases.forEach(function(args) {
+            common.errorCases.forEach(function(error) {
               it("works when called with " + self + " - " + args, function() {
                 var contractFunction = Contract.dummyImplementation();
-                var result = ConditionMetaError.createMessage(contractFunction, conditionErrorTest.conditionCase, self, args, error);
+                var result = ConditionMetaError.createMessage(contractFunction, common.conditionCase, self, args, error);
                 expect(result).to.be.a("string");
                 expect(result).to.contain(contractFunction.displayName);
-                expect(result).to.contain("" + conditionErrorTest.conditionCase);
+                expect(result).to.contain("" + common.conditionCase);
                 expect(result).to.contain("" + self);
                 Array.prototype.forEach(function(arg) {
                   expect(result).to.contain("" + arg);
@@ -90,18 +54,18 @@ module.exports = (function() {
       });
 
       describe("#ConditionMetaError()", function() {
-        conditionErrorTest.selfCases.forEach(function(self) {
-          conditionErrorTest.argsCases.forEach(function(args) {
-            errorCases.forEach(function(error) {
+        common.selfCases.forEach(function(self) {
+          common.argsCases.forEach(function(args) {
+            common.errorCases.forEach(function(error) {
               it("creates an instance with all toppings for " + self + " - " + args + " - " + error, function() {
                 var contractFunction = Contract.dummyImplementation();
-                var result = new ConditionMetaError(contractFunction, conditionErrorTest.conditionCase, self, args, error);
-                expectConstructorPost(result, contractFunction, conditionErrorTest.conditionCase, self, args, error);
-                expectInvariants(result);
+                var result = new ConditionMetaError(contractFunction, common.conditionCase, self, args, error);
+                common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, error);
+                common.expectInvariants(result);
                 expect(result.name).to.equal("Contract Condition Meta-Error");
                 expect(result.message).to.equal(ConditionMetaError.createMessage(
                   contractFunction,
-                  conditionErrorTest.conditionCase,
+                  common.conditionCase,
                   self,
                   args,
                   error
@@ -113,22 +77,22 @@ module.exports = (function() {
         });
       });
 
-      conditionErrorTest.generatePrototypeMethodsDescriptions(
+      common.generatePrototypeMethodsDescriptions(
         function() {
           return new ConditionMetaError(
-            conditionErrorTest.conditionCase,
+            common.conditionCase,
             null,
-            conditionErrorTest.argsCases[0],
-            errorCases[0]
+            common.argsCases[0],
+            common.errorCases[0]
           );
         },
         testUtil
-          .x(conditionErrorTest.selfCases, conditionErrorTest.argsCases, errorCases)
+          .x(common.selfCases, common.argsCases, common.errorCases)
           .map(function(parameters) {
             return function() {
               return {
                 subject: new ConditionMetaError(Contract.dummyImplementation(),
-                                                conditionErrorTest.conditionCase,
+                                                common.conditionCase,
                                                 parameters[0],
                                                 parameters[1],
                                                 parameters[2]),
@@ -140,13 +104,5 @@ module.exports = (function() {
 
     });
   // });
-
-  var test = {
-    errorCases: errorCases,
-    expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost
-  };
-  Object.setPrototypeOf(test, conditionErrorTest);
-  return test;
 
 })();
