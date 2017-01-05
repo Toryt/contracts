@@ -92,11 +92,6 @@ module.exports = (function() {
   ConditionError.prototype = new Error("This is a dummy message in the ConditionError prototype.");
   ConditionError.prototype.constructor = ConditionError;
   ConditionError.prototype.name = "Contract Condition Error";
-  ConditionError.prototype.isCivilized = function() {
-    return Contract.isAContractFunction(this.contractFunction) &&
-           util.typeOf(this.condition) === "function" &&
-           (util.typeOf(this.args) === "arguments" || util.typeOf(this.args) === "array");
-  };
   ConditionError.prototype.contractFunction = null;
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;
