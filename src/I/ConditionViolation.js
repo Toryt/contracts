@@ -19,6 +19,7 @@ module.exports = (function() {
 
   var ConditionError = require("./ConditionError");
   var Contract = require("./Contract");
+  var ConditionMetaError = require("./ConditionMetaError");
   var util = require("./../_private/util");
 
   /**
@@ -41,6 +42,42 @@ module.exports = (function() {
   );
   ConditionViolation.prototype.constructor = ConditionViolation;
   ConditionViolation.prototype.name = "Contract Condition Violation";
+  /**
+   * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
+   *
+   * <pre>
+   *   <var>SpecificConditionViolationConstructor</var>.prototype.verify(<var>...</var>, <var>condition</var>, <var>self</var>, <var>args</var>)
+   * </pre>
+   *
+   * Such a call will throw a ConditionViolation of type <var>SpecificConditionViolationConstructor</var>, with its
+   * properties filled out appropriately, if the supplied <var>condition</var> returns <code>false</code> when applied
+   * to <var>self</var> and <var>args</var>.
+   *
+   * When the supplied <var>condition</var> fails to execute, a ConditionMetaError is thrown, with its
+   * properties filled out appropriately.
+   *
+   * Mostly, this method is not used directly, but called via <code>verifyAll</code>.
+   */
+  ConditionViolation.prototype.verify = function(contractFunction, condition, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+    util.pre(this, function() {return util.typeOf(condition) === "function";});
+    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+
+    var conditionResult;
+    try {
+      conditionResult = condition.apply(self, args);
+    }
+    catch (err) {
+      var cme = new ConditionMetaError(contractFunction, condition, self, args, err);
+      Object.freeze(cme);
+      throw cme;
+    }
+    if (!conditionResult) {
+      var cv = new this.constructor(contractFunction, condition, self, args);
+      Object.freeze(cv);
+      throw cv;
+    }
+  };
 
   ConditionViolation.createMessage = function(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});

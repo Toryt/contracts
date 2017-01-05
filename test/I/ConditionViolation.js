@@ -19,14 +19,162 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var ConditionViolation = require("../../src/I/ConditionViolation");
+  var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var Contract = require("../../src/I/Contract");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var conditionErrorTest = require("./ConditionError");
 
+  var selfVerifyCases = [
+    function() {return undefined;},
+    function() {return null;},
+    function() {return {};}
+  ];
+
+  function args() {return arguments;}
+
+  var argsVerifyCases = [
+    function() {return args();},
+    function() {return args("an argument");},
+    function() {return args("an argument", "another argument");},
+    function() {return ["an argument in an array"];}
+  ];
+
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionViolation);
     conditionErrorTest.expectInvariants(subject);
+  }
+
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+
+    conditionErrorTest.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+
+    describe("#verify()", function() {
+      function expectPost(subject, contractFunction, condition, self, args, appliedSelf, appliedArgs, exception) {
+        var outcome;
+        try {
+          outcome = condition.apply();
+        }
+        catch (err) {
+          it("should throw a ConditionMetaError because the condition had an error", function() {
+            //noinspection BadExpressionStatementJS
+            expect(exception).to.be.ok;
+            expect(exception).to.be.instanceOf(ConditionMetaError);
+            //noinspection BadExpressionStatementJS
+            expect(exception.isCivilized()).to.be.ok;
+            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+            expect(exception).to.be.frozen;
+            expect(exception.contractFunction).to.equal(contractFunction);
+            expect(exception.error).to.deep.equal(err);
+            expect(exception.condition).to.equal(condition);
+            expect(exception.self).to.equal(self);
+            expect(exception.args).to.eql(args);
+          });
+          return;
+        }
+        it("should have called the condition with the given this", function() {
+          expect(appliedSelf).to.equal(self);
+        });
+        it("should have called the condition with the given arguments", function() {
+          //noinspection BadExpressionStatementJS
+          expect(appliedArgs).to.be.ok;
+          //noinspection JSAnnotator,BadExpressionStatementJS
+          expect(appliedArgs).to.be.arguments;
+          expect(appliedArgs).to.have.lengthOf(args.length);
+          for (var i = 0; i < args.length; i++) {
+            expect(appliedArgs[i]).to.equal(args[i]);
+          }
+        });
+        it("should throw an exception when the condition and evaluates to false, and not otherwise, " +
+           "because the condition ended nominally",
+          function() {
+            expect(!exception).to.equal(!!outcome);
+          }
+        );
+        if (!outcome) {
+          it("should throw a ConditionViolation that is correctly configured, " +
+             "because the condition evaluated to false nominally",
+            function() {
+              //noinspection BadExpressionStatementJS
+              expect(exception).to.be.ok;
+              expect(exception).to.be.instanceOf(ConditionViolation); //MUDO specific type too
+              expectInvariants(exception);
+              //noinspection BadExpressionStatementJS
+              expect(exception.isCivilized()).to.be.ok;
+              //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+              expect(exception).to.be.frozen;
+              expect(exception.contractFunction).to.equal(contractFunction);
+              expect(exception.condition).to.equal(condition);
+              expect(exception.self).to.equal(self);
+              expect(exception.args).to.eql(args);
+            }
+          );
+        }
+        else {
+          it("should not throw an exception, because the condition evaluated to true nominally", function() {
+            //noinspection BadExpressionStatementJS
+            expect(exception).to.not.be.ok;
+          });
+        }
+        it("adheres to the invariants", function() {
+          expectInvariants(subject);
+        });
+      }
+
+      var conditionCases = [
+        function() {
+          return function f() {
+            f.self = this;
+            f.args = arguments;
+            // no return
+          };
+        },
+        function() {
+          return function f() {
+            f.self = this;
+            f.args = arguments;
+            return false;
+          };
+        },
+        function() {
+          return function f() {
+            f.self = this;
+            f.args = arguments;
+            return true;
+          };
+        },
+        function() {
+          return function f() {
+            f.self = this;
+            f.args = arguments;
+            throw "This condition fails with an error";
+          };
+        }
+      ];
+
+      conditionCases.forEach(function(conditionGenerator) {
+        selfVerifyCases.forEach(function(selfGenerator) {
+          argsVerifyCases.forEach(function(argGenerator) {
+            var subject = oneSubjectGenerator();
+            var condition = conditionGenerator();
+            var self = selfGenerator();
+            var args = argGenerator();
+            var contractFunction = Contract.dummyImplementation();
+            describe("works for " + condition + " - " + self + " - " + args, function() {
+              var exception;
+              try {
+                subject.verify(contractFunction, condition, self, args);
+              }
+              catch (exc) {
+                exception = exc;
+              }
+              expectPost(subject, contractFunction, condition, self, args, condition.self, condition.args, exception);
+            });
+          });
+        });
+      });
+    });
+
   }
 
   // describe("I", function() {
@@ -77,9 +225,12 @@ module.exports = (function() {
         });
       });
 
-      conditionErrorTest.generatePrototypeMethodsDescriptions(
+      generatePrototypeMethodsDescriptions(
         function() {
-          return new ConditionViolation(conditionErrorTest.conditionCase, null, conditionErrorTest.argsCases[0]);
+          return new ConditionViolation(Contract.dummyImplementation(),
+                                        conditionErrorTest.conditionCase,
+                                        null,
+                                        conditionErrorTest.argsCases[0]);
         },
         testUtil
           .x(conditionErrorTest.selfCases, conditionErrorTest.argsCases)
@@ -100,6 +251,9 @@ module.exports = (function() {
   // });
 
   var test = {
+    selfVerifyCases: selfVerifyCases,
+    argsVerifyCases: argsVerifyCases,
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
     expectInvariants: expectInvariants
   };
   Object.setPrototypeOf(test, conditionErrorTest);
