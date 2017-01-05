@@ -46,6 +46,31 @@ module.exports = (function() {
    * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
    *
    * <pre>
+   *   <var>SpecificConditionViolationConstructor</var>.prototype.verifyAll(<var>...</var>, <var>conditions</var>, <var>self</var>, <var>args</var>)
+   * </pre>
+   *
+   * Such a call will throw a ConditionViolation of type <var>SpecificConditionViolationConstructor</var>, with its
+   * properties filled out appropriately if any of the supplied <var>conditions</var> returns <code>false</code> when
+   * applied to <var>self</var> and <var>args</var>.
+   *
+   * When any of the supplied <var>conditions</var> fails to execute, a ConditionMetaError is thrown, with its
+   * properties filled out appropriately.
+   */
+  ConditionViolation.prototype.verifyAll = function(contractFunction, conditions, self, args) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+    util.pre(this, function() {
+      return conditions
+             && util.typeOf(conditions) === "array"
+             && conditions.every(function(c) {return util.typeOf(c) === "function";});
+    });
+    util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
+
+    conditions.forEach(function(condition) {this.verify(contractFunction, condition, self, args);}, this);
+  };
+  /**
+   * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
+   *
+   * <pre>
    *   <var>SpecificConditionViolationConstructor</var>.prototype.verify(<var>...</var>, <var>condition</var>, <var>self</var>, <var>args</var>)
    * </pre>
    *

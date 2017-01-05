@@ -175,6 +175,210 @@ module.exports = (function() {
       });
     });
 
+    describe("#verifyAll()", function() {
+      function expectPost(subject, contractFunction, conditions, self, args, exception) {
+        if (conditions.length <= 0) {
+          it("doesn't throw an exception if there are no conditions", function() {
+            //noinspection BadExpressionStatementJS
+            expect(exception).not.to.be.ok;
+          });
+          return;
+        }
+        var selfAndArgs = conditions.map(function(condition) {
+          // save self and args, because in our determination of firstFailure, they will be overwritten
+          return {self: condition.self, args: condition.args};
+        });
+        var firstFailure;
+        var firstFailureIndex;
+        var thrown;
+        for (var i = 0; !firstFailure && i < conditions.length; i++) {
+          try {
+            var outcome = conditions[i].apply();
+            if (!outcome) {
+              firstFailure = conditions[i];
+              firstFailureIndex = i;
+            }
+          }
+          catch (err) {
+            firstFailure = conditions[i];
+            firstFailureIndex = i;
+            thrown = err;
+          }
+        }
+        it("throws an exception if one of the conditions fails or evaluates nominally to false", function() {
+          expect(!!exception).to.equal(!!firstFailure);
+        });
+        if (thrown) {
+          it("throws a ConditionMetaError if one of the conditions fails", function() {
+            expect(exception).to.be.instanceOf(ConditionMetaError);
+            //noinspection BadExpressionStatementJS
+            expect(exception.isCivilized()).to.be.ok;
+            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+            expect(exception).to.be.frozen;
+            expect(exception.condition).to.equal(firstFailure);
+            expect(exception.contractFunction).to.equal(contractFunction);
+            expect(exception.self).to.equal(self);
+            expect(exception.args).to.eql(args);
+          });
+        }
+        else if (firstFailure) {
+          it("throws a ConditionViolation if one of the conditions evaluates nominally to false", function() {
+            expect(exception).to.be.instanceOf(ConditionViolation);
+            //noinspection BadExpressionStatementJS
+            expect(exception.isCivilized()).to.be.ok;
+            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+            expect(exception).to.be.frozen;
+            expect(exception.condition).to.equal(firstFailure);
+            expect(exception.contractFunction).to.equal(contractFunction);
+            expect(exception.self).to.equal(self);
+            expect(exception.args).to.eql(args);
+          });
+        }
+        else {
+          it("ends nominally if all conditions evaluate nominally to true", function() {
+            //noinspection BadExpressionStatementJS
+            expect(exception).not.to.be.ok;
+          });
+        }
+        it("evaluates all conditions up until the first failure with the given self and arguments", function() {
+          for (var j = 0; j <= firstFailureIndex; j++) {
+            expect(selfAndArgs[j].self).to.equal(self);
+            var appliedArgs = selfAndArgs[j].args;
+            //noinspection BadExpressionStatementJS
+            expect(appliedArgs).to.be.ok;
+            //noinspection JSAnnotator,BadExpressionStatementJS
+            expect(appliedArgs).to.be.arguments;
+            if (!args) {
+              //noinspection BadExpressionStatementJS
+              expect(appliedArgs).to.be.empty;
+            }
+            else {
+              expect(appliedArgs).to.have.lengthOf(args.length);
+              for (var i = 0; i < args.length; i++) {
+                expect(appliedArgs[i]).to.equal(args[i]);
+              }
+            }
+          }
+        });
+        it("does not evaluate conditions after the first failure", function() {
+          for (var j = firstFailureIndex + 1; j < conditions.length; j++) {
+            //noinspection BadExpressionStatementJS
+            expect(selfAndArgs[j].self).not.to.be.ok;
+            //noinspection BadExpressionStatementJS
+            expect(selfAndArgs[j].args).not.to.be.ok;
+          }
+        });
+        it("adheres to the invariants", function() {
+          expectInvariants(subject);
+        });
+      }
+
+      var conditionsCases = [
+        function() {return [];},
+        function() {
+          return [
+            function f() {
+              f.self = this;
+              f.args = arguments;
+              return false;
+            }
+          ];
+        },
+        function() {
+          return [
+            function f() {
+              f.self = this;
+              f.args = arguments;
+              return true;
+            }
+          ];
+        },
+        function() {
+          return [
+            function f() {
+              f.self = this;
+              f.args = arguments;
+              return {};
+            }
+          ];
+        },
+        function() {
+          return [
+            function f1() {
+              f1.self = this;
+              f1.args = arguments;
+              return true;
+            },
+            function f2() {
+              f2.self = this;
+              f2.args = arguments;
+              return true;
+            }
+          ];
+        },
+        function() {
+          return [
+            function f1() {
+              f1.self = this;
+              f1.args = arguments;
+              return true;
+            },
+            function f2() {
+              f2.self = this;
+              f2.args = arguments;
+              return false;
+            },
+            function f3() {
+              f3.self = this;
+              f3.args = arguments;
+              return true;
+            }
+          ];
+        },
+        function() {
+          return [
+            function f1() {
+              f1.self = this;
+              f1.args = arguments;
+              return true;
+            },
+            function f3() {
+              f3.self = this;
+              f3.args = arguments;
+              throw "This condition fails with an error";
+            },
+            function f3() {
+              f3.self = this;
+              f3.args = arguments;
+              return true;
+            }
+          ];
+        }
+      ];
+
+      conditionsCases.forEach(function(conditionsGenerator) {
+        selfVerifyCases.forEach(function(selfGenerator) {
+          argsVerifyCases.forEach(function(argGenerator) {
+            var subject = oneSubjectGenerator();
+            var conditions = conditionsGenerator();
+            var self = selfGenerator();
+            var args = argGenerator();
+            var contractFunction = Contract.dummyImplementation();
+            describe("works for " + conditions + " - " + self + " - " + args, function() {
+              var exception;
+              try {
+                subject.verifyAll(contractFunction, conditions, self, args);
+              }
+              catch (exc) {
+                exception = exc;
+              }
+              expectPost(subject, contractFunction, conditions, self, args, exception);
+            });
+          });
+        });
+      });
+    });
+
   }
 
   // describe("I", function() {
