@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function() {
   "use strict";
 
   var expect = require("chai").expect;
@@ -97,14 +97,5 @@ module.exports = (function() {
 
     });
   // });
-
-  var test = {
-    selfVerifyCases: common.selfVerifyCases,
-    argsVerifyCases: common.argsVerifyCases,
-    generatePrototypeMethodsDescriptions: common.generatePrototypeMethodsDescriptions,
-    expectInvariants: common.expectInvariants
-  };
-  Object.setPrototypeOf(test, common);
-  return test;
 
 })();
