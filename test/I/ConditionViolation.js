@@ -43,6 +43,8 @@ module.exports = (function() {
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionViolation);
     conditionErrorTest.expectInvariants(subject);
+    expect(subject).to.have.property("verify").that.is.a("function");
+    expect(subject).to.have.property("verifyAll").that.is.a("function");
   }
 
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
