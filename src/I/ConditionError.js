@@ -108,12 +108,39 @@ module.exports = (function() {
       configurable: true,
       enumerable: true,
       get: function() {
-        var result = this._stackSource.stack.split(util.eol);
-        var startOfStacktrace = util.nrOfLines(this.message); // start after the message
-        while (0 <= result[startOfStacktrace].indexOf(contractLibPath) || result[startOfStacktrace].indexOf("/") < 0) {
-          // remove all lines in which this library is mentioned
-          result.splice(startOfStacktrace, 1);
-        }
+        var original = this._stackSource.stack.split(util.eol);
+        var messageLines = util.nrOfLines(this.message); // start after the message
+        var foundALineOutsideTheLibrary = false;
+        var result = original.reduce(
+          function(acc, line, index) {
+            if (index < messageLines) {
+              acc.push(line);
+            }
+            else if (!foundALineOutsideTheLibrary) {
+              if (0 <= line.indexOf(contractLibPath) || line.indexOf("/") < 0) {
+                // remove all lines in which this library is mentioned, or that refer to native code,
+                // until we reach a line in which it is not mentioned
+                // NOP
+              }
+              else {
+                foundALineOutsideTheLibrary = true;
+                acc.push(line);
+              }
+            }
+            else {
+              if (0 <= line.indexOf(contractLibPath)) {
+                // remove all lines in which this library is mentioned,
+                // once we saw we reach a line in which it is not mentioned
+                // NOP
+              }
+              else {
+                acc.push(line);
+              }
+            }
+            return acc;
+          },
+          []
+        );
         return result.join(util.eol) + this.stackAddition();
       },
       set: undefined
