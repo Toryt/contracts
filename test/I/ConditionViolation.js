@@ -68,6 +68,7 @@
               expect(result.message).to.equal(
                 ConditionViolation.createMessage(contractFunction, common.conditionCase, self, args)
               );
+              testUtil.log("result.stack: %s", result.stack);
             });
           });
         });

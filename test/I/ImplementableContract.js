@@ -201,6 +201,7 @@
                 expect(exception.self).to.equal(self);
               }
               expect(exception.args[0]).to.equal(parameter);
+              testUtil.log("exception.stack: %s", exception.stack);
             });
           });
         }
@@ -226,6 +227,7 @@
               // MUDO we actually don't want the extraArgs in the exception, do we? That is confusing. We want separate properties
             }
             expect(exception.error).to.equal(intentionalError);
+            testUtil.log("exception.stack: %s", exception.stack);
           });
         }
 
@@ -386,6 +388,7 @@
             expect(exception.self).not.to.be.ok;
             expect(exception.args[0]).to.equal(wrongParameter);
             expect(exception.args[1]).to.equal(wrongResult);
+            testUtil.log("exception.stack: %s", exception.stack);
           });
         });
         it("fails when a simple postcondition is violated when it is a method", function() {
@@ -396,18 +399,21 @@
             expect(exception.self).to.equal(self);
             expect(exception.args[0]).to.equal(wrongParameter);
             expect(exception.args[1]).to.equal(wrongResult);
+            testUtil.log("exception.stack: %s", exception.stack);
           });
         });
         it("fails when a postcondition is violated in a called function with a nested Violation", function() {
           var parameter = 6;
           callAndExpectException(undefined, fibonacciWrong, parameter, function(exception) {
             expectDeepViolation(undefined, exception, parameter);
+            testUtil.log("exception.stack: %s", exception.stack);
           });
         });
         it("fails when a postcondition is violated in a called function with a nested Violation when it is a method", function() {
           var parameter = 6;
           callAndExpectException(self, self.fibonacciWrong, parameter, function(exception) {
             expectDeepViolation(self, exception, parameter);
+            testUtil.log("exception.stack: %s", exception.stack);
           });
         });
 

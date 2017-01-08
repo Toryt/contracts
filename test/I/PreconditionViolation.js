@@ -66,6 +66,7 @@
               expect(result.message).to.equal(
                 PreconditionViolation.createMessage(contractFunction, common.conditionCase, self, args)
               );
+              testUtil.log("result.stack: %s", result.stack);
             });
           });
         });
