@@ -251,6 +251,29 @@
         });
       });
 
+      describe("#nrOfLines", function() {
+        var regExp = new RegExp(util.eol, "gi");
+
+        stuff
+          .map(function(s) {return s.subject;})
+          .concat([
+            "This is a" + util.eol + "multi-line-string" + util.eol + "of 3 lines",
+            new Error().stack,
+            JSON.stringify(
+              {
+                a: "a",
+                b: "b"
+              }
+            )
+          ])
+          .forEach(function(str) {
+            var nrOfEols = (("" + str).match(regExp) || []).length + 1;
+            it("the number of lines in the string representation of " + str + " should be " + nrOfEols, function() {
+              expect(util.nrOfLines(str)).to.equal(nrOfEols);
+            });
+          });
+      });
+
     });
   // });
 })();

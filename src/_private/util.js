@@ -17,7 +17,12 @@
 
  module.exports = (function() {
 
+   var os = require("os");
+
    var util = {
+
+     eol: os.EOL,
+
      /**
       * A better type then Object.toString() or typeof.
       * - toType(undefined); //"undefined"
@@ -118,6 +123,10 @@
               && descriptor.enumerable === true
               && descriptor.configurable === false
               && descriptor.writable === false;
+     },
+
+     nrOfLines: function(str) {
+       return ("" + str).split(this.eol).length;
      }
    };
 
