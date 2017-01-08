@@ -59,6 +59,9 @@ module.exports = (function() {
 
   var util = require("./../_private/util");
   var Contract = require("./Contract");
+  var path = require("path");
+
+  var contractLibPath = path.dirname(module.filename);
 
   /**
    * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
@@ -97,6 +100,7 @@ module.exports = (function() {
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;
   ConditionError.prototype._stackSource = null;
+  ConditionError.prototype.stackAddition = function() {return "";};
   Object.defineProperty(
     ConditionError.prototype,
     "stack",
@@ -104,9 +108,13 @@ module.exports = (function() {
       configurable: true,
       enumerable: true,
       get: function() {
-        var result = this._stackSource.stack.split("\n");
-        result.splice(1, 2);
-        return result.join("\n");
+        var result = this._stackSource.stack.split(util.eol);
+        var startOfStacktrace = util.nrOfLines(this.message); // start after the message
+        while (0 <= result[startOfStacktrace].indexOf(contractLibPath)) {
+          // remove all lines in which this library is mentioned
+          result.splice(startOfStacktrace, 1);
+        }
+        return result.join(util.eol) + this.stackAddition();
       },
       set: undefined
     }

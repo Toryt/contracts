@@ -22,6 +22,10 @@ module.exports = (function() {
   var util = require("../../src/_private/util");
   var Contract = require("../../src/I/Contract");
   var testUtil = require("../_testUtil");
+  var path = require("path");
+
+  var contractLibTestPath = path.dirname(module.filename);
+  var contractLibPath = path.dirname(path.dirname(contractLibTestPath)) + "/src/I";
 
   var conditionCase = function() {return "This simulates a condition";};
 
@@ -77,6 +81,28 @@ module.exports = (function() {
     expect(subject).to.have.property("stack");
     var startOfStack = subject.name + ": " + subject.message;
     expect(subject.stack.indexOf(startOfStack)).to.equal(0);
+    var linesInMessage = util.nrOfLines(subject.message);
+    var stackWithoutMessage = subject.stack.split(util.eol).splice(linesInMessage);
+    stackWithoutMessage.forEach(function(line, index) {
+      /* .../src/... contains the library code. This should never be mentioned in the stack trace.
+         It is inner workings, and confuses the target audience, which is only interested in the code that
+         uses the library. */
+      expect(line).to.satisfy(function(l) {return l.indexOf(contractLibPath) < 0;});
+      /* In our tests, the code that uses the library is our test code in ...//test/I/Condition..., or the
+         test framework library, in .../mocha/..., except for the last few lines. These lines will be node-internal,
+         and have no slash, or be internal/module.js. The first line should be our own code. */
+      if (index === 0) {
+        expect(line).to.satisfy(function(l) {return 0 <= l.indexOf(contractLibTestPath);});
+      }
+      else if (index < (stackWithoutMessage.length - 1)) {
+        expect(line).to.satisfy(function(l) {
+          return 0 <= l.indexOf(contractLibTestPath) ||
+                 0 <= l.indexOf("/mocha/") ||
+                 l.indexOf("/") < 0 ||
+                 0 <= l.indexOf("require (internal/module.js");
+        });
+      }
+    });
   }
 
   function expectConstructorPost(result, contractFunction, condition, self, args) {

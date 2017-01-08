@@ -50,22 +50,12 @@ module.exports = (function() {
   ConditionMetaError.prototype.constructor = ConditionMetaError;
   ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
   ConditionMetaError.prototype.error = null;
-  Object.defineProperty(
-    ConditionMetaError.prototype,
-    "stack",
-    {
-      configurable: true,
-      enumerable: true,
-      get: function() {
-        var stack = this._stackSource.stack.split("\n");
-        stack.splice(1, 2);
-        stack.push("Caused by:");
-        stack.push(this.error && this.error.stack ? this.error.stack : ("" + this.error));
-        return stack.join("\n");
-      },
-      set: undefined
-    }
-  );
+  ConditionMetaError.prototype.stackAddition = function() {
+    return util.eol +
+           "Caused by:" +
+           util.eol +
+           (this.error && this.error.stack ? this.error.stack : ("" + this.error));
+  };
 
   ConditionMetaError.createMessage = function(contractFunction, condition, self, args, error) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
