@@ -108,39 +108,32 @@ module.exports = (function() {
       configurable: true,
       enumerable: true,
       get: function() {
-        var original = this._stackSource.stack.split(util.eol);
         var messageLines = util.nrOfLines(this.message); // start after the message
         var foundALineOutsideTheLibrary = false;
-        var result = original.reduce(
-          function(acc, line, index) {
-            if (index < messageLines) {
-              acc.push(line);
-            }
-            else if (!foundALineOutsideTheLibrary) {
-              if (0 <= line.indexOf(contractLibPath) || line.indexOf("/") < 0) {
-                // remove all lines in which this library is mentioned, or that refer to native code,
-                // until we reach a line in which it is not mentioned
-                // NOP
-              }
-              else {
+        var result = this._stackSource.stack
+          .split(util.eol)
+          .reduce(
+            function(acc, line, index) {
+              if (!foundALineOutsideTheLibrary &&
+                  messageLines <= index &&
+                  line.indexOf(contractLibPath) < 0 &&
+                  0 <= line.indexOf("/")) {
+                // we found the first line of code that uses this library, if we haven't found such a line earlier,
+                // and we are past the message, and the line does not refer to this library or native code
                 foundALineOutsideTheLibrary = true;
+              }
+              if (index < messageLines ||
+                  (line.indexOf(contractLibPath) < 0 &&
+                   (0 <= line.indexOf("/") || foundALineOutsideTheLibrary))) {
+                // copy all the message lines, and the lines not referring to this library that are not referring to
+                // native code, and the lines that are referring to native code once we encountered the first line
+                // of non-native code that refers to code outside this library
                 acc.push(line);
               }
-            }
-            else {
-              if (0 <= line.indexOf(contractLibPath)) {
-                // remove all lines in which this library is mentioned,
-                // once we saw we reach a line in which it is not mentioned
-                // NOP
-              }
-              else {
-                acc.push(line);
-              }
-            }
-            return acc;
-          },
-          []
-        );
+              return acc;
+            },
+            []
+          );
         return result.join(util.eol) + this.stackAddition();
       },
       set: undefined
