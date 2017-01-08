@@ -110,7 +110,7 @@ module.exports = (function() {
       get: function() {
         var result = this._stackSource.stack.split(util.eol);
         var startOfStacktrace = util.nrOfLines(this.message); // start after the message
-        while (0 <= result[startOfStacktrace].indexOf(contractLibPath)) {
+        while (0 <= result[startOfStacktrace].indexOf(contractLibPath) || result[startOfStacktrace].indexOf("/") < 0) {
           // remove all lines in which this library is mentioned
           result.splice(startOfStacktrace, 1);
         }

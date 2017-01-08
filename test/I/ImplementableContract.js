@@ -25,6 +25,10 @@
   var Contract = require("../../src/I/Contract");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var ConditionViolation = require("../../src/I/ConditionViolation");
+  var PreconditionViolation = require("../../src/I/PreconditionViolation");
+  var conditionMetaErrorCommon = require("./ConditionMetaErrorCommon");
+  var conditionViolationCommon = require("./ConditionViolationCommon");
+  var preconditionViolationCommon = require("./PreconditionViolationCommon");
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ImplementableContract);
@@ -181,6 +185,11 @@
           catch (exception) {
             //noinspection BadExpressionStatementJS
             expect(exception).to.be.ok;
+            var common = exception instanceof ConditionMetaError ? conditionMetaErrorCommon :
+                         exception instanceof PreconditionViolation ? preconditionViolationCommon :
+                         exception instanceof ConditionViolation ? conditionViolationCommon :
+                         null;
+            common.expectInvariants(exception);
             expectException(exception);
           }
           if (endsNominally) {
