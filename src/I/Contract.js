@@ -59,7 +59,7 @@ module.exports = (function() {
            && util.typeOf(f.implementation) === "function"
            && util.isFrozenOwnProperty(f, "implementation")
            && util.isFrozenOwnProperty(f, "name")
-           && f.name === f.implementation.name
+           // MUDO this does not work in older node && f.name === f.implementation.name
            && util.isFrozenOwnProperty(f, "displayName")
            && f.displayName === contractFunctionDisplayName(f.implementation);
   };
@@ -71,7 +71,7 @@ module.exports = (function() {
     var contractFunction = function() {};
     util.setAndFreezeProperty(contractFunction, "contract", dummyContract);
     util.setAndFreezeProperty(contractFunction, "implementation", dummyImplementation);
-    util.setAndFreezeProperty(contractFunction, "name", dummyImplementation.name);
+    util.setAndFreezeProperty(contractFunction, "name", dummyImplementation.name); // MUDO this does not work in older node
     util.setAndFreezeProperty(contractFunction, "displayName", contractFunctionDisplayName(dummyImplementation));
     return contractFunction;
   };
