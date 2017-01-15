@@ -39,11 +39,15 @@ module.exports = (function() {
    * When verifying exceptional postconditions, the exception thrown by the function call is added as extra argument.
    * Finally, a version of the contract function bound to `this` is supplied as final parameter when verifying
    * nominal and exceptional postconditions. This function reference can be used in contracts that use recursion.
+   *
+   * Furthermore, an instance contains a `location` property, which is an end-of-line, followed by a line of text
+   * that refers to the source code where the contract was created.
    */
   function Contract(pre, post, exception) {
     util.setAndFreezeProperty(this, "_pre", pre ? pre.slice() : []);
     util.setAndFreezeProperty(this, "_post", post ? post.slice() : []);
     util.setAndFreezeProperty(this, "_exception", exception ? exception.slice() : []);
+    util.setAndFreezeProperty(this, "location", util.firstLocationOutsideLibrary());
   }
 
   Contract.prototype = {
@@ -58,6 +62,7 @@ module.exports = (function() {
   util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "pre", "_pre");
   util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "post", "_post");
   util.defineFrozenReadOnlyArrayProperty(Contract.prototype, "exception", "_exception");
+  util.setAndFreezeProperty(Contract.prototype, "location", util.firstLocationOutsideLibrary());
 
   Contract.displayNamePrefix = displayNamePrefix;
   Contract.contractFunctionDisplayName = contractFunctionDisplayName;

@@ -71,6 +71,8 @@ module.exports = (function() {
     testUtil.expectToBeArrayOfFunctions(subject.post);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "exception", "_exception");
     testUtil.expectToBeArrayOfFunctions(subject.exception);
+    testUtil.expectOwnFrozenProperty(subject, "location");
+    testUtil.expectLocationOutsideLibrary(subject.location);
   }
 
   function expectConstructorPost(pre, post, exception, result) {
