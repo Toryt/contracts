@@ -67,6 +67,49 @@ module.exports = (function() {
    * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
    * ConditionError itself is to be considered abstract.
    *
+   * A ConditionError will try to describe as correctly as possible what went wrong. It is a communication
+   * to developers.
+   *
+   * When preconditions are violated, the calling function is the culprit, or the contract is wrong. The developer
+   * wants to know where the function was called in source code, and what the exact arguments were of the instance of
+   * the call, and which precondition was violated in source code(which implies knowing which contract it is a part of).
+   * When nominal or exceptional postconditions are violated, the implementation is the culprit, or the contract is
+   * wrong. The developer wants to know what the exact arguments were of the instance of the call, which postcondition
+   * was violated in source code (which implies knowing which contract it is a part of), and which implementation was
+   * used in source code. The developer is probably interested in how the function was called in source code.
+   * When there is an error in the condition, the contract is wrong. The developer want to know the above, depending
+   * on the kind of condition that has an error.
+   *
+   * In general, we want to report
+   * - which condition was violated, or has an error, in source code, which implies
+   * -- of which contract, in source code
+   * - in what circumstances, which implies
+   * -- which implementation was used, in source code
+   * -- which function called the contract function, in source code
+   * -- which were the arguments, during execution
+   *
+   * The condition is usually short and anonymous. We will report the full implementation of the condition,
+   * which might be multi-line.
+   * The contract is an object, and there is no automatic way to assign recognizable names to objects.
+   * // MUDO we can try to create a reference to the contract by creating an Error during construction, and getting
+   * // it from the stack.
+   *
+   * The actual arguments can easily be listed.
+   *
+   * The implementation used is actually 2 functions: the supplied naked implementation, and the doctored contract
+   * function, which embeds the supplied naked implementation in contract verifications. The latter is the function
+   * called from outside. These are different instances of the same function definition in source code for all
+   * contract functions. It is not informative to communicate about this source code to the developer. In ES2015
+   * however, this function will have the relevant name. The naked implementation will often be nameless. Showing
+   * the code is often not relevant, because it will often be rather long. There is however no way to create a
+   * reference to the naked implementation. A reference in source code to the location where the contract function
+   * is created helps the developer to find the contract function definition, where a reference to the naked
+   * implementation, or the naked implementation itself, can be found. The name of the contract function, or, if there
+   * is none, the name of the naked implementation, is used in communication.
+   *
+   * The calling function cannot be retrieved in modern Javascript. We can however create a call stack, through which
+   * the developer can determine the calling function.
+   *
    * Invariant:
    * - contractFunction, and always a Contract Function
    * - condition is mandatory, and always a Function
@@ -149,10 +192,15 @@ module.exports = (function() {
     util.pre(function() {return util.typeOf(condition) === "function";});
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
+    var contractFunctionName = contractFunction.displayName || contractFunction.name || "<<unnnamed>>";
     return "Error concerning condition " + condition +
-           " while " + contractFunction.displayName +
+           " while contract function " + contractFunctionName +
            " was called on " + self +
-           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
+           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")" +
+           util.eol + "contract:" + contractFunction.contract.location +
+           util.eol + "condition: " + condition +
+           util.eol + "implementation:" + contractFunction.location +
+           util.eol + "call stack:";
   };
 
   return ConditionError;
