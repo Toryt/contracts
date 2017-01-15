@@ -29,6 +29,16 @@ module.exports = (function() {
 
   /**
    * Abstract definition of a function Contract.
+   *
+   * A Contract consists of an optional array of preconditions, an optional array of nominal postconditions,
+   * and an optional array of exceptional preconditions.
+   *
+   * The conditions are functions whose result is interpreted as a booleany value.
+   * The conditions are called with the same `this` and arguments as the functional call in which they are
+   * verified. When verifying nominal postconditions, the result of the function call is added as extra argument.
+   * When verifying exceptional postconditions, the exception thrown by the function call is added as extra argument.
+   * Finally, a version of the contract function bound to `this` is supplied as final parameter when verifying
+   * nominal and exceptional postconditions. This function reference can be used in contracts that use recursion.
    */
   function Contract(pre, post, exception) {
     util.setAndFreezeProperty(this, "_pre", pre ? pre.slice() : []);

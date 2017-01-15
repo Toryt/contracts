@@ -23,7 +23,7 @@ module.exports = (function() {
 
   var someConditions = [
     function() {return [];},
-    function() {return ["shallow"];}
+    function() {return [function() {return false;}, function() {return true;}];}
   ];
   var preCases = [
     function() {return null;}
@@ -66,8 +66,11 @@ module.exports = (function() {
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(Contract);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "pre", "_pre");
+    testUtil.expectToBeArrayOfFunctions(subject.pre);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "post", "_post");
+    testUtil.expectToBeArrayOfFunctions(subject.post);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "exception", "_exception");
+    testUtil.expectToBeArrayOfFunctions(subject.exception);
   }
 
   function expectConstructorPost(pre, post, exception, result) {

@@ -90,6 +90,13 @@
      }).to.throw(TypeError);
    }
 
+   function expectToBeArrayOfFunctions(a) {
+     expect(a).to.be.an("array");
+     a.forEach(function(element) {
+       expect(element).to.be.a("function");
+     });
+   }
+
    var doLog = true;
 
    function log() {
@@ -104,6 +111,7 @@
      expectOwnFrozenProperty: expectOwnFrozenProperty,
      expectFrozenReadOnlyArrayPropertyOnAPrototype: expectFrozenReadOnlyArrayPropertyOnAPrototype,
      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
+     expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
      log: log
    };
 
