@@ -288,12 +288,60 @@
           });
       });
 
+      describe("#isALocationOutsideLibrary", function() {
+        stuff
+          .map(function(s) {return s.subject;})
+          .filter(function(s) {return util.typeOf(s) !== "string";})
+          .forEach(function(value) {
+            it("reports false on a location that is not a string: " + value, function() {
+              var result = util.isALocationOutsideLibrary(value);
+              //noinspection BadExpressionStatementJS
+              expect(result).not.to.be.ok;
+            });
+          });
+        ["single line", util.eol + "3 lines" + util.eol]
+          .forEach(function(value) {
+            it("reports false on a string that is not 2 lines long, but " + value.length, function() {
+              var result = util.isALocationOutsideLibrary(value);
+              //noinspection BadExpressionStatementJS
+              expect(result).not.to.be.ok;
+            });
+          });
+        it("reports false on a string that is 2 lines long, but where the first line is not empty", function() {
+          var value = "there is stuff on the first line" + util.eol + "    at /";
+          var result = util.isALocationOutsideLibrary(value);
+          //noinspection BadExpressionStatementJS
+          expect(result).not.to.be.ok;
+        });
+        ["at /", " at /", "   at /", "    /"]
+          .forEach(function(secondLine) {
+            it("reports false on a string that is 2 lines long, where the first line is empty, " +
+               "but the second line does not start with 4 spaces and at, but is \"" + secondLine + "\"", function() {
+              var value = util.eol + secondLine;
+              var result = util.isALocationOutsideLibrary(value);
+              //noinspection BadExpressionStatementJS
+              expect(result).not.to.be.ok;
+            });
+        });
+        it("reports false on a string that is 2 lines long, where the first line is empty, " +
+           "and the second line does start with 4 spaces and at, but is does not contain a slash", function() {
+          var value = util.eol + "    at and other text but not a slash";
+          var result = util.isALocationOutsideLibrary(value);
+          //noinspection BadExpressionStatementJS
+          expect(result).not.to.be.ok;
+        });
+        it("reports true on a valid location outside the library", function() {
+          var value = util.eol + "    at /";
+          var result = util.isALocationOutsideLibrary(value);
+          //noinspection BadExpressionStatementJS
+          expect(result).to.be.ok;
+        });
+      });
+
       describe("#firstLocationOutsideLibrary", function() {
         it ("reports a location for this test", function() {
           var result = util.firstLocationOutsideLibrary();
-          expect(result).to.be.a("string");
-          expect(util.nrOfLines(result)).to.equal(2);
-          expect(result).satisfies(function(str) {return 0 <= str.indexOf(module.filename);});
+          expect(result).to.satisfy(function(r) {return util.isALocationOutsideLibrary(r);});
           testUtil.log("firstLocationOutsideLibrary:" + result);
         });
 

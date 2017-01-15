@@ -132,6 +132,18 @@
        return ("" + str).split(this.eol).length;
      },
 
+     isALocationOutsideLibrary: function(location) {
+       if (this.typeOf(location) !== "string") {
+         return false;
+       }
+       var lines = location.split(this.eol);
+       return lines.length === 2
+              && lines[0] === ""
+              && lines[1].search(/^    at/) === 0
+              && 0 <= lines[1].indexOf("/")
+              && lines[1].indexOf(this.contractLibPath) < 0;
+     },
+
      /**
       * The first line from a stack trace created here that refers to code that is not inside this library,
       * and does not refer to native code. Returns the empty string if no such line is found.

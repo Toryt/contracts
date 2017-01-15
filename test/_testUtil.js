@@ -100,17 +100,6 @@
      });
    }
 
-   function expectLocationOutsideLibrary(location) {
-     expect(location).to.be.a("string");
-     expect(util.nrOfLines(location)).to.equal(2);
-     var lines = location.split(util.eol);
-     expect(lines[0]).to.equal("");
-     expect(lines[1]).to.match(/^    at/);
-     expect(lines[1]).to.satisfy(function(line) {
-       return 0 <= line.indexOf("/") && line.indexOf(util.contractLibPath) < 0;
-     });
-   }
-
    var doLog = true;
 
    function log() {
@@ -126,7 +115,6 @@
      expectFrozenReadOnlyArrayPropertyOnAPrototype: expectFrozenReadOnlyArrayPropertyOnAPrototype,
      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
      expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
-     expectLocationOutsideLibrary: expectLocationOutsideLibrary,
      log: log
    };
 

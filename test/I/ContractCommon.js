@@ -18,6 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var expect = require("chai").expect;
+  var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var Contract = require("../../src/I/Contract");
 
@@ -72,7 +73,7 @@ module.exports = (function() {
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "exception", "_exception");
     testUtil.expectToBeArrayOfFunctions(subject.exception);
     testUtil.expectOwnFrozenProperty(subject, "location");
-    testUtil.expectLocationOutsideLibrary(subject.location);
+    expect(subject.location).to.satisfy(function(location) {return util.isALocationOutsideLibrary(location);});
   }
 
   function expectConstructorPost(pre, post, exception, result) {
