@@ -50,6 +50,7 @@
      //noinspection JSUnresolvedFunction
      expect(subject).ownPropertyDescriptor(propertyName).to.have.property("writable", false);
      expect(function() {
+       //noinspection MagicNumberJS
        subject[propertyName] = 42 + " some outlandish other value";
      }).to.throw(TypeError);
    }
@@ -87,6 +88,7 @@
      expect(subject).to.have.property(propName).that.is.an("array");
      this.expectFrozenReadOnlyArrayPropertyOnAPrototype(subject, propName);
      expect(function() {
+       //noinspection MagicNumberJS
        subject[propName] = 42 + " some outlandish other value";
      }).to.throw(TypeError);
    }
