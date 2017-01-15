@@ -73,6 +73,8 @@ module.exports = (function() {
            && Object.isFrozen(f.contract)
            && util.typeOf(f.implementation) === "function"
            && util.isFrozenOwnProperty(f, "implementation")
+           && util.isALocationOutsideLibrary(f.location)
+           && util.isFrozenOwnProperty(f, "location")
            && util.isFrozenOwnProperty(f, "name")
            // MUDO this does not work in older node && f.name === f.implementation.name
            && util.isFrozenOwnProperty(f, "displayName")
@@ -86,6 +88,7 @@ module.exports = (function() {
     var contractFunction = function() {};
     util.setAndFreezeProperty(contractFunction, "contract", dummyContract);
     util.setAndFreezeProperty(contractFunction, "implementation", dummyImplementation);
+    util.setAndFreezeProperty(contractFunction, "location", util.firstLocationOutsideLibrary());
     util.setAndFreezeProperty(contractFunction, "name", dummyImplementation.name); // MUDO this does not work in older node
     util.setAndFreezeProperty(contractFunction, "displayName", contractFunctionDisplayName(dummyImplementation));
     return contractFunction;

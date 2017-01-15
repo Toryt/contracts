@@ -39,6 +39,8 @@ module.exports = (function() {
     var contract = this;
     Object.freeze(contract);
 
+    var location = util.firstLocationOutsideLibrary();
+
     function contractFunction() {
       var extendedArgs = Array.prototype.slice.call(arguments);
       PreconditionViolation.prototype.verifyAll(contractFunction, contract.pre, this, arguments);
@@ -68,6 +70,7 @@ module.exports = (function() {
       var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
       util.setAndFreezeProperty(bound, "contract", this.contract);
       util.setAndFreezeProperty(bound, "implementation", boundImplementation);
+      util.setAndFreezeProperty(bound, "location", location);
       util.setAndFreezeProperty(bound, "name", boundImplementation.name);
       util.setAndFreezeProperty(bound, "displayName", Contract.contractFunctionDisplayName(boundImplementation));
       bound.bind = this.bind;
@@ -76,6 +79,7 @@ module.exports = (function() {
 
     util.setAndFreezeProperty(contractFunction, "contract", contract);
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
+    util.setAndFreezeProperty(contractFunction, "location", location);
     util.setAndFreezeProperty(contractFunction, "name", implFunction.name);
     util.setAndFreezeProperty(contractFunction, "displayName", Contract.contractFunctionDisplayName(implFunction));
     contractFunction.bind = bind;

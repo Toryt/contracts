@@ -147,7 +147,8 @@
           expect(Contract.isAContractFunction(subject)).not.to.be.ok;
         });
         it("says yes if there is an implementation Function, and a Contract, and both properties are frozen, " +
-           "and the contract is frozen, and the name of the subject is the same as of the implementation, and " +
+           "and the contract is frozen, and there is a location, and the name of the subject is the same as of the " +
+           "implementation, and " +
            "it has the expected display name", function() {
           function subject() {}
           function implementationFunction() {}
@@ -155,6 +156,7 @@
           util.setAndFreezeProperty(subject, "contract", new Contract());
           Object.freeze(subject.contract);
           util.setAndFreezeProperty(subject, "implementation", implementationFunction);
+          util.setAndFreezeProperty(subject, "location", util.firstLocationOutsideLibrary());
           util.setAndFreezeProperty(subject, "name", implementationFunction.name);
           util.setAndFreezeProperty(subject, "displayName", Contract.contractFunctionDisplayName(implementationFunction));
           //noinspection BadExpressionStatementJS
@@ -213,6 +215,7 @@
           var f = function() {};
           util.setAndFreezeProperty(f, "contract", subject);
           util.setAndFreezeProperty(f, "implementation", implementationFunction);
+          util.setAndFreezeProperty(f, "location", util.firstLocationOutsideLibrary());
           util.setAndFreezeProperty(f, "name", implementationFunction.name);
           util.setAndFreezeProperty(f, "displayName", Contract.contractFunctionDisplayName(implementationFunction));
 
