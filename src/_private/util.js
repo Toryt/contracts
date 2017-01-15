@@ -18,10 +18,13 @@
  module.exports = (function() {
 
    var os = require("os");
+   var path = require("path");
 
    var util = {
 
      eol: os.EOL,
+
+     contractLibPath: path.dirname(path.dirname(module.filename)), // 2 directories up
 
      /**
       * A better type then Object.toString() or typeof.
@@ -127,6 +130,28 @@
 
      nrOfLines: function(str) {
        return ("" + str).split(this.eol).length;
+     },
+
+     /**
+      * The first line from a stack trace created here that refers to code that is not inside this library,
+      * and does not refer to native code. Returns the empty string if no such line is found.
+      * The result starts with an EOL.
+      *
+      * When this result is used as a line on its own, it is clickable to navigate to the referred source code
+      * in most console.
+      */
+     firstLocationOutsideLibrary: function() {
+       var stackSource = new Error();
+       var stack = stackSource.stack.split(this.eol);
+       stack = stack.slice(this.nrOfLines(stackSource)); // throw away the message lines
+       for (var i = this.nrOfLines(stackSource); i < stack.length; i++) {
+         // skip the message lines, and then look for the first line that refers to code not in this library,
+         // that is not native code (i.e., the reference does contain a '/')
+         if (0 <= stack[i].indexOf("/") && stack[i].indexOf(this.contractLibPath) < 0) {
+           return this.eol + stack[i];
+         }
+       }
+       return ""; // could not find a line outside this library
      }
    };
 

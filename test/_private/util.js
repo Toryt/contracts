@@ -50,6 +50,20 @@
   // describe("_private", function() {
     describe("_private/util", function() {
 
+      describe("#eol", function() {
+        it("is a string", function() {
+          expect(util.eol).to.be.a("string");
+          testUtil.log("eol: start>" + util.eol + "<end" );
+        });
+      });
+
+      describe("#contractLibPath", function() {
+        it("is a string", function() {
+          expect(util.contractLibPath).to.be.a("string");
+          testUtil.log("contractLibPath: " + util.contractLibPath);
+        });
+      });
+
       describe("#typeof()", function() {
         stuff.forEach(function(record) {
           it("should return \"" + record.expected + "\" for " + record.subject, function() {
@@ -272,6 +286,18 @@
               expect(util.nrOfLines(str)).to.equal(nrOfEols);
             });
           });
+      });
+
+      describe("#firstLocationOutsideLibrary", function() {
+        it ("reports a location for this test", function() {
+          var result = util.firstLocationOutsideLibrary();
+          expect(result).to.be.a("string");
+          expect(util.nrOfLines(result)).to.equal(2);
+          expect(result).satisfies(function(str) {return 0 <= str.indexOf(module.filename);});
+          testUtil.log("firstLocationOutsideLibrary:" + result);
+        });
+
+        // cannot test the result where no reference is found
       });
 
     });
