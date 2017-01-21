@@ -78,6 +78,8 @@ module.exports = (function() {
     testUtil.expectOwnFrozenProperty(subject, "_stackSource");
     //noinspection JSUnresolvedVariable,BadExpressionStatementJS
     expect(subject._stackSource).to.be.frozen;
+    expect(subject).to.have.property("name").that.is.a("string");
+    expect(subject).to.have.property("message").that.is.a("string");
     expect(subject).to.have.property("stack");
     var startOfStack = subject.name + ": " + subject.message;
     expect(subject.stack.indexOf(startOfStack)).to.equal(0);

@@ -67,56 +67,82 @@ module.exports = (function() {
    * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
    * ConditionError itself is to be considered abstract.
    *
-   * A ConditionError will try to describe as correctly as possible what went wrong. It is a communication
-   * to developers.
+   * A ConditionError is a communication to developers, through which Toryt Contracts tries to describe as correctly
+   * as possible what went wrong. The error reports a contract violation, or an error in a contract condition.
+   * We assume the Toryt Contracts code itself will not fail.
    *
-   * When preconditions are violated, the calling function is the culprit, or the contract is wrong. The developer
-   * wants to know where the function was called in source code, and what the exact arguments were of the instance of
-   * the call, and which precondition was violated in source code(which implies knowing which contract it is a part of).
-   * When nominal or exceptional postconditions are violated, the implementation is the culprit, or the contract is
-   * wrong. The developer wants to know what the exact arguments were of the instance of the call, which postcondition
-   * was violated in source code (which implies knowing which contract it is a part of), and which implementation was
-   * used in source code. The developer is probably interested in how the function was called in source code.
-   * When there is an error in the condition, the contract is wrong. The developer want to know the above, depending
-   * on the kind of condition that has an error.
+   * In general, we want to report to the developer:
+   * <ul>
+   *   <li>which condition was violated, or has an error, in source code, which implies knowing
+   *     <ul>
+   *       <li>of which contract the condition is a part of</li>
+   *     </ul>
+   *   </li>
+   *   <li>in what circumstances the error occurred, which implies knowing
+   *     <ul>
+   *       <li>where the contract function was called, in source code, which implies knowing
+   *         <ul>
+   *           <li>which function called the contract function, and<li>
+   *         </ul>
+   *       </li>
+   *       <li>which were were the arguments of the call of the contract function, during execution of this
+   *         function call instance, and</li>
+   *       <li>which contract function was called, which implies knowing
+   *         <ul>
+   *           <li>what the contract of the called contract function is, and<li>
+   *           <li>which implementation of the contract was called.<li>
+   *         </ul>
+   *       </li>
+   *     </ul>
+   *   </li>
+   * </ul>
    *
-   * In general, we want to report
-   * - which condition was violated, or has an error, in source code, which implies
-   * -- of which contract, in source code
-   * - in what circumstances, which implies
-   * -- which implementation was used, in source code
-   * -- which function called the contract function, in source code
-   * -- which were the arguments, during execution
+   * The condition is usually a short and anonymous JavaScript function. We will report the full implementation of the
+   * condition, which might be multi-line.
    *
-   * The condition is usually short and anonymous. We will report the full implementation of the condition,
-   * which might be multi-line.
    * The contract is an object, and there is no automatic way to assign recognizable names to objects.
-   * // MUDO we can try to create a reference to the contract by creating an Error during construction, and getting
-   * // it from the stack.
+   * A contract does however have a `location` property that stores a line from a stacktrace that, in most JavaScript
+   * engines, contains a reference to where the contract is created in source code.
    *
    * The actual arguments can easily be listed.
    *
-   * The implementation used is actually 2 functions: the supplied naked implementation, and the doctored contract
-   * function, which embeds the supplied naked implementation in contract verifications. The latter is the function
-   * called from outside. These are different instances of the same function definition in source code for all
-   * contract functions. It is not informative to communicate about this source code to the developer. In ES2015
-   * however, this function will have the relevant name. The naked implementation will often be nameless. Showing
-   * the code is often not relevant, because it will often be rather long. There is however no way to create a
-   * reference to the naked implementation. A reference in source code to the location where the contract function
-   * is created helps the developer to find the contract function definition, where a reference to the naked
-   * implementation, or the naked implementation itself, can be found. The name of the contract function, or, if there
-   * is none, the name of the naked implementation, is used in communication.
+   * The called contract function is actually 2 functions: the supplied naked implementation, and the doctored contract
+   * function, which embeds the supplied naked implementation in contract verifications.
    *
-   * The calling function cannot be retrieved in modern Javascript. We can however create a call stack, through which
-   * the developer can determine the calling function.
+   * The latter is the function called from outside. All doctored contract functions are different instances of the
+   * same function definition in source code. It is not informative to communicate about this source code to the
+   * developer. In ES2015 however, this function will have the relevant name. A contract function does have a
+   * `location` property that stores a line from a stacktrace that, in most JavaScript engines, contains a reference to
+   * where the contract function is created in source code.
+   * The name of the contract function, or, if does not have a name, the name of the naked implementation, if that has
+   * one, is used in communication, via the contract function display name.
    *
-   * Invariant:
-   * - contractFunction, and always a Contract Function
-   * - condition is mandatory, and always a Function
-   * - self can be anything, and is optional
-   * - args is mandatory, and an Arguments or Array instance
+   * The naked implementation will often be nameless. Showing the code is not relevant, because it will often be rather
+   * long. There is no way to create a reference to the naked implementation. The reference to where the contract
+   * function is created in source code in the contract function `location` property will show the developer which
+   * implementation is used. The implementation is either defined there, or the developer can navigate from there to
+   * the implementation definition in a good IDEA.
+   * The implementation function display name is used in communication.
    *
-   * MUDO better doc
+   * The calling function cannot be retrieved in modern Javascript. ConditionError instances do however create a call
+   * stack through which the developer can determine the calling function.
+   *
+   * Instances should be frozen before they are thrown.
+   *
+   * <h3>Invariants</h3>
+   * <ul>
+   *   <li>`contractFunction` is a frozen mandatory property, and refers to a contract function</li>
+   *   <li>`condition` is a frozen mandatory property, and refers to a function</li>
+   *   <li>`self` is a frozen property; it can be anything, also `null` or `undefined`</li>
+   *   <li>`args` is a frozen property, and refers to an Array or Arguments instance</li>
+   *   <li>`name` is a mandatory property, and refers to a string</li>
+   *   <li>`message` is a frozen mandatory property, and refers to a string</li>
+   *   <li>`stackAddition` is a mandatory property, and refers to a function</li>
+   *   <li>`stack` is a read-only property, that returns a string, that starts with the instances `name`, the
+   *     string ": ", and `message`, and is followed by stack code references, that do no contain references
+   *     to the inner workings of the Toryt Contracts library, and the result of calling `stackAddition()`
+   *     on the instance, coerced to a string.</li>
+   * </ul>
    */
   function ConditionError(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});

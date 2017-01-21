@@ -21,7 +21,22 @@ module.exports = (function() {
   var Contract = require("./Contract");
   var util = require("./../_private/util");
 
-  function PreconditionViolation(contractFunction, condition, self, args) {
+/**
+ * A PreconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
+ * precondition was violated when a contract function was called. The implementation of the contract function
+ * that was called, was not executed.
+ *
+ * If the precondition itself is correct, this is a programming error on the part of the calling function.
+ * One should assume the system is now in an undefined state.
+ *
+ * The developer wants to know
+ * <ul>
+ *   <li>where the contract function was called in source code,</li>
+ *   <li>what the arguments were of the instance of the call, and</li>
+ *   <li>which precondition was violated in source code (which implies knowing which contract it is a part of).</li>
+ * </ul>
+ */
+ function PreconditionViolation(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
