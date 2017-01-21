@@ -212,20 +212,28 @@ module.exports = (function() {
   /**
    * This method is called in the constructor to generate the message for the error being created.
    * It is called with the same arguments as the constructor.
+   *
+   * This is not a prototype method, because it is used in the constructor.
    */
   ConditionError.createMessage = function(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(function() {return util.typeOf(condition) === "function";});
     util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
-    var contractFunctionName = contractFunction.displayName || contractFunction.name || "<<unnnamed>>";
-    return "Error concerning condition " + condition +
-           " while contract function " + contractFunctionName +
+    var conditionRepr = condition.displayName || ("condition " + (condition.name || condition));
+    var contractFunctionName = contractFunction.displayName
+                               || "contract function " + contractFunction.name
+                               || "an unnamed contract function";
+    return conditionRepr +
+           " failed while " + contractFunctionName +
            " was called on " + self +
            " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")" +
            util.eol + "contract:" + contractFunction.contract.location +
            util.eol + "condition: " + condition +
-           util.eol + "implementation:" + contractFunction.location +
+           util.eol + "contract function:" + contractFunction.location +
+           util.eol + "this: " + self +
+           util.eol + "arguments: (" + args.length + ")" +
+           Array.prototype.map.call(args, function(arg, index) {return util.eol + "    " + index + ": " + arg;}) +
            util.eol + "call stack:";
   };
 
