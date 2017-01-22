@@ -71,8 +71,7 @@ module.exports = (function() {
       util.setAndFreezeProperty(bound, "contract", this.contract);
       util.setAndFreezeProperty(bound, "implementation", boundImplementation);
       util.setAndFreezeProperty(bound, "location", location);
-      util.setAndFreezeProperty(bound, "name", boundImplementation.name);
-      util.setAndFreezeProperty(bound, "displayName", Contract.contractFunctionDisplayName(boundImplementation));
+      Contract.defineContractFunctionDisplayName(bound);
       bound.bind = this.bind;
       return bound;
     }
@@ -80,8 +79,7 @@ module.exports = (function() {
     util.setAndFreezeProperty(contractFunction, "contract", contract);
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
     util.setAndFreezeProperty(contractFunction, "location", location);
-    util.setAndFreezeProperty(contractFunction, "name", implFunction.name);
-    util.setAndFreezeProperty(contractFunction, "displayName", Contract.contractFunctionDisplayName(implFunction));
+    Contract.defineContractFunctionDisplayName(contractFunction);
     contractFunction.bind = bind;
 
     return contractFunction;

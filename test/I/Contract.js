@@ -31,7 +31,7 @@
           function namedFunction() {}
 
           var result = Contract.contractFunctionDisplayName(namedFunction);
-          expect(result).to.be.equal(Contract.displayNamePrefix + " namedFunction");
+          expect(result).to.be.equal(Contract.displayNamePrefix + "namedFunction");
         });
 
         it("returns the expected display name with a named function with a display name", function() {
@@ -40,25 +40,59 @@
           namedFunction.displayName = displayName;
 
           var result = Contract.contractFunctionDisplayName(namedFunction);
-          expect(result).to.be.equal(Contract.displayNamePrefix + " " + displayName);
+          expect(result).to.be.equal(Contract.displayNamePrefix + "namedFunction");
         });
 
-        it("returns the expected display name with an anonymous function", function() {
+        it("returns the expected display name with an anonymous function assigned to a variable", function() {
           var anonymousFunction = function() {};
 
           var result = Contract.contractFunctionDisplayName(anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + " anonymousFunction");
+          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + "anonymousFunction");
         });
 
-        it("returns the expected display name with an anonymous function with a display name", function() {
+        it("returns the expected display name with an anonymous function with an implementation property that has a display name", function() {
+          var anonymousFunction = (function() {return function() {};})();
+          anonymousFunction.implementation = function() {};
+          var implementationDisplayName = "implemenation display name";
+          anonymousFunction.implementation.displayName = implementationDisplayName;
+
+          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          // in ES6, this function has the name of the variable
+          // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          expect(result).to.be.equal(Contract.displayNamePrefix + implementationDisplayName);
+        });
+
+        it("returns the expected display name with an anonymous function with an implementation property that has no display name, but has a name", function() {
+          var anonymousFunction = (function() {return function() {};})();
+          anonymousFunction.implementation = function implementationWithNoName() {};
+
+          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          // in ES6, this function has the name of the variable
+          // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          expect(result).to.be.equal(Contract.displayNamePrefix + "implementationWithNoName");
+        });
+
+        it("returns the expected display name with an anonymous function with an implementation property that has no display name and no name", function() {
+          var anonymousFunction = (function() {return function() {};})();
+          anonymousFunction.implementation = (function() {return function() {};})();
+
+          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          // in ES6, this function has the name of the variable
+          // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          expect(result).to.be.equal(Contract.displayNamePrefix + "<<anonymous>>");
+        });
+
+        it("returns the expected display name with an anonymous function assigned to a variable with a display name", function() {
           var f = function() {};
           var displayName = "display name";
           f.displayName = displayName;
 
           var result = Contract.contractFunctionDisplayName(f);
-          expect(result).to.be.equal(Contract.displayNamePrefix + " " + displayName);
+          // in ES6, this function has the name of the variable
+          // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + "f");
         });
 
         it("returns the expected display name with an anonymous function as a method", function() {
@@ -69,7 +103,7 @@
           var result = Contract.contractFunctionDisplayName(obj.anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + " anonymousFunction");
+          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + "anonymousFunction");
         });
 
         it("returns the expected display name with an named function function as a method", function() {
@@ -80,7 +114,7 @@
           var result = Contract.contractFunctionDisplayName(obj.f);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          expect(result).to.be.equal(Contract.displayNamePrefix + " namedFunction");
+          expect(result).to.be.equal(Contract.displayNamePrefix + "namedFunction");
         });
 
       });

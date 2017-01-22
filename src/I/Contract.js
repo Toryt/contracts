@@ -18,13 +18,28 @@ module.exports = (function() {
 
   var util = require("./../_private/util");
 
-  var displayNamePrefix = "contract function";
+  var displayNamePrefix = "contract function ";
 
   function contractFunctionDisplayName(f) {
     util.pre(function() {return util.typeOf(f) === "function";});
 
-    var displayName = f.displayName || f.name;
-    return "contract function" + (displayName ? " " + displayName : "");
+    return displayNamePrefix + (f.name || f.implementation.displayName || f.implementation.name || "<<anonymous>>");
+  }
+
+  function defineContractFunctionDisplayName(f) {
+    util.pre(function() {return util.typeOf(f) === "function";});
+    util.pre(function() {return util.typeOf(f.implementation) === "function";});
+
+    Object.defineProperty(
+      f,
+      "displayName",
+      {
+        configurable: false,
+        enumerable: true,
+        get: function() {return contractFunctionDisplayName(this);},
+        set: undefined
+      }
+    );
   }
 
   /**
@@ -66,7 +81,10 @@ module.exports = (function() {
 
   Contract.displayNamePrefix = displayNamePrefix;
   Contract.contractFunctionDisplayName = contractFunctionDisplayName;
+  Contract.defineContractFunctionDisplayName = defineContractFunctionDisplayName;
   Contract.isAContractFunction = function(f) {
+    // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
+    // freeze it, and not guaranteed in all engines.
     return util.typeOf(f) === "function"
            && f.contract instanceof Contract
            && util.isFrozenOwnProperty(f, "contract")
@@ -75,10 +93,7 @@ module.exports = (function() {
            && util.isFrozenOwnProperty(f, "implementation")
            && util.isALocationOutsideLibrary(f.location)
            && util.isFrozenOwnProperty(f, "location")
-           && util.isFrozenOwnProperty(f, "name")
-           // MUDO this does not work in older node && f.name === f.implementation.name
-           && util.isFrozenOwnProperty(f, "displayName")
-           && f.displayName === contractFunctionDisplayName(f.implementation);
+           && f.displayName === this.contractFunctionDisplayName(f);
   };
   Contract.dummyImplementation = function() {
     function dummyImplementation() {return "This is a dummy contract implementation.";}
@@ -89,8 +104,7 @@ module.exports = (function() {
     util.setAndFreezeProperty(contractFunction, "contract", dummyContract);
     util.setAndFreezeProperty(contractFunction, "implementation", dummyImplementation);
     util.setAndFreezeProperty(contractFunction, "location", util.firstLocationOutsideLibrary());
-    util.setAndFreezeProperty(contractFunction, "name", dummyImplementation.name); // MUDO this does not work in older node
-    util.setAndFreezeProperty(contractFunction, "displayName", contractFunctionDisplayName(dummyImplementation));
+    defineContractFunctionDisplayName(contractFunction);
     return contractFunction;
   };
 
