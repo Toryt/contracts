@@ -170,6 +170,26 @@ module.exports = (function() {
   ConditionError.prototype.args = null;
   ConditionError.prototype._stackSource = null;
   ConditionError.prototype.stackAddition = function() {return "";};
+  var start = util.eol + "    ";
+  Object.defineProperty(
+    ConditionError.prototype,
+    "details",
+    {
+      configurable: false,
+      enumerable: true,
+      get: function() {
+        return "contract:" + util.eol + this.contractFunction.contract.location +
+               util.eol + "condition: " + start + this.condition +
+               util.eol + "contract function:" + util.eol + this.contractFunction.location +
+               util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
+               util.eol + "arguments (" + this.args.length + "):" +
+               Array.prototype.map.call(this.args, function(arg, index) {
+                 return start + index + " (" + util.typeOf(arg) + "): " + arg;
+               });
+      },
+      set: undefined
+    }
+  );
   Object.defineProperty(
     ConditionError.prototype,
     "stack",
@@ -203,7 +223,10 @@ module.exports = (function() {
             },
             []
           );
-        return result.join(util.eol) + this.stackAddition();
+        return this.name + ": " + this.message
+               + util.eol + this.details
+               + util.eol + "call stack:" + result.join(util.eol)
+               + this.stackAddition();
       },
       set: undefined
     }
@@ -227,14 +250,7 @@ module.exports = (function() {
     return conditionRepr +
            " failed while " + contractFunctionName +
            " was called on " + self +
-           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")" +
-           util.eol + "contract:" + contractFunction.contract.location +
-           util.eol + "condition: " + condition +
-           util.eol + "contract function:" + contractFunction.location +
-           util.eol + "this: " + self +
-           util.eol + "arguments: (" + args.length + ")" +
-           Array.prototype.map.call(args, function(arg, index) {return util.eol + "    " + index + ": " + arg;}) +
-           util.eol + "call stack:";
+           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
   };
 
   return ConditionError;
