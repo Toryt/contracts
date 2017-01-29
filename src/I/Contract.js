@@ -80,8 +80,32 @@ module.exports = (function() {
   util.setAndFreezeProperty(Contract.prototype, "location", util.firstLocationOutsideLibrary());
 
   Contract.displayNamePrefix = displayNamePrefix;
+
+  /**
+   * Return a string that is a sensible display name for the given function as a contract function.
+   */
   Contract.contractFunctionDisplayName = contractFunctionDisplayName;
+
+  /**
+   * Define a frozen read only property `displayName` on the given function.
+   */
   Contract.defineContractFunctionDisplayName = defineContractFunctionDisplayName;
+
+  /**
+   * A Contract Function is an implementation of a Contract. This function verifies whether a function
+   * given as a parameter is a Contract Function.
+   *
+   * To be a Contract Function, the subject must
+   * <ul>
+   *   <li>be a function,</li>
+   *   <li>have a frozen `contract` property that refers to a Contract,</li>
+   *   <li>have a frozen `implementation` property that refers to a function (which realizes the contract),</li>
+   *   <li>have a frozen `location` property, which is a string that represents a location in source code,
+   *     outside this library, and</li>
+   *   <li>have a `displayName` that is a contract function display name, which is a string that gives
+   *     a programmer to understand which contract function this is.</li>
+   * </ul>
+   */
   Contract.isAContractFunction = function(f) {
     // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
     // freeze it, and not guaranteed in all engines.
@@ -95,6 +119,7 @@ module.exports = (function() {
            && util.isFrozenOwnProperty(f, "location")
            && f.displayName === this.contractFunctionDisplayName(f);
   };
+
   Contract.dummyImplementation = function() {
     function dummyImplementation() {return "This is a dummy contract implementation.";}
 

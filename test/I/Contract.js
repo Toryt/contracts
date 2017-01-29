@@ -119,83 +119,95 @@
 
       });
 
-      describe("Contract.isAContractFunction", function() {
-        function createSubject(contract, implementation) {
-          var subject = function() {};
-          if (contract) {
-            subject.contract = contract;
-          }
-          if (implementation) {
-            subject.implementation = implementation;
-          }
-          return subject;
-        }
+      function createCandidateContractFunction(dontFreezeContract,
+                                               dontFreezeProperty,
+                                               otherPropertyName,
+                                               otherPropertyValue) {
+        function candidate() {}
 
-        it("says no on any thing that is not a function", function() {
-          common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
-            //noinspection BadExpressionStatementJS
+        function impl() {}
+
+        var contract = otherPropertyName === "contract" ? otherPropertyValue : new Contract();
+        var implementation = otherPropertyName === "implementation" ? otherPropertyValue : impl;
+        var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
+
+        if (!dontFreezeContract) {
+          Object.freeze(contract);
+        }
+        if (dontFreezeProperty === "contract") {
+          candidate.contract = contract;
+        }
+        else {
+          util.setAndFreezeProperty(candidate, "contract", contract);
+        }
+        if (dontFreezeProperty === "implementation") {
+          candidate.implementation = implementation;
+        }
+        else {
+          util.setAndFreezeProperty(candidate, "implementation", implementation);
+        }
+        if (dontFreezeProperty === "location") {
+          candidate.location = location;
+        }
+        else {
+          util.setAndFreezeProperty(candidate, "location", location);
+        }
+        candidate.displayName =
+          (otherPropertyName === "displayName")
+            ? otherPropertyValue
+            : Contract.contractFunctionDisplayName(candidate);
+        return candidate;
+      }
+
+      describe("Contract.isAContractFunction", function() {
+
+        it("says yes if there is an implementation Function, a Contract, and a location, and all 3 properties are " +
+           "frozen, and the contract is frozen, and it has the expected display name", function() {
+          var candidate = createCandidateContractFunction();
+          //noinspection BadExpressionStatementJS
+          expect(Contract.isAContractFunction(candidate)).to.be.ok;
+        });
+
+        common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
+          it("says no if the argument is not a function, but " + thing, function() {
+              //noinspection BadExpressionStatementJS
             expect(Contract.isAContractFunction(thing)).not.to.be.ok;
           });
         });
-        it("says no if there is no Contract property, with or without an implementation", function() {
-          common.thingsThatAreNotAFunctionNorAContract.concat([function() {}]).forEach(function(thing) {
-            var subject = createSubject(thing);
-            //noinspection BadExpressionStatementJS
-            expect(Contract.isAContractFunction(subject)).not.to.be.ok;
-            subject = createSubject(thing, function() {});
-            //noinspection BadExpressionStatementJS
-            expect(Contract.isAContractFunction(subject)).not.to.be.ok;
-          });
-        });
-        it("says no if there is no implementation property, with or without a Contract", function() {
-          common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
-            var subject = createSubject(null, thing);
-            //noinspection BadExpressionStatementJS
-            expect(Contract.isAContractFunction(subject)).not.to.be.ok;
-            subject = createSubject(new Contract(), thing);
-            //noinspection BadExpressionStatementJS
-            expect(Contract.isAContractFunction(subject)).not.to.be.ok;
-          });
-        });
-        it("says no if there is an implementation Function, and a Contract, but the contract property is not frozen", function() {
-          var subject = function() {};
-          subject.contract = new Contract();
-          Object.freeze(subject.contract);
-          util.setAndFreezeProperty(subject, "implementation", function() {});
-          //noinspection BadExpressionStatementJS
-          expect(Contract.isAContractFunction(subject)).not.to.be.ok;
-        });
-        it("says no if there is an implementation Function, and a Contract, but the implementation is not frozen", function() {
-          var subject = function() {};
-          util.setAndFreezeProperty(subject, "contract", new Contract());
-          Object.freeze(subject.contract);
-          subject.implementation = function() {};
-          //noinspection BadExpressionStatementJS
-          expect(Contract.isAContractFunction(subject)).not.to.be.ok;
-        });
-        it("says no if the contract is not frozen", function() {
-          var subject = function() {};
-          util.setAndFreezeProperty(subject, "contract", new Contract());
-          util.setAndFreezeProperty(subject, "implementation", function() {});
-          //noinspection BadExpressionStatementJS
-          expect(Contract.isAContractFunction(subject)).not.to.be.ok;
-        });
-        it("says yes if there is an implementation Function, and a Contract, and both properties are frozen, " +
-           "and the contract is frozen, and there is a location, and the name of the subject is the same as of the " +
-           "implementation, and " +
-           "it has the expected display name", function() {
-          function subject() {}
-          function implementationFunction() {}
 
-          util.setAndFreezeProperty(subject, "contract", new Contract());
-          Object.freeze(subject.contract);
-          util.setAndFreezeProperty(subject, "implementation", implementationFunction);
-          util.setAndFreezeProperty(subject, "location", util.firstLocationOutsideLibrary());
-          util.setAndFreezeProperty(subject, "name", implementationFunction.name);
-          util.setAndFreezeProperty(subject, "displayName", Contract.contractFunctionDisplayName(implementationFunction));
+        it("says no if the contract is not frozen", function() {
+          var candidate = createCandidateContractFunction(true);
           //noinspection BadExpressionStatementJS
-          expect(Contract.isAContractFunction(subject)).to.be.ok;
+          expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
         });
+
+        ["contract", "implementation", "location"].forEach(function(dontFreezeProperty) {
+          it("says no if the " + dontFreezeProperty + " property is not frozen", function() {
+            var candidate = createCandidateContractFunction(false, dontFreezeProperty);
+            //noinspection BadExpressionStatementJS
+            expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
+          });
+        });
+
+        [
+          {propertyName: "contract", expected: "a Contract", extra: [function() {}]},
+          {propertyName: "implementation", expected: "a Function", extra: [new Contract()]},
+          {propertyName: "location", expected: "a location outside this library", extra: ["    at", "at /"]},
+          {
+            propertyName: "displayName",
+            expected: "the contractFunctionDisplayName",
+            extra: ["candidate", Contract.displayNamePrefix]
+          }
+        ].forEach(function(aCase) {
+          common.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach(function(v) {
+            it("says no if the " + aCase.propertyName + " is not " + aCase.expected + " but " + v, function() {
+              var candidate = createCandidateContractFunction(false, null, aCase.propertyName, v);
+              //noinspection BadExpressionStatementJS
+              expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
+            });
+          });
+        });
+
       });
 
       describe("Contract.dummyImplementation", function() {
@@ -222,6 +234,13 @@
       });
 
       describe("#isImplementedBy()", function() {
+        it("says yes if the argument is a contract function for the contract", function() {
+          var subject = new Contract();
+          var f = createCandidateContractFunction(false, null, "contract", subject);
+          //noinspection BadExpressionStatementJS
+          expect(subject.isImplementedBy(f)).to.be.ok;
+          common.expectInvariants(subject);
+        });
         it("says no if the argument is not a contract function", function() {
           common.thingsThatAreNotAFunctionNorAContract
             .concat(["function() {}"])
@@ -239,22 +258,6 @@
           f.implementation = function() {};
           //noinspection BadExpressionStatementJS
           expect(subject.isImplementedBy(f)).not.to.be.ok;
-          common.expectInvariants(subject);
-        });
-        it("says yes if the argument is a contract function for the contract", function() {
-          function implementationFunction() {}
-
-          var subject = new Contract();
-          Object.freeze(subject);
-          var f = function() {};
-          util.setAndFreezeProperty(f, "contract", subject);
-          util.setAndFreezeProperty(f, "implementation", implementationFunction);
-          util.setAndFreezeProperty(f, "location", util.firstLocationOutsideLibrary());
-          util.setAndFreezeProperty(f, "name", implementationFunction.name);
-          util.setAndFreezeProperty(f, "displayName", Contract.contractFunctionDisplayName(implementationFunction));
-
-          //noinspection BadExpressionStatementJS
-          expect(subject.isImplementedBy(f)).to.be.ok;
           common.expectInvariants(subject);
         });
       });

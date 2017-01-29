@@ -64,6 +64,8 @@ module.exports = (function() {
     function() {return undefined;}
   ].concat(exceptionCases);
 
+  var location = util.eol + "    at /";
+
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(Contract);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "pre", "_pre");
@@ -111,6 +113,7 @@ module.exports = (function() {
     constructorPreCases: constructorPreCases,
     constructorPostCases: constructorPostCases,
     constructorExceptionCases: constructorExceptionCases,
+    location: location,
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost
   };
