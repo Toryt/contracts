@@ -61,6 +61,24 @@
         });
       });
 
+      common.generatePrototypeMethodsDescriptions(
+        function() {return new ImplementableContract();},
+        testUtil
+          .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
+          .map(function(parameters) {
+            return function() {
+              var preConditions = parameters[0]();
+              var postConditions = parameters[1]();
+              var exceptionConditions = parameters[2]();
+              return {
+                subject: new ImplementableContract(preConditions, postConditions, exceptionConditions),
+                description: parameters.join(" - ")
+              };
+            };
+          }),
+        common.expectInvariants
+      );
+
       //noinspection FunctionTooLongJS
       describe("#implementation", function() {
         function expectPost(ImplementableContract, result) {

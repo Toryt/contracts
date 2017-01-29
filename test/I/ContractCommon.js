@@ -105,6 +105,79 @@ module.exports = (function() {
     });
   }
 
+  function createCandidateContractFunction(dontFreezeContract,
+                                           dontFreezeProperty,
+                                           otherPropertyName,
+                                           otherPropertyValue) {
+    function candidate() {}
+
+    function impl() {}
+
+    var contract = otherPropertyName === "contract" ? otherPropertyValue : new Contract();
+    var implementation = otherPropertyName === "implementation" ? otherPropertyValue : impl;
+    var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
+
+    if (!dontFreezeContract) {
+      Object.freeze(contract);
+    }
+    if (dontFreezeProperty === "contract") {
+      candidate.contract = contract;
+    }
+    else {
+      util.setAndFreezeProperty(candidate, "contract", contract);
+    }
+    if (dontFreezeProperty === "implementation") {
+      candidate.implementation = implementation;
+    }
+    else {
+      util.setAndFreezeProperty(candidate, "implementation", implementation);
+    }
+    if (dontFreezeProperty === "location") {
+      candidate.location = location;
+    }
+    else {
+      util.setAndFreezeProperty(candidate, "location", location);
+    }
+    candidate.displayName =
+      (otherPropertyName === "displayName")
+        ? otherPropertyValue
+        : Contract.contractFunctionDisplayName(candidate);
+    return candidate;
+  }
+
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+    var self = this;
+
+    describe("#isImplementedBy()", function() {
+      it("says yes if the argument is a contract function for the contract", function() {
+        var subject = oneSubjectGenerator();
+        var f = createCandidateContractFunction(false, null, "contract", subject);
+        //noinspection BadExpressionStatementJS
+        expect(subject.isImplementedBy(f)).to.be.ok;
+        self.expectInvariants(subject);
+      });
+      thingsThatAreNotAFunctionNorAContract
+        .concat(["function() {}"])
+        .forEach(function(thing) {
+          it("says no if the argument is not a contract function but " + thing, function() {
+            var subject = oneSubjectGenerator();
+            //noinspection BadExpressionStatementJS
+            expect(subject.isImplementedBy(thing)).not.to.be.ok;
+            self.expectInvariants(subject);
+          });
+      });
+      it("says no if the argument is a contract function for another contract", function() {
+        var subject = oneSubjectGenerator();
+        var otherContract = oneSubjectGenerator();
+        var f = createCandidateContractFunction(false, null, "contract", otherContract);
+        //noinspection BadExpressionStatementJS
+        expect(subject.isImplementedBy(f)).not.to.be.ok;
+        self.expectInvariants(subject);
+      });
+    });
+
+  }
+
   return {
     preCases: preCases,
     postCases: postCases,
@@ -115,7 +188,9 @@ module.exports = (function() {
     constructorExceptionCases: constructorExceptionCases,
     location: location,
     expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost
+    expectConstructorPost: expectConstructorPost,
+    createCandidateContractFunction: createCandidateContractFunction,
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
   };
 
 })();
