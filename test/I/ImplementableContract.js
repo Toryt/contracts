@@ -79,15 +79,13 @@
         common.expectInvariants
       );
 
+      /* This test is not included in generatePrototypeMethodsDescriptions, because it is specific for
+         ImplementableContract: we test extensively whether the contract function works as expected here.
+         This tests the behavior of the resulting contract function. The tests in generatePrototypeMethodsDescriptions
+         tests the state postconditions only.
+       */
       //noinspection FunctionTooLongJS
       describe("#implementation", function() {
-        function expectPost(ImplementableContract, result) {
-          //noinspection BadExpressionStatementJS
-          expect(ImplementableContract.isImplementedBy(result)).to.be.ok;
-          //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-          expect(ImplementableContract).to.be.frozen;
-          expectInvariants(ImplementableContract);
-        }
 
         function fibonacciImpl(n) {
           return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
@@ -112,13 +110,6 @@
           ]
         ).implementation(fibonacciImpl);
 
-        it("returns a different ImplementableContract function when called with the same implementation", function() {
-          var fibonacci2 = fibonacci.contract.implementation(fibonacciImpl);
-          expect(fibonacci2).to.not.equal(fibonacci);
-          expect(fibonacci2).to.have.property("contract").that.equals(fibonacci.contract);
-          expect(fibonacci2).to.have.property("implementation").that.equals(fibonacci.implementation);
-        });
-
         var wrongParameter = 4;
         var wrongResult = -3;
 
@@ -135,12 +126,6 @@
           else {
             return fibonacciWrong(n - 1) + fibonacciWrong(n - 2);
           }
-        });
-
-        it("returns a different ImplementableContract function with a different implementation", function() {
-          expect(fibonacciWrong).to.not.equal(fibonacci);
-          expect(fibonacciWrong).to.have.property("contract").that.equals(fibonacci.contract);
-          expect(fibonacciWrong).to.have.property("implementation").that.not.equals(fibonacci.implementation);
         });
 
         var factorialContract = new ImplementableContract(
@@ -302,10 +287,6 @@
           [function() {throw intentionalError;}]
         );
 
-        it("returns a ImplementableContract function that implements the ImplementableContract, which is frozen", function() {
-          var subject = new ImplementableContract();
-          expectPost(subject, subject.implementation(function() {}));
-        });
         it("doesn't interfere when the implementation is correct", function() {
           var ignore = fibonacci(5); // any exception will fail the test
         });

@@ -27,8 +27,56 @@ module.exports = (function() {
     expect(subject).to.have.property("implementation").that.is.a("function");
   }
 
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+    var self = this;
+
+    //noinspection FunctionTooLongJS
+    describe("#implementation", function() {
+      function expectPost(implementableContract, implFunction , result) {
+        //noinspection BadExpressionStatementJS
+        expect(implementableContract.isImplementedBy(result)).to.be.ok;
+        expect(result).to.have.property("contract").that.equals(implementableContract);
+        expect(result).to.have.property("implementation").that.equals(implFunction);
+        //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+        expect(implementableContract).to.be.frozen;
+        self.expectInvariants(implementableContract);
+      }
+
+      it("returns an ImplementableContract function that is configured as expected", function() {
+        var subject = oneSubjectGenerator();
+        var impl = function() {};
+        var result = subject.implementation(impl);
+        expectPost(subject, impl, result);
+      });
+
+      it("returns a different ImplementableContract function when called with the same implementation", function() {
+        var subject = oneSubjectGenerator();
+        var impl = function() {};
+        var result = subject.implementation(impl);
+        var result2 = subject.implementation(impl);
+        expectPost(subject, impl, result2);
+        expect(result2).to.not.equal(result);
+      });
+
+      it("returns a different ImplementableContract function with a different implementation", function() {
+        var subject = oneSubjectGenerator();
+        var impl = function() {};
+        var impl2 = function() {};
+        var result = subject.implementation(impl);
+        var result2 = subject.implementation(impl2);
+        expectPost(subject, impl2, result2);
+        expect(result2).to.not.equal(result);
+        expect(result2).to.have.property("implementation").that.not.equals(result.implementation);
+      });
+
+    });
+
+  }
+
   var test = {
-    expectInvariants: expectInvariants
+    expectInvariants: expectInvariants,
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
   };
   Object.setPrototypeOf(test, common);
   return test;
