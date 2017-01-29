@@ -137,17 +137,15 @@
          return false;
        }
        var lines = location.split(this.eol);
-       return lines.length === 2
-              && lines[0] === ""
-              && lines[1].search(/^    at/) === 0
-              && 0 <= lines[1].indexOf("/")
-              && lines[1].indexOf(this.contractLibPath) < 0;
+       return lines.length === 1
+              && lines[0].search(/^    at/) === 0
+              && 0 <= lines[0].indexOf("/")
+              && lines[0].indexOf(this.contractLibPath) < 0;
      },
 
      /**
       * The first line from a stack trace created here that refers to code that is not inside this library,
       * and does not refer to native code. Returns the empty string if no such line is found.
-      * The result starts with an EOL.
       *
       * When this result is used as a line on its own, it is clickable to navigate to the referred source code
       * in most console.
@@ -160,7 +158,7 @@
          // skip the message lines, and then look for the first line that refers to code not in this library,
          // that is not native code (i.e., the reference does contain a '/')
          if (0 <= stack[i].indexOf("/") && stack[i].indexOf(this.contractLibPath) < 0) {
-           return this.eol + stack[i];
+           return stack[i];
          }
        }
        return ""; // could not find a line outside this library

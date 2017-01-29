@@ -55,7 +55,7 @@ module.exports = (function() {
    * Finally, a version of the contract function bound to `this` is supplied as final parameter when verifying
    * nominal and exceptional postconditions. This function reference can be used in contracts that use recursion.
    *
-   * Furthermore, an instance contains a `location` property, which is an end-of-line, followed by a line of text
+   * Furthermore, an instance contains a `location` property, which is a line of text
    * that refers to the source code where the contract was created.
    */
   function Contract(pre, post, exception) {

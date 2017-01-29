@@ -331,7 +331,7 @@
           expect(result).not.to.be.ok;
         });
         it("reports true on a valid location outside the library", function() {
-          var value = util.eol + "    at /";
+          var value = "    at /";
           var result = util.isALocationOutsideLibrary(value);
           //noinspection BadExpressionStatementJS
           expect(result).to.be.ok;
