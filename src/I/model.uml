@@ -1,0 +1,139 @@
+@startuml
+
+interface Any
+interface Primitive
+class Object
+class Function {
+  +name: String <<readonly>>
+  +/displayName: String
+  +bind(…): Function
+}
+class Error {
+  +name
+  +message
+  +/stack: String <<readonly>>
+}
+interface ArrayLike
+class Array
+class Arguments
+
+Any <|.. Object
+Any <|-- ArrayLike
+Object <|-- Function
+Object <|-- Error
+Object <|-- Array
+Object <|-- Arguments
+ArrayLike <|.. Array
+ArrayLike <|.. Arguments
+Any <|-- Primitive
+Primitive <|.. Number
+Primitive <|.. String
+Primitive <|.. Boolean
+
+interface FunctionWithImplementation {
+  +implementation: Any
+}
+
+Any <|-- FunctionWithImplementation
+Function <.. FunctionWithImplementation: instanceof
+
+abstract class Contract {
+  +{static} displayNamePrefix: String
+  +pre: Array <<readonly>>
+  +post: Array <<readonly>>
+  +exception: Array <<readonly>>
+  +location: String <<readonly>>
+  +{static} contractFunctionDisplayName(f: FunctionWithImplementation): String
+  +{static} defineContractFunctionDisplayName(f: FunctionWithImplementation): void
+  +{static} Contract(pre: Function[]?, post: Function[]?, exception: Function[]?)
+  +{static} isAContractFunction(f: Any): Boolean
+  +{static} dummyImplementation(): ContractFunction
+}
+Object <|-- Contract
+
+class ImplementableContract {
+  +{static} ImplementableContract(pre: Function[]?, post: Function[]?, exception: Function[]?)
+  +implementation(implFunction: Function): ContractFunction
+}
+Contract <|-- ImplementableContract
+
+interface ContractFunction {
+  +location: String <<readonly>>
+  +/displayName: String
+  +bind(…): ContractFunction
+}
+Any <|-- ContractFunction
+
+Contract +-- ContractFunction
+Function <.. ContractFunction: instanceof
+
+ContractFunction --> "contract" Contract
+ContractFunction --> "implementation" Function
+
+abstract class ConditionError {
+  +{static} name: String <<readonly>>
+  +message: String <<readonly>>
+  +/stack: String <<readonly, multiline>>
+  -_stackSource: Error <<readonly>>
+  +{static} ConditionError(contractFunction, condition, self, args)
+  #stackAddition(): String
+  +{static} createMessage(contractFunction, condition, self, args): String
+}
+Error <|-- ConditionError
+
+class ConditionMetaError {
+  +{static} name: String <<readonly>>
+  +message: String <<readonly>>
+  +{static} ConditionMetaError(contractFunction, condition, self, args, error)
+  #stackAddition(): String
+  +{static} createMessage(contractFunction, condition, self, args): String
+}
+ConditionMetaError --> "error" Any
+
+abstract class ConditionViolation {
+  +{static} name: String <<readonly>>
+  +message: String <<readonly>>
+  +{static} ConditionViolation(contractFunction, condition, self, args)
+  +{static} createMessage(contractFunction, condition, self, args): String
+  +{static} verify(contractFunction, condition, self, args): void <<prototype>>
+  +{static} verifyAll(contractFunction, conditions, self, args): void <<prototype>>
+}
+class PreconditionViolation {
+  +{static} name: String <<readonly>>
+  +message: String <<readonly>>
+  +{static} PreconditionViolation(contractFunction, condition, self, args)
+  +{static} createMessage(contractFunction, condition, self, args): String
+}
+class PostconditionViolation <<todo>> {
+  +{static} name: String <<readonly>>
+  +message: String <<readonly>>
+  +result: Any <<readonly>>
+  +{static} PostconditionViolation(contractFunction, condition, self, args, result: Any)
+  #stackAddition(): String
+  +{static} createMessage(contractFunction, condition, self, args): String
+}
+PostconditionViolation --> "result" Any
+
+class ExceptionConditionViolation <<todo>> {
+  +{static} name: String <<readonly>>
+  +message: String <<readonly>>
+  +exception: Any <<readonly>>
+  +{static} ExceptionConditionViolation(contractFunction, condition, self, args, exception: Any)
+  #stackAddition(): String
+  +{static} createMessage(contractFunction, condition, self, args): String
+}
+ExceptionConditionViolation --> "exception" Any
+
+ConditionError --> "contractFunction" ContractFunction
+ConditionError --> "condition" Function
+ConditionError --> "self" Object
+ConditionError --> "args" ArrayLike
+
+ConditionError <|-- ConditionMetaError
+ConditionError <|-- ConditionViolation
+
+ConditionViolation <|-- PreconditionViolation
+ConditionViolation <|-- PostconditionViolation
+ConditionViolation <|-- ExceptionConditionViolation
+
+@enduml
