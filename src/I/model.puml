@@ -51,12 +51,11 @@ FunctionWithImplementation <|-- ContractFunction
 ContractFunction --> "contract" Contract
 
 abstract class ConditionError {
-  +{static} name: String <<readonly>>
+  +name: String = "Contract Condition Error"
   +self: Object <<readonly>>
   +args: ArrayLike <<readonly>>
   +message: String <<readonly>>
-  +/stack: String <<readonly, multiline>>
-  -_stackSource: Error <<readonly>>
+  +/stack: String <<multiline>>
   +{static} ConditionError(contractFunction, condition, self, args)
   #stackAddition(): String
   +{static} createMessage(contractFunction, condition, self, args): String
@@ -104,8 +103,9 @@ class ExceptionConditionViolation <<todo>> {
   +{static} createMessage(contractFunction, condition, self, args): String
 }
 
-ConditionError --> "contractFunction" ContractFunction
-ConditionError --> "condition" Function
+ConditionError --> "contractFunction <<readonly>>" ContractFunction
+ConditionError --> "condition <<readonly>>" Function
+ConditionError --> "_stackSource <<readonly, frozen>>" Error
 
 ConditionError <|-- ConditionMetaError
 ConditionError <|-- ConditionViolation
