@@ -6,10 +6,12 @@
   "directories": {
     "doc": "doc",
     "example": "example",
-    "test": "test"
+    "test": "test",
+    "jsdoc": "jsdoc"
   },
   "scripts": {
-    "test": "mocha test/**/*.js"
+    "test": "mocha test/**/*.js",
+    "doc": "rm -Rf jsdoc; node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "repository": {
     "type": "git",
@@ -46,6 +48,7 @@
     "mocha": "^3.2.0"
   },
   "devDependencies": {
+    "jsdoc": "^3.4.3",
     "randomstring": "^1.1.4"
   }
 }

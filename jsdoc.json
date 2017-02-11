@@ -1,0 +1,22 @@
+{
+  "opts": {
+    "destination": "./jsdoc/",
+    "recurse": true
+  },
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": [
+      "jsdoc",
+      "closure"
+    ]
+  },
+  "source": {
+    "include": ["src/"],
+    "includePattern": ".+\\.js(doc|x)?$"
+  },
+  "plugins": [],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}

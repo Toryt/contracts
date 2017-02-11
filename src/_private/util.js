@@ -1,4 +1,3 @@
-
  /*
   Copyright 2016 - 2017 by Jan Dockx
 
@@ -15,11 +14,20 @@
   limitations under the License.
  */
 
+ /**
+  * General utility methods, not part of the Toryt Contracts API.
+  * These functions might change at any time.
+  *
+  * @module
+  */
  module.exports = (function() {
 
    var os = require("os");
    var path = require("path");
 
+   /**
+    * @exports _private/util
+    */
    //noinspection MagicNumberJS
    var util = {
 

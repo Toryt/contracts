@@ -94,3 +94,4 @@ xcuserdata
 *.xcuserstate
 
 # Created by .ignore support plugin (hsz.mobi)
+/jsdoc/

@@ -13,6 +13,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+
+/**
+ * <p>Abstract definition of a function Contract.</p>
+ * @module
+ */
+
 module.exports = (function() {
   "use strict";
 
@@ -22,10 +28,10 @@ module.exports = (function() {
   var displayNamePrefix = "contract function ";
 
   /**
-   * Abstract definition of a function contract.
+   * <p>Abstract definition of a function contract.</p>
    *
-   * A AbstractContract consists of an array of preconditions, an array of nominal postconditions,
-   * and an array of exceptional preconditions.
+   * <p>An AbstractContract consists of an array of preconditions, an array of nominal postconditions,
+   * and an array of exceptional preconditions.</p>
    *
    * The conditions are functions whose result is interpreted as a booleany value.
    * The conditions are called with the same `this` and arguments as the functional call in which they are
@@ -36,6 +42,9 @@ module.exports = (function() {
    *
    * Furthermore, an instance contains a `location` property, which is a line of text
    * that refers to the source code where the contract was created.
+   *
+   * @constructor
+   * @exports I/Contract
    */
   function AbstractContract(kwargs) {
     util.pre(function() {return !!kwargs;});
