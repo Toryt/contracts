@@ -22,9 +22,11 @@ module.exports = (function() {
 
   function contractFunctionDisplayName(f) {
     util.pre(function() {return util.typeOf(f) === "function";});
-    util.pre(function() {return f.implementation;});
 
-    return displayNamePrefix + (f.name || f.implementation.displayName || f.implementation.name || "<<anonymous>>");
+    return displayNamePrefix
+           + (f.name
+              || (f.implementation && (f.implementation.displayName || f.implementation.name))
+              || "<<anonymous>>");
   }
 
   function defineContractFunctionDisplayName(f) {
