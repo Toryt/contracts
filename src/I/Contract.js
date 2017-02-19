@@ -100,20 +100,34 @@ module.exports = (function() {
            && f.displayName === this.contractFunctionDisplayName(f);
   };
 
+  Contract.bless = function bless(contractFunction, contract, implFunction, location) {
+    // MUDO test
+
+    function bind() {
+      var bound = Function.prototype.bind.apply(this, arguments);
+      var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
+      Contract.bless(bound, this.contract, boundImplementation, location);
+      return bound;
+    }
+
+    util.setAndFreezeProperty(contractFunction, "contract", contract);
+    util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
+    util.setAndFreezeProperty(contractFunction, "location", location);
+    util.defineFrozenDerivedProperty(
+      contractFunction,
+      "displayName",
+      function() {return Contract.contractFunctionDisplayName(this);}
+    );
+    contractFunction.bind = bind;
+  };
+
   Contract.dummyImplementation = function() {
     function dummyImplementation() {return "This is a dummy contract implementation.";}
 
     var dummyContract = new Contract();
     Object.freeze(dummyContract);
     var contractFunction = function() {};
-    util.setAndFreezeProperty(contractFunction, "contract", dummyContract);
-    util.setAndFreezeProperty(contractFunction, "implementation", dummyImplementation);
-    util.setAndFreezeProperty(contractFunction, "location", util.firstLocationOutsideLibrary());
-    util.defineFrozenDerivedProperty(
-      contractFunction,
-      "displayName",
-      function() {return Contract.contractFunctionDisplayName(this);}
-    );
+    Contract.bless(contractFunction, dummyContract, dummyImplementation, util.firstLocationOutsideLibrary());
     return contractFunction;
   };
 

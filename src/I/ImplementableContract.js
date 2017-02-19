@@ -65,30 +65,7 @@ module.exports = (function() {
       return result;
     }
 
-    function bind() {
-      var bound = Function.prototype.bind.apply(this, arguments);
-      var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
-      util.setAndFreezeProperty(bound, "contract", this.contract);
-      util.setAndFreezeProperty(bound, "implementation", boundImplementation);
-      util.setAndFreezeProperty(bound, "location", location);
-      util.defineFrozenDerivedProperty(
-        bound,
-        "displayName",
-        function() {return Contract.contractFunctionDisplayName(this);}
-      );
-      bound.bind = this.bind;
-      return bound;
-    }
-
-    util.setAndFreezeProperty(contractFunction, "contract", contract);
-    util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
-    util.setAndFreezeProperty(contractFunction, "location", location);
-    util.defineFrozenDerivedProperty(
-      contractFunction,
-      "displayName",
-      function() {return Contract.contractFunctionDisplayName(this);}
-    );
-    contractFunction.bind = bind;
+    Contract.bless(contractFunction, contract, implFunction, location);
 
     return contractFunction;
   };
