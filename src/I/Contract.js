@@ -29,22 +29,6 @@ module.exports = (function() {
               || "<<anonymous>>");
   }
 
-  function defineContractFunctionDisplayName(f) {
-    util.pre(function() {return util.typeOf(f) === "function";});
-    util.pre(function() {return util.typeOf(f.implementation) === "function";});
-
-    Object.defineProperty(
-      f,
-      "displayName",
-      {
-        configurable: false,
-        enumerable: true,
-        get: function() {return contractFunctionDisplayName(this);},
-        set: undefined
-      }
-    );
-  }
-
   /**
    * Abstract definition of a function Contract.
    *
@@ -90,11 +74,6 @@ module.exports = (function() {
   Contract.contractFunctionDisplayName = contractFunctionDisplayName;
 
   /**
-   * Define a frozen read only property `displayName` on the given function.
-   */
-  Contract.defineContractFunctionDisplayName = defineContractFunctionDisplayName;
-
-  /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function
    * given as a parameter is a Contract Function.
    *
@@ -132,7 +111,11 @@ module.exports = (function() {
     util.setAndFreezeProperty(contractFunction, "contract", dummyContract);
     util.setAndFreezeProperty(contractFunction, "implementation", dummyImplementation);
     util.setAndFreezeProperty(contractFunction, "location", util.firstLocationOutsideLibrary());
-    defineContractFunctionDisplayName(contractFunction);
+    util.defineFrozenDerivedProperty(
+      contractFunction,
+      "displayName",
+      function() {return contractFunctionDisplayName(this);}
+    );
     return contractFunction;
   };
 
