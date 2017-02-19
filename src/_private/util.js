@@ -125,7 +125,7 @@
        return descriptor
               && descriptor.enumerable === true
               && descriptor.configurable === false
-              && descriptor.writable === false;
+              && (descriptor.writable === false || (this.typeOf(descriptor.get) === "function" && !descriptor.set));
      },
 
      nrOfLines: function(str) {

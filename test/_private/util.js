@@ -263,6 +263,43 @@
             expect(result).not.to.be.ok;
           });
         });
+        var fCandidates = [undefined, function() {}];
+        testUtil.x(truths, truths, fCandidates, fCandidates).forEach(function(values) {
+          var subject = {};
+          Object.defineProperty(
+            subject,
+            propName,
+            {
+              configurable: values[0],
+              enumerable: values[1],
+              get: values[2],
+              set: values[3]
+            }
+          );
+          var result = util.isFrozenOwnProperty(subject, propName);
+          var v3type = util.typeOf(values[3]);
+          if (!values[0]
+              && values[1]
+              && util.typeOf(values[2]) === "function"
+              && values[3] === undefined
+              && subject.hasOwnProperty(propName)) {
+            it("reports true if the property is an own property, " +
+               "and it is enumerable, and not configurable, has a getter, but not a setter", function() {
+              //noinspection BadExpressionStatementJS
+              expect(result).to.be.true;
+            });
+          }
+          else {
+            it("reports false if the property is an own property," +
+               " enumerable === " + values[1] +
+               " configurable === " + values[0] +
+               " get === " + values[2] +
+               " set === " + values[3], function() {
+              //noinspection BadExpressionStatementJS
+              expect(result).not.to.be.ok;
+            });
+          }
+        });
       });
 
       describe("#nrOfLines", function() {
