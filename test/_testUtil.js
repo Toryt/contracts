@@ -65,7 +65,7 @@
      return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyname);
    }
 
-   function expectFrozenReadOnlyArrayPropertyOnAPrototype(subject, propertyName) {
+   function expectFrozenDerivedPropertyOnAPrototype(subject, propertyName) {
      var prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName);
      //noinspection JSUnresolvedFunction
      expect(prototype).to.have.ownPropertyDescriptor(propertyName);
@@ -86,7 +86,7 @@
      expect(subject).to.have.property(privatePropName).that.is.an("array");
      this.expectOwnFrozenProperty(subject, privatePropName);
      expect(subject).to.have.property(propName).that.is.an("array");
-     this.expectFrozenReadOnlyArrayPropertyOnAPrototype(subject, propName);
+     this.expectFrozenDerivedPropertyOnAPrototype(subject, propName);
      expect(function() {
        //noinspection MagicNumberJS
        subject[propName] = 42 + " some outlandish other value";
@@ -112,7 +112,7 @@
    return {
      x: x,
      expectOwnFrozenProperty: expectOwnFrozenProperty,
-     expectFrozenReadOnlyArrayPropertyOnAPrototype: expectFrozenReadOnlyArrayPropertyOnAPrototype,
+     expectFrozenDerivedPropertyOnAPrototype: expectFrozenDerivedPropertyOnAPrototype,
      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
      expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
      log: log

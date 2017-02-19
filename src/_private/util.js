@@ -98,6 +98,23 @@
        );
      },
 
+     defineFrozenDerivedProperty: function(prototype, propertyName, derivation) {
+       util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
+       util.pre(function() {return util.typeOf(propertyName) === "string";});
+       util.pre(function() {return util.typeOf(derivation) === "function";});
+
+       Object.defineProperty(
+         prototype,
+         propertyName,
+         {
+           configurable: false,
+           enumerable: true,
+           get: derivation,
+           set: undefined
+         }
+       );
+     },
+
      defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
        this.pre(function() {return !util.isPrimitive(prototype);});
        this.pre(function() {return util.typeOf(propName) === "string";});
