@@ -121,17 +121,10 @@
        this.pre(function() {return util.typeOf(privatePropName) === "string";});
        this.pre(function() {return propName !== privatePropName;});
 
-       Object.defineProperty(
+       this.defineFrozenDerivedProperty(
          prototype,
          propName,
-         {
-           configurable: false,
-           enumerable: true,
-           get: function() {
-             return this[privatePropName].slice();
-           },
-           set: undefined
-         }
+         function() {return this[privatePropName].slice();}
        );
      },
 
