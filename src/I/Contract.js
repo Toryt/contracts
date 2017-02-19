@@ -20,15 +20,6 @@ module.exports = (function() {
 
   var displayNamePrefix = "contract function ";
 
-  function contractFunctionDisplayName(f) {
-    util.pre(function() {return util.typeOf(f) === "function";});
-
-    return displayNamePrefix
-           + (f.name
-              || (f.implementation && (f.implementation.displayName || f.implementation.name))
-              || "<<anonymous>>");
-  }
-
   /**
    * Abstract definition of a function Contract.
    *
@@ -71,7 +62,14 @@ module.exports = (function() {
   /**
    * Return a string that is a sensible display name for the given function as a contract function.
    */
-  Contract.contractFunctionDisplayName = contractFunctionDisplayName;
+  Contract.contractFunctionDisplayName = function(f) {
+    util.pre(function() {return util.typeOf(f) === "function";});
+
+    return displayNamePrefix
+           + (f.name
+              || (f.implementation && (f.implementation.displayName || f.implementation.name))
+              || "<<anonymous>>");
+  };
 
   /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function
@@ -114,7 +112,7 @@ module.exports = (function() {
     util.defineFrozenDerivedProperty(
       contractFunction,
       "displayName",
-      function() {return contractFunctionDisplayName(this);}
+      function() {return Contract.contractFunctionDisplayName(this);}
     );
     return contractFunction;
   };
