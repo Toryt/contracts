@@ -71,6 +71,14 @@ module.exports = (function() {
               || "<<anonymous>>");
   };
 
+  Contract.bindContractFunction = function bind() {
+    // MUDO test
+    var bound = Function.prototype.bind.apply(this, arguments);
+    var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
+    Contract.bless(bound, this.contract, boundImplementation, this.location);
+    return bound;
+  };
+
   /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function
    * given as a parameter is a Contract Function.
@@ -97,28 +105,22 @@ module.exports = (function() {
            && util.isFrozenOwnProperty(f, "implementation")
            && util.isALocationOutsideLibrary(f.location)
            && util.isFrozenOwnProperty(f, "location")
-           && f.displayName === this.contractFunctionDisplayName(f);
+           && f.displayName === this.contractFunctionDisplayName(f)
+           && util.isFrozenOwnProperty(f, "bind")
+           && f.bind === Contract.bindContractFunction;
   };
 
   Contract.bless = function bless(contractFunction, contract, implFunction, location) {
     // MUDO test
-
-    function bind() {
-      var bound = Function.prototype.bind.apply(this, arguments);
-      var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
-      Contract.bless(bound, this.contract, boundImplementation, location);
-      return bound;
-    }
-
     util.setAndFreezeProperty(contractFunction, "contract", contract);
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
     util.setAndFreezeProperty(contractFunction, "location", location);
+    util.setAndFreezeProperty(contractFunction, "bind", Contract.bindContractFunction);
     util.defineFrozenDerivedProperty(
       contractFunction,
       "displayName",
       function() {return Contract.contractFunctionDisplayName(this);}
     );
-    contractFunction.bind = bind;
   };
 
   Contract.dummyImplementation = function() {

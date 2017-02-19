@@ -108,7 +108,8 @@ module.exports = (function() {
   function createCandidateContractFunction(dontFreezeContract,
                                            dontFreezeProperty,
                                            otherPropertyName,
-                                           otherPropertyValue) {
+                                           otherPropertyValue,
+                                           bind) {
     function candidate() {}
 
     function impl() {}
@@ -116,6 +117,7 @@ module.exports = (function() {
     var contract = otherPropertyName === "contract" ? otherPropertyValue : new Contract();
     var implementation = otherPropertyName === "implementation" ? otherPropertyValue : impl;
     var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
+    var bind = otherPropertyName === "bind" ? otherPropertyValue : Contract.bindContractFunction;
 
     if (!dontFreezeContract) {
       Object.freeze(contract);
@@ -137,6 +139,12 @@ module.exports = (function() {
     }
     else {
       util.setAndFreezeProperty(candidate, "location", location);
+    }
+    if (dontFreezeProperty === "bind") {
+      candidate.bind = bind;
+    }
+    else {
+      util.setAndFreezeProperty(candidate, "bind", bind);
     }
     candidate.displayName =
       (otherPropertyName === "displayName")

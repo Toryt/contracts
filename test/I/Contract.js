@@ -157,7 +157,7 @@
           expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
         });
 
-        ["contract", "implementation", "location"].forEach(function(dontFreezeProperty) {
+        ["contract", "implementation", "location", "bind"].forEach(function(dontFreezeProperty) {
           it("says no if the " + dontFreezeProperty + " property is not frozen", function() {
             var candidate = common.createCandidateContractFunction(false, dontFreezeProperty);
             //noinspection BadExpressionStatementJS
@@ -169,6 +169,7 @@
           {propertyName: "contract", expected: "a Contract", extra: [function() {}]},
           {propertyName: "implementation", expected: "a Function", extra: [new Contract()]},
           {propertyName: "location", expected: "a location outside this library", extra: ["    at", "at /"]},
+          {propertyName: "bind", expected: "Contract.bindContractFunction", extra: []},
           {
             propertyName: "displayName",
             expected: "the contractFunctionDisplayName",
