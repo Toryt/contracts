@@ -89,9 +89,10 @@ module.exports = (function() {
    *   <li>have a frozen `contract` property that refers to a Contract,</li>
    *   <li>have a frozen `implementation` property that refers to a function (which realizes the contract),</li>
    *   <li>have a frozen `location` property, which is a string that represents a location in source code,
-   *     outside this library, and</li>
+   *     outside this library,</li>
+   *   <li>have a frozen `bind` property, which is {@link Contract.bindContractFunction}, and</li>
    *   <li>have a `displayName` that is a contract function display name, which is a string that gives
-   *     a programmer to understand which contract function this is.</li>
+   *     information for a programmer to understand which contract function this is.</li>
    * </ul>
    */
   Contract.isAContractFunction = function(f) {
