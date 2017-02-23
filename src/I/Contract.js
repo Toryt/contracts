@@ -140,10 +140,10 @@ module.exports = (function() {
     util.pre(function() {return !contractFunction.location;});
     util.pre(function() {return contractFunction.bind === Function.prototype.bind;});
     util.pre(function() {return contract instanceof Contract;});
+    util.pre(function() {return Object.isFrozen(contract);});
     util.pre(function() {return util.typeOf(implFunction) === "function";});
     util.pre(function() {return util.isALocationOutsideLibrary(location);});
 
-    // MUDO test
     util.setAndFreezeProperty(contractFunction, "contract", contract);
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
     util.setAndFreezeProperty(contractFunction, "location", location);

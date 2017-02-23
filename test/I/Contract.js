@@ -199,6 +199,30 @@
 
       });
 
+      describe("Contract.bless", function() {
+        it("behaves as expected", function() {
+          var contractFunction = function() {};
+          var contract = new Contract();
+          Object.freeze(contract);
+          var implFunction = function() {};
+          var location = util.firstLocationOutsideLibrary();
+          Contract.bless(contractFunction, contract, implFunction, location);
+          expect(contractFunction).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
+          testUtil.expectOwnFrozenProperty(contractFunction, "contract");
+          expect(contractFunction).to.have.property("contract").that.equals(contract);
+          testUtil.expectOwnFrozenProperty(contractFunction, "implementation");
+          expect(contractFunction).to.have.property("implementation").that.equals(implFunction);
+          testUtil.expectOwnFrozenProperty(contractFunction, "location");
+          expect(contractFunction).to.have.property("location").that.equals(location);
+          testUtil.expectOwnFrozenProperty(contractFunction, "bind");
+          expect(contractFunction).to.have.property("bind").that.equals(Contract.bindContractFunction);
+          testUtil.expectFrozenDerivedPropertyOnAPrototype(contractFunction, "displayName");
+          expect(contractFunction).to.haveOwnProperty("displayName");
+          expect(contractFunction).to.have.property("displayName")
+            .that.equals(Contract.contractFunctionDisplayName(contractFunction));
+        });
+      });
+
       describe("Contract.dummyImplementation", function() {
         it("returns a function that is a contract function", function() {
           var result = Contract.dummyImplementation();
