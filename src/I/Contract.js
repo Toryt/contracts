@@ -71,7 +71,17 @@ module.exports = (function() {
               || "<<anonymous>>");
   };
 
+  /**
+   * This function is intended to be used as the bind function of contract functions. It makes sure
+   * that, when applied to a contract function, the result
+   * [is also a contract function]{@linkplain Contract#isAContractFunction}.
+   * The bind aspect of the functionality is the same as {@link Function#prototype#bind}.
+   * The implementation of the resulting contract function is also bound in the same
+   * way as the resulting contract function itself.
+   */
   Contract.bindContractFunction = function bind() {
+    util.pre(this, function() {return Contract.isAContractFunction(this);});
+
     // MUDO test
     var bound = Function.prototype.bind.apply(this, arguments);
     var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
@@ -111,7 +121,29 @@ module.exports = (function() {
            && f.bind === Contract.bindContractFunction;
   };
 
+  /**
+   * Helper function that transforms any function given as <code>contractFunction</code>
+   * into a [contract function]{@linkplain Contract#isAContractFunction}
+   * for the given <code>
+   *
+   * @param contractFunction {Function} the regular {Function} to be transformed into a contract function
+   * @param contract {Contract} the contract <code>contractFunction</code> is a realisation of
+   * @param implFunction {Function} the function that is used in <code>contractFunction</code>
+   *                     to realize the postconditions of <code>contract</code> under its preconditions
+   * @param location {String} the location outside this library that the resulting
+   *                          [contract function]{@linkplain Contract#isAContractFunction} will carry,
+   *                          that says where it is defined.
+   */
   Contract.bless = function bless(contractFunction, contract, implFunction, location) {
+    util.pre(function() {return util.typeOf(contractFunction) === "function";});
+    util.pre(function() {return !contractFunction.contract;});
+    util.pre(function() {return !contractFunction.implementation;});
+    util.pre(function() {return !contractFunction.location;});
+    util.pre(function() {return contractFunction.bind === Function.prototype.bind;});
+    util.pre(function() {return contract instanceof Contract;});
+    util.pre(function() {return util.typeOf(implFunction) === "function";});
+    util.pre(function() {return util.isALocationOutsideLibrary(location);});
+
     // MUDO test
     util.setAndFreezeProperty(contractFunction, "contract", contract);
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
