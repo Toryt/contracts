@@ -135,6 +135,14 @@
 
       });
 
+      describe("Contract.bindContractFunction", function() {
+        it("behaves as expected", function() {
+          var subject = common.createCandidateContractFunction();
+          var result = Contract.bindContractFunction.apply(subject);
+          expect(result).to.satisfy(function(r) {return Contract.isAContractFunction(r);});
+        });
+      });
+
       describe("Contract.isAContractFunction", function() {
 
         it("says yes if there is an implementation Function, a Contract, and a location, and all 3 properties are " +

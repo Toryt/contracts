@@ -82,7 +82,6 @@ module.exports = (function() {
   Contract.bindContractFunction = function bind() {
     util.pre(this, function() {return Contract.isAContractFunction(this);});
 
-    // MUDO test
     var bound = Function.prototype.bind.apply(this, arguments);
     var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
     Contract.bless(bound, this.contract, boundImplementation, this.location);
