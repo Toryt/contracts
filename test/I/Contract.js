@@ -78,6 +78,7 @@
         it("returns the expected display name with a function without a name and without an implementation", function() {
           var anonymousFunction = (function() {return function() {};})();
           testUtil.log(anonymousFunction.name);
+          //noinspection BadExpressionStatementJS
           expect(anonymousFunction).to.have.property("name").that.is.not.ok;
           expect(anonymousFunction).not.to.have.property("implementation");
 
@@ -88,9 +89,12 @@
         it("returns the expected display name with an anonymous function with an implementation property that has no display name and no name", function() {
           var anonymousFunction = (function() {return function() {};})();
           testUtil.log(anonymousFunction.name);
+          //noinspection BadExpressionStatementJS
           expect(anonymousFunction).to.have.property("name").that.is.not.ok;
           anonymousFunction.implementation = (function() {return function() {};})();
+          //noinspection BadExpressionStatementJS
           expect(anonymousFunction).to.have.property("implementation").that.is.ok;
+          //noinspection BadExpressionStatementJS
           expect(anonymousFunction).to.have.property("implementation").that.has.property("name").that.is.not.ok;
           expect(anonymousFunction).to.have.property("implementation").not.to.have.property("displayName");
 
