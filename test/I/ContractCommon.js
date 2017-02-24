@@ -80,7 +80,13 @@ module.exports = (function() {
     var abstract = subject.abstract;
     expect(abstract).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
     expect(abstract).to.satisfy(function(cf) {return subject.isImplementedBy(cf);});
-    expect(abstract).to.throw(Error, Contract.abstractMessage);
+    expect(abstract).to.throw(Contract.AbstractError, Contract.AbstractError.message);
+    try {
+      abstract();
+    }
+    catch (err) {
+      testUtil.log(err.stack);
+    }
   }
 
   function expectConstructorPost(pre, post, exception, result) {

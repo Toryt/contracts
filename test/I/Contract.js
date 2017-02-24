@@ -50,8 +50,9 @@
           expect(root.pre[0]).to.equal(Contract.falseCondition);
           expect(root).to.have.property("post").to.have.lengthOf(0);
           expect(root).to.have.property("exception").to.have.lengthOf(0);
-          expect(Contract).to.haveOwnProperty("abstractMessage");
-          expect(Contract).to.have.property("abstractMessage").that.is.a("string");
+          expect(Contract).to.haveOwnProperty("AbstractError");
+          expect(Contract).to.have.property("AbstractError").that.is.a("function");
+          expect(Contract).to.have.property("AbstractError").to.have.property("prototype").that.is.instanceof(Error);
         });
       });
 

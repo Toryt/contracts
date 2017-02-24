@@ -37,15 +37,17 @@ module.exports = (function() {
    * that refers to the source code where the contract was created.
    */
   function Contract(pre, post, exception) {
-    function abstract() {throw new Error(Contract.abstractMessage);}
+    var self = this;
+
+    function abstract() {throw new Contract.AbstractError(self);}
 
     var location = util.firstLocationOutsideLibrary();
-    Contract.bless(abstract, this, abstract, location);
-    util.setAndFreezeProperty(this, "_pre", Object.freeze(pre ? pre.slice() : []));
-    util.setAndFreezeProperty(this, "_post", Object.freeze(post ? post.slice() : []));
-    util.setAndFreezeProperty(this, "_exception", Object.freeze(exception ? exception.slice() : []));
-    util.setAndFreezeProperty(this, "location", Object.freeze(location));
-    util.setAndFreezeProperty(this, "abstract", abstract);
+    Contract.bless(abstract, self, abstract, location);
+    util.setAndFreezeProperty(self, "_pre", Object.freeze(pre ? pre.slice() : []));
+    util.setAndFreezeProperty(self, "_post", Object.freeze(post ? post.slice() : []));
+    util.setAndFreezeProperty(self, "_exception", Object.freeze(exception ? exception.slice() : []));
+    util.setAndFreezeProperty(self, "location", Object.freeze(location));
+    util.setAndFreezeProperty(self, "abstract", abstract);
   }
 
   Contract.prototype = {
@@ -183,7 +185,30 @@ module.exports = (function() {
     []
   );
 
-  Contract.abstractMessage = "abstract";
+  /**
+   * Thrown when an abstract method is called. You shouldn't.
+   */
+  function AbstractError(contract) {
+    util.pre(function() {return contract instanceof Contract;});
+
+    util.setAndFreezeProperty(this, "message", AbstractError.message);
+    util.setAndFreezeProperty(this, "contract", contract);
+    var stackSource = new Error(AbstractError.message);
+    stackSource.name = this.name;
+    Object.freeze(stackSource);
+    util.setAndFreezeProperty(this, "_stackSource", stackSource);
+  }
+
+  AbstractError.prototype = new Error("This is a dummy message in the AbstractError prototype.");
+  AbstractError.prototype.constructor = AbstractError;
+  AbstractError.prototype.name = "Abstract";
+  AbstractError.prototype.contract = null;
+  AbstractError.prototype._stackSource = null;
+  util.defineFrozenDerivedProperty(AbstractError.prototype, "stack", function() {return this._stackSource.stack;});
+
+  AbstractError.message = "An abstract function cannot be executed";
+
+  Contract.AbstractError = AbstractError;
 
   return Contract;
 })();
