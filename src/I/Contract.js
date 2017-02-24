@@ -37,10 +37,18 @@ module.exports = (function() {
    * that refers to the source code where the contract was created.
    */
   function Contract(pre, post, exception) {
+    function abstract() {throw new Error(Contract.abstractMessage);}
+
+    var location = util.firstLocationOutsideLibrary();
     util.setAndFreezeProperty(this, "_pre", pre ? pre.slice() : []);
     util.setAndFreezeProperty(this, "_post", post ? post.slice() : []);
     util.setAndFreezeProperty(this, "_exception", exception ? exception.slice() : []);
-    util.setAndFreezeProperty(this, "location", util.firstLocationOutsideLibrary());
+    util.setAndFreezeProperty(this, "location", location);
+    util.setAndFreezeProperty(this, "abstract", abstract);
+    // MUDO cannot freeze, to make extension (ImplementableContract) possible
+    //Object.freeze(this);
+    // MUDO requires this to be frozen
+    //Contract.bless(abstract, this, abstract, location);
   }
 
   Contract.prototype = {

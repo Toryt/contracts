@@ -184,6 +184,16 @@ module.exports = (function() {
       });
     });
 
+    describe("#abstract", function() { // MUDO is invariant
+      it("is an abstract contract function for the contract, and the contract is frozen", function() {
+        var subject = oneSubjectGenerator();
+        var result = subject.abstract;
+        //expect(subject).to.be.frozen;
+        expect(result).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
+        expect(result).to.satisfy(function(cf) {return subject.isImplementedBy(result);});
+      });
+    });
+
   }
 
   return {
