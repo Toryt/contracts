@@ -40,6 +40,15 @@
           expect(Contract).to.have.property("bless").that.is.a("function");
           expect(Contract).to.haveOwnProperty("dummyImplementation");
           expect(Contract).to.have.property("dummyImplementation").that.is.a("function");
+          expect(Contract).to.haveOwnProperty("root");
+          expect(Contract).to.have.property("root").that.is.an.instanceof(Contract);
+          var root = Contract.root;
+          common.expectInvariants(root);
+          expect(root).to.have.property("pre").to.have.lengthOf(1);
+          var precondition = root.pre[0];
+          expect(precondition()).not.to.be.ok;
+          expect(root).to.have.property("post").to.have.lengthOf(0);
+          expect(root).to.have.property("exception").to.have.lengthOf(0);
         });
       });
 
