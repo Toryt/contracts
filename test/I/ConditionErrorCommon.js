@@ -18,6 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var expect = require("chai").expect;
+  var common = require("./ContractErrorCommon");
   var ConditionError = require("../../src/I/ConditionError");
   var contractCommon = require("./ContractCommon");
   var util = require("../../src/_private/util");
@@ -60,6 +61,7 @@ module.exports = (function() {
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionError);
+    common.expectInvariants(subject);
     expect(subject).to.have.property("contractFunction").that.satisfies(function(cf) {
       return Contract.isAContractFunction(cf);
     });
@@ -109,6 +111,11 @@ module.exports = (function() {
   }
 
   function expectConstructorPost(result, contractFunction, condition, self, args) {
+    var otherArgs = Array.prototype.slice.call(arguments);
+    otherArgs.shift();
+    otherArgs.unshift(result.constructor.createMessage.apply(undefined, otherArgs));
+    otherArgs.unshift(result);
+    common.expectConstructorPost.apply(undefined, otherArgs);
     expect(result.contractFunction).equal(contractFunction);
     expect(result.condition).equal(condition);
     expect(result.self).equal(self);
@@ -119,11 +126,13 @@ module.exports = (function() {
 
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
+    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+
     // NOP: no methods here
 
   }
 
-  return {
+  var test = {
     selfCases: selfCases,
     argsCases: argsCases,
     conditionCase: conditionCase,
@@ -132,5 +141,7 @@ module.exports = (function() {
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
     createCandidateContractFunction: contractCommon.createCandidateContractFunction
   };
+  Object.setPrototypeOf(test, common);
+  return test;
 
 })();

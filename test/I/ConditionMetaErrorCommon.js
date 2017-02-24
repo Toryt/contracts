@@ -32,7 +32,7 @@ module.exports = (function() {
   }
 
   function expectConstructorPost(result, contractFunction, condition, self, args, error) {
-    common.expectConstructorPost(result, contractFunction, condition, self, args);
+    common.expectConstructorPost.apply(undefined, arguments);
     expect(result.error).to.equal(error);
   }
 
