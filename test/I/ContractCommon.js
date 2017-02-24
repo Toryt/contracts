@@ -86,18 +86,19 @@ module.exports = (function() {
       else {
         expect(result[privatePropName]).to.eql(array);
         expect(result[privatePropName]).to.not.equal(array);  // it must be copy, don't share the array
+        expect(result[privatePropName]).to.be.frozen;
         expect(result[propName]).to.eql(array);
         expect(result[propName]).to.not.equal(result[privatePropName]);  // it must be copy, don't share the array
       }
     }
 
-    it("has a shallow copy of the given pre-conditions", function() {
+    it("has a shallow copy of the given pre-conditions, and the private array is frozen", function() {
       expectArrayPost(pre, "pre", "_pre");
     });
-    it("has a shallow copy of the given post-conditions", function() {
+    it("has a shallow copy of the given post-conditions, and the private array is frozen", function() {
       expectArrayPost(post, "post", "_post");
     });
-    it("has a shallow copy of the given exception-conditions", function() {
+    it("has a shallow copy of the given exception-conditions, and the private array is frozen", function() {
       expectArrayPost(exception, "exception", "_exception");
     });
     it("adheres to the invariants", function() {

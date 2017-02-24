@@ -40,16 +40,12 @@ module.exports = (function() {
     function abstract() {throw new Error(Contract.abstractMessage);}
 
     var location = util.firstLocationOutsideLibrary();
-    util.setAndFreezeProperty(this, "_pre", pre ? pre.slice() : []);
-    util.setAndFreezeProperty(this, "_post", post ? post.slice() : []);
-    util.setAndFreezeProperty(this, "_exception", exception ? exception.slice() : []);
-    util.setAndFreezeProperty(this, "location", location);
+    Contract.bless(abstract, this, abstract, location);
+    util.setAndFreezeProperty(this, "_pre", Object.freeze(pre ? pre.slice() : []));
+    util.setAndFreezeProperty(this, "_post", Object.freeze(post ? post.slice() : []));
+    util.setAndFreezeProperty(this, "_exception", Object.freeze(exception ? exception.slice() : []));
+    util.setAndFreezeProperty(this, "location", Object.freeze(location));
     util.setAndFreezeProperty(this, "abstract", abstract);
-    // MUDO cannot freeze, to make extension (ImplementableContract) possible
-    //Object.freeze(this);
-    // MUDO requires this to be frozen
-    //Contract.bless(abstract, this, abstract, location);
-    // MUDO a Contract must NOT be frozen for it to have a sensible implementation: its properties pre, post, exception, location cannot be changed after creation anyway! Remove this requirement, invariant, postcondition in tests.
   }
 
   Contract.prototype = {
