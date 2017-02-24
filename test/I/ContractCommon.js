@@ -76,6 +76,11 @@ module.exports = (function() {
     testUtil.expectToBeArrayOfFunctions(subject.exception);
     testUtil.expectOwnFrozenProperty(subject, "location");
     expect(subject.location).to.satisfy(function(location) {return util.isALocationOutsideLibrary(location);});
+    testUtil.expectOwnFrozenProperty(subject, "abstract");
+    var abstract = subject.abstract;
+    expect(abstract).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
+    expect(abstract).to.satisfy(function(cf) {return subject.isImplementedBy(cf);});
+    expect(abstract).to.throw(Error, Contract.abstractMessage);
   }
 
   function expectConstructorPost(pre, post, exception, result) {
@@ -178,15 +183,6 @@ module.exports = (function() {
         //noinspection BadExpressionStatementJS
         expect(subject.isImplementedBy(f)).not.to.be.ok;
         self.expectInvariants(subject);
-      });
-    });
-
-    describe("#abstract", function() { // MUDO is invariant
-      it("is an abstract contract function for the contract", function() {
-        var subject = oneSubjectGenerator();
-        var result = subject.abstract;
-        expect(result).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
-        expect(result).to.satisfy(function(cf) {return subject.isImplementedBy(result);});
       });
     });
 
