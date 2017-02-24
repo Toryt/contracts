@@ -37,7 +37,7 @@
           common.argsCases.forEach(function(args) {
             common.errorCases.forEach(function(error) {
               it("works when called with " + self + " - " + args, function() {
-                var contractFunction = Contract.dummyImplementation();
+                var contractFunction = common.createCandidateContractFunction();
                 var result = ConditionMetaError.createMessage(contractFunction, common.conditionCase, self, args, error);
                 expect(result).to.be.a("string");
                 expect(result).to.contain(contractFunction.displayName);
@@ -58,7 +58,7 @@
           common.argsCases.forEach(function(args) {
             common.errorCases.forEach(function(error) {
               it("creates an instance with all toppings for " + self + " - " + args + " - " + error, function() {
-                var contractFunction = Contract.dummyImplementation();
+                var contractFunction = common.createCandidateContractFunction();
                 var result = new ConditionMetaError(contractFunction, common.conditionCase, self, args, error);
                 common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, error);
                 common.expectInvariants(result);
@@ -91,7 +91,7 @@
           .map(function(parameters) {
             return function() {
               return {
-                subject: new ConditionMetaError(Contract.dummyImplementation(),
+                subject: new ConditionMetaError(common.createCandidateContractFunction(),
                                                 common.conditionCase,
                                                 parameters[0],
                                                 parameters[1],

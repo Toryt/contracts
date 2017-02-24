@@ -155,7 +155,7 @@ module.exports = (function() {
             var condition = conditionGenerator();
             var self = selfGenerator();
             var args = argGenerator();
-            var contractFunction = Contract.dummyImplementation();
+            var contractFunction = common.createCandidateContractFunction();
             describe("works for " + condition + " - " + self + " - " + args, function() {
               var exception;
               try {
@@ -355,7 +355,7 @@ module.exports = (function() {
             var conditions = conditionsGenerator();
             var self = selfGenerator();
             var args = argGenerator();
-            var contractFunction = Contract.dummyImplementation();
+            var contractFunction = common.createCandidateContractFunction();
             describe("works for " + conditions + " - " + self + " - " + args, function() {
               var exception;
               try {

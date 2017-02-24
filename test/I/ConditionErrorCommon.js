@@ -19,6 +19,7 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var ConditionError = require("../../src/I/ConditionError");
+  var contractCommon = require("./ContractCommon");
   var util = require("../../src/_private/util");
   var Contract = require("../../src/I/Contract");
   var testUtil = require("../_testUtil");
@@ -128,7 +129,8 @@ module.exports = (function() {
     conditionCase: conditionCase,
     expectConstructorPost: expectConstructorPost,
     expectInvariants: expectInvariants,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
+    createCandidateContractFunction: contractCommon.createCandidateContractFunction
   };
 
 })();
