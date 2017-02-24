@@ -52,8 +52,6 @@
           expect(root).to.have.property("exception").to.have.lengthOf(0);
           expect(Contract).to.haveOwnProperty("abstractMessage");
           expect(Contract).to.have.property("abstractMessage").that.is.a("string");
-          expect(Contract).to.haveOwnProperty("abstract");
-          expect(Contract).to.have.property("abstract").that.is.a("function");
         });
       });
 
@@ -265,12 +263,6 @@
         it("always returns false", function() {
           var result = Contract.falseCondition();
           expect(result).to.equal(false);
-        });
-      });
-
-      describe("Contract.abstract", function() {
-        it("always throw an Error", function() {
-          expect(Contract.abstract).to.throw(Error, Contract.abstractMessage);
         });
       });
 

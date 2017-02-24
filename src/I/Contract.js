@@ -183,10 +183,5 @@ module.exports = (function() {
 
   Contract.abstractMessage = "abstract";
 
-  /**
-   * The implementation of an abstract function. This throws an Error in all cases.
-   */
-  Contract.abstract = function f() {throw new Error(Contract.abstractMessage);};
-
   return Contract;
 })();
