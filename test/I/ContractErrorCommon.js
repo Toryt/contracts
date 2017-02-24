@@ -1,0 +1,86 @@
+/*
+ Copyright 2016 - 2016 by Jan Dockx
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+module.exports = (function() {
+  "use strict";
+
+  var expect = require("chai").expect;
+  var ContractError = require("../../src/I/ContractError");
+  var util = require("../../src/_private/util");
+  var testUtil = require("../_testUtil");
+  var path = require("path");
+
+  var contractLibTestPath = path.dirname(module.filename);
+  var contractLibPath = path.dirname(path.dirname(contractLibTestPath)) + "/src/I";
+
+  function expectInvariants(subject) {
+    expect(subject).to.be.an.instanceOf(ContractError);
+    expect(subject).to.have.ownProperty("_stackSource");
+    expect(subject._stackSource).to.be.instanceOf(Error);
+    expect(subject._stackSource).to.have.property("name").that.equals(subject.name);
+    expect(subject._stackSource).to.have.property("message").that.equals(subject.message);
+    testUtil.expectOwnFrozenProperty(subject, "_stackSource");
+    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+    expect(subject._stackSource).to.be.frozen;
+    expect(subject).to.have.property("name").that.is.a("string");
+    expect(subject).to.have.property("message").that.is.a("string");
+    expect(subject).to.have.property("stack");
+    var startOfStack = subject.name + ": " + subject.message;
+    expect(subject.stack.indexOf(startOfStack)).to.equal(0);
+    var linesInMessage = util.nrOfLines(subject.message);
+    var stackWithoutMessage = subject.stack.split(util.eol).splice(linesInMessage);
+    stackWithoutMessage.forEach(function(line, index) {
+      /* .../src/... contains the library code. This should never be mentioned in the stack trace.
+         It is inner workings, and confuses the target audience, which is only interested in the code that
+         uses the library. */
+      expect(line).to.satisfy(function(l) {return l.indexOf(contractLibPath) < 0;});
+      /* In our tests, the code that uses the library is our test code in ...//test/I/Condition..., or the
+         test framework library, in .../mocha/..., except for the last few lines. These lines will be node-internal,
+         and have no slash, or be internal/module.js. The first line should be our own code. */
+      if (index === 0) {
+        // MUDO expect(line).to.satisfy(function(l) {return 0 <= l.indexOf(contractLibTestPath);});
+      }
+      else if (index < (stackWithoutMessage.length - 1)) {
+        // MUDO
+        // expect(line).to.satisfy(function(l) {
+        //   return 0 <= l.indexOf(contractLibTestPath) ||
+        //          0 <= l.indexOf("/mocha/") ||
+        //          l.indexOf("/") < 0 ||
+        //          0 <= l.indexOf("require (internal/module.js");
+        // });
+      }
+    });
+  }
+
+  function expectConstructorPost(result, message) {
+    expect(result).to.have.property("message").that.equals(message);
+    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+    expect(result).to.be.extensible;
+  }
+
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+
+    // NOP: no methods here
+
+  }
+
+  return {
+    expectConstructorPost: expectConstructorPost,
+    expectInvariants: expectInvariants,
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+  };
+
+})();
