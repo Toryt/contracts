@@ -49,6 +49,7 @@ module.exports = (function() {
     //Object.freeze(this);
     // MUDO requires this to be frozen
     //Contract.bless(abstract, this, abstract, location);
+    // MUDO a Contract must NOT be frozen for it to have a sensible implementation: its properties pre, post, exception, location cannot be changed after creation anyway! Remove this requirement, invariant, postcondition in tests.
   }
 
   Contract.prototype = {
