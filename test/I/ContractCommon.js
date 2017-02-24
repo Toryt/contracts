@@ -105,8 +105,7 @@ module.exports = (function() {
     });
   }
 
-  function createCandidateContractFunction(dontFreezeContract,
-                                           dontFreezeProperty,
+  function createCandidateContractFunction(dontFreezeProperty,
                                            otherPropertyName,
                                            otherPropertyValue,
                                            bind) {
@@ -119,9 +118,6 @@ module.exports = (function() {
     var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
     var bind = otherPropertyName === "bind" ? otherPropertyValue : Contract.bindContractFunction;
 
-    if (!dontFreezeContract) {
-      Object.freeze(contract);
-    }
     if (dontFreezeProperty === "contract") {
       candidate.contract = contract;
     }
@@ -159,7 +155,7 @@ module.exports = (function() {
     describe("#isImplementedBy()", function() {
       it("says yes if the argument is a contract function for the contract", function() {
         var subject = oneSubjectGenerator();
-        var f = createCandidateContractFunction(false, null, "contract", subject);
+        var f = createCandidateContractFunction(null, "contract", subject);
         //noinspection BadExpressionStatementJS
         expect(subject.isImplementedBy(f)).to.be.ok;
         self.expectInvariants(subject);
@@ -177,7 +173,7 @@ module.exports = (function() {
       it("says no if the argument is a contract function for another contract", function() {
         var subject = oneSubjectGenerator();
         var otherContract = oneSubjectGenerator();
-        var f = createCandidateContractFunction(false, null, "contract", otherContract);
+        var f = createCandidateContractFunction(null, "contract", otherContract);
         //noinspection BadExpressionStatementJS
         expect(subject.isImplementedBy(f)).not.to.be.ok;
         self.expectInvariants(subject);
@@ -185,10 +181,9 @@ module.exports = (function() {
     });
 
     describe("#abstract", function() { // MUDO is invariant
-      it("is an abstract contract function for the contract, and the contract is frozen", function() {
+      it("is an abstract contract function for the contract", function() {
         var subject = oneSubjectGenerator();
         var result = subject.abstract;
-        //expect(subject).to.be.frozen;
         expect(result).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
         expect(result).to.satisfy(function(cf) {return subject.isImplementedBy(result);});
       });

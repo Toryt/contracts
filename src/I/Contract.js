@@ -119,7 +119,6 @@ module.exports = (function() {
     return util.typeOf(f) === "function"
            && f.contract instanceof Contract
            && util.isFrozenOwnProperty(f, "contract")
-           && Object.isFrozen(f.contract)
            && util.typeOf(f.implementation) === "function"
            && util.isFrozenOwnProperty(f, "implementation")
            && util.isALocationOutsideLibrary(f.location)
@@ -149,7 +148,6 @@ module.exports = (function() {
     util.pre(function() {return !contractFunction.location;});
     util.pre(function() {return contractFunction.bind === Function.prototype.bind;});
     util.pre(function() {return contract instanceof Contract;});
-    util.pre(function() {return Object.isFrozen(contract);});
     util.pre(function() {return util.typeOf(implFunction) === "function";});
     util.pre(function() {return util.isALocationOutsideLibrary(location);});
 
@@ -168,7 +166,6 @@ module.exports = (function() {
     function dummyImplementation() {return "This is a dummy contract implementation.";}
 
     var dummyContract = new Contract();
-    Object.freeze(dummyContract);
     var contractFunction = function() {};
     Contract.bless(contractFunction, dummyContract, dummyImplementation, util.firstLocationOutsideLibrary());
     return contractFunction;

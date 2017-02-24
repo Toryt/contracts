@@ -37,8 +37,6 @@ module.exports = (function() {
     util.pre(this, function() {return implFunction && util.typeOf(implFunction) === "function";});
 
     var contract = this;
-    Object.freeze(contract);
-
     var location = util.firstLocationOutsideLibrary();
 
     function contractFunction() {

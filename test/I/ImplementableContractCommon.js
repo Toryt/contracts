@@ -38,8 +38,6 @@ module.exports = (function() {
         expect(implementableContract.isImplementedBy(result)).to.be.ok;
         expect(result).to.have.property("contract").that.equals(implementableContract);
         expect(result).to.have.property("implementation").that.equals(implFunction);
-        //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-        expect(implementableContract).to.be.frozen;
         self.expectInvariants(implementableContract);
       }
 

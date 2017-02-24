@@ -179,7 +179,7 @@
       describe("Contract.isAContractFunction", function() {
 
         it("says yes if there is an implementation Function, a Contract, and a location, and all 3 properties are " +
-           "frozen, and the contract is frozen, and it has the expected display name", function() {
+           "frozen, and it has the expected display name", function() {
           var candidate = common.createCandidateContractFunction();
           //noinspection BadExpressionStatementJS
           expect(Contract.isAContractFunction(candidate)).to.be.ok;
@@ -192,15 +192,9 @@
           });
         });
 
-        it("says no if the contract is not frozen", function() {
-          var candidate = common.createCandidateContractFunction(true);
-          //noinspection BadExpressionStatementJS
-          expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
-        });
-
         ["contract", "implementation", "location", "bind"].forEach(function(dontFreezeProperty) {
           it("says no if the " + dontFreezeProperty + " property is not frozen", function() {
-            var candidate = common.createCandidateContractFunction(false, dontFreezeProperty);
+            var candidate = common.createCandidateContractFunction(dontFreezeProperty);
             //noinspection BadExpressionStatementJS
             expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
           });
@@ -219,7 +213,7 @@
         ].forEach(function(aCase) {
           common.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach(function(v) {
             it("says no if the " + aCase.propertyName + " is not " + aCase.expected + " but " + v, function() {
-              var candidate = common.createCandidateContractFunction(false, null, aCase.propertyName, v);
+              var candidate = common.createCandidateContractFunction(null, aCase.propertyName, v);
               //noinspection BadExpressionStatementJS
               expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
             });
@@ -232,7 +226,6 @@
         it("behaves as expected", function() {
           var contractFunction = function() {};
           var contract = new Contract();
-          Object.freeze(contract);
           var implFunction = function() {};
           var location = util.firstLocationOutsideLibrary();
           Contract.bless(contractFunction, contract, implFunction, location);
