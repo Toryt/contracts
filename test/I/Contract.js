@@ -26,6 +26,23 @@
   // describe("I", function() {
     describe("I/Contract", function() {
 
+      describe("Contract", function() {
+        it("has the expected properties", function() {
+          expect(Contract).to.haveOwnProperty("displayNamePrefix");
+          expect(Contract).to.have.property("displayNamePrefix").that.is.a("string");
+          expect(Contract).to.haveOwnProperty("contractFunctionDisplayName");
+          expect(Contract).to.have.property("contractFunctionDisplayName").that.is.a("function");
+          expect(Contract).to.haveOwnProperty("bindContractFunction");
+          expect(Contract).to.have.property("bindContractFunction").that.is.a("function");
+          expect(Contract).to.haveOwnProperty("isAContractFunction");
+          expect(Contract).to.have.property("isAContractFunction").that.is.a("function");
+          expect(Contract).to.haveOwnProperty("bless");
+          expect(Contract).to.have.property("bless").that.is.a("function");
+          expect(Contract).to.haveOwnProperty("dummyImplementation");
+          expect(Contract).to.have.property("dummyImplementation").that.is.a("function");
+        });
+      });
+
       describe("Contract.contractFunctionDisplayName", function() {
         it("returns the expected display name with a named function", function() {
           function namedFunction() {}
