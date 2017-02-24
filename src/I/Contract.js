@@ -166,12 +166,17 @@ module.exports = (function() {
   };
 
   /**
+   * Function that always returns <code>false</code>.
+   */
+  Contract.falseCondition = function() {return false;};
+
+  /**
    * The most general function Contract. This has the most strict preconditions (nothing is allowed), which can
    * be weakened by specializations, and the most general nominal and exceptional postconditions (anything goes),
    * which can be strengthened by specializations.
    */
   Contract.root = new Contract(
-    [function() {return false;}],
+    [Contract.falseCondition],
     [],
     []
   );

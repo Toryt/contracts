@@ -40,13 +40,14 @@
           expect(Contract).to.have.property("bless").that.is.a("function");
           expect(Contract).to.haveOwnProperty("dummyImplementation");
           expect(Contract).to.have.property("dummyImplementation").that.is.a("function");
+          expect(Contract).to.haveOwnProperty("falseCondition");
+          expect(Contract).to.have.property("falseCondition").that.is.a("function");
           expect(Contract).to.haveOwnProperty("root");
           expect(Contract).to.have.property("root").that.is.an.instanceof(Contract);
           var root = Contract.root;
           common.expectInvariants(root);
           expect(root).to.have.property("pre").to.have.lengthOf(1);
-          var precondition = root.pre[0];
-          expect(precondition()).not.to.be.ok;
+          expect(root.pre[0]).to.equal(Contract.falseCondition);
           expect(root).to.have.property("post").to.have.lengthOf(0);
           expect(root).to.have.property("exception").to.have.lengthOf(0);
         });
@@ -253,6 +254,13 @@
         it("returns a function that is a contract function", function() {
           var result = Contract.dummyImplementation();
           expect(result).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
+        });
+      });
+
+      describe("Contract.falseCondition", function() {
+        it("always returns false", function() {
+          var result = Contract.falseCondition();
+          expect(result).to.equal(false);
         });
       });
 
