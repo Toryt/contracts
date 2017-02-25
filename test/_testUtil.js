@@ -109,13 +109,18 @@
      }
    }
 
+   function showStack(exc) {
+     log("Exception stack%s---------------%s", util.eol, util.eol, exc.stack);
+   }
+
    return {
      x: x,
      expectOwnFrozenProperty: expectOwnFrozenProperty,
      expectFrozenDerivedPropertyOnAPrototype: expectFrozenDerivedPropertyOnAPrototype,
      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
      expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
-     log: log
+     log: log,
+     showStack: showStack
    };
 
  })();
