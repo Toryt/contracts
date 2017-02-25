@@ -162,8 +162,7 @@ module.exports = (function() {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(function() {return util.typeOf(condition) === "function";});
 
-    var conditionRepr = condition.displayName || ("condition " + (condition.name || condition));
-    return conditionRepr +
+    return util.conditionRepresentation("condition", condition) +
            " failed while " + contractFunction.displayName +
            " was called";
   };

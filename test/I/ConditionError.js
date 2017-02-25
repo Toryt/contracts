@@ -41,9 +41,7 @@
               var result = ConditionError.createMessage(contractFunction, common.conditionCase, self, args);
               expect(result).to.be.a("string");
               expect(result).to.contain(contractFunction.displayName);
-              var conditionRepr = common.conditionCase.displayName || ("condition " + (common.conditionCase.name ||
-                                                                                       common.conditionCase));
-              expect(result).to.contain("" + conditionRepr);
+              expect(result).to.contain(util.conditionRepresentation("condition", common.conditionCase));
             });
           });
         });
