@@ -44,10 +44,6 @@
               var conditionRepr = common.conditionCase.displayName || ("condition " + (common.conditionCase.name ||
                                                                                        common.conditionCase));
               expect(result).to.contain("" + conditionRepr);
-              expect(result).to.contain("" + self);
-              Array.prototype.forEach(function(arg) {
-                expect(result).to.contain("" + arg);
-              });
             });
           });
         });

@@ -158,19 +158,14 @@ module.exports = (function() {
    *
    * This is not a prototype method, because it is used in the constructor.
    */
-  ConditionError.createMessage = function(contractFunction, condition, self, args) {
+  ConditionError.createMessage = function(contractFunction, condition) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(function() {return util.typeOf(condition) === "function";});
-    util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
     var conditionRepr = condition.displayName || ("condition " + (condition.name || condition));
-    var contractFunctionName = contractFunction.displayName
-                               || "contract function " + contractFunction.name
-                               || "an unnamed contract function";
     return conditionRepr +
-           " failed while " + contractFunctionName +
-           " was called on " + self +
-           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")";
+           " failed while " + contractFunction.displayName +
+           " was called";
   };
 
   return ConditionError;
