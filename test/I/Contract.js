@@ -38,8 +38,6 @@
           expect(Contract).to.have.property("isAContractFunction").that.is.a("function");
           expect(Contract).to.haveOwnProperty("bless");
           expect(Contract).to.have.property("bless").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("dummyImplementation");
-          expect(Contract).to.have.property("dummyImplementation").that.is.a("function");
           expect(Contract).to.haveOwnProperty("falseCondition");
           expect(Contract).to.have.property("falseCondition").that.is.a("function");
           expect(Contract).to.haveOwnProperty("root");
@@ -243,13 +241,6 @@
           expect(contractFunction).to.haveOwnProperty("displayName");
           expect(contractFunction).to.have.property("displayName")
             .that.equals(Contract.contractFunctionDisplayName(contractFunction));
-        });
-      });
-
-      describe("Contract.dummyImplementation", function() {
-        it("returns a function that is a contract function", function() {
-          var result = Contract.dummyImplementation();
-          expect(result).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
         });
       });
 

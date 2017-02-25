@@ -35,7 +35,7 @@ module.exports = (function() {
   }
 
   ConditionViolation.prototype = new ConditionError(
-    Contract.dummyImplementation(),
+    Contract.root.abstract,
     function() {return "This is a dummy condition in the ConditionViolation prototype."},
     undefined,
     []

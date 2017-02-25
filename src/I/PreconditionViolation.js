@@ -45,7 +45,7 @@ module.exports = (function() {
   }
 
   PreconditionViolation.prototype = new ConditionViolation(
-    Contract.dummyImplementation(),
+    Contract.root.abstract,
     function() {return "This is a dummy condition in the PreconditionViolation prototype."},
     undefined,
     []

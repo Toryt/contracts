@@ -161,15 +161,6 @@ module.exports = (function() {
     );
   };
 
-  Contract.dummyImplementation = function() {
-    function dummyImplementation() {return "This is a dummy contract implementation.";}
-
-    var dummyContract = new Contract();
-    var contractFunction = function() {};
-    Contract.bless(contractFunction, dummyContract, dummyImplementation, util.firstLocationOutsideLibrary());
-    return contractFunction;
-  };
-
   /**
    * Function that always returns <code>false</code>.
    */

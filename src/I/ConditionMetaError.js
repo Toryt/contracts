@@ -42,7 +42,7 @@ module.exports = (function() {
   }
 
   ConditionMetaError.prototype = new ConditionError(
-    Contract.dummyImplementation(),
+    Contract.root.abstract,
     function() {return "This is a dummy condition in the ConditionMetaError prototype."},
     undefined,
     []
