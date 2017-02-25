@@ -65,20 +65,28 @@
      return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyname);
    }
 
-   function expectFrozenDerivedPropertyOnAPrototype(subject, propertyName) {
+   function expectDerivedPropertyOnAPrototype(subject, propertyName, configurable) {
      var prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName);
      //noinspection JSUnresolvedFunction
      expect(prototype).to.have.ownPropertyDescriptor(propertyName);
      //noinspection JSUnresolvedFunction
      expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("enumerable", true);
      //noinspection JSUnresolvedFunction
-     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("configurable", false);
+     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("configurable", configurable);
      //noinspection JSUnresolvedFunction
      expect(prototype).ownPropertyDescriptor(propertyName).not.to.have.property("writable");
      //noinspection JSUnresolvedFunction
      expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("get").that.is.a("function");
      //noinspection JSUnresolvedFunction,BadExpressionStatementJS
      expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("set").that.is.not.ok;
+   }
+
+   function expectConfigurableDerivedPropertyOnAPrototype(subject, propertyName) {
+     expectDerivedPropertyOnAPrototype(subject, propertyName, true);
+   }
+
+   function expectFrozenDerivedPropertyOnAPrototype(subject, propertyName) {
+     expectDerivedPropertyOnAPrototype(subject, propertyName, false);
    }
 
    function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propName, privatePropName) {
@@ -116,6 +124,7 @@
    return {
      x: x,
      expectOwnFrozenProperty: expectOwnFrozenProperty,
+     expectConfigurableDerivedPropertyOnAPrototype: expectConfigurableDerivedPropertyOnAPrototype,
      expectFrozenDerivedPropertyOnAPrototype: expectFrozenDerivedPropertyOnAPrototype,
      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
      expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,

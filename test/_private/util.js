@@ -189,6 +189,23 @@
         });
       });
 
+      describe("#defineConfigurableDerivedProperty", function() {
+        it("sets a read-only property, with a getter", function() {
+          var subject = {
+            a: 4,
+            expectedOfGetter: {}
+          };
+          Object.setPrototypeOf(subject, {});
+          var propertyName = "a new property";
+          var getter = function() {return this.expectedOfGetter;};
+          util.defineConfigurableDerivedProperty(Object.getPrototypeOf(subject), propertyName, getter);
+          expect(Object.getPrototypeOf(subject)).to.have.ownPropertyDescriptor(propertyName);
+          expect(subject).not.to.have.ownPropertyDescriptor(propertyName);
+          testUtil.expectConfigurableDerivedPropertyOnAPrototype(subject, propertyName);
+          expect(subject[propertyName]).to.equal(subject.expectedOfGetter);
+        });
+      });
+
       describe("#defineFrozenDerivedProperty", function() {
         it("sets a frozen read-only property, with a getter", function() {
           var subject = {

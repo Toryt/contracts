@@ -98,6 +98,23 @@
        );
      },
 
+     defineConfigurableDerivedProperty: function(prototype, propertyName, derivation) {
+       util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
+       util.pre(function() {return util.typeOf(propertyName) === "string";});
+       util.pre(function() {return util.typeOf(derivation) === "function";});
+
+       Object.defineProperty(
+         prototype,
+         propertyName,
+         {
+           configurable: true,
+           enumerable: true,
+           get: derivation,
+           set: undefined
+         }
+       );
+     },
+
      defineFrozenDerivedProperty: function(prototype, propertyName, derivation) {
        util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
        util.pre(function() {return util.typeOf(propertyName) === "string";});
