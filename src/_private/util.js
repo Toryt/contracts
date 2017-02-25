@@ -197,6 +197,10 @@
       * taking into account that the message could be multi-line.
       */
      stackOutsideThisLibrary: function(error) {
+       // MUDO test
+       util.pre(function() {return error instanceof Error;});
+       util.pre(function() {return !!error.stack;});
+
        var messageLines = util.nrOfLines(error.message); // start after the message
        var foundALineOutsideTheLibrary = false;
        var result = error.stack
