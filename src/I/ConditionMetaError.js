@@ -52,7 +52,7 @@ module.exports = (function() {
   ConditionMetaError.prototype.error = null;
   ConditionMetaError.prototype.stackAddition = function() {
     return util.eol +
-           "Caused by:" +
+           "caused by:" +
            util.eol +
            (this.error && this.error.stack ? this.error.stack : ("" + this.error));
   };
