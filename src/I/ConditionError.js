@@ -127,23 +127,18 @@ module.exports = (function() {
   ConditionError.prototype.args = null;
   ConditionError.prototype.stackAddition = function() {return "";};
   var start = util.eol + "    ";
-  Object.defineProperty(
+  util.defineConfigurableDerivedProperty(
     ConditionError.prototype,
     "details",
-    {
-      configurable: false,
-      enumerable: true,
-      get: function() {
-        return "contract:" + util.eol + this.contractFunction.contract.location +
-               util.eol + "condition: " + start + this.condition +
-               util.eol + "contract function:" + util.eol + this.contractFunction.location +
-               util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
-               util.eol + "arguments (" + this.args.length + "):" +
-               Array.prototype.map.call(this.args, function(arg, index) {
-                 return start + index + " (" + util.typeOf(arg) + "): " + arg;
-               });
-      },
-      set: undefined
+    function() {
+      return "contract:" + util.eol + this.contractFunction.contract.location +
+             util.eol + "condition: " + start + this.condition +
+             util.eol + "contract function:" + util.eol + this.contractFunction.location +
+             util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
+             util.eol + "arguments (" + this.args.length + "):" +
+             Array.prototype.map.call(this.args, function(arg, index) {
+               return start + index + " (" + util.typeOf(arg) + "): " + arg;
+             });
     }
   );
   util.defineConfigurableDerivedProperty(
