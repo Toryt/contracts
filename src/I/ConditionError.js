@@ -142,7 +142,7 @@ module.exports = (function() {
     }
   );
   util.defineConfigurableDerivedProperty(
-    ContractError.prototype,
+    ConditionError.prototype,
     "stack",
     function() {
       return this.name + ": " + this.message
