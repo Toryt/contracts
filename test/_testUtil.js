@@ -118,7 +118,7 @@
    }
 
    function showStack(exc) {
-     log("Exception stack%s---------------%s", util.eol, util.eol, exc.stack);
+     log("Exception stack%s---------------%s%s", util.eol, util.eol, exc.stack);
    }
 
    return {
