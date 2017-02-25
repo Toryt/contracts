@@ -17,6 +17,7 @@ module.exports = (function() {
   "use strict";
 
   var util = require("./../_private/util");
+  var ContractError = require("./ContractError");
 
   var displayNamePrefix = "contract function ";
 
@@ -191,20 +192,14 @@ module.exports = (function() {
   function AbstractError(contract) {
     util.pre(function() {return contract instanceof Contract;});
 
-    util.setAndFreezeProperty(this, "message", AbstractError.message);
+    ContractError.call(this, AbstractError.message);
     util.setAndFreezeProperty(this, "contract", contract);
-    var stackSource = new Error(AbstractError.message);
-    stackSource.name = this.name;
-    Object.freeze(stackSource);
-    util.setAndFreezeProperty(this, "_stackSource", stackSource);
   }
 
-  AbstractError.prototype = new Error("This is a dummy message in the AbstractError prototype.");
+  AbstractError.prototype = new ContractError("This is a dummy message in the AbstractError prototype.");
   AbstractError.prototype.constructor = AbstractError;
   AbstractError.prototype.name = "Abstract";
   AbstractError.prototype.contract = null;
-  AbstractError.prototype._stackSource = null;
-  util.defineFrozenDerivedProperty(AbstractError.prototype, "stack", function() {return this._stackSource.stack;});
 
   AbstractError.message = "An abstract function cannot be executed";
 
