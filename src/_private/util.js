@@ -223,6 +223,16 @@
            []
          );
        return result.join(util.eol);
+     },
+
+     /**
+      * Returns a conscise representation of <code>f</code> to be used in output.
+      */
+     conditionRepresentation: function(prefix, f) {
+       // MUDO test
+       util.pre(function() {return util.typeOf(prefix) === "string";});
+
+       return (f && f.displayName) || (prefix + " " + ((f && f.name) || f));
      }
    };
 
