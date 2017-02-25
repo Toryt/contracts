@@ -104,21 +104,13 @@ module.exports = (function() {
     }
   };
 
-  ConditionViolation.createMessage = function(contractFunction, condition, self, args) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
-    util.pre(function() {return util.typeOf(condition) === "function";});
-    util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
-
-    var contractFunctionName = contractFunction.displayName || contractFunction.name || "<<unnnamed>>";
-    return "Condition " + condition +
-           " while contract function " + contractFunctionName +
-           " was called on " + self +
-           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")" +
-           util.eol + "contract:" + contractFunction.contract.location +
-           util.eol + "condition: " + condition +
-           util.eol + "implementation:" + contractFunction.location +
-           util.eol + "call stack:";
-  };
+  /**
+   * This method is called in the constructor to generate the message for the error being created.
+   * It is called with the same arguments as the constructor.
+   *
+   * This is not a prototype method, because it is used in the constructor.
+   */
+  ConditionViolation.createMessage = ConditionError.createMessage;
 
   return ConditionViolation;
 })();

@@ -42,10 +42,6 @@
               var result = ConditionViolation.createMessage(contractFunction, common.conditionCase, self, args);
               expect(result).to.be.a("string");
               expect(result).to.contain(contractFunction.displayName);
-              expect(result).to.contain("" + self);
-              Array.prototype.forEach(function(arg) {
-                expect(result).to.contain("" + arg);
-              });
               expect(result).to.contain(util.conditionRepresentation("condition", common.conditionCase));
             });
           });
