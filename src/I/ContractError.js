@@ -58,9 +58,6 @@ module.exports = (function() {
    */
 
   var util = require("./../_private/util");
-  var path = require("path");
-
-  var contractLibPath = path.dirname(module.filename);
 
   /**
    * ContractError is the general supertype of all errors thrown by Toryt Contracts.
@@ -93,39 +90,10 @@ module.exports = (function() {
   ContractError.prototype.name = "Contract Error";
   ContractError.prototype._stackSource = null;
   ContractError.prototype.stackAddition = function() {return "";};
-  util.defineFrozenDerivedProperty(
+  util.defineConfigurableDerivedProperty(
     ContractError.prototype,
     "stack",
-    function() {
-      var messageLines = util.nrOfLines(this.message); // start after the message
-      var foundALineOutsideTheLibrary = false;
-      var result = this._stackSource.stack
-        .split(util.eol)
-        .reduce(
-          function(acc, line, index) {
-            if (!foundALineOutsideTheLibrary &&
-                messageLines <= index &&
-                line.indexOf(contractLibPath) < 0 &&
-                0 <= line.indexOf("/")) {
-              // we found the first line of code that uses this library, if we haven't found such a line earlier,
-              // and we are past the message, and the line does not refer to this library or native code
-              foundALineOutsideTheLibrary = true;
-            }
-            if (index < messageLines ||
-                (line.indexOf(contractLibPath) < 0 &&
-                 (0 <= line.indexOf("/") || foundALineOutsideTheLibrary))) {
-              // copy all the message lines, and the lines not referring to this library that are not referring to
-              // native code, and the lines that are referring to native code once we encountered the first line
-              // of non-native code that refers to code outside this library
-              acc.push(line);
-            }
-            return acc;
-          },
-          []
-        );
-      return this.name + ": " + this.message
-             + util.eol + result.join(util.eol);
-    }
+    function() {return this.name + ": " + this.message + util.eol + util.stackOutsideThisLibrary(this._stackSource);}
   );
 
   return ContractError;

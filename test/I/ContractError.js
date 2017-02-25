@@ -35,7 +35,7 @@
           common.expectInvariants(result);
           expect(result.name).to.equal("Contract Error");
           expect(result.message).to.equal(message);
-          testUtil.log("result.stack: %s", result.stack);
+          testUtil.log("result.stack:\n%s", result.stack);
         });
       });
 
