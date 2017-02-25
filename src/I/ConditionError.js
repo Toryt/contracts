@@ -98,10 +98,10 @@ module.exports = (function() {
    *   <li>`args` is a frozen property, and refers to an Array or Arguments instance</li>
    *   <li>`name` is a mandatory property, and refers to a string</li>
    *   <li>`message` is a frozen mandatory property, and refers to a string</li>
-   *   <li>`stackAddition` is a mandatory property, and refers to a function</li>
+   *   <li>`moreDetail` is a mandatory property, and refers to a function</li>
    *   <li>`stack` is a read-only property, that returns a string, that starts with the instances `name`, the
    *     string ": ", and `message`, and is followed by stack code references, that do no contain references
-   *     to the inner workings of the Toryt Contracts library, and the result of calling `stackAddition()`
+   *     to the inner workings of the Toryt Contracts library, and the result of calling `moreDetail()`
    *     on the instance, coerced to a string.</li>
    * </ul>
    */
@@ -125,7 +125,7 @@ module.exports = (function() {
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;
-  ConditionError.prototype.stackAddition = function() {return "";};
+  ConditionError.prototype.moreDetail = function() {return "";};
   var start = util.eol + "    ";
   util.defineConfigurableDerivedProperty(
     ConditionError.prototype,
@@ -139,7 +139,7 @@ module.exports = (function() {
              Array.prototype.map.call(this.args, function(arg, index) {
                return start + index + " (" + util.typeOf(arg) + "): " + arg;
              }) +
-             this.stackAddition();
+             this.moreDetail();
     }
   );
   util.defineConfigurableDerivedProperty(

@@ -82,7 +82,7 @@ abstract class ConditionError {
   +args: ArrayLike <<readonly>>
   +/stack: String <<multiline>>
   +{static} ConditionError(contractFunction, condition, self, args)
-  #stackAddition(): String
+  #moreDetail(): String
   +{static} createMessage(contractFunction, condition, self, args): String
 }
 ContractError <|-- ConditionError
@@ -92,7 +92,7 @@ class ConditionMetaError {
   +error: Any <<readonly>>
   +message: String <<readonly>>
   +{static} ConditionMetaError(contractFunction, condition, self, args, error)
-  #stackAddition(): String
+  #moreDetail(): String
   +{static} createMessage(contractFunction, condition, self, args): String
 }
 
@@ -115,7 +115,7 @@ class PostconditionViolation <<todo>> {
   +result: Any <<readonly>>
   +message: String <<readonly>>
   +{static} PostconditionViolation(contractFunction, condition, self, args, result: Any)
-  #stackAddition(): String
+  #moreDetail(): String
   +{static} createMessage(contractFunction, condition, self, args): String
 }
 
@@ -124,7 +124,7 @@ class ExceptionConditionViolation <<todo>> {
   +exception: Any <<readonly>>
   +message: String <<readonly>>
   +{static} ExceptionConditionViolation(contractFunction, condition, self, args, exception: Any)
-  #stackAddition(): String
+  #moreDetail(): String
   +{static} createMessage(contractFunction, condition, self, args): String
 }
 
