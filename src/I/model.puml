@@ -26,11 +26,14 @@ abstract class Contract {
   +post: Array <<readonly>>
   +exception: Array <<readonly>>
   +location: String <<readonly>>
+  +{static} displayNamePrefix: String
+  +{static} root: Contract
   +{static} contractFunctionDisplayName(f: FunctionWithImplementation): String
-  +{static} defineContractFunctionDisplayName(f: FunctionWithImplementation): void
-  +{static} Contract(pre: Function[]?, post: Function[]?, exception: Function[]?)
+  +{static} bindContractFunction: Function
   +{static} isAContractFunction(f: Any): Boolean
-  +{static} dummyImplementation(): ContractFunction
+  +{static} bless(contractFunction: ContractFunction, contract: Contract, implFunction: Function, location: String): void
+  +{static} falseCondition(): Boolean = false
+  +{static} Contract(pre: Function[]?, post: Function[]?, exception: Function[]?)
 }
 
 class ImplementableContract {
@@ -45,22 +48,44 @@ interface ContractFunction {
   +bind(…): ContractFunction
 }
 
+class AbstractContractFunction
+ContractFunction <|- AbstractContractFunction
+
 Contract +-- ContractFunction
 FunctionWithImplementation <|-- ContractFunction
 
 ContractFunction --> "contract" Contract
+Contract --> "abstract <<readonly>>" AbstractContractFunction
+
+abstract class ContractError {
+  +name: String = "Contract Error"
+  +message: String <<readonly>>
+  +/stack: String <<multiline>>
+  +{static} ContractError(message)
+}
+Error <|-- ContractError
+
+class AbstractError {
+  +name: String = "Abstract Error"
+  +message: String = ""
+  +{static} AbstractError(contract)
+}
+Contract +-- AbstractError
+ContractError <|-- AbstractError
+AbstractContractFunction ..> AbstractError : "<<throws>>"
+
+AbstractError --> "contract <<readonly>>" Contract
 
 abstract class ConditionError {
   +name: String = "Contract Condition Error"
   +self: Object <<readonly>>
   +args: ArrayLike <<readonly>>
-  +message: String <<readonly>>
   +/stack: String <<multiline>>
   +{static} ConditionError(contractFunction, condition, self, args)
   #stackAddition(): String
   +{static} createMessage(contractFunction, condition, self, args): String
 }
-Error <|-- ConditionError
+ContractError <|-- ConditionError
 
 class ConditionMetaError {
   +{static} name: String <<readonly>>
