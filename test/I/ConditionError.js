@@ -63,7 +63,7 @@
               common.expectInvariants(result);
               expect(result.name).to.equal("Contract Condition Error");
               expect(result.message).to.equal(ConditionError.createMessage(contractFunction, common.conditionCase, self, args));
-              testUtil.log("result.stack: %s", result.stack);
+              testUtil.log("result.stack:\n%s", result.stack);
             });
           });
         });

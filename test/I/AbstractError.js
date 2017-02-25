@@ -33,7 +33,7 @@
           common.expectConstructorPost(result, Contract.root);
           common.expectInvariants(result);
           expect(result.name).to.equal("Abstract");
-          testUtil.log("result.stack: %s", result.stack);
+          testUtil.log("result.stack:\n%s", result.stack);
         });
       });
 
