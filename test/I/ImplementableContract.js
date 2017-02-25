@@ -425,12 +425,36 @@
           });
         });
 
-        /* Uncomment to demonstrate what happens when a ImplementableContract fails: */
-        // self.fibonacci(undefined);
-        // self.fibonacci(-5);
-        // self.fibonacciWrong(wrongParameter);
-        // self.fibonacciWrong(5);
-        // contractWithAFailingPre.implementation(function() {return resultWhenMetaError;})(1);
+        describe("Demonstration", function() {
+          function demonstrate(call) {
+            try {
+              var result = call();
+              console.log("result = " + result);
+            }
+            catch (err) {
+              console.log(err.stack);
+            }
+          }
+
+          it("works with 5 as argument with a correct implementation", function() {
+            demonstrate(function() {return self.fibonacci(5);});
+          });
+          it("fails with undefined as argument with a correct implementation", function() {
+            demonstrate(function() {return self.fibonacci(undefined);});
+          });
+          it("fails with -5 as argument with a correct implementation", function() {
+            demonstrate(function() {return self.fibonacci(-5);});
+          });
+          it("fails with " + wrongParameter + " as argument with flawed implementation", function() {
+            demonstrate(function() {return self.fibonacciWrong(wrongParameter);});
+          });
+          it("fails with 5 as argument with flawed implementation", function() {
+            demonstrate(function() {return self.fibonacciWrong(wrongParameter);});
+          });
+          it("fails with a meta error when there is an error in a precondition", function() {
+            demonstrate(function() {return contractWithAFailingPre.implementation(function() {return resultWhenMetaError;})(1);});
+          });
+        });
       });
     });
   // });
