@@ -189,6 +189,40 @@
          }
        }
        return ""; // could not find a line outside this library
+     },
+
+     /**
+      * Input an error, and transform its stack so it only contains lines that refer to
+      * code outside this library, and not to native code. The initial name and message is removed,
+      * taking into account that the message could be multi-line.
+      */
+     stackOutsideThisLibrary: function(error) {
+       var messageLines = util.nrOfLines(error.message); // start after the message
+       var foundALineOutsideTheLibrary = false;
+       var result = error.stack
+         .split(util.eol)
+         .splice(messageLines) // everything after the message lines
+         .reduce(
+           function(acc, line, index) {
+             if (!foundALineOutsideTheLibrary &&
+                 line.indexOf(util.contractLibPath) < 0 &&
+                 0 <= line.indexOf("/")) {
+               // we found the first line of code that uses util library, if we haven't found such a line earlier,
+               // and we are past the message, and the line does not refer to util library or native code
+               foundALineOutsideTheLibrary = true;
+             }
+             if (line.indexOf(util.contractLibPath) < 0 &&
+                  (0 <= line.indexOf("/") || foundALineOutsideTheLibrary)) {
+               // copy all the message lines, and the lines not referring to util library that are not referring to
+               // native code, and the lines that are referring to native code once we encountered the first line
+               // of non-native code that refers to code outside util library
+               acc.push(line);
+             }
+             return acc;
+           },
+           []
+         );
+       return result.join(util.eol);
      }
    };
 
