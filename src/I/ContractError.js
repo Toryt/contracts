@@ -89,7 +89,6 @@ module.exports = (function() {
   ContractError.prototype.constructor = ContractError;
   ContractError.prototype.name = "Contract Error";
   ContractError.prototype._stackSource = null;
-  ContractError.prototype.stackAddition = function() {return "";};
   util.defineConfigurableDerivedProperty(
     ContractError.prototype,
     "stack",
