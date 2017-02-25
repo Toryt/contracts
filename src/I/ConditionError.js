@@ -138,7 +138,8 @@ module.exports = (function() {
              util.eol + "arguments (" + this.args.length + "):" +
              Array.prototype.map.call(this.args, function(arg, index) {
                return start + index + " (" + util.typeOf(arg) + "): " + arg;
-             });
+             }) +
+             this.stackAddition();
     }
   );
   util.defineConfigurableDerivedProperty(
@@ -147,8 +148,7 @@ module.exports = (function() {
     function() {
       return this.name + ": " + this.message
               + util.eol + this.details
-              + util.eol + "call stack:" + util.eol + util.stackOutsideThisLibrary(this._stackSource)
-              + this.stackAddition();
+              + util.eol + "call stack:" + util.eol + util.stackOutsideThisLibrary(this._stackSource);
     }
   );
 
