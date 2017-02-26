@@ -197,7 +197,6 @@
       * taking into account that the message could be multi-line.
       */
      stackOutsideThisLibrary: function(error) {
-       // MUDO test
        util.pre(function() {return error instanceof Error;});
        util.pre(function() {return !!error.stack;});
 

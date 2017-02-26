@@ -20,7 +20,9 @@
   var expect = require("chai").expect;
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
+  var path = require("path");
 
+  var contractLibTestPath = path.dirname(path.dirname(module.filename));
   var getGlobal = new Function("return this;");
 
   //noinspection JSPrimitiveTypeWrapperUsage,JSHint
@@ -419,6 +421,45 @@
         // cannot test the result where no reference is found
       });
 
+      describe("#stackOutsideThisLibrary", function() {
+        it("only has stack lines outside the library, and the first line refers to this code", function() {
+          var testError = new Error("This is a test case Error");
+          var result = util.stackOutsideThisLibrary(testError);
+          expect(result).to.be.a("string");
+          testUtil.log("result:\n%s", result);
+          var stackLines = result.split(util.eol);
+          expect(stackLines).to.have.length.of.at.least(1);
+          expect(stackLines[0]).to.satisfy(function(l) {return 0 <= l.indexOf(module.filename);});
+          stackLines.forEach(function(line) {
+            expect(line).to.be.a("string");
+            expect(line).to.match(/^    at /);
+            /* .../src/... contains the library code. This should never be mentioned in the stack trace.
+             It is inner workings, and confuses the target audience, which is only interested in the code that
+             uses the library. */
+            expect(line).not.to.have.string(util.contractLibPath);
+            /* In our tests, the code that uses the library is our test code in .../test/_private/util, or the
+               test framework library, in .../mocha/..., except for the last few lines. These lines will be
+               node-internal, and have no slash, or be internal/module.js. The first line should be our own code. */
+            expect(line).to.satisfy(function(l) {
+              return 0 <= l.indexOf(contractLibTestPath) ||
+                     0 <= l.indexOf("/mocha/") ||
+                     l.indexOf("/") < 0 ||
+                     0 <= l.indexOf("require (internal/module.js");
+            });
+          });
+          // all the lines, after the message, that are outside the library, are in the result
+          testError.stack
+            .split(util.eol)
+            .splice(util.nrOfLines(testError.message))
+            .filter(function(line) {return line.indexOf(util.contractLibPath) < 0;})
+            .forEach(function(line) {
+              expect(stackLines).to.satisfy(function(lines) {
+                return lines.some(function(stackLine) {return stackLine === line;});
+              });
+            });
+        });
+      });
     });
   // });
+
 })();
