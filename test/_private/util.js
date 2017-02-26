@@ -422,44 +422,69 @@
       });
 
       describe("#stackOutsideThisLibrary", function() {
-        it("only has stack lines outside the library, and the first line refers to this code", function() {
-          var testError = new Error("This is a test case Error");
-          var result = util.stackOutsideThisLibrary(testError);
-          expect(result).to.be.a("string");
-          testUtil.log("result:\n%s", result);
-          var stackLines = result.split(util.eol);
-          expect(stackLines).to.have.length.of.at.least(1);
-          expect(stackLines[0]).to.satisfy(function(l) {return 0 <= l.indexOf(module.filename);});
-          stackLines.forEach(function(line) {
-            expect(line).to.be.a("string");
-            expect(line).to.match(/^    at /);
-            /* .../src/... contains the library code. This should never be mentioned in the stack trace.
-             It is inner workings, and confuses the target audience, which is only interested in the code that
-             uses the library. */
-            expect(line).not.to.have.string(util.contractLibPath);
-            /* In our tests, the code that uses the library is our test code in .../test/_private/util, or the
-               test framework library, in .../mocha/..., except for the last few lines. These lines will be
-               node-internal, and have no slash, or be internal/module.js. The first line should be our own code. */
-            expect(line).to.satisfy(function(l) {
-              return 0 <= l.indexOf(contractLibTestPath) ||
-                     0 <= l.indexOf("/mocha/") ||
-                     l.indexOf("/") < 0 ||
-                     0 <= l.indexOf("require (internal/module.js");
-            });
-          });
-          // all the lines, after the message, that are outside the library, are in the result,
-          // and the order has not changed
-          testError.stack
-            .split(util.eol)
-            .splice(util.nrOfLines(testError.message))
-            .filter(function(line) {return line.indexOf(util.contractLibPath) < 0;})
-            .forEach(function(line, sourceIndex) {
-              expect(stackLines).to.satisfy(function(lines) {
-                return lines.some(function(stackLine, resultIndex) {
-                  return stackLine === line && resultIndex <= sourceIndex;
-                });
+        function defineErrorRecursively(togo) {
+          /* It would be better here to be able to go in and out the library code, to see these calls are filtered.
+             I see no sensible way to do this now, however. */
+          if (!togo) {
+            return new Error("This is a test case Error");
+          }
+          else {
+            return defineErrorRecursively2(togo - 1);
+          }
+        }
+
+        function defineErrorRecursively2(togo) {
+          return defineErrorRecursively3(togo);
+        }
+
+        function defineErrorRecursively3(togo) {
+          return defineErrorRecursively(togo);
+        }
+
+        //noinspection MagicNumberJS
+        [
+          {error: defineErrorRecursively(), description: "local error"},
+          {error: defineErrorRecursively(18), description: "recursive generated error"}
+        ].forEach(function(testCase) {
+          it("only has stack lines outside the library, and the first line refers to this code, " +
+             "for a " + testCase.description, function() {
+            var result = util.stackOutsideThisLibrary(testCase.error);
+            expect(result).to.be.a("string");
+            testUtil.log("result:\n%s", result);
+            var stackLines = result.split(util.eol);
+            expect(stackLines).to.have.length.of.at.least(1);
+            expect(stackLines[0]).to.satisfy(function(l) {return 0 <= l.indexOf(module.filename);});
+            stackLines.forEach(function(line) {
+              expect(line).to.be.a("string");
+              expect(line).to.match(/^    at /);
+              /* .../src/... contains the library code. This should never be mentioned in the stack trace.
+               It is inner workings, and confuses the target audience, which is only interested in the code that
+               uses the library. */
+              expect(line).not.to.have.string(util.contractLibPath);
+              /* In our tests, the code that uses the library is our test code in .../test/_private/util, or the
+                 test framework library, in .../mocha/..., except for the last few lines. These lines will be
+                 node-internal, and have no slash, or be internal/module.js. The first line should be our own code. */
+              expect(line).to.satisfy(function(l) {
+                return 0 <= l.indexOf(contractLibTestPath) ||
+                       0 <= l.indexOf("/mocha/") ||
+                       l.indexOf("/") < 0 ||
+                       0 <= l.indexOf("require (internal/module.js");
               });
             });
+            // all the lines, after the message, that are outside the library, are in the result,
+            // and the order has not changed
+            testCase.error.stack
+              .split(util.eol)
+              .splice(util.nrOfLines(testCase.error.message))
+              .filter(function(line) {return line.indexOf(util.contractLibPath) < 0;})
+              .forEach(function(line, sourceIndex) {
+                expect(stackLines).to.satisfy(function(lines) {
+                  return lines.some(function(stackLine, resultIndex) {
+                    return stackLine === line && resultIndex <= sourceIndex;
+                  });
+                });
+              });
+          });
         });
       });
     });
