@@ -151,6 +151,22 @@
           });
         });
       });
+
+      describe("string", function() {
+        it("cannot take properties", function() {
+          var subject = "This is a string";
+          expect(subject).not.to.have.property("name");
+          var name = "This is a name";
+          try {
+            subject.name = name;
+            expect(subject).not.to.have.property("name"); // silently fail, or …
+          }
+          catch (err) {
+            expect(err).to.be.instanceof(TypeError);
+            expect(err.message).to.match(/^Cannot create property 'name' on string/);
+          }
+        });
+      });
     });
   // });
 })();

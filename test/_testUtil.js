@@ -126,6 +126,12 @@
      return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
    }
 
+   function propertyIsWritable(object, propertyName) {
+     var prototype = prototypeThatHasOwnPropertyDescriptor(object, propertyName);
+     var pd = prototype && Object.getOwnPropertyDescriptor(prototype, propertyName);
+     return !pd || pd.writable;
+   }
+
    return {
      x: x,
      expectOwnFrozenProperty: expectOwnFrozenProperty,
@@ -135,7 +141,8 @@
      expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
      log: log,
      showStack: showStack,
-     regExpEscape: regExpEscape
+     regExpEscape: regExpEscape,
+     propertyIsWritable: propertyIsWritable
    };
 
  })();

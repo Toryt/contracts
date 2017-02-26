@@ -25,29 +25,36 @@
   var contractLibTestPath = path.dirname(path.dirname(module.filename));
   var getGlobal = new Function("return this;");
 
+  function generateMutableStuff() {
+    var result = [
+      {subject: {a: 4}, expected: "object"},
+      {subject: [1, 2, 3], expected: "array"},
+      {subject: function() {}, expected: "function"},
+      {subject: new ReferenceError(), expected: "error"},
+      {subject: new Date(), expected: "date"},
+      {subject: /a-z/, expected: "regexp"},
+      {subject: new Number(4), expected: "number"},
+      {subject: new String("abc"), expected: "string"},
+      {subject: new String(""), expected: "string"},
+      {subject: new Boolean(true), expected: "boolean"},
+      {subject: arguments, expected: "arguments"}
+    ];
+    result.forEach(function(r) {r.isPrimitive = false;});
+    return result;
+  }
+
   //noinspection JSPrimitiveTypeWrapperUsage,JSHint
   var stuff = [
     {subject: undefined, expected: "undefined", isPrimitive: false},
     {subject: null, expected: "null", isPrimitive: false},
-    {subject: {a: 4}, expected: "object", isPrimitive: false},
-    {subject: [1, 2, 3], expected: "array", isPrimitive: false},
-    {subject: function() {}, expected: "function", isPrimitive: false},
-    {subject: new ReferenceError(), expected: "error", isPrimitive: false},
-    {subject: new Date(), expected: "date", isPrimitive: false},
-    {subject: /a-z/, expected: "regexp", isPrimitive: false},
     {subject: Math, expected: "math", isPrimitive: false},
     {subject: JSON, expected: "json", isPrimitive: false},
-    {subject: new Number(4), expected: "number", isPrimitive: false},
-    {subject: 4, expected: "number", isPrimitive: true},
-    {subject: new String("abc"), expected: "string", isPrimitive: false},
     {subject: "abc", expected: "string", isPrimitive: true},
-    {subject: new String(""), expected: "string", isPrimitive: false},
     {subject: "", expected: "string", isPrimitive: true},
-    {subject: new Boolean(true), expected: "boolean", isPrimitive: false},
+    {subject: 4, expected: "number", isPrimitive: true},
     {subject: false, expected: "boolean", isPrimitive: true},
-    {subject: getGlobal(), expected: "object", isPrimitive: false},
-    {subject: arguments, expected: "arguments", isPrimitive: false}
-  ];
+    {subject: getGlobal(), expected: "object", isPrimitive: false}
+  ].concat(generateMutableStuff());
 
   // describe("_private", function() {
     describe("_private/util", function() {
@@ -486,6 +493,44 @@
               });
           });
         });
+      });
+
+      describe("#conciseConditionRepresentation", function() {
+        var prefix = "This is a test prefix";
+        var alternativeName = "This is an alternative name";
+        var namedStuff = generateMutableStuff();
+        namedStuff
+          .filter(function(ms) {return testUtil.propertyIsWritable(ms.subject, "name");})
+          .forEach(function(ms) {ms.subject.name = alternativeName;});
+        var displayNamedStuff = generateMutableStuff();
+        namedStuff
+          .forEach(function(ms) {ms.subject.displayName = alternativeName;});
+        stuff
+          .concat(namedStuff)
+          .map(function(s) {return s.subject;})
+          .forEach(function(f) {
+            var result = util.conciseConditionRepresentation(prefix, f);
+            if (!f || (!f.displayName && !f.name)) {
+              it("returns the string representation with the prefix, " +
+                 "when there is no f, or it has no display name and no name, for " + f, function() {
+                testUtil.log("result: %s", result);
+                expect(result).to.equal(prefix + " " + f);
+              });
+            }
+            else if (!f.displayName && !!f.name) {
+              it("returns the name with the prefix, " +
+                 "when there is no f and it has no display name, but it has a name, for " + f, function() {
+                testUtil.log("result: %s", result);
+                expect(result).to.equal(prefix + " " + f.name);
+              });
+            }
+            else {
+              it("returns the display name if there is an f, and it has a display name, for " + f, function() {
+                testUtil.log("result: %s", result);
+                expect(result).to.equal(f.displayName);
+              });
+            }
+          });
       });
     });
   // });
