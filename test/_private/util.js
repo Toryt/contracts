@@ -447,14 +447,17 @@
                      0 <= l.indexOf("require (internal/module.js");
             });
           });
-          // all the lines, after the message, that are outside the library, are in the result
+          // all the lines, after the message, that are outside the library, are in the result,
+          // and the order has not changed
           testError.stack
             .split(util.eol)
             .splice(util.nrOfLines(testError.message))
             .filter(function(line) {return line.indexOf(util.contractLibPath) < 0;})
-            .forEach(function(line) {
+            .forEach(function(line, sourceIndex) {
               expect(stackLines).to.satisfy(function(lines) {
-                return lines.some(function(stackLine) {return stackLine === line;});
+                return lines.some(function(stackLine, resultIndex) {
+                  return stackLine === line && resultIndex <= sourceIndex;
+                });
               });
             });
         });
