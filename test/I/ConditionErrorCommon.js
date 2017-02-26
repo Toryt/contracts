@@ -60,6 +60,7 @@ module.exports = (function() {
   }));
 
   function expectInvariants(subject) {
+    // MUDO verify this for duplicates with super
     expect(subject).to.be.an.instanceOf(ConditionError);
     common.expectInvariants(subject);
     expect(subject).to.have.property("contractFunction").that.satisfies(function(cf) {
@@ -83,6 +84,7 @@ module.exports = (function() {
     expect(subject._stackSource).to.be.frozen;
     expect(subject).to.have.property("name").that.is.a("string");
     expect(subject).to.have.property("message").that.is.a("string");
+    // MUDO stack check
     expect(subject).to.have.property("stack");
     var startOfStack = subject.name + ": " + subject.message;
     expect(subject.stack.indexOf(startOfStack)).to.equal(0);
