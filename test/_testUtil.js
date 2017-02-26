@@ -55,14 +55,14 @@
      }).to.throw(TypeError);
    }
 
-   function prototypeThatHasOwnPropertyDescriptor(subject, propertyname) {
+   function prototypeThatHasOwnPropertyDescriptor(subject, propertyName) {
      if (!subject) {
        return subject;
      }
-     if (Object.getOwnPropertyDescriptor(subject, propertyname)) {
+     if (Object.getOwnPropertyDescriptor(subject, propertyName)) {
        return subject;
      }
-     return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyname);
+     return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName);
    }
 
    function expectDerivedPropertyOnAPrototype(subject, propertyName, configurable) {
