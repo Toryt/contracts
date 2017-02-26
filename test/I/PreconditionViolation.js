@@ -21,6 +21,7 @@
   var common = require("./PreconditionViolationCommon");
   var PreconditionViolation = require("../../src/I/PreconditionViolation");
   var Contract = require("../../src/I/Contract");
+  var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 
   // describe("I", function() {
@@ -40,11 +41,7 @@
               var result = PreconditionViolation.createMessage(contractFunction, common.conditionCase, self, args);
               expect(result).to.be.a("string");
               expect(result).to.contain(contractFunction.displayName);
-              expect(result).to.contain("" + common.conditionCase);
-              expect(result).to.contain("" + self);
-              Array.prototype.forEach(function(arg) {
-                expect(result).to.contain("" + arg);
-              });
+              expect(result).to.contain(util.conditionRepresentation("condition", common.conditionCase));
             });
           });
         });
@@ -66,7 +63,7 @@
               expect(result.message).to.equal(
                 PreconditionViolation.createMessage(contractFunction, common.conditionCase, self, args)
               );
-              testUtil.log("result.stack: %s", result.stack);
+              testUtil.log("result.stack:\n%s", result.stack);
             });
           });
         });

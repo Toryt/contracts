@@ -53,22 +53,7 @@ module.exports = (function() {
   PreconditionViolation.prototype.constructor = PreconditionViolation;
   PreconditionViolation.prototype.name = "Contract Precondition Violation";
 
-  PreconditionViolation.createMessage = function(contractFunction, condition, self, args) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
-    util.pre(function() {return util.typeOf(condition) === "function";});
-    util.pre(function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
-
-    var contractFunctionName = contractFunction.displayName || contractFunction.name || "<<unnnamed>>";
-    return "Precondition " + condition +
-           " of " + contractFunctionName +
-           " was violated by " + "THE CULPRIT - CALLING FUNCTION" + // MUDO
-           " by calling it on " + self +
-           " with arguments (" + Array.prototype.map.call(args, function(arg) {return "" + arg;}).join(", ") + ")" +
-           util.eol + "contract:" + contractFunction.contract.location +
-           util.eol + "condition: " + condition +
-           util.eol + "implementation:" + contractFunction.location +
-           util.eol + "call stack:";
-  };
+  PreconditionViolation.createMessage = ConditionViolation.createMessage;
 
   return PreconditionViolation;
 })();
