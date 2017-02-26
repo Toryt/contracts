@@ -229,7 +229,7 @@
      },
 
      /**
-      * Returns a conscise representation of <code>f</code> to be used in output.
+      * Returns a concise representation of <code>f</code> to be used in output.
       */
      conditionRepresentation: function(prefix, f) {
        // MUDO test
