@@ -121,6 +121,11 @@
      log("Exception stack%s---------------%s%s", util.eol, util.eol, exc.stack);
    }
 
+   function regExpEscape(s) {
+     //http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
+     return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+   }
+
    return {
      x: x,
      expectOwnFrozenProperty: expectOwnFrozenProperty,
@@ -129,7 +134,8 @@
      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
      expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
      log: log,
-     showStack: showStack
+     showStack: showStack,
+     regExpEscape: regExpEscape
    };
 
  })();

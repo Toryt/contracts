@@ -26,6 +26,16 @@ module.exports = (function() {
   var contractLibTestPath = path.dirname(module.filename);
   var contractLibPath = path.dirname(path.dirname(contractLibTestPath)) + "/src/I";
 
+  function expectStackInvariants(subject) {
+    expect(subject).to.have.property("stack").to.be.a("string");
+    var stack = subject.stack;
+    var startOfStack = subject.name + ": " + subject.message + util.eol;
+    expect(stack).to.match(new RegExp("^" + testUtil.regExpEscape(startOfStack)));
+    expect(stack).to.match(new RegExp(
+      testUtil.regExpEscape(util.eol + util.stackOutsideThisLibrary(subject._stackSource)) + "$")
+    );
+  }
+
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ContractError);
     expect(subject).to.have.ownProperty("_stackSource");
@@ -37,32 +47,7 @@ module.exports = (function() {
     expect(subject._stackSource).to.be.frozen;
     expect(subject).to.have.property("name").that.is.a("string");
     expect(subject).to.have.property("message").that.is.a("string");
-    expect(subject).to.have.property("stack");
-    var startOfStack = subject.name + ": " + subject.message;
-    expect(subject.stack.indexOf(startOfStack)).to.equal(0);
-    var linesInMessage = util.nrOfLines(subject.message);
-    var stackWithoutMessage = subject.stack.split(util.eol).splice(linesInMessage);
-    stackWithoutMessage.forEach(function(line, index) {
-      /* .../src/... contains the library code. This should never be mentioned in the stack trace.
-         It is inner workings, and confuses the target audience, which is only interested in the code that
-         uses the library. */
-      expect(line).to.satisfy(function(l) {return l.indexOf(contractLibPath) < 0;});
-      /* In our tests, the code that uses the library is our test code in ...//test/I/Condition..., or the
-         test framework library, in .../mocha/..., except for the last few lines. These lines will be node-internal,
-         and have no slash, or be internal/module.js. The first line should be our own code. */
-      if (index === 0) {
-        // MUDO expect(line).to.satisfy(function(l) {return 0 <= l.indexOf(contractLibTestPath);});
-      }
-      else if (index < (stackWithoutMessage.length - 1)) {
-        // MUDO
-        // expect(line).to.satisfy(function(l) {
-        //   return 0 <= l.indexOf(contractLibTestPath) ||
-        //          0 <= l.indexOf("/mocha/") ||
-        //          l.indexOf("/") < 0 ||
-        //          0 <= l.indexOf("require (internal/module.js");
-        // });
-      }
-    });
+    this.expectStackInvariants(subject);
   }
 
   function expectConstructorPost(result, message) {
@@ -79,6 +64,7 @@ module.exports = (function() {
 
   return {
     expectConstructorPost: expectConstructorPost,
+    expectStackInvariants: expectStackInvariants,
     expectInvariants: expectInvariants,
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
   };
