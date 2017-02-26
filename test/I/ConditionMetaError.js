@@ -21,6 +21,7 @@
   var common = require("./ConditionMetaErrorCommon");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var Contract = require("../../src/I/Contract");
+  var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 
   // describe("I", function() {
@@ -41,11 +42,7 @@
                 var result = ConditionMetaError.createMessage(contractFunction, common.conditionCase, self, args, error);
                 expect(result).to.be.a("string");
                 expect(result).to.contain(contractFunction.displayName);
-                expect(result).to.contain("" + common.conditionCase);
-                expect(result).to.contain("" + self);
-                Array.prototype.forEach(function(arg) {
-                  expect(result).to.contain("" + arg);
-                });
+                expect(result).to.contain(util.conditionRepresentation("condition", common.conditionCase));
                 expect(result).to.contain("" + error);
               });
             });
@@ -70,7 +67,7 @@
                   args,
                   error
                 ));
-                testUtil.log("result.stack: %s", result.stack);
+                testUtil.log("result.stack:\n%s", result.stack);
               });
             });
           });

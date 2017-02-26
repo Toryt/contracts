@@ -38,7 +38,7 @@ module.exports = (function() {
 
   //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
   var errorCases = [
-    new Error(),
+    new Error("This is an error case"),
     undefined,
     null,
     1,
