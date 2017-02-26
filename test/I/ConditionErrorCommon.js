@@ -108,6 +108,8 @@ module.exports = (function() {
         // });
       }
     });
+    expect(subject).to.have.property("constructor").that.hasOwnProperty("createMessage");
+    expect(subject).to.have.property("constructor").that.has.property("createMessage").that.is.a("function");
   }
 
   function expectConstructorPost(result, contractFunction, condition, self, args) {
