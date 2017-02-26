@@ -56,10 +56,16 @@ module.exports = (function() {
     arguments
   ];
 
+  function expectDetailsPost(subject, result) {
+    common.expectDetailsPost(subject, result);
+    expect(result).to.contain(subject.error && subject.error.stack ? subject.error.stack : ("" + subject.error));
+  }
+
   var test = {
     errorCases: errorCases,
     expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost
+    expectConstructorPost: expectConstructorPost,
+    expectDetailsPost: expectDetailsPost
   };
   Object.setPrototypeOf(test, common);
   return test;

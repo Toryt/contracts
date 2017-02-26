@@ -126,11 +126,31 @@ module.exports = (function() {
     expect(result).to.be.extensible;
   }
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+  function expectDetailsPost(subject, result) {
+    expect(result).to.be.a("string");
+    expect(result).to.contain(subject.condition);
+    expect(result).to.contain(subject.contractFunction.contract.location);
+    expect(result).to.contain(subject.self);
+    Array.prototype.forEach.call(
+      subject.args,
+      function(arg) {expect(result).to.contain(arg);}
+    );
+  }
 
-    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants) {
 
-    // NOP: no methods here
+    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
+
+    describe("#getDetails()", function() {
+      allSubjectGenerators.forEach(function(generator) {
+        var testCase = generator();
+        it("returns the details as expected for " + testCase.description, function() {
+          var result = testCase.subject.getDetails();
+          expectDetailsPost(testCase.subject, result);
+          expectInvariants(testCase.subject);
+        });
+      });
+    });
 
   }
 
@@ -139,6 +159,7 @@ module.exports = (function() {
     argsCases: argsCases,
     conditionCase: conditionCase,
     expectConstructorPost: expectConstructorPost,
+    expectDetailsPost: expectDetailsPost,
     expectInvariants: expectInvariants,
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
     createCandidateContractFunction: contractCommon.createCandidateContractFunction

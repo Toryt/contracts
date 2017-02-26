@@ -96,7 +96,8 @@
                 description: parameters.join(" - ")
               };
             };
-          })
+          }),
+        common.expectInvariants
       );
 
     });

@@ -45,9 +45,9 @@ module.exports = (function() {
     expect(subject).to.have.property("verifyAll").that.is.a("function");
   }
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants) {
 
-    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
 
     describe("#verify()", function() {
       function expectPost(subject, contractFunction, condition, self, args, appliedSelf, appliedArgs, exception) {

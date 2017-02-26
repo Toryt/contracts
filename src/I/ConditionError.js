@@ -100,7 +100,7 @@ module.exports = (function() {
    *   <li>`message` is a frozen mandatory property, and refers to a string</li>
    *   <li>`moreDetail` is a mandatory property, and refers to a function</li>
    *   <li>`stack` is a read-only property, that returns a string, that starts with the instance's
-   *     <code>name</code>>, the string ": ", and <code>message</code>, followed by the {@link #details},
+   *     <code>name</code>>, the string ": ", and <code>message</code>, followed by the {@link #getDetails()},
    *     and by stack code references, that do not contain references to the inner workings of the Toryt
    *     Contracts library.</li>
    * </ul>
@@ -125,29 +125,23 @@ module.exports = (function() {
   ConditionError.prototype.condition = null;
   ConditionError.prototype.self = null;
   ConditionError.prototype.args = null;
-  ConditionError.prototype.moreDetail = function() {return "";};
   var start = util.eol + "    ";
-  util.defineConfigurableDerivedProperty(
-    ConditionError.prototype,
-    "details",
-    function() {
-      return "contract:" + util.eol + this.contractFunction.contract.location +
-             util.eol + "condition: " + start + this.condition +
-             util.eol + "contract function:" + util.eol + this.contractFunction.location +
-             util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
-             util.eol + "arguments (" + this.args.length + "):" +
-             Array.prototype.map.call(this.args, function(arg, index) {
-               return start + index + " (" + util.typeOf(arg) + "): " + arg;
-             }) +
-             this.moreDetail();
-    }
-  );
+  ConditionError.prototype.getDetails = function() {
+    return "contract:" + util.eol + this.contractFunction.contract.location +
+           util.eol + "condition: " + start + this.condition +
+           util.eol + "contract function:" + util.eol + this.contractFunction.location +
+           util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
+           util.eol + "arguments (" + this.args.length + "):" +
+           Array.prototype.map.call(this.args, function(arg, index) {
+             return start + index + " (" + util.typeOf(arg) + "): " + arg;
+           });
+  };
   util.defineConfigurableDerivedProperty(
     ConditionError.prototype,
     "stack",
     function() {
       return this.name + ": " + this.message
-              + util.eol + this.details
+              + util.eol + this.getDetails()
               + util.eol + "call stack:" + util.eol + util.stackOutsideThisLibrary(this._stackSource);
     }
   );

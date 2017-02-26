@@ -50,10 +50,9 @@ module.exports = (function() {
   ConditionMetaError.prototype.constructor = ConditionMetaError;
   ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
   ConditionMetaError.prototype.error = null;
-  ConditionMetaError.prototype.moreDetail = function() {
-    return util.eol +
-           "caused by:" +
-           util.eol +
+  ConditionMetaError.prototype.getDetails = function() {
+    return ConditionError.prototype.getDetails.call(this) + util.eol +
+           "caused by:" + util.eol +
            (this.error && this.error.stack ? this.error.stack : ("" + this.error));
   };
 
