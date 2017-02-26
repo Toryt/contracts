@@ -231,7 +231,7 @@
      /**
       * Returns a concise representation of <code>f</code> to be used in output.
       */
-     conditionRepresentation: function(prefix, f) {
+     conciseConditionRepresentation: function(prefix, f) {
        // MUDO test
        util.pre(function() {return util.typeOf(prefix) === "string";});
 

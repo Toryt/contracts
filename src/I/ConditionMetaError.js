@@ -61,7 +61,7 @@ module.exports = (function() {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(function() {return util.typeOf(condition) === "function";});
 
-    return "An error occurred while evaluating " + util.conditionRepresentation("condition", condition) +
+    return "An error occurred while evaluating " + util.conciseConditionRepresentation("condition", condition) +
            " while contract function " + contractFunction.displayName +
            " was called (" + error + ")";
   };

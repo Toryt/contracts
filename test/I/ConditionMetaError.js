@@ -42,7 +42,7 @@
                 var result = ConditionMetaError.createMessage(contractFunction, common.conditionCase, self, args, error);
                 expect(result).to.be.a("string");
                 expect(result).to.contain(contractFunction.displayName);
-                expect(result).to.contain(util.conditionRepresentation("condition", common.conditionCase));
+                expect(result).to.contain(util.conciseConditionRepresentation("condition", common.conditionCase));
                 expect(result).to.contain("" + error);
               });
             });
