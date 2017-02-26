@@ -129,7 +129,7 @@ module.exports = (function() {
   function expectDetailsPost(subject, result) {
     expect(result).to.be.a("string");
     expect(result).to.contain(subject.condition);
-    expect(result).to.contain(subject.contractFunction.contract.location);
+    expect(result).to.contain(util.eol + subject.contractFunction.contract.location);
     expect(result).to.contain(subject.self);
     Array.prototype.forEach.call(
       subject.args,

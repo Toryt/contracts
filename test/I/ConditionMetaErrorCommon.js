@@ -58,7 +58,8 @@ module.exports = (function() {
 
   function expectDetailsPost(subject, result) {
     common.expectDetailsPost(subject, result);
-    expect(result).to.contain(subject.error && subject.error.stack ? subject.error.stack : ("" + subject.error));
+    expect(result)
+      .to.contain(util.eol + (subject.error && subject.error.stack ? subject.error.stack : ("" + subject.error)));
   }
 
   var test = {
