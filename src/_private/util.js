@@ -20,6 +20,7 @@
    var os = require("os");
    var path = require("path");
 
+   //noinspection MagicNumberJS
    var util = {
 
      eol: os.EOL,
@@ -228,14 +229,27 @@
        return result.join(util.eol);
      },
 
+     maxLengthOfConciseRepresentation: 80,
+     lengthOfEndConciseRepresentation: 15,
+     conciseSeparator: " … ",
+
      /**
       * Returns a concise representation of <code>f</code> to be used in output.
       */
      conciseConditionRepresentation: function(prefix, f) {
-       // MUDO test
        util.pre(function() {return util.typeOf(prefix) === "string";});
 
-       return (f && f.displayName) || (prefix + " " + ((f && f.name) || f));
+       var result = (f && f.displayName) || (prefix + " " + ((f && f.name) || f));
+       result = result.replace(/\s\s+/g, " ");
+       if (util.maxLengthOfConciseRepresentation < result.length) {
+         var startLength = util.maxLengthOfConciseRepresentation
+                           - util.lengthOfEndConciseRepresentation
+                           - util.conciseSeparator.length;
+         var start = result.slice(0, startLength);
+         var end = result.slice(-util.lengthOfEndConciseRepresentation);
+         result = start + util.conciseSeparator + end;
+       }
+       return result;
      }
    };
 

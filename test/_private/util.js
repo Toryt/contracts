@@ -496,6 +496,27 @@
       });
 
       describe("#conciseConditionRepresentation", function() {
+        function isAConciseVersion(original, concise) {
+          var split = ("" + concise).split(util.conciseSeparator);
+          var cleanOriginal = original.replace(/\s\s+/g, " ");
+          if (split.length < 2) {
+            return original === concise;
+          }
+          else {
+            // > 2 is not supported right now, and will fail
+            return cleanOriginal.indexOf(split[0]) === 0
+                   && cleanOriginal.indexOf(split[1]) === cleanOriginal.length - split[1].length;
+          }
+        }
+
+        function expectGeneralPostconditions(result, expected) {
+          testUtil.log("result: %s", result);
+          expect(result).not.to.contain(util.eol);
+          expect(result).to.have.length.of.at.most(util.maxLengthOfConciseRepresentation);
+          expect(result)
+            .to.satisfy(function(r) {return isAConciseVersion(expected, r);});
+        }
+
         var prefix = "This is a test prefix";
         var alternativeName = "This is an alternative name";
         var namedStuff = generateMutableStuff();
@@ -503,34 +524,58 @@
           .filter(function(ms) {return testUtil.propertyIsWritable(ms.subject, "name");})
           .forEach(function(ms) {ms.subject.name = alternativeName;});
         var displayNamedStuff = generateMutableStuff();
-        namedStuff
+        displayNamedStuff
           .forEach(function(ms) {ms.subject.displayName = alternativeName;});
-        stuff
+
+        function generateMultiLineAnonymousFunction() {
+          return function() {
+            var x = "This is a multi-line function";
+            x += "The intention of this test";
+            x += "is to verify";
+            x += "whether we get an acceptable";
+            x += "is to shortened version of this";
+            x += "as a concise representation";
+            x += "this function should have no name";
+            x += "and no display name";
+            return x;
+          };
+        }
+
+        stuff = stuff
           .concat(namedStuff)
-          .map(function(s) {return s.subject;})
-          .forEach(function(f) {
-            var result = util.conciseConditionRepresentation(prefix, f);
-            if (!f || (!f.displayName && !f.name)) {
-              it("returns the string representation with the prefix, " +
-                 "when there is no f, or it has no display name and no name, for " + f, function() {
-                testUtil.log("result: %s", result);
-                expect(result).to.equal(prefix + " " + f);
-              });
-            }
-            else if (!f.displayName && !!f.name) {
-              it("returns the name with the prefix, " +
-                 "when there is no f and it has no display name, but it has a name, for " + f, function() {
-                testUtil.log("result: %s", result);
-                expect(result).to.equal(prefix + " " + f.name);
-              });
-            }
-            else {
-              it("returns the display name if there is an f, and it has a display name, for " + f, function() {
-                testUtil.log("result: %s", result);
-                expect(result).to.equal(f.displayName);
-              });
-            }
-          });
+          .concat(displayNamedStuff)
+          .map(function(s) {return s.subject;});
+        stuff.push(generateMultiLineAnonymousFunction());
+        var other = generateMultiLineAnonymousFunction();
+        other.displayName = "This is a multi-line display name";
+        other.displayName += "The intention of this test";
+        other.displayName += "is to verify";
+        other.displayName += "whether we get an acceptable";
+        other.displayName += "is to shortened version of this";
+        other.displayName += "as a concise representation";
+        other.displayName += "this function should have a display name";
+        stuff.push(other);
+
+        stuff.forEach(function(f) {
+          var result = util.conciseConditionRepresentation(prefix, f);
+          if (!f || (!f.displayName && !f.name)) {
+            it("returns the string representation with the prefix, " +
+               "when there is no f, or it has no display name and no name, for " + f, function() {
+              expectGeneralPostconditions(result, prefix + " " + f);
+            });
+          }
+          else if (!f.displayName && !!f.name) {
+            it("returns the name with the prefix, " +
+               "when there is no f and it has no display name, but it has a name, for " + f, function() {
+              expectGeneralPostconditions(result, prefix + " " + f.name);
+            });
+          }
+          else {
+            it("returns the display name if there is an f, and it has a display name, for " + f, function() {
+              expectGeneralPostconditions(result, f.displayName);
+            });
+          }
+        });
       });
     });
   // });
