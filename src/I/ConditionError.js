@@ -99,10 +99,10 @@ module.exports = (function() {
    *   <li>`name` is a mandatory property, and refers to a string</li>
    *   <li>`message` is a frozen mandatory property, and refers to a string</li>
    *   <li>`moreDetail` is a mandatory property, and refers to a function</li>
-   *   <li>`stack` is a read-only property, that returns a string, that starts with the instances `name`, the
-   *     string ": ", and `message`, and is followed by stack code references, that do no contain references
-   *     to the inner workings of the Toryt Contracts library, and the result of calling `moreDetail()`
-   *     on the instance, coerced to a string.</li>
+   *   <li>`stack` is a read-only property, that returns a string, that starts with the instance's
+   *     <code>name</code>>, the string ": ", and <code>message</code>, followed by the {@link #details},
+   *     and by stack code references, that do not contain references to the inner workings of the Toryt
+   *     Contracts library.</li>
    * </ul>
    */
   function ConditionError(contractFunction, condition, self, args) {
