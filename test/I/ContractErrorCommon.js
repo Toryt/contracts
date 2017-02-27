@@ -47,7 +47,7 @@ module.exports = (function() {
       .that.equals(ContractError.stackSourceMessage);
     testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "name");
     expect(subject).to.have.property("name").that.is.a("string");
-    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "message");
+    testUtil.expectOwnFrozenProperty(ContractError.prototype, "message");
     expect(subject).to.have.property("message").that.is.a("string");
   }
 

@@ -32,7 +32,7 @@ module.exports = (function() {
     expect(Object.getPrototypeOf(subject)).to.have.property("name").that.equals(AbstractError.name);
     testUtil.expectOwnFrozenProperty(subject, "message");
     expect(subject).to.have.property("message").that.equals(AbstractError.message);
-    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "message");
+    testUtil.expectOwnFrozenProperty(AbstractError.prototype, "message");
     expect(Object.getPrototypeOf(subject)).to.have.property("message").that.equals(AbstractError.message);
   }
 
