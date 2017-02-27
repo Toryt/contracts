@@ -39,10 +39,12 @@ module.exports = (function() {
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ContractError);
     testUtil.expectOwnFrozenProperty(subject, "_stackSource");
-    expect(subject._stackSource).to.be.instanceOf(Error);
-    expect(subject._stackSource).to.have.property("name").that.equals(ContractError.stackSourceName);
-    expect(subject._stackSource)
-      .to.have.property("message")
+    //noinspection BadExpressionStatementJS
+    expect(subject).to.have.property("_stackSource").that.is.frozen;
+    expect(subject).to.have.property("_stackSource").that.is.instanceOf(Error);
+    expect(subject).to.have.deep.property("_stackSource.name").that.equals(ContractError.stackSourceName);
+    expect(subject)
+      .to.have.deep.property("_stackSource.message")
       .that.is.a("string")
       .that.equals(ContractError.stackSourceMessage);
     testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "name");
