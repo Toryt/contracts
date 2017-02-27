@@ -177,22 +177,27 @@ module.exports = (function() {
     []
   );
 
+  var message = "an abstract function cannot be executed";
+
   /**
    * Thrown when an abstract method is called. You shouldn't.
    */
   function AbstractError(contract) {
     util.pre(function() {return contract instanceof Contract;});
 
-    ContractError.call(this, AbstractError.message);
+    ContractError.call(this);
+    util.setAndFreezeProperty(this, "name", AbstractError.name);
+    util.setAndFreezeProperty(this, "message", message);
     util.setAndFreezeProperty(this, "contract", contract);
   }
 
-  AbstractError.prototype = new ContractError("This is a dummy message in the AbstractError prototype.");
+  AbstractError.prototype = new ContractError();
   AbstractError.prototype.constructor = AbstractError;
-  AbstractError.prototype.name = "Abstract";
-  AbstractError.prototype.contract = null;
+  util.setAndFreezeProperty(AbstractError.prototype, "name", AbstractError.name);
+  util.setAndFreezeProperty(AbstractError.prototype, "message", message);
+  util.setAndFreezeProperty(AbstractError.prototype, "contract", null);
 
-  AbstractError.message = "An abstract function cannot be executed";
+  AbstractError.message = message;
 
   Contract.AbstractError = AbstractError;
 

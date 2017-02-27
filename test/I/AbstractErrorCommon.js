@@ -20,15 +20,24 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var common = require("./ContractErrorCommon");
   var AbstractError = require("../../src/I/Contract").AbstractError;
+  var testUtil = require("../_testUtil");
+
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(AbstractError);
     common.expectInvariants(subject);
+    testUtil.expectOwnFrozenProperty(subject, "name");
+    expect(subject).to.have.property("name").that.equals(AbstractError.name);
+    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "name");
+    expect(Object.getPrototypeOf(subject)).to.have.property("name").that.equals(AbstractError.name);
+    testUtil.expectOwnFrozenProperty(subject, "message");
     expect(subject).to.have.property("message").that.equals(AbstractError.message);
+    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "message");
+    expect(Object.getPrototypeOf(subject)).to.have.property("message").that.equals(AbstractError.message);
   }
 
-  function expectConstructorPost(result, contract) {
-    common.expectConstructorPost(result, AbstractError.message);
+  function expectConstructorPost(result, message, contract) {
+    common.expectConstructorPost(result, message);
     expect(result).to.have.property("contract").that.equals(contract);
   }
 

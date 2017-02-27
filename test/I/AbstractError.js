@@ -30,9 +30,8 @@
       describe("#AbstractError()", function() {
         it("creates an instance with all toppings for Contract.root", function() {
           var result = new AbstractError(Contract.root);
-          common.expectConstructorPost(result, Contract.root);
+          common.expectConstructorPost(result, AbstractError.message, Contract.root);
           common.expectInvariants(result);
-          expect(result.name).to.equal("Abstract");
           testUtil.log("result.stack:\n%s", result.stack);
         });
       });
