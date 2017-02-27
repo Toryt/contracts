@@ -27,26 +27,6 @@
   // describe("I", function() {
     describe("I/ConditionError", function() {
 
-      describe("#ConditionError.createMessage", function() {
-        it("has a function createMessage()", function() {
-          expect(ConditionError).to.have.property("createMessage").that.is.a("function");
-        });
-      });
-
-      describe("#ConditionError.createMessage()", function() {
-        common.selfCases.forEach(function(self) {
-          common.argsCases.forEach(function(args) {
-            it("works when called with " + self + " - " + args, function() {
-              var contractFunction = common.createCandidateContractFunction();
-              var result = ConditionError.createMessage(contractFunction, common.conditionCase, self, args);
-              expect(result).to.be.a("string");
-              expect(result).to.contain(contractFunction.displayName);
-              expect(result).to.contain(util.conciseConditionRepresentation("condition", common.conditionCase));
-            });
-          });
-        });
-      });
-
       describe("#ConditionError()", function() {
         common.selfCases.forEach(function(self) {
           common.argsCases.forEach(function(args) {
@@ -55,8 +35,8 @@
               var result = new ConditionError(contractFunction, common.conditionCase, self, args);
               common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args);
               common.expectInvariants(result);
-              expect(result.name).to.equal("Contract Condition Error");
-              expect(result.message).to.equal(ConditionError.createMessage(contractFunction, common.conditionCase, self, args));
+              expect(result).not.to.haveOwnProperty("message");
+              expect(result).not.to.haveOwnProperty("stack");
               testUtil.log("result.stack:\n%s", result.stack);
             });
           });
@@ -74,7 +54,7 @@
               return {
                 subject: new ConditionError(
                   common.createCandidateContractFunction(),
-                  common.conditionCase,
+                  common.conditionCase, // MUDO vary, with cases from concise…
                   parameters[0],
                   parameters[1]
                 ),

@@ -110,32 +110,43 @@ module.exports = (function() {
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
-    var message = this.constructor.createMessage.apply(undefined, arguments);
-    ContractError.call(this, message);
+    ContractError.call(this);
     util.setAndFreezeProperty(this, "contractFunction", contractFunction);
     util.setAndFreezeProperty(this, "condition", condition);
     util.setAndFreezeProperty(this, "self", self);
     util.setAndFreezeProperty(this, "args", args);
   }
 
-  ConditionError.prototype = new ContractError("This is a dummy message in the ConditionError prototype.");
+  ConditionError.prototype = new ContractError();
   ConditionError.prototype.constructor = ConditionError;
-  ConditionError.prototype.name = "Contract Condition Error";
-  ConditionError.prototype.contractFunction = null;
-  ConditionError.prototype.condition = null;
-  ConditionError.prototype.self = null;
-  ConditionError.prototype.args = null;
+  util.setAndFreezeProperty(ConditionError.prototype, "name", ConditionError.name);
+  util.setAndFreezeProperty(ConditionError.prototype, "contractFunction", null);
+  util.setAndFreezeProperty(ConditionError.prototype, "condition", null);
+  util.setAndFreezeProperty(ConditionError.prototype, "self", null);
+  util.setAndFreezeProperty(ConditionError.prototype, "args", null);
   var start = util.eol + "    ";
-  ConditionError.prototype.getDetails = function() {
-    return "contract:" + util.eol + this.contractFunction.contract.location +
-           util.eol + "condition: " + start + this.condition +
-           util.eol + "contract function:" + util.eol + this.contractFunction.location +
-           util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
-           util.eol + "arguments (" + this.args.length + "):" +
-           Array.prototype.map.call(this.args, function(arg, index) {
-             return start + index + " (" + util.typeOf(arg) + "): " + arg;
-           });
-  };
+  util.defineConfigurableDerivedProperty(
+    ConditionError.prototype,
+    "message",
+    function() {
+      return util.conciseConditionRepresentation("condition", this.condition)
+             + " failed while " + this.contractFunction.displayName + " was called";
+    }
+  );
+  util.setAndFreezeProperty(
+    ConditionError.prototype,
+    "getDetails",
+    function() {
+      return "contract:" + util.eol + this.contractFunction.contract.location +
+             util.eol + "condition: " + start + this.condition +
+             util.eol + "contract function:" + util.eol + this.contractFunction.location +
+             util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
+             util.eol + "arguments (" + this.args.length + "):" +
+             Array.prototype.map.call(this.args, function(arg, index) {
+               return start + index + " (" + util.typeOf(arg) + "): " + arg;
+             });
+    }
+  );
   util.defineConfigurableDerivedProperty(
     ConditionError.prototype,
     "stack",
@@ -145,21 +156,6 @@ module.exports = (function() {
               + util.eol + "call stack:" + util.eol + util.stackOutsideThisLibrary(this._stackSource);
     }
   );
-
-  /**
-   * This method is called in the constructor to generate the message for the error being created.
-   * It is called with the same arguments as the constructor.
-   *
-   * This is not a prototype method, because it is used in the constructor.
-   */
-  ConditionError.createMessage = function(contractFunction, condition) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
-    util.pre(function() {return util.typeOf(condition) === "function";});
-
-    return util.conciseConditionRepresentation("condition", condition) +
-           " failed while " + contractFunction.displayName +
-           " was called";
-  };
 
   return ConditionError;
 })();
