@@ -59,6 +59,10 @@ module.exports = (function() {
 
   var util = require("./../_private/util");
 
+  var stackSourceName= "Stack source";
+  var stackSourceMessage = "internal error used to get a sensible stack";
+  var message = "abstract type";
+
   /**
    * ContractError is the general supertype of all errors thrown by Toryt Contracts.
    * ContractError itself is to be considered abstract.
@@ -69,31 +73,33 @@ module.exports = (function() {
    * <h3>Invariants</h3>
    * <ul>
    *   <li>`name` is a mandatory property, and refers to a string</li>
-   *   <li>`message` is a frozen mandatory property, and refers to a string</li>
+   *   <li>`message` refers to a string</li>
    *   <li>`stack` is a read-only property, that returns a string, that starts with the instances `name`, the
    *     string ": ", and `message`, and is followed by stack code references, that do no contain references
    *     to the inner workings of the Toryt Contracts library.</li>
    * </ul>
    */
-  function ContractError(message) {
-    util.pre(function() {return util.typeOf(message) === "string";});
-
-    util.setAndFreezeProperty(this, "message", message);
-    var stackSource = new Error(message);
-    stackSource.name = this.name;
+  function ContractError() {
+    var stackSource = new Error(stackSourceMessage);
+    stackSource.name = ContractError.stackSourceName;
     Object.freeze(stackSource);
     util.setAndFreezeProperty(this, "_stackSource", stackSource);
   }
 
-  ContractError.prototype = new Error("This is a dummy message in the ContractError prototype.");
+  ContractError.prototype = new Error();
   ContractError.prototype.constructor = ContractError;
-  ContractError.prototype.name = "Contract Error";
-  ContractError.prototype._stackSource = null;
+  util.setAndFreezeProperty(ContractError.prototype, "name", ContractError.name);
+  util.setAndFreezeProperty(ContractError.prototype, "message", message);
+  util.setAndFreezeProperty(ContractError.prototype, "_stackSource", null);
   util.defineConfigurableDerivedProperty(
     ContractError.prototype,
     "stack",
     function() {return this.name + ": " + this.message + util.eol + util.stackOutsideThisLibrary(this._stackSource);}
   );
+
+  ContractError.stackSourceName = stackSourceName;
+  ContractError.stackSourceMessage = stackSourceMessage;
+  ContractError.message = message;
 
   return ContractError;
 })();

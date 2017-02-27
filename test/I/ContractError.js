@@ -23,29 +23,34 @@
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 
-  var message = "A Message";
-
   // describe("I", function() {
     describe("I/ContractError", function() {
 
       describe("#ContractError()", function() {
         it("creates an instance with all toppings", function() {
-          var result = new ContractError(message);
-          common.expectConstructorPost(result, message);
+          var result = new ContractError();
+          common.expectConstructorPost(result, ContractError.message);
           common.expectInvariants(result);
-          expect(result.name).to.equal("Contract Error");
-          expect(result.message).to.equal(message);
+          expect(result).not.to.haveOwnProperty("message");
           testUtil.log("result.stack:\n%s", result.stack);
+        });
+        it("can get a message set", function() {
+          var result = new ContractError();
+          var message = "another message";
+          util.defineFrozenDerivedProperty(result, "message", function() {return message;});
+          expect(result).to.haveOwnProperty("message");
+          expect(result).to.have.property("message").that.equals(message);
+          common.expectInvariants(result);
         });
       });
 
       common.generatePrototypeMethodsDescriptions(
         function () {
-          return new ContractError(message);
+          return new ContractError();
         },
         [{
-          subject: new ContractError(message),
-          description: "message: " + message
+          subject: new ContractError(),
+          description: "a contract error"
         }]
       );
 

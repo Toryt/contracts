@@ -38,22 +38,24 @@ module.exports = (function() {
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ContractError);
-    expect(subject).to.have.ownProperty("_stackSource");
-    expect(subject._stackSource).to.be.instanceOf(Error);
-    expect(subject._stackSource).to.have.property("name").that.equals(subject.name);
-    expect(subject._stackSource).to.have.property("message").that.equals(subject.message);
     testUtil.expectOwnFrozenProperty(subject, "_stackSource");
-    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-    expect(subject._stackSource).to.be.frozen;
+    expect(subject._stackSource).to.be.instanceOf(Error);
+    expect(subject._stackSource).to.have.property("name").that.equals(ContractError.stackSourceName);
+    expect(subject._stackSource)
+      .to.have.property("message")
+      .that.is.a("string")
+      .that.equals(ContractError.stackSourceMessage);
+    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "name");
     expect(subject).to.have.property("name").that.is.a("string");
+    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "message");
     expect(subject).to.have.property("message").that.is.a("string");
-    this.expectStackInvariants(subject);
   }
 
   function expectConstructorPost(result, message) {
-    expect(result).to.have.property("message").that.equals(message);
-    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+    //noinspection BadExpressionStatementJS
     expect(result).to.be.extensible;
+    expect(result).to.have.property("name").that.equals(result.constructor.name);
+    expect(result).to.have.property("message").that.equals(message);
   }
 
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
