@@ -51,6 +51,7 @@ module.exports = (function() {
     expect(subject).to.have.property("name").that.is.a("string");
     testUtil.expectOwnFrozenProperty(ContractError.prototype, "message");
     expect(subject).to.have.property("message").that.is.a("string");
+    expectStackInvariants(subject);
   }
 
   function expectConstructorPost(result, message) {
