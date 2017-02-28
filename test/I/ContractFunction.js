@@ -128,9 +128,11 @@
         var endsNominally = false;
         try {
           if (!self) {
+            //noinspection JSUnusedAssignment
             result = func(parameter);
           }
           else {
+            //noinspection JSUnusedAssignment
             result = func.call(self, parameter);
           }
           endsNominally = true;
