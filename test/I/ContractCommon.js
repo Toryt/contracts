@@ -120,8 +120,7 @@ module.exports = (function() {
 
   function createCandidateContractFunction(dontFreezeProperty,
                                            otherPropertyName,
-                                           otherPropertyValue,
-                                           bind) {
+                                           otherPropertyValue) {
     function candidate() {}
 
     function impl() {}
