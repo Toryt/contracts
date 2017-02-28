@@ -19,7 +19,6 @@ module.exports = (function() {
   var util = require("./../_private/util");
   var Contract = require("./Contract");
   var ConditionError = require("./ConditionError");
-  var ConditionMetaError = require("./ConditionMetaError");
   var ConditionViolation = require("./ConditionViolation");
   var PreconditionViolation = require("./PreconditionViolation");
 
