@@ -26,11 +26,16 @@ module.exports = (function() {
    * The separation between Contract and ImplementableContract is necessary to break a dependency
    * cycle with ConditionError.
    */
-  function ImplementableContract(pre, post, exception) {
+  function ImplementableContract(kwargs) {
+    util.pre(function() {return !!kwargs;});
+    util.pre(function() {return !kwargs.pre || util.typeOf(kwargs.pre) === "array";});
+    util.pre(function() {return !kwargs.post || util.typeOf(kwargs.post) === "array";});
+    util.pre(function() {return !kwargs.exception || util.typeOf(kwargs.exception) === "array";});
+
     Contract.apply(this, arguments);
   }
 
-  ImplementableContract.prototype = new Contract();
+  ImplementableContract.prototype = new Contract({pre: [Contract.falseCondition]});
   ImplementableContract.prototype.constructor = ImplementableContract;
   ImplementableContract.prototype.implementation = function(implFunction) {
     util.pre(this, function() {return implFunction && util.typeOf(implFunction) === "function";});

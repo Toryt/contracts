@@ -41,12 +41,12 @@
         return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
       }
 
-      var fibonacci = new ImplementableContract(
-        [
+      var fibonacci = new ImplementableContract({
+        pre: [
           function(n) {return util.isInteger(n);},
           function(n) {return 0 <= n;}
         ],
-        [
+        post: [
           function(n, result) {return util.isInteger(result);},
           function(n, result) {return n !== 0 || result === 0;},
           function(n, result) {return n !== 1 || result === 1;},
@@ -55,10 +55,10 @@
             return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);
           }
         ],
-        [
+        exception: [
           function() {return false;}
         ]
-      ).implementation(fibonacciImpl);
+    }).implementation(fibonacciImpl);
 
       var wrongParameter = 4;
       var wrongResult = -3;
@@ -78,12 +78,12 @@
         }
       });
 
-      var factorialContract = new ImplementableContract(
-        [
+      var factorialContract = new ImplementableContract({
+        pre: [
           function(n) {return util.isInteger(n);},
           function(n) {return 0 <= n;}
         ],
-        [
+        post: [
           function(n, result) {return util.isInteger(result);},
           function(n, result) {return n !== 0 || result === 1;},
           function(n, result, f) {
@@ -92,10 +92,10 @@
             return n < 1 || result === n * f(n - 1);
           }
         ],
-        [
+        exception: [
           function() {return false;}
         ]
-      );
+      });
 
       var factorial = factorialContract.implementation(function(n) {
         if (n <= 0) {
@@ -230,9 +230,9 @@
 
       var intentionalError = new Error("This precondition intentionally fails.");
 
-      var contractWithAFailingPre = new ImplementableContract(
-        [function() {throw intentionalError;}]
-      );
+      var contractWithAFailingPre = new ImplementableContract({
+        pre: [function() {throw intentionalError;}]
+      });
 
       it("doesn't interfere when the implementation is correct", function() {
         var ignore = fibonacci(5); // any exception will fail the test
@@ -273,10 +273,9 @@
         );
       });
       it("fails with a meta-error when a postcondition is kaput", function() {
-        var contractWithAFailingPost = new ImplementableContract(
-          [],
-          [function() {throw intentionalError;}]
-        );
+        var contractWithAFailingPost = new ImplementableContract({
+          post: [function() {throw intentionalError;}]
+        });
 
         var implementation = contractWithAFailingPost.implementation(function() {return resultWhenMetaError;});
         failsOnMetaError(
@@ -287,10 +286,9 @@
         );
       });
       it("fails with a meta-error when a postcondition is kaput when it is a method", function() {
-        var contractWithAFailingPost = new ImplementableContract(
-          [],
-          [function() {throw intentionalError;}]
-        );
+        var contractWithAFailingPost = new ImplementableContract({
+          post: [function() {throw intentionalError;}]
+        });
         var self = {
           method: contractWithAFailingPost.implementation(function() {return resultWhenMetaError;})
         };
@@ -303,11 +301,9 @@
         );
       });
       it("fails with a meta-error when an exception condition is kaput", function() {
-        var contractWithAFailingExceptionCondition = new ImplementableContract(
-          [],
-          [],
-          [function() {throw intentionalError;}]
-        );
+        var contractWithAFailingExceptionCondition = new ImplementableContract({
+          exception: [function() {throw intentionalError;}]
+        });
         var anExceptedException = "This exception is expected.";
         var implementation = contractWithAFailingExceptionCondition.implementation(function() {throw anExceptedException;});
         failsOnMetaError(
@@ -318,11 +314,9 @@
         );
       });
       it("fails with a meta-error when an exception condition is kaput when it is a method", function() {
-        var contractWithAFailingExceptionCondition = new ImplementableContract(
-          [],
-          [],
-          [function() {throw intentionalError;}]
-        );
+        var contractWithAFailingExceptionCondition = new ImplementableContract({
+          exception: [function() {throw intentionalError;}]
+        });
         var anExceptedException = "This exception is expected.";
         var self = {
           method: contractWithAFailingExceptionCondition.implementation(function() {throw anExceptedException;})

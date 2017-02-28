@@ -39,7 +39,11 @@
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
-                var result = new ImplementableContract(preConditions, postConditions, exceptionConditions);
+                var result = new ImplementableContract({
+                  pre: preConditions,
+                  post: postConditions,
+                  exception: exceptionConditions
+                });
                 common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
               });
             });
@@ -48,7 +52,7 @@
       });
 
       common.generatePrototypeMethodsDescriptions(
-        function() {return new ImplementableContract();},
+        function() {return new ImplementableContract({});},
         testUtil
           .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
           .map(function(parameters) {
@@ -57,7 +61,11 @@
               var postConditions = parameters[1]();
               var exceptionConditions = parameters[2]();
               return {
-                subject: new ImplementableContract(preConditions, postConditions, exceptionConditions),
+                subject: new ImplementableContract({
+                  pre: preConditions,
+                  post: postConditions,
+                  exception: exceptionConditions
+                }),
                 description: parameters.join(" - ")
               };
             };

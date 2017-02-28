@@ -37,16 +37,21 @@ module.exports = (function() {
    * Furthermore, an instance contains a `location` property, which is a line of text
    * that refers to the source code where the contract was created.
    */
-  function Contract(pre, post, exception) {
+  function Contract(kwargs) {
+    util.pre(function() {return !!kwargs;});
+    util.pre(function() {return !kwargs.pre || util.typeOf(kwargs.pre) === "array";});
+    util.pre(function() {return !kwargs.post || util.typeOf(kwargs.post) === "array";});
+    util.pre(function() {return !kwargs.exception || util.typeOf(kwargs.exception) === "array";});
+
     var self = this;
 
     function abstract() {throw new Contract.AbstractError(self);}
 
     var location = util.firstLocationOutsideLibrary();
     Contract.bless(abstract, self, abstract, location);
-    util.setAndFreezeProperty(self, "_pre", Object.freeze(pre ? pre.slice() : []));
-    util.setAndFreezeProperty(self, "_post", Object.freeze(post ? post.slice() : []));
-    util.setAndFreezeProperty(self, "_exception", Object.freeze(exception ? exception.slice() : []));
+    util.setAndFreezeProperty(self, "_pre", Object.freeze(kwargs.pre ? kwargs.pre.slice() : []));
+    util.setAndFreezeProperty(self, "_post", Object.freeze(kwargs.post ? kwargs.post.slice() : []));
+    util.setAndFreezeProperty(self, "_exception", Object.freeze(kwargs.exception ? kwargs.exception.slice() : []));
     util.setAndFreezeProperty(self, "location", Object.freeze(location));
     util.setAndFreezeProperty(self, "abstract", abstract);
   }
@@ -171,11 +176,11 @@ module.exports = (function() {
    * be weakened by specializations, and the most general nominal and exceptional postconditions (anything goes),
    * which can be strengthened by specializations.
    */
-  Contract.root = new Contract(
-    [Contract.falseCondition],
-    [],
-    []
-  );
+  Contract.root = new Contract({
+    pre: [Contract.falseCondition],
+    post: [],
+    exception: []
+  });
 
   var message = "an abstract function cannot be executed";
 

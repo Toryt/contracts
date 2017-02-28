@@ -125,7 +125,9 @@ module.exports = (function() {
 
     function impl() {}
 
-    var contract = otherPropertyName === "contract" ? otherPropertyValue : new Contract();
+    var contract = otherPropertyName === "contract"
+      ? otherPropertyValue
+      : new Contract({});
     var implementation = otherPropertyName === "implementation" ? otherPropertyValue : impl;
     var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
     var bind = otherPropertyName === "bind" ? otherPropertyValue : Contract.bindContractFunction;

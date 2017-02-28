@@ -201,7 +201,7 @@
 
         [
           {propertyName: "contract", expected: "a Contract", extra: [function() {}]},
-          {propertyName: "implementation", expected: "a Function", extra: [new Contract()]},
+          {propertyName: "implementation", expected: "a Function", extra: [new Contract({})]},
           {propertyName: "location", expected: "a location outside this library", extra: ["    at", "at /"]},
           {propertyName: "bind", expected: "Contract.bindContractFunction", extra: []},
           {
@@ -224,7 +224,7 @@
       describe("Contract.bless", function() {
         it("behaves as expected", function() {
           var contractFunction = function() {};
-          var contract = new Contract();
+          var contract = new Contract({});
           var implFunction = function() {};
           var location = util.firstLocationOutsideLibrary();
           Contract.bless(contractFunction, contract, implFunction, location);
@@ -259,7 +259,7 @@
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
-                var result = new Contract(preConditions, postConditions, exceptionConditions);
+                var result = new Contract({pre: preConditions, post: postConditions, exception: exceptionConditions});
                 common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
               });
             });
@@ -268,7 +268,7 @@
       });
 
       common.generatePrototypeMethodsDescriptions(
-        function() {return new Contract();},
+        function() {return new Contract({});},
         testUtil
           .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
           .map(function(parameters) {
@@ -277,7 +277,7 @@
               var postConditions = parameters[1]();
               var exceptionConditions = parameters[2]();
               return {
-                subject: new Contract(preConditions, postConditions, exceptionConditions),
+                subject: new Contract({pre: preConditions, post: postConditions, exception: exceptionConditions}),
                 description: parameters.join(" - ")
               };
             };
