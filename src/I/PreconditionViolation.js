@@ -51,9 +51,7 @@ module.exports = (function() {
     []
   );
   PreconditionViolation.prototype.constructor = PreconditionViolation;
-  PreconditionViolation.prototype.name = "Contract Precondition Violation";
-
-  PreconditionViolation.createMessage = ConditionViolation.createMessage;
+  util.setAndFreezeProperty(PreconditionViolation.prototype, "name", PreconditionViolation.name);
 
   return PreconditionViolation;
 })();
