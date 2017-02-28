@@ -86,7 +86,7 @@ module.exports = (function() {
     expect(result).to.have.property("condition").that.equals(condition);
     expect(result).to.have.property("self").that.equals(self);
     expect(result).to.have.property("args").that.eql(args); // MUDO array protection
-    //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+    //noinspection BadExpressionStatementJS
     expect(result).to.be.extensible;
   }
 
