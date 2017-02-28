@@ -97,6 +97,7 @@ module.exports = (function() {
       else {
         expect(result[privatePropName]).to.eql(array);
         expect(result[privatePropName]).to.not.equal(array);  // it must be copy, don't share the array
+        //noinspection BadExpressionStatementJS
         expect(result[privatePropName]).to.be.frozen;
         expect(result[propName]).to.eql(array);
         expect(result[propName]).to.not.equal(result[privatePropName]);  // it must be copy, don't share the array
