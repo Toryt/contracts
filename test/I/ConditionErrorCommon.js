@@ -73,8 +73,8 @@ module.exports = (function() {
     //noinspection BadExpressionStatementJS
     expect(subject).to.have.property("args").that.is.ok;
     expect(util.typeOf(subject.args)).to.satisfy(function(t) {return t === "arguments" || t === "array";});
-    testUtil.expectConfigurableDerivedPropertyOnAPrototype(subject, "message");
-    testUtil.expectConfigurableDerivedPropertyOnAPrototype(subject, "stack");
+    testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, "message");
+    testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, "stack");
     expect(subject).to.have.property("message").that.contains(subject.contractFunction.displayName);
     expect(subject).to.have.property("message")
       .that.contains(util.conciseConditionRepresentation("condition", subject.condition));

@@ -125,7 +125,7 @@ module.exports = (function() {
   util.setAndFreezeProperty(ConditionError.prototype, "self", null);
   util.setAndFreezeProperty(ConditionError.prototype, "args", null);
   var start = util.eol + "    ";
-  util.defineConfigurableDerivedProperty(
+  util.defineFrozenDerivedProperty(
     ConditionError.prototype,
     "message",
     function() {
@@ -147,7 +147,7 @@ module.exports = (function() {
              });
     }
   );
-  util.defineConfigurableDerivedProperty(
+  util.defineFrozenDerivedProperty(
     ConditionError.prototype,
     "stack",
     function() {
