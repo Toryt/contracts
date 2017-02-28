@@ -86,12 +86,10 @@
         [
           function(n, result) {return util.isInteger(result);},
           function(n, result) {return n !== 0 || result === 1;},
-          function(n, result) {
-            function f(n) {return n < 1 ? 1 : n * f(n - 1);}
-
+          function(n, result, f) {
             // Note: don't refer to a specific implementation in the ImplementableContract!
 
-            return n < 1 || result === f(n);
+            return n < 1 || result === n * f(n - 1);
           }
         ],
         [
