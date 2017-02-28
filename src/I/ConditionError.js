@@ -123,7 +123,6 @@ module.exports = (function() {
   util.setAndFreezeProperty(ConditionError.prototype, "contractFunction", null);
   util.setAndFreezeProperty(ConditionError.prototype, "condition", null);
   util.setAndFreezeProperty(ConditionError.prototype, "self", null);
-  var start = util.eol + "    ";
   util.setAndFreezeProperty(ConditionError.prototype, "_args", null);
   util.defineFrozenReadOnlyArrayProperty(ConditionError.prototype, "args", "_args");
   util.defineFrozenDerivedProperty(
@@ -134,6 +133,7 @@ module.exports = (function() {
              + " failed while " + this.contractFunction.displayName + " was called";
     }
   );
+  var start = util.eol + "    ";
   util.setAndFreezeProperty(
     ConditionError.prototype,
     "getDetails",
