@@ -53,14 +53,16 @@
                                         common.argsCases[0]);
         },
         testUtil
-          .x(common.selfCases, common.argsCases)
+          .x(common.conditionCases, common.selfCases, common.argsCases)
           .map(function(parameters) {
             return function() {
               return {
-                subject: new ConditionViolation(common.createCandidateContractFunction(),
-                                                common.conditionCase, // MUDO vary, with cases from concise…
-                                                parameters[0],
-                                                parameters[1]),
+                subject: new ConditionViolation(
+                  common.createCandidateContractFunction(),
+                  parameters[0],
+                  parameters[1],
+                  parameters[2]
+                ),
                 description: parameters.join(" - ")
               };
             };

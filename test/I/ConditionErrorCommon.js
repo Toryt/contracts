@@ -31,6 +31,36 @@ module.exports = (function() {
 
   var conditionCase = function() {return "This simulates a condition";};
 
+  function generateMultiLineAnonymousFunction() {
+    return function() {
+      var x = "This is a multi-line function";
+      x += "The intention of this test";
+      x += "is to verify";
+      x += "whether we get an acceptable";
+      x += "is to shortened version of this";
+      x += "as a concise representation";
+      x += "this function should have no name";
+      x += "and no display name";
+      return x;
+    };
+  }
+
+  var conditionCases = [conditionCase, generateMultiLineAnonymousFunction()];
+
+  function functionWithADisplayName() {}
+
+  functionWithADisplayName.displayName = "This is a display name";
+  conditionCases.push(functionWithADisplayName);
+  var other = generateMultiLineAnonymousFunction();
+  other.displayName = "This is a multi-line display name";
+  other.displayName += "The intention of this test";
+  other.displayName += "is to verify";
+  other.displayName += "whether we get an acceptable";
+  other.displayName += "is to shortened version of this";
+  other.displayName += "as a concise representation";
+  other.displayName += "this function should have a display name";
+  conditionCases.push(other);
+
   var selfCases = [
     undefined,
     null,
@@ -127,6 +157,7 @@ module.exports = (function() {
     selfCases: selfCases,
     argsCases: argsCases,
     conditionCase: conditionCase,
+    conditionCases: conditionCases,
     expectProperties: expectProperties,
     expectConstructorPost: expectConstructorPost,
     expectDetailsPost: expectDetailsPost,

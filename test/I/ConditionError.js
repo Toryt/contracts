@@ -48,15 +48,15 @@
           return new ConditionError(common.conditionCase, null, argsCases[0]);
         },
         testUtil
-          .x(common.selfCases, common.argsCases)
+          .x(common.conditionCases, common.selfCases, common.argsCases)
           .map(function(parameters) {
             return function() {
               return {
                 subject: new ConditionError(
                   common.createCandidateContractFunction(),
-                  common.conditionCase, // MUDO vary, with cases from concise…
                   parameters[0],
-                  parameters[1]
+                  parameters[1],
+                  parameters[2]
                 ),
                 description: parameters.join(" - ")
               };

@@ -55,15 +55,17 @@
           );
         },
         testUtil
-          .x(common.selfCases, common.argsCases, common.errorCases)
+          .x(common.conditionCases, common.selfCases, common.argsCases, common.errorCases)
           .map(function(parameters) {
             return function() {
               return {
-                subject: new ConditionMetaError(common.createCandidateContractFunction(),
-                                                common.conditionCase, // MUDO vary, with cases from concise…
-                                                parameters[0],
-                                                parameters[1],
-                                                parameters[2]),
+                subject: new ConditionMetaError(
+                  common.createCandidateContractFunction(),
+                  parameters[0],
+                  parameters[1],
+                  parameters[2],
+                  parameters[3]
+                ),
                 description: parameters.join(" - ")
               };
             };
