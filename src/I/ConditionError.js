@@ -114,7 +114,7 @@ module.exports = (function() {
     util.setAndFreezeProperty(this, "contractFunction", contractFunction);
     util.setAndFreezeProperty(this, "condition", condition);
     util.setAndFreezeProperty(this, "self", self);
-    util.setAndFreezeProperty(this, "args", args);
+    util.setAndFreezeProperty(this, "_args", Object.freeze(Array.prototype.slice.call(args)));
   }
 
   ConditionError.prototype = new ContractError();
@@ -123,8 +123,9 @@ module.exports = (function() {
   util.setAndFreezeProperty(ConditionError.prototype, "contractFunction", null);
   util.setAndFreezeProperty(ConditionError.prototype, "condition", null);
   util.setAndFreezeProperty(ConditionError.prototype, "self", null);
-  util.setAndFreezeProperty(ConditionError.prototype, "args", null);
   var start = util.eol + "    ";
+  util.setAndFreezeProperty(ConditionError.prototype, "_args", null);
+  util.defineFrozenReadOnlyArrayProperty(ConditionError.prototype, "args", "_args");
   util.defineFrozenDerivedProperty(
     ConditionError.prototype,
     "message",

@@ -52,6 +52,12 @@ module.exports = (function() {
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
 
+    function expectProperties(exception, Type, contractFunction, condition, self, args) {
+      common.expectProperties.apply(undefined, arguments);
+      //noinspection BadExpressionStatementJS
+      expect(exception).to.be.frozen;
+    }
+
     describe("#verify()", function() {
       function expectPost(subject, contractFunction, condition, self, args, appliedSelf, appliedArgs, exception) {
         var outcome;
@@ -60,16 +66,7 @@ module.exports = (function() {
         }
         catch (err) {
           it("should throw a ConditionMetaError because the condition had an error", function() {
-            //noinspection BadExpressionStatementJS
-            expect(exception).to.be.ok;
-            expect(exception).to.be.instanceOf(ConditionMetaError);
-            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-            expect(exception).to.be.frozen;
-            expect(exception.contractFunction).to.equal(contractFunction);
-            expect(exception.error).to.deep.equal(err);
-            expect(exception.condition).to.equal(condition);
-            expect(exception.self).to.equal(self);
-            expect(exception.args).to.eql(args);
+            expectProperties(exception, ConditionMetaError, contractFunction, condition, self, args);
           });
           return;
         }
@@ -96,16 +93,7 @@ module.exports = (function() {
           it("should throw a ConditionViolation that is correctly configured, " +
              "because the condition evaluated to false nominally",
             function() {
-              //noinspection BadExpressionStatementJS
-              expect(exception).to.be.ok;
-              expect(exception).to.be.instanceOf(ConditionViolation); //MUDO specific type too
-              expectInvariants(exception);
-              //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-              expect(exception).to.be.frozen;
-              expect(exception.contractFunction).to.equal(contractFunction);
-              expect(exception.condition).to.equal(condition);
-              expect(exception.self).to.equal(self);
-              expect(exception.args).to.eql(args);
+              expectProperties(exception, ConditionViolation, contractFunction, condition, self, args);
             }
           );
         }
@@ -209,24 +197,12 @@ module.exports = (function() {
         });
         if (thrown) {
           it("throws a ConditionMetaError if one of the conditions fails", function() {
-            expect(exception).to.be.instanceOf(ConditionMetaError);
-            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-            expect(exception).to.be.frozen;
-            expect(exception.condition).to.equal(firstFailure);
-            expect(exception.contractFunction).to.equal(contractFunction);
-            expect(exception.self).to.equal(self);
-            expect(exception.args).to.eql(args);
+            expectProperties(exception, ConditionMetaError, contractFunction, firstFailure, self, args);
           });
         }
         else if (firstFailure) {
           it("throws a ConditionViolation if one of the conditions evaluates nominally to false", function() {
-            expect(exception).to.be.instanceOf(ConditionViolation);
-            //noinspection JSUnresolvedVariable,BadExpressionStatementJS
-            expect(exception).to.be.frozen;
-            expect(exception.condition).to.equal(firstFailure);
-            expect(exception.contractFunction).to.equal(contractFunction);
-            expect(exception.self).to.equal(self);
-            expect(exception.args).to.eql(args);
+            expectProperties(exception, ConditionViolation, contractFunction, firstFailure, self, args);
           });
         }
         else {

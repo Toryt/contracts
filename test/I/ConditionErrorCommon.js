@@ -69,10 +69,8 @@ module.exports = (function() {
     expect(subject).to.have.property("condition").that.is.a("function");
     testUtil.expectOwnFrozenProperty(subject, "condition");
     testUtil.expectOwnFrozenProperty(subject, "self");
-    testUtil.expectOwnFrozenProperty(subject, "args");
-    //noinspection BadExpressionStatementJS
-    expect(subject).to.have.property("args").that.is.ok;
-    expect(util.typeOf(subject.args)).to.satisfy(function(t) {return t === "arguments" || t === "array";});
+    testUtil.expectOwnFrozenProperty(subject, "_args");
+    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "args", "_args");
     testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, "message");
     testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, "stack");
     expect(subject).to.have.property("message").that.contains(subject.contractFunction.displayName);
@@ -80,12 +78,19 @@ module.exports = (function() {
       .that.contains(util.conciseConditionRepresentation("condition", subject.condition));
   }
 
+  function expectProperties(exception, Type, contractFunction, condition, self, args) {
+    //noinspection BadExpressionStatementJS
+    expect(exception).to.be.ok;
+    expect(exception).to.be.instanceOf(Type);
+    expect(exception).to.have.property("contractFunction").that.equals(contractFunction);
+    expect(exception).to.have.property("condition").that.equals(condition);
+    expect(exception).to.have.property("self").that.equals(self);
+    expect(exception).to.have.property("args").that.eql(Array.prototype.slice.call(args));
+  }
+
   function expectConstructorPost(result, contractFunction, condition, self, args) {
     common.expectConstructorPost(result, result.message);
-    expect(result).to.have.property("contractFunction").that.equals(contractFunction);
-    expect(result).to.have.property("condition").that.equals(condition);
-    expect(result).to.have.property("self").that.equals(self);
-    expect(result).to.have.property("args").that.eql(args); // MUDO array protection
+    expectProperties(result, ConditionError, contractFunction, condition, self, args);
     //noinspection BadExpressionStatementJS
     expect(result).to.be.extensible;
   }
@@ -122,6 +127,7 @@ module.exports = (function() {
     selfCases: selfCases,
     argsCases: argsCases,
     conditionCase: conditionCase,
+    expectProperties: expectProperties,
     expectConstructorPost: expectConstructorPost,
     expectDetailsPost: expectDetailsPost,
     expectInvariants: expectInvariants,
