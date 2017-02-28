@@ -28,43 +28,18 @@
   // describe("I", function() {
     describe("I/ConditionViolation", function() {
 
-      describe("#ConditionViolation.createMessage", function() {
-        it("has a function createMessage()", function() {
-          expect(ConditionViolation).to.have.property("createMessage").that.is.a("function");
-        });
-      });
-
-      describe("#ConditionViolation.createMessage()", function() {
-        common.selfCases.forEach(function(self) {
-          common.argsCases.forEach(function(args) {
-            it("works when called with " + self + " - " + args, function() {
-              var contractFunction = common.createCandidateContractFunction();
-              var result = ConditionViolation.createMessage(contractFunction, common.conditionCase, self, args);
-              expect(result).to.be.a("string");
-              expect(result).to.contain(contractFunction.displayName);
-              expect(result).to.contain(util.conciseConditionRepresentation("condition", common.conditionCase));
-            });
-          });
-        });
-      });
-
       describe("#ConditionViolation()", function() {
         common.selfCases.forEach(function(self) {
           common.argsCases.forEach(function(args) {
             it("creates an instance with all toppings for " + self + " - " + args, function() {
               var contractFunction = common.createCandidateContractFunction();
               var result = new ConditionViolation(contractFunction, common.conditionCase, self, args);
-              common.expectConstructorPost(result,
-                                           contractFunction,
-                                           common.conditionCase,
-                                           self,
-                                           args);
+              common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args);
               common.expectInvariants(result);
-              expect(result.name).to.equal("Contract Condition Violation");
-              expect(result.message).to.equal(
-                ConditionViolation.createMessage(contractFunction, common.conditionCase, self, args)
-              );
               testUtil.log("result.stack: %s", result.stack);
+              expect(result).not.to.haveOwnProperty("message");
+              expect(result).not.to.haveOwnProperty("stack");
+              testUtil.log("result.stack:\n%s", result.stack);
             });
           });
         });
@@ -83,7 +58,7 @@
             return function() {
               return {
                 subject: new ConditionViolation(common.createCandidateContractFunction(),
-                                                common.conditionCase,
+                                                common.conditionCase, // MUDO vary, with cases from concise…
                                                 parameters[0],
                                                 parameters[1]),
                 description: parameters.join(" - ")

@@ -22,6 +22,7 @@ module.exports = (function() {
   var ConditionViolation = require("../../src/I/ConditionViolation");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var Contract = require("../../src/I/Contract");
+  var testUtil = require("../_testUtil");
 
   var selfVerifyCases = [
     function() {return undefined;},
@@ -41,7 +42,9 @@ module.exports = (function() {
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionViolation);
     common.expectInvariants(subject);
+    testUtil.expectFrozenPropertyOnAPrototype(subject, "verify");
     expect(subject).to.have.property("verify").that.is.a("function");
+    testUtil.expectFrozenPropertyOnAPrototype(subject, "verifyAll");
     expect(subject).to.have.property("verifyAll").that.is.a("function");
   }
 

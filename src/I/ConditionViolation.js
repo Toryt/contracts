@@ -41,7 +41,8 @@ module.exports = (function() {
     []
   );
   ConditionViolation.prototype.constructor = ConditionViolation;
-  ConditionViolation.prototype.name = "Contract Condition Violation";
+  util.setAndFreezeProperty(ConditionViolation.prototype, "name", ConditionViolation.name);
+
   /**
    * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
    *
@@ -56,17 +57,22 @@ module.exports = (function() {
    * When any of the supplied <var>conditions</var> fails to execute, a ConditionMetaError is thrown, with its
    * properties filled out appropriately.
    */
-  ConditionViolation.prototype.verifyAll = function(contractFunction, conditions, self, args) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
-    util.pre(this, function() {
-      return conditions
-             && util.typeOf(conditions) === "array"
-             && conditions.every(function(c) {return util.typeOf(c) === "function";});
-    });
-    util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
+  util.setAndFreezeProperty(
+    ConditionViolation.prototype,
+    "verifyAll",
+    function(contractFunction, conditions, self, args) {
+      util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+      util.pre(this, function() {
+        return conditions
+               && util.typeOf(conditions) === "array"
+               && conditions.every(function(c) {return util.typeOf(c) === "function";});
+      });
+      util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
 
-    conditions.forEach(function(condition) {this.verify(contractFunction, condition, self, args);}, this);
-  };
+      conditions.forEach(function(condition) {this.verify(contractFunction, condition, self, args);}, this);
+    }
+  );
+
   /**
    * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
    *
@@ -83,34 +89,30 @@ module.exports = (function() {
    *
    * Mostly, this method is not used directly, but called via <code>verifyAll</code>.
    */
-  ConditionViolation.prototype.verify = function(contractFunction, condition, self, args) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
-    util.pre(this, function() {return util.typeOf(condition) === "function";});
-    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+  util.setAndFreezeProperty(
+    ConditionViolation.prototype,
+    "verify",
+    function(contractFunction, condition, self, args) {
+      util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+      util.pre(this, function() {return util.typeOf(condition) === "function";});
+      util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
-    var conditionResult;
-    try {
-      conditionResult = condition.apply(self, args);
+      var conditionResult;
+      try {
+        conditionResult = condition.apply(self, args);
+      }
+      catch (err) {
+        var cme = new ConditionMetaError(contractFunction, condition, self, args, err);
+        Object.freeze(cme);
+        throw cme;
+      }
+      if (!conditionResult) {
+        var cv = new this.constructor(contractFunction, condition, self, args);
+        Object.freeze(cv);
+        throw cv;
+      }
     }
-    catch (err) {
-      var cme = new ConditionMetaError(contractFunction, condition, self, args, err);
-      Object.freeze(cme);
-      throw cme;
-    }
-    if (!conditionResult) {
-      var cv = new this.constructor(contractFunction, condition, self, args);
-      Object.freeze(cv);
-      throw cv;
-    }
-  };
-
-  /**
-   * This method is called in the constructor to generate the message for the error being created.
-   * It is called with the same arguments as the constructor.
-   *
-   * This is not a prototype method, because it is used in the constructor.
-   */
-  ConditionViolation.createMessage = ConditionError.createMessage;
+  );
 
   return ConditionViolation;
 })();

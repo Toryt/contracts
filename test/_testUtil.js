@@ -88,6 +88,11 @@ module.exports = (function() {
     expectDerivedPropertyOnAPrototype(subject, propertyName, false);
   }
 
+  function expectFrozenPropertyOnAPrototype(subject, propertyName) {
+    var prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName);
+    expectOwnFrozenProperty(prototype, propertyName);
+  }
+
   function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propName, privatePropName) {
     expect(subject).to.have.ownProperty(privatePropName); // array not shared
     expect(subject).to.have.property(privatePropName).that.is.an("array");
@@ -137,6 +142,7 @@ module.exports = (function() {
     expectConfigurableDerivedPropertyOnAPrototype: expectConfigurableDerivedPropertyOnAPrototype,
     expectFrozenDerivedPropertyOnAPrototype: expectFrozenDerivedPropertyOnAPrototype,
     expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
+    expectFrozenPropertyOnAPrototype: expectFrozenPropertyOnAPrototype,
     expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
     log: log,
     showStack: showStack,
