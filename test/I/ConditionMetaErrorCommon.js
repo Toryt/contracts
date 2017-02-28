@@ -24,16 +24,20 @@ module.exports = (function() {
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionMetaError);
     if (subject.error) {
-      //noinspection JSUnresolvedVariable,BadExpressionStatementJS
+      //noinspection BadExpressionStatementJS
       expect(subject.error).to.be.frozen;
     }
     common.expectInvariants(subject);
-    expect(subject.stack).to.contain("" + subject.error);
+    expect(subject).to.have.property("stack").that.contains("" + subject.error);
+    if (subject.error && subject.error.stack) {
+      expect(subject).to.have.property("stack").that.contains(subject.error.stack);
+    }
+    expect(subject).to.have.property("message").that.contains("(" + subject.error + ")");
   }
 
   function expectConstructorPost(result, contractFunction, condition, self, args, error) {
     common.expectConstructorPost.apply(undefined, arguments);
-    expect(result.error).to.equal(error);
+    expect(result).to.have.property("error").that.equals(error);
   }
 
   //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
@@ -59,7 +63,10 @@ module.exports = (function() {
   function expectDetailsPost(subject, result) {
     common.expectDetailsPost(subject, result);
     expect(result)
-      .to.contain(util.eol + (subject.error && subject.error.stack ? subject.error.stack : ("" + subject.error)));
+      .to.contain("" + subject.error);
+    if (subject.error && subject.error.stack) {
+      expect(result).to.contain(util.eol + subject.error.stack);
+    }
   }
 
   var test = {

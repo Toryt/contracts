@@ -48,22 +48,26 @@ module.exports = (function() {
     []
   );
   ConditionMetaError.prototype.constructor = ConditionMetaError;
-  ConditionMetaError.prototype.name = "Contract Condition Meta-Error";
-  ConditionMetaError.prototype.error = null;
-  ConditionMetaError.prototype.getDetails = function() {
-    return ConditionError.prototype.getDetails.call(this) + util.eol +
-           "caused by:" + util.eol +
-           (this.error && this.error.stack ? this.error.stack : ("" + this.error));
-  };
-
-  ConditionMetaError.createMessage = function(contractFunction, condition, self, args, error) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
-    util.pre(function() {return util.typeOf(condition) === "function";});
-
-    return "An error occurred while evaluating " + util.conciseConditionRepresentation("condition", condition) +
-           " while contract function " + contractFunction.displayName +
-           " was called (" + error + ")";
-  };
+  util.setAndFreezeProperty(ConditionMetaError.prototype, "name", ConditionMetaError.name);
+  util.setAndFreezeProperty(ConditionMetaError.prototype, "error", null);
+  util.defineFrozenDerivedProperty(
+    ConditionMetaError.prototype,
+    "message",
+    function() {
+      return "error occurred while evaluating " + util.conciseConditionRepresentation("condition", this.condition) +
+             " while contract function " + this.contractFunction.displayName +
+             " was called (" + this.error + ")";
+    }
+  );
+  util.setAndFreezeProperty(
+    ConditionMetaError.prototype,
+    "getDetails",
+    function() {
+      return ConditionError.prototype.getDetails.call(this) + util.eol +
+             "caused by:" + util.eol +
+             (this.error && this.error.stack ? this.error.stack : ("" + this.error));
+    }
+  );
 
   return ConditionMetaError;
 })();

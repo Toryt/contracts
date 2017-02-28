@@ -27,29 +27,6 @@
   // describe("I", function() {
     describe("I/ConditionMetaError", function() {
 
-      describe("#ConditionMetaError.createMessage", function() {
-        it("has a function createMessage()", function() {
-          expect(ConditionMetaError).to.have.property("createMessage").that.is.a("function");
-        });
-      });
-
-      describe("#ConditionMetaError.createMessage()", function() {
-        common.selfCases.forEach(function(self) {
-          common.argsCases.forEach(function(args) {
-            common.errorCases.forEach(function(error) {
-              it("works when called with " + self + " - " + args, function() {
-                var contractFunction = common.createCandidateContractFunction();
-                var result = ConditionMetaError.createMessage(contractFunction, common.conditionCase, self, args, error);
-                expect(result).to.be.a("string");
-                expect(result).to.contain(contractFunction.displayName);
-                expect(result).to.contain(util.conciseConditionRepresentation("condition", common.conditionCase));
-                expect(result).to.contain("" + error);
-              });
-            });
-          });
-        });
-      });
-
       describe("#ConditionMetaError()", function() {
         common.selfCases.forEach(function(self) {
           common.argsCases.forEach(function(args) {
@@ -59,14 +36,8 @@
                 var result = new ConditionMetaError(contractFunction, common.conditionCase, self, args, error);
                 common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, error);
                 common.expectInvariants(result);
-                expect(result.name).to.equal("Contract Condition Meta-Error");
-                expect(result.message).to.equal(ConditionMetaError.createMessage(
-                  contractFunction,
-                  common.conditionCase,
-                  self,
-                  args,
-                  error
-                ));
+                expect(result).not.to.haveOwnProperty("message");
+                expect(result).not.to.haveOwnProperty("stack");
                 testUtil.log("result.stack:\n%s", result.stack);
               });
             });
@@ -89,7 +60,7 @@
             return function() {
               return {
                 subject: new ConditionMetaError(common.createCandidateContractFunction(),
-                                                common.conditionCase,
+                                                common.conditionCase, // MUDO vary, with cases from concise…
                                                 parameters[0],
                                                 parameters[1],
                                                 parameters[2]),
