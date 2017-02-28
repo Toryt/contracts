@@ -185,7 +185,6 @@
           if (extraArgs) {
             expect(exception.args[1]).to.equal(extraArgs[0]);
             expect(exception.args[2]).to.satisfy(function(f) {return Contract.isAContractFunction(f);});
-            // MUDO we actually don't want the extraArgs in the exception, do we? That is confusing. We want separate properties
           }
           expect(exception.error).to.equal(intentionalError);
         });
