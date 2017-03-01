@@ -20,6 +20,7 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var common = require("./ConditionErrorCommon");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
+  var testUtil = require("../_testUtil");
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionMetaError);
@@ -28,6 +29,7 @@ module.exports = (function() {
       expect(subject.error).to.be.frozen;
     }
     common.expectInvariants(subject);
+    testUtil.expectOwnFrozenProperty(subject, "error");
     expect(subject).to.have.property("stack").that.contains("" + subject.error);
     if (subject.error && subject.error.stack) {
       expect(subject).to.have.property("stack").that.contains(subject.error.stack);
@@ -57,7 +59,9 @@ module.exports = (function() {
     new Number(42),
     new Boolean(false),
     new String("lalala"),
-    arguments
+    arguments,
+    {},
+    {a: 1, b: "b", c: {}, d: {d1: undefined, d2: "d2", d3: {d31: 31}}}
   ];
 
   function expectDetailsPost(subject, result) {
