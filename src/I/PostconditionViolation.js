@@ -1,0 +1,72 @@
+/*
+ Copyright 2016 - 2017 by Jan Dockx
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
+
+module.exports = (function() {
+  "use strict";
+
+  var ConditionViolation = require("./ConditionViolation");
+  var Contract = require("./Contract");
+  var util = require("./../_private/util");
+
+  /**
+   * <p>A PostconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
+   *   postcondition was violated when a contract function was called. The implementation of the contract function
+   *   that was called, was executed, but the result or the resulting state did not conform.</p>
+   *
+   * <p>If the postcondition itself is correct, this is a programming error on the part of the implementation.
+   *   One should assume the system is now in an undefined state.</p>
+   *
+   * <p>The developer wants to know</p>
+   * <ul>
+   *   <li>where the contract function was called in source code,</li>
+   *   <li>what the arguments were of the instance of the call, at the time of the call (old),</li>
+   *   <li>what the result of the call is, and what the state is of all relevant objects is, after the call, and</li>
+   *   <li>which postcondition was violated in source code (which implies knowing which contract it is a part of).</li>
+   * </ul>
+   *
+   * <p>The state of the relevant objects after the call is a difficult subject, since we should assume the system
+   *   is in an undefined state. Retrieving the state might not be possible, because invariants and preconditions
+   *   will no longer be guaranteed.</p>
+   */
+  function PostconditionViolation(contractFunction, condition, self, args, result) {
+    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+    util.pre(this, function() {return util.typeOf(condition) === "function";});
+    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+
+    ConditionViolation.apply(this, arguments);
+    util.setAndFreezeProperty(this, "result", result);
+  }
+
+  PostconditionViolation.prototype = new ConditionViolation(
+    Contract.root.abstract,
+    function() {return "This is a dummy condition in the PostconditionViolation prototype."},
+    undefined,
+    []
+  );
+  PostconditionViolation.prototype.constructor = PostconditionViolation;
+  util.setAndFreezeProperty(PostconditionViolation.prototype, "name", PostconditionViolation.name);
+  util.setAndFreezeProperty(PostconditionViolation.prototype, "result", undefined);
+  util.setAndFreezeProperty(
+    PostconditionViolation.prototype,
+    "getDetails",
+    function() {
+      return ConditionViolation.prototype.getDetails.call(this) + util.eol +
+             "result (" + util.typeOf(this.result) + "): " + this.result;
+    }
+  );
+
+  return PostconditionViolation;
+})();
