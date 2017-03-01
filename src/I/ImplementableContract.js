@@ -21,6 +21,7 @@ module.exports = (function() {
   var ConditionError = require("./ConditionError");
   var ConditionViolation = require("./ConditionViolation");
   var PreconditionViolation = require("./PreconditionViolation");
+  var PostconditionViolation = require("./PostconditionViolation");
 
   /**
    * The separation between Contract and ImplementableContract is necessary to break a dependency
@@ -63,7 +64,7 @@ module.exports = (function() {
         ConditionViolation.prototype.verifyAll(contractFunction, contract.exception, this, extendedArgs);
         throw exception;
       }
-      ConditionViolation.prototype.verifyAll(contractFunction, contract.post, this, extendedArgs);
+      PostconditionViolation.prototype.verifyAll(contractFunction, contract.post, this, extendedArgs);
       return result;
     }
 

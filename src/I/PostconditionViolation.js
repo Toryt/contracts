@@ -40,13 +40,22 @@ module.exports = (function() {
    * <p>The state of the relevant objects after the call is a difficult subject, since we should assume the system
    *   is in an undefined state. Retrieving the state might not be possible, because invariants and preconditions
    *   will no longer be guaranteed.</p>
+   *
+   * @param {Array} args
+   *                The arguments with which the contract function that failed, was called, extended with the
+   *                result of the implementation, and the contract function, bound to the <code>this</code>
+   *                it was called on. The bound contract function is always the last entry. The result of the
+   *                implementation execution is always the second-to-last entry.
    */
-  function PostconditionViolation(contractFunction, condition, self, args, result) {
+  function PostconditionViolation(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
-    ConditionViolation.apply(this, arguments);
+    var actualArgs = Array.prototype.slice.call(args);
+    actualArgs.pop(); // the bound contract function
+    var result = actualArgs.pop();
+    ConditionViolation.call(this, contractFunction, condition, self, actualArgs);
     util.setAndFreezeProperty(this, "result", result);
   }
 

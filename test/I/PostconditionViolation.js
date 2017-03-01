@@ -24,21 +24,25 @@
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 
+  var argsCases = common.argsCases.filter(function(a) {return util.typeOf(a) === "array"});
+
   // describe("I", function() {
     describe("I/PostconditionViolation", function() {
 
       describe("#PostconditionViolation()", function() {
         common.selfCases.forEach(function(self) {
-          common.argsCases.forEach(function(args) {
+          argsCases.forEach(function(args) {
             common.resultCases.forEach(function(result) {
               it("creates an instance with all toppings for " + self + " - " + args + " - " + result, function() {
                 var contractFunction = common.createCandidateContractFunction();
+                var doctoredArgs = args.slice();
+                doctoredArgs.push(result);
+                doctoredArgs.push(contractFunction.bind(self));
                 var creationResult = new PostconditionViolation(
                   contractFunction,
                   common.conditionCase,
                   self,
-                  args,
-                  result
+                  doctoredArgs
                 );
                 common.expectConstructorPost(
                   creationResult,
@@ -68,7 +72,7 @@
           );
         },
         testUtil
-          .x(common.conditionCases, common.selfCases, common.argsCases, common.resultCases)
+          .x(common.conditionCases, common.selfCases, argsCases, common.resultCases)
           .map(function(parameters) {
             return function() {
               return {

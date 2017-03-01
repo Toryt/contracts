@@ -25,9 +25,11 @@
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var ConditionViolation = require("../../src/I/ConditionViolation");
   var PreconditionViolation = require("../../src/I/PreconditionViolation");
+  var PostconditionViolation = require("../../src/I/PostconditionViolation");
   var conditionMetaErrorCommon = require("./ConditionMetaErrorCommon");
   var conditionViolationCommon = require("./ConditionViolationCommon");
   var preconditionViolationCommon = require("./PreconditionViolationCommon");
+  var postconditionViolationCommon = require("./PostconditionViolationCommon");
 
   /* This test is not included in ImplementableContract.generatePrototypeMethodsDescriptions, because it is
      specific for ContractFunction: we test extensively whether the contract function works as expected here.
@@ -140,7 +142,8 @@
           expect(exception).to.be.ok;
           var common = exception instanceof ConditionMetaError ? conditionMetaErrorCommon :
                        exception instanceof PreconditionViolation ? preconditionViolationCommon :
-                       exception instanceof ConditionViolation ? conditionViolationCommon :
+                       exception instanceof PostconditionViolation ? postconditionViolationCommon :
+                       // exception instanceof ExceptionConditionViolation ? ExceptionConditionViolationCommon :
                        null;
           common.expectInvariants(exception);
           expectException(exception);
@@ -153,7 +156,7 @@
       function failsOnPreconditionViolation(self, func, parameter, violatedCondition) {
         it("fails when a precondition is violated - " + self + " - " + parameter, function() {
           callAndExpectException(self, func, parameter, function(exception) {
-            expect(exception).to.be.an.instanceOf(ConditionViolation);
+            expect(exception).to.be.an.instanceOf(PreconditionViolation);
             expect(exception.condition).to.equal(violatedCondition);
             if (!self) {
               //noinspection BadExpressionStatementJS
@@ -190,20 +193,19 @@
         });
       }
 
-      function expectDeepViolation(self, exc, parameter) {
+      function expectedPostCondition(self, exception) {
+        expect(exception).to.be.ok;
+        expect(exception).to.be.an.instanceOf(PostconditionViolation);
+        expect(exception).to.have.property("condition").to.equal(fibonacciWrong.contract.post[3]);
         //noinspection BadExpressionStatementJS
-        expect(exc).to.be.ok;
-        expect(exc).to.be.an.instanceOf(ConditionViolation);
-        expect(exc.args[0]).to.equal(wrongParameter);
-        //noinspection BadExpressionStatementJS
-        if (!self) {
-          //noinspection BadExpressionStatementJS
-          expect(exc.self).not.to.be.ok;
-        }
-        else {
-          expect(exc.self).to.equal(self);
-        }
-        expect(exc.condition).to.equal(fibonacciWrong.contract.post[3]);
+        expect(exception).to.have.property("self").that.equals(self);
+        expect(exception.args[0]).to.equal(wrongParameter);
+        expect(exception.args[1]).to.equal(wrongResult);
+        expect(exception).to.have.property("result").that.equals(wrongResult);
+      }
+
+      function expectDeepPostconditionViolation(self, exc, parameter) {
+        expectedPostCondition(self, exc);
       }
 
       var argumentsOfWrongType = [undefined, null, "bar"];
@@ -329,38 +331,23 @@
           [anExceptedException, self.method.bind(self)]
         );
       });
+
       it("fails when a simple postcondition is violated", function() {
-        callAndExpectException(undefined, fibonacciWrong, wrongParameter, function(exception) {
-          expect(exception).to.be.an.instanceOf(ConditionViolation);
-          expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
-          //noinspection BadExpressionStatementJS
-          expect(exception.self).not.to.be.ok;
-          expect(exception.args[0]).to.equal(wrongParameter);
-          expect(exception.args[1]).to.equal(wrongResult);
-        });
+        callAndExpectException(undefined, fibonacciWrong, wrongParameter, expectedPostCondition.bind(undefined, undefined));
       });
       it("fails when a simple postcondition is violated when it is a method", function() {
-        callAndExpectException(self, self.fibonacciWrong, wrongParameter, function(exception) {
-          expect(exception).to.be.an.instanceOf(ConditionViolation);
-          expect(exception.condition).to.equal(fibonacciWrong.contract.post[3]);
-          //noinspection BadExpressionStatementJS
-          expect(exception.self).to.equal(self);
-          expect(exception.args[0]).to.equal(wrongParameter);
-          expect(exception.args[1]).to.equal(wrongResult);
-        });
+        callAndExpectException(self, self.fibonacciWrong, wrongParameter, expectedPostCondition.bind(undefined, self));
       });
       it("fails when a postcondition is violated in a called function with a nested Violation", function() {
         var parameter = 6;
-        callAndExpectException(undefined, fibonacciWrong, parameter, function(exception) {
-          expectDeepViolation(undefined, exception, parameter);
-        });
+        callAndExpectException(undefined, fibonacciWrong, parameter, expectedPostCondition.bind(undefined, undefined));
       });
       it("fails when a postcondition is violated in a called function with a nested Violation when it is a method", function() {
         var parameter = 6;
-        callAndExpectException(self, self.fibonacciWrong, parameter, function(exception) {
-          expectDeepViolation(self, exception, parameter);
-        });
+        callAndExpectException(self, self.fibonacciWrong, parameter, expectedPostCondition.bind(undefined, self));
       });
+
+      // MUDO test for exception conditions
 
     });
   // });

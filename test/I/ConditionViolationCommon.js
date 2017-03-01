@@ -78,10 +78,7 @@ module.exports = (function() {
           expect(appliedArgs).to.be.ok;
           //noinspection JSAnnotator,BadExpressionStatementJS
           expect(appliedArgs).to.be.arguments;
-          expect(appliedArgs).to.have.lengthOf(args.length);
-          for (var i = 0; i < args.length; i++) {
-            expect(appliedArgs[i]).to.equal(args[i]);
-          }
+          expect(args).to.eql(appliedArgs);
         });
         it("should throw an exception when the condition and evaluates to false, and not otherwise, " +
            "because the condition ended nominally",
@@ -90,10 +87,10 @@ module.exports = (function() {
           }
         );
         if (!outcome) {
-          it("should throw a ConditionViolation that is correctly configured, " +
+          it("should throw a ...ConditionViolation that is correctly configured, " +
              "because the condition evaluated to false nominally",
             function() {
-              expectProperties(exception, ConditionViolation, contractFunction, condition, self, args);
+              expectProperties(exception, subject.constructor, contractFunction, condition, self, args);
             }
           );
         }
@@ -149,7 +146,29 @@ module.exports = (function() {
             var contractFunction = common.createCandidateContractFunction();
             describe("works for " + condition + " - " + self + " - " + args, function() {
               var exception;
-              try {
+              try {/* MUDO painted myself into a corner
+              for Postcondition… and ExceptionConditionViolations, the args should be doctored.
+              We expect the result / exception, and the bound function, on the args.
+              This is weird in the …Violation constructor now.
+              Some tests are now adapted to this.
+              But also this test needs to be varied to this, and that is complex!
+              That complexity exposes the complexity of this situation, and is probably not something
+              to be worked around with transpiration.
+
+              It is also weird that we call verify(All) on the prototype in the contract function.
+              It would be cleaner to create the exception, and than call verifyAll on it. The verify method
+              can than be varied using dynamic binding on the different subtypes of ConditionViolation, and can
+              do its job on the properties of the exception. If all is well, nothing happens. If all is not well,
+              it freezes and throws itself.
+              The cost of this would be to revert this commit, and an error construction in every contract function call,
+              either for the post, or the exception check, instead of 1 call, which is very expensive.
+              If, in the current approach, we vary the verify method, we need separate tests for each variant.
+
+              On the other hand, the doctoring of the arguments is needed anyway to execute the conditions, which led
+              to the current approach.
+
+              So, going the distance seems like the best approach after all.
+              */
                 subject.verify(contractFunction, condition, self, args);
               }
               catch (exc) {
