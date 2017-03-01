@@ -141,7 +141,7 @@ module.exports = (function() {
       return "contract:" + util.eol + this.contractFunction.contract.location +
              util.eol + "condition: " + start + this.condition +
              util.eol + "contract function:" + util.eol + this.contractFunction.location +
-             util.eol + "this (" + util.typeOf(this.self) + "): " + start + this.self +
+             util.eol + "this (" + util.typeOf(this.self) + "):" + start + this.self +
              util.eol + "arguments (" + this.args.length + "):" +
              Array.prototype.map.call(this.args, function(arg, index) {
                return start + index + " (" + util.typeOf(arg) + "): " + arg;
