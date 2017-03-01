@@ -87,7 +87,14 @@
               };
             };
           }),
-        common.expectInvariants
+        common.expectInvariants,
+        function doctorArgs(args, boundContractFunction) {
+          var result = Array.prototype.slice.call(args);
+          //noinspection MagicNumberJS
+          result.push(42); // a result
+          result.push(boundContractFunction);
+          return result;
+        }
       );
 
     });

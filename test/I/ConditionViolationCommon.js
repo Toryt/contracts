@@ -48,25 +48,25 @@ module.exports = (function() {
     expect(subject).to.have.property("verifyAll").that.is.a("function");
   }
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants) {
+  function expectProperties(exception, Type, contractFunction, condition, self, args) {
+    common.expectProperties.apply(undefined, arguments);
+    //noinspection BadExpressionStatementJS
+    expect(exception).to.be.frozen;
+  }
+
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants, doctorArgs) {
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
 
-    function expectProperties(exception, Type, contractFunction, condition, self, args) {
-      common.expectProperties.apply(undefined, arguments);
-      //noinspection BadExpressionStatementJS
-      expect(exception).to.be.frozen;
-    }
-
     describe("#verify()", function() {
-      function expectPost(subject, contractFunction, condition, self, args, appliedSelf, appliedArgs, exception) {
+      function expectPost(subject, contractFunction, condition, self, args, doctoredArgs, appliedSelf, appliedArgs, exception) {
         var outcome;
         try {
           outcome = condition.apply();
         }
-        catch (err) {
+        catch (ignore) {
           it("should throw a ConditionMetaError because the condition had an error", function() {
-            expectProperties(exception, ConditionMetaError, contractFunction, condition, self, args);
+            expectProperties(exception, ConditionMetaError, contractFunction, condition, self, doctoredArgs);
           });
           return;
         }
@@ -78,7 +78,8 @@ module.exports = (function() {
           expect(appliedArgs).to.be.ok;
           //noinspection JSAnnotator,BadExpressionStatementJS
           expect(appliedArgs).to.be.arguments;
-          expect(args).to.eql(appliedArgs);
+          // doctoredArgs might be arguments, or Array
+          expect(Array.prototype.slice.call(doctoredArgs)).to.eql(Array.prototype.slice.call(appliedArgs));
         });
         it("should throw an exception when the condition and evaluates to false, and not otherwise, " +
            "because the condition ended nominally",
@@ -144,37 +145,16 @@ module.exports = (function() {
             var self = selfGenerator();
             var args = argGenerator();
             var contractFunction = common.createCandidateContractFunction();
+            var doctoredArgs = doctorArgs ? doctorArgs(args, contractFunction.bind(self)) : args;
             describe("works for " + condition + " - " + self + " - " + args, function() {
               var exception;
-              try {/* MUDO painted myself into a corner
-              for Postcondition… and ExceptionConditionViolations, the args should be doctored.
-              We expect the result / exception, and the bound function, on the args.
-              This is weird in the …Violation constructor now.
-              Some tests are now adapted to this.
-              But also this test needs to be varied to this, and that is complex!
-              That complexity exposes the complexity of this situation, and is probably not something
-              to be worked around with transpiration.
-
-              It is also weird that we call verify(All) on the prototype in the contract function.
-              It would be cleaner to create the exception, and than call verifyAll on it. The verify method
-              can than be varied using dynamic binding on the different subtypes of ConditionViolation, and can
-              do its job on the properties of the exception. If all is well, nothing happens. If all is not well,
-              it freezes and throws itself.
-              The cost of this would be to revert this commit, and an error construction in every contract function call,
-              either for the post, or the exception check, instead of 1 call, which is very expensive.
-              If, in the current approach, we vary the verify method, we need separate tests for each variant.
-
-              On the other hand, the doctoring of the arguments is needed anyway to execute the conditions, which led
-              to the current approach.
-
-              So, going the distance seems like the best approach after all.
-              */
-                subject.verify(contractFunction, condition, self, args);
+              try {
+                subject.verify(contractFunction, condition, self, doctoredArgs);
               }
               catch (exc) {
                 exception = exc;
               }
-              expectPost(subject, contractFunction, condition, self, args, condition.self, condition.args, exception);
+              expectPost(subject, contractFunction, condition, self, args, doctoredArgs, condition.self, condition.args, exception);
             });
           });
         });
@@ -182,7 +162,7 @@ module.exports = (function() {
     });
 
     describe("#verifyAll()", function() {
-      function expectPost(subject, contractFunction, conditions, self, args, exception) {
+      function expectPost(subject, contractFunction, conditions, self, args, doctoredArgs, exception) {
         if (conditions.length <= 0) {
           it("doesn't throw an exception if there are no conditions", function() {
             //noinspection BadExpressionStatementJS
@@ -216,12 +196,12 @@ module.exports = (function() {
         });
         if (thrown) {
           it("throws a ConditionMetaError if one of the conditions fails", function() {
-            expectProperties(exception, ConditionMetaError, contractFunction, firstFailure, self, args);
+            expectProperties(exception, ConditionMetaError, contractFunction, firstFailure, self, doctoredArgs);
           });
         }
         else if (firstFailure) {
-          it("throws a ConditionViolation if one of the conditions evaluates nominally to false", function() {
-            expectProperties(exception, ConditionViolation, contractFunction, firstFailure, self, args);
+          it("throws a …ConditionViolation if one of the conditions evaluates nominally to false", function() {
+            expectProperties(exception, subject.constructor, contractFunction, firstFailure, self, args);
           });
         }
         else {
@@ -243,10 +223,8 @@ module.exports = (function() {
               expect(appliedArgs).to.be.empty;
             }
             else {
-              expect(appliedArgs).to.have.lengthOf(args.length);
-              for (var i = 0; i < args.length; i++) {
-                expect(appliedArgs[i]).to.equal(args[i]);
-              }
+              // doctoredArgs might be arguments, or Array
+              expect(Array.prototype.slice.call(doctoredArgs)).to.eql(Array.prototype.slice.call(appliedArgs));
             }
           }
         });
@@ -354,15 +332,16 @@ module.exports = (function() {
             var self = selfGenerator();
             var args = argGenerator();
             var contractFunction = common.createCandidateContractFunction();
+            var doctoredArgs = doctorArgs ? doctorArgs(args, contractFunction.bind(self)) : args;
             describe("works for " + conditions + " - " + self + " - " + args, function() {
               var exception;
               try {
-                subject.verifyAll(contractFunction, conditions, self, args);
+                subject.verifyAll(contractFunction, conditions, self, doctoredArgs);
               }
               catch (exc) {
                 exception = exc;
               }
-              expectPost(subject, contractFunction, conditions, self, args, exception);
+              expectPost(subject, contractFunction, conditions, self, args, doctoredArgs, exception);
             });
           });
         });
@@ -375,7 +354,8 @@ module.exports = (function() {
     selfVerifyCases: selfVerifyCases,
     argsVerifyCases: argsVerifyCases,
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
-    expectInvariants: expectInvariants
+    expectInvariants: expectInvariants,
+    expectProperties: expectProperties
   };
   Object.setPrototypeOf(test, common);
   return test;
