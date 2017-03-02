@@ -60,41 +60,37 @@
         });
       });
 
+      function doctorArgs(args, boundContractFunction, result) {
+        var doctored = Array.prototype.slice.call(args);
+        //noinspection MagicNumberJS
+        var r = arguments.length >= 3 ? result : 42;
+        doctored.push(r); // a result
+        doctored.push(boundContractFunction);
+        return doctored;
+      }
+
       common.generatePrototypeMethodsDescriptions(
         function() {
-          //noinspection MagicNumberJS
-          return new PostconditionViolation(
-            common.createCandidateContractFunction(),
-            common.conditionCase,
-            null,
-            common.argsCases[0],
-            42
-          );
+          var contractFunction = common.createCandidateContractFunction();
+          var self = null;
+          var doctoredArgs = doctorArgs(common.argsCases[0], contractFunction.bind(self));
+          return new PostconditionViolation(contractFunction, common.conditionCase, self, doctoredArgs);
         },
         testUtil
           .x(common.conditionCases, common.selfCases, argsCases, common.resultCases)
           .map(function(parameters) {
             return function() {
+              var contractFunction = common.createCandidateContractFunction();
+              var self = parameters[1];
+              var doctoredArgs = doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]);
               return {
-                subject: new PostconditionViolation(
-                  common.createCandidateContractFunction(),
-                  parameters[0],
-                  parameters[1],
-                  parameters[2],
-                  parameters[3]
-                ),
+                subject: new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs),
                 description: parameters.join(" - ")
               };
             };
           }),
         common.expectInvariants,
-        function doctorArgs(args, boundContractFunction) {
-          var result = Array.prototype.slice.call(args);
-          //noinspection MagicNumberJS
-          result.push(42); // a result
-          result.push(boundContractFunction);
-          return result;
-        }
+        doctorArgs
       );
 
     });
