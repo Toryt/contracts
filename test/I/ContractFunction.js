@@ -122,6 +122,41 @@
         return result;
       });
 
+      var integerMessage = "n must be integer";
+      var positiveMessage = "n must be positive";
+
+      var defensiveIntegerSum = new ImplementableContract({
+        post: [
+          function(n, result) {return util.isInteger(result);},
+          function(n, result) {return 0 <= result;},
+          function(n, result) {return n !== 0 || result === 0;},
+          function(n, result, sum) {return n === 0 || result === sum(n - 1) + n;}
+        ],
+        exception: [
+          function(n, exc) {return !(exc instanceof Error) || exc.message !== positiveMessage || n < 0;},
+          function(n, exc) {return !(exc instanceof Error) || exc.message !== integerMessage || !util.isInteger(n);}
+        ]
+      }).implementation(function(n) {
+        if (!util.isInteger(n)) {throw new Error(integerMessage);}
+        if (n < 0) {throw new Error(positiveMessage);}
+        var count = 0;
+        var result = 0;
+        while (count < n) {
+          count++;
+          result += count;
+        }
+        return result;
+      });
+
+      var fastDefensiveIntegerSum = defensiveIntegerSum.contract.implementation(function(n) {
+        if (!util.isInteger(n)) {throw new Error(integerMessage);}
+        if (n < 0) {throw new Error(positiveMessage);}
+        return (n * (n + 1)) / 2;
+      });
+
+      var negativeParameter = -10;
+      var nonIntegerParameter = Math.PI;
+
       var resultWhenMetaError = "This is the result or exception when we get a meta error";
 
       function callAndExpectException(self, func, parameter, expectException) {
@@ -240,6 +275,10 @@
       it("doesn't interfere when the implementation is correct too", function() {
         var ignore = factorial(5); // any exception will fail the test
       });
+      it("doesn't interfere when the implementation is correct three", function() {
+        //noinspection MagicNumberJS
+        var ignore = defensiveIntegerSum(100); // any exception will fail the test
+      });
       it("can deal with alternative implementations", function() {
         var ignore = factorialIterative(5); // any exception will fail the test
       });
@@ -248,6 +287,9 @@
       });
       it("works with a method that is correct too", function() {
         var ignore = self.factorial(5); // any exception will fail the test
+      });
+      it("works with a method that is correct three", function() {
+        var ignore = self.defensiveIntegerSum(5); // any exception will fail the test
       });
       argumentsOfWrongType.forEach(function(wrongArg) {
         failsOnPreconditionViolation(undefined, fibonacci, wrongArg, fibonacci.contract.pre[0]);
@@ -349,6 +391,13 @@
       });
 
       // MUDO test for exception conditions
+      it("works with a defensive function", function() {
+        expect(fastDefensiveIntegerSum.bind(undefined, negativeParameter)).to.throw(Error, positiveMessage);
+      });
+      it("works with a defensive method", function() {
+        expect(self.defensiveIntegerSum.bind(self, nonIntegerParameter)).to.throw(Error, integerMessage);
+      });
+
 
     });
   // });
