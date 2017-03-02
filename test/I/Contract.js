@@ -18,28 +18,28 @@
   "use strict";
 
   var expect = require("chai").expect;
-  var common = require("./ImplementableContractCommon");
+  var common = require("./ContractCommon");
   var testUtil = require("../_testUtil");
-  var ImplementableContract = require("../../src/I/ImplementableContract");
+  var Contract = require("../../src/I/Contract");
   var AbstractContract = require("../../src/I/AbstractContract");
 
   // describe("I", function() {
-    describe("I/ImplementableContract", function() {
+    describe("I/Contract", function() {
 
-      describe("ImplementableContract", function() {
+      describe("Contract", function() {
         it("has the expected properties", function() {
-          expect(ImplementableContract).to.haveOwnProperty("root");
-          expect(ImplementableContract).to.have.property("root").that.equals(AbstractContract.root);
+          expect(Contract).to.haveOwnProperty("root");
+          expect(Contract).to.have.property("root").that.equals(AbstractContract.root);
         });
       });
 
       var subjects = testUtil
         .x(common.preCases, common.postCases, common.exceptionCases)
         .map(function(args) {
-          return function() {return new ImplementableContract(args[0](), args[1](), args[2]());};
+          return function() {return new Contract(args[0](), args[1](), args[2]());};
         });
 
-      describe("#ImplementableContract()", function() {
+      describe("#Contract()", function() {
         common.constructorPreCases.forEach(function(pre) {
           common.constructorPostCases.forEach(function(post) {
             common.constructorExceptionCases.forEach(function(exception) {
@@ -47,7 +47,7 @@
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
-                var result = new ImplementableContract({
+                var result = new Contract({
                   pre: preConditions,
                   post: postConditions,
                   exception: exceptionConditions
@@ -60,7 +60,7 @@
       });
 
       common.generatePrototypeMethodsDescriptions(
-        function() {return new ImplementableContract({});},
+        function() {return new Contract({});},
         testUtil
           .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
           .map(function(parameters) {
@@ -69,7 +69,7 @@
               var postConditions = parameters[1]();
               var exceptionConditions = parameters[2]();
               return {
-                subject: new ImplementableContract({
+                subject: new Contract({
                   pre: preConditions,
                   post: postConditions,
                   exception: exceptionConditions

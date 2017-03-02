@@ -19,10 +19,10 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var common = require("./AbstractContractCommon");
-  var ImplementableContract = require("../../src/I/ImplementableContract");
+  var Contract = require("../../src/I/Contract");
 
   function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(ImplementableContract);
+    expect(subject).to.be.an.instanceOf(Contract);
     common.expectInvariants(subject);
     expect(subject).to.have.property("implementation").that.is.a("function");
   }
@@ -33,22 +33,22 @@ module.exports = (function() {
 
     //noinspection FunctionTooLongJS
     describe("#implementation", function() {
-      function expectPost(implementableContract, implFunction , result) {
+      function expectPost(contract, implFunction , result) {
         //noinspection BadExpressionStatementJS
-        expect(implementableContract.isImplementedBy(result)).to.be.ok;
-        expect(result).to.have.property("contract").that.equals(implementableContract);
+        expect(contract.isImplementedBy(result)).to.be.ok;
+        expect(result).to.have.property("contract").that.equals(contract);
         expect(result).to.have.property("implementation").that.equals(implFunction);
-        self.expectInvariants(implementableContract);
+        self.expectInvariants(contract);
       }
 
-      it("returns an ImplementableContract function that is configured as expected", function() {
+      it("returns an Contract function that is configured as expected", function() {
         var subject = oneSubjectGenerator();
         var impl = function() {};
         var result = subject.implementation(impl);
         expectPost(subject, impl, result);
       });
 
-      it("returns a different ImplementableContract function when called with the same implementation", function() {
+      it("returns a different Contract function when called with the same implementation", function() {
         var subject = oneSubjectGenerator();
         var impl = function() {};
         var result = subject.implementation(impl);
@@ -57,7 +57,7 @@ module.exports = (function() {
         expect(result2).to.not.equal(result);
       });
 
-      it("returns a different ImplementableContract function with a different implementation", function() {
+      it("returns a different Contract function with a different implementation", function() {
         var subject = oneSubjectGenerator();
         var impl = function() {};
         var impl2 = function() {};

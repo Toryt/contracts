@@ -24,10 +24,10 @@ module.exports = (function() {
   var ExceptionConditionViolation = require("./ExceptionConditionViolation");
 
   /**
-   * The separation between AbstractContract and ImplementableContract is necessary to break a dependency
+   * The separation between AbstractContract and Contract is necessary to break a dependency
    * cycle with ConditionError.
    */
-  function ImplementableContract(kwargs) {
+  function Contract(kwargs) {
     util.pre(function() {return !!kwargs;});
     util.pre(function() {return !kwargs.pre || util.typeOf(kwargs.pre) === "array";});
     util.pre(function() {return !kwargs.post || util.typeOf(kwargs.post) === "array";});
@@ -36,9 +36,9 @@ module.exports = (function() {
     AbstractContract.apply(this, arguments);
   }
 
-  ImplementableContract.prototype = new AbstractContract({pre: [AbstractContract.falseCondition]});
-  ImplementableContract.prototype.constructor = ImplementableContract;
-  ImplementableContract.prototype.implementation = function(implFunction) {
+  Contract.prototype = new AbstractContract({pre: [AbstractContract.falseCondition]});
+  Contract.prototype.constructor = Contract;
+  Contract.prototype.implementation = function(implFunction) {
     util.pre(this, function() {return implFunction && util.typeOf(implFunction) === "function";});
 
     var contract = this;
@@ -73,7 +73,7 @@ module.exports = (function() {
     return contractFunction;
   };
 
-  ImplementableContract.root = AbstractContract.root;
+  Contract.root = AbstractContract.root;
 
-  return ImplementableContract;
+  return Contract;
 })();

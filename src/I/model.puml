@@ -36,11 +36,11 @@ abstract class AbstractContract {
   +{static} AbstractContract(pre: Function[]?, post: Function[]?, exception: Function[]?)
 }
 
-class ImplementableContract {
-  +{static} ImplementableContract(pre: Function[]?, post: Function[]?, exception: Function[]?)
+class Contract {
+  +{static} Contract(pre: Function[]?, post: Function[]?, exception: Function[]?)
   +implementation(implFunction: Function): ContractFunction
 }
-AbstractContract <|-- ImplementableContract
+AbstractContract <|-- Contract
 
 interface ContractFunction {
   +location: String <<readonly>>
@@ -139,10 +139,10 @@ ConditionViolation <|-- PreconditionViolation
 ConditionViolation <|-- PostconditionViolation
 ConditionViolation <|-- ExceptionConditionViolation
 
-ImplementableContract ..> ConditionMetaError: <<use>>
-ImplementableContract ..> PreconditionViolation: <<use>>
-ImplementableContract ..> PostconditionViolation: <<use>>
-ImplementableContract ..> ExceptionConditionViolation: <<use>>
-ImplementableContract ..> ContractFunction: <<generates>>
+Contract ..> ConditionMetaError: <<use>>
+Contract ..> PreconditionViolation: <<use>>
+Contract ..> PostconditionViolation: <<use>>
+Contract ..> ExceptionConditionViolation: <<use>>
+Contract ..> ContractFunction: <<generates>>
 
 @enduml

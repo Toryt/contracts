@@ -20,7 +20,7 @@
   var expect = require("chai").expect;
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
-  var ImplementableContract = require("../../src/I/ImplementableContract");
+  var Contract = require("../../src/I/Contract");
   var AbstractContract = require("../../src/I/AbstractContract");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var PreconditionViolation = require("../../src/I/PreconditionViolation");
@@ -31,10 +31,10 @@
   var postconditionViolationCommon = require("./PostconditionViolationCommon");
   var exceptionConditionViolationCommon = require("./ExceptionConditionViolationCommon");
 
-  /* This test is not included in ImplementableContract.generatePrototypeMethodsDescriptions, because it is
+  /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
      specific for ContractFunction: we test extensively whether the contract function works as expected here.
      This tests the behavior of the resulting contract function. The tests in
-     ImplementableContract.generatePrototypeMethodsDescriptions tests the state postconditions only. */
+     Contract.generatePrototypeMethodsDescriptions tests the state postconditions only. */
 
   // describe("I", function() {
     //noinspection FunctionTooLongJS
@@ -44,7 +44,7 @@
         return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
       }
 
-      var fibonacci = new ImplementableContract({
+      var fibonacci = new Contract({
         pre: [
           function(n) {return util.isInteger(n);},
           function(n) {return 0 <= n;}
@@ -54,7 +54,7 @@
           function(n, result) {return n !== 0 || result === 0;},
           function(n, result) {return n !== 1 || result === 1;},
           function(n, result, fibonacci) {
-            // Note: don't refer to a specific implementation ("fibonacci") in the ImplementableContract!
+            // Note: don't refer to a specific implementation ("fibonacci") in the Contract!
             return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);
           }
         ],
@@ -81,7 +81,7 @@
         }
       });
 
-      var factorialContract = new ImplementableContract({
+      var factorialContract = new Contract({
         pre: [
           function(n) {return util.isInteger(n);},
           function(n) {return 0 <= n;}
@@ -90,7 +90,7 @@
           function(n, result) {return util.isInteger(result);},
           function(n, result) {return n !== 0 || result === 1;},
           function(n, result, f) {
-            // Note: don't refer to a specific implementation in the ImplementableContract!
+            // Note: don't refer to a specific implementation in the Contract!
 
             return n < 1 || result === n * f(n - 1);
           }
@@ -125,7 +125,7 @@
       var integerMessage = "n must be integer";
       var positiveMessage = "n must be positive";
 
-      var defensiveIntegerSum = new ImplementableContract({
+      var defensiveIntegerSum = new Contract({
         post: [
           function(n, result) {return util.isInteger(result);},
           function(n, result) {return 0 <= result;},
@@ -289,7 +289,7 @@
 
       var intentionalError = new Error("This precondition intentionally fails.");
 
-      var contractWithAFailingPre = new ImplementableContract({
+      var contractWithAFailingPre = new Contract({
         pre: [function() {throw intentionalError;}]
       });
 
@@ -342,7 +342,7 @@
         );
       });
       it("fails with a meta-error when a postcondition is kaput", function() {
-        var contractWithAFailingPost = new ImplementableContract({
+        var contractWithAFailingPost = new Contract({
           post: [function() {throw intentionalError;}]
         });
 
@@ -355,7 +355,7 @@
         );
       });
       it("fails with a meta-error when a postcondition is kaput when it is a method", function() {
-        var contractWithAFailingPost = new ImplementableContract({
+        var contractWithAFailingPost = new Contract({
           post: [function() {throw intentionalError;}]
         });
         var self = {
@@ -370,7 +370,7 @@
         );
       });
       it("fails with a meta-error when an exception condition is kaput", function() {
-        var contractWithAFailingExceptionCondition = new ImplementableContract({
+        var contractWithAFailingExceptionCondition = new Contract({
           exception: [function() {throw intentionalError;}]
         });
         var anExceptedException = "This exception is expected.";
@@ -383,7 +383,7 @@
         );
       });
       it("fails with a meta-error when an exception condition is kaput when it is a method", function() {
-        var contractWithAFailingExceptionCondition = new ImplementableContract({
+        var contractWithAFailingExceptionCondition = new Contract({
           exception: [function() {throw intentionalError;}]
         });
         var anExceptedException = "This exception is expected.";
