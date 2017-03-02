@@ -77,8 +77,10 @@ module.exports = (function() {
     ExceptionConditionViolation.prototype,
     "getDetails",
     function() {
+      var exceptionRepresentation = this.exception && this.exception.stack;
+      exceptionRepresentation = exceptionRepresentation || ("" + this.exception);
       return ConditionViolation.prototype.getDetails.call(this) + util.eol +
-             "exception (" + util.typeOf(this.exception) + "): " + this.exception;
+             "exception (" + util.typeOf(this.exception) + "):" + util.eol + exceptionRepresentation;
     }
   );
 
