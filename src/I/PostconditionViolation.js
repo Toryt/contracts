@@ -24,7 +24,7 @@ module.exports = (function() {
   /**
    * <p>A PostconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
    *   postcondition was violated when a contract function was called. The implementation of the contract function
-   *   that was called, was executed, but the result or the resulting state did not conform.</p>
+   *   that was called, was executed and ended nominally, but the result or the resulting state did not conform.</p>
    *
    * <p>If the postcondition itself is correct, this is a programming error on the part of the implementation.
    *   One should assume the system is now in an undefined state.</p>
