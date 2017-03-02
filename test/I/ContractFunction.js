@@ -37,6 +37,7 @@
      ImplementableContract.generatePrototypeMethodsDescriptions tests the state postconditions only. */
 
   // describe("I", function() {
+    //noinspection FunctionTooLongJS
     describe("I/ContractFunction", function() {
 
       function fibonacciImpl(n) {
@@ -60,7 +61,7 @@
         exception: [
           function() {return false;}
         ]
-    }).implementation(fibonacciImpl);
+      }).implementation(fibonacciImpl);
 
       var wrongParameter = 4;
       var wrongResult = -3;
@@ -193,8 +194,8 @@
         });
       }
 
-      function expectProperties(self, contractFunction, exception) {
-        conditionViolationCommon.expectProperties(
+      function expectPostProperties(self, contractFunction, exception) {
+        postconditionViolationCommon.expectProperties(
           exception,
           PostconditionViolation,
           contractFunction,
@@ -244,6 +245,9 @@
       });
       it("works with a method that is correct", function() {
         var ignore = self.fibonacci(5); // any exception will fail the test
+      });
+      it("works with a method that is correct too", function() {
+        var ignore = self.factorial(5); // any exception will fail the test
       });
       argumentsOfWrongType.forEach(function(wrongArg) {
         failsOnPreconditionViolation(undefined, fibonacci, wrongArg, fibonacci.contract.pre[0]);
@@ -330,18 +334,18 @@
       });
 
       it("fails when a simple postcondition is violated", function() {
-        callAndExpectException(undefined, fibonacciWrong, wrongParameter, expectProperties.bind(undefined, undefined, fibonacciWrong));
+        callAndExpectException(undefined, fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong));
       });
       it("fails when a simple postcondition is violated when it is a method", function() {
-        callAndExpectException(self, self.fibonacciWrong, wrongParameter, expectProperties.bind(undefined, self, self.fibonacciWrong));
+        callAndExpectException(self, self.fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong));
       });
       it("fails when a postcondition is violated in a called function with a nested Violation", function() {
         var parameter = 6;
-        callAndExpectException(undefined, fibonacciWrong, parameter, expectProperties.bind(undefined, undefined, fibonacciWrong));
+        callAndExpectException(undefined, fibonacciWrong, parameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong));
       });
       it("fails when a postcondition is violated in a called function with a nested Violation when it is a method", function() {
         var parameter = 6;
-        callAndExpectException(self, self.fibonacciWrong, parameter, expectProperties.bind(undefined, self, self.fibonacciWrong));
+        callAndExpectException(self, self.fibonacciWrong, parameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong));
       });
 
       // MUDO test for exception conditions
