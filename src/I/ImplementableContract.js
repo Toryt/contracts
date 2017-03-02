@@ -73,5 +73,7 @@ module.exports = (function() {
     return contractFunction;
   };
 
+  ImplementableContract.root = AbstractContract.root;
+
   return ImplementableContract;
 })();

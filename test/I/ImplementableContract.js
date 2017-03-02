@@ -21,9 +21,17 @@
   var common = require("./ImplementableContractCommon");
   var testUtil = require("../_testUtil");
   var ImplementableContract = require("../../src/I/ImplementableContract");
+  var AbstractContract = require("../../src/I/AbstractContract");
 
   // describe("I", function() {
     describe("I/ImplementableContract", function() {
+
+      describe("ImplementableContract", function() {
+        it("has the expected properties", function() {
+          expect(ImplementableContract).to.haveOwnProperty("root");
+          expect(ImplementableContract).to.have.property("root").that.equals(AbstractContract.root);
+        });
+      });
 
       var subjects = testUtil
         .x(common.preCases, common.postCases, common.exceptionCases)
