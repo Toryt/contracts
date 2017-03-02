@@ -19,9 +19,9 @@ module.exports = (function() {
   var util = require("./../_private/util");
   var Contract = require("./Contract");
   var ConditionError = require("./ConditionError");
-  var ConditionViolation = require("./ConditionViolation");
   var PreconditionViolation = require("./PreconditionViolation");
   var PostconditionViolation = require("./PostconditionViolation");
+  var ExceptionConditionViolation = require("./ExceptionConditionViolation");
 
   /**
    * The separation between Contract and ImplementableContract is necessary to break a dependency
@@ -61,7 +61,7 @@ module.exports = (function() {
       extendedArgs.push(exception || result);
       extendedArgs.push(contractFunction.bind(this));
       if (exception) {
-        ConditionViolation.prototype.verifyAll(contractFunction, contract.exception, this, extendedArgs);
+        ExceptionConditionViolation.prototype.verifyAll(contractFunction, contract.exception, this, extendedArgs);
         throw exception;
       }
       PostconditionViolation.prototype.verifyAll(contractFunction, contract.post, this, extendedArgs);

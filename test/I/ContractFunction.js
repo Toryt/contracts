@@ -23,13 +23,13 @@
   var ImplementableContract = require("../../src/I/ImplementableContract");
   var Contract = require("../../src/I/Contract");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
-  var ConditionViolation = require("../../src/I/ConditionViolation");
   var PreconditionViolation = require("../../src/I/PreconditionViolation");
   var PostconditionViolation = require("../../src/I/PostconditionViolation");
+  var ExceptionConditionViolation = require("../../src/I/ExceptionConditionViolation");
   var conditionMetaErrorCommon = require("./ConditionMetaErrorCommon");
-  var conditionViolationCommon = require("./ConditionViolationCommon");
   var preconditionViolationCommon = require("./PreconditionViolationCommon");
   var postconditionViolationCommon = require("./PostconditionViolationCommon");
+  var exceptionConditionViolationCommon = require("./ExceptionConditionViolationCommon");
 
   /* This test is not included in ImplementableContract.generatePrototypeMethodsDescriptions, because it is
      specific for ContractFunction: we test extensively whether the contract function works as expected here.
@@ -154,6 +154,14 @@
         return (n * (n + 1)) / 2;
       });
 
+      var wrongException = new Error(integerMessage); // will be thrown in error
+
+      var fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(function(n) {
+        if (util.isInteger(n)) {throw wrongException;} // wrong
+        if (n < 0) {throw new Error(positiveMessage);}
+        return (n * (n + 1)) / 2;
+      });
+
       var negativeParameter = -10;
       var nonIntegerParameter = Math.PI;
 
@@ -179,7 +187,7 @@
           var common = exception instanceof ConditionMetaError ? conditionMetaErrorCommon :
                        exception instanceof PreconditionViolation ? preconditionViolationCommon :
                        exception instanceof PostconditionViolation ? postconditionViolationCommon :
-                       // exception instanceof ExceptionConditionViolation ? ExceptionConditionViolationCommon :
+                       exception instanceof ExceptionConditionViolation ? exceptionConditionViolationCommon :
                        null;
           common.expectInvariants(exception);
           expectException(exception);
@@ -239,7 +247,18 @@
           [wrongParameter],
           wrongResult
         );
-        expect(exception).to.have.property("result").that.equals(wrongResult);
+      }
+
+      function expectExceptionProperties(self, contractFunction, exception) {
+        exceptionConditionViolationCommon.expectProperties(
+          exception,
+          ExceptionConditionViolation,
+          contractFunction,
+          contractFunction.contract.exception[1], // integer was programmed wrong
+          self,
+          [wrongParameter],
+          wrongException
+        );
       }
 
       var argumentsOfWrongType = [undefined, null, "bar"];
@@ -261,7 +280,11 @@
           else {
             return this.fibonacciWrong(n - 1) + this.fibonacciWrong(n - 2);
           }
-        })
+        }),
+        factorial: factorial,
+        defensiveIntegerSum: defensiveIntegerSum,
+        fastDefensiveIntegerSum: fastDefensiveIntegerSum,
+        fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
       };
 
       var intentionalError = new Error("This precondition intentionally fails.");
@@ -391,7 +414,6 @@
         callAndExpectException(self, self.fibonacciWrong, parameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong));
       });
 
-      // MUDO test for exception conditions
       it("works with a defensive function", function() {
         expect(fastDefensiveIntegerSum.bind(undefined, negativeParameter)).to.throw(Error, positiveMessage);
       });
@@ -399,6 +421,22 @@
         expect(self.defensiveIntegerSum.bind(self, nonIntegerParameter)).to.throw(Error, integerMessage);
       });
 
+      it("fails when a simple exception condition is violated", function() {
+        callAndExpectException(
+          undefined,
+          fastDefensiveIntegerSumWrong,
+          wrongParameter,
+          expectExceptionProperties.bind(undefined, undefined, fastDefensiveIntegerSumWrong)
+        );
+      });
+      it("fails when a simple exception condition is violated when it is a method", function() {
+        callAndExpectException(
+          self,
+          self.fastDefensiveIntegerSumWrong,
+          wrongParameter,
+          expectExceptionProperties.bind(undefined, self, self.fastDefensiveIntegerSumWrong)
+        );
+      });
 
     });
   // });
