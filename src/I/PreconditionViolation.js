@@ -35,6 +35,12 @@ module.exports = (function() {
  *   <li>what the arguments were of the instance of the call, and</li>
  *   <li>which precondition was violated in source code (which implies knowing which contract it is a part of).</li>
  * </ul>
+ *
+ * @param {Function} contractFunction - The contract function that reports this violation
+ * @param {Function} condition        - The condition that was violated
+ * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
+ * @param {Array} args
+ *                The arguments with which the contract function that failed, was called
  */
  function PreconditionViolation(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});

@@ -25,6 +25,12 @@ module.exports = (function() {
   /**
    * Super type for objects that are thrown to signal a condition violation.
    * This is intented to be abstract.
+   *
+   * @param {Function} contractFunction - The contract function that reports this violation
+   * @param {Function} condition        - The condition that was violated
+   * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
+   * @param {Array} args
+   *                The arguments with which the contract function that failed, was called.
    */
   function ConditionViolation(contractFunction, condition, self, args) {
     util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});

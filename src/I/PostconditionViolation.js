@@ -41,6 +41,9 @@ module.exports = (function() {
    *   is in an undefined state. Retrieving the state might not be possible, because invariants and preconditions
    *   will no longer be guaranteed.</p>
    *
+   * @param {Function} contractFunction - The contract function that reports this violation
+   * @param {Function} condition        - The condition that was violated
+   * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
    * @param {Array} args
    *                The arguments with which the contract function that failed, was called, extended with the
    *                result of the implementation, and the contract function, bound to the <code>this</code>
