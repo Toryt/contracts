@@ -39,6 +39,11 @@ module.exports = (function() {
     expect(result).to.contain(subject.result);
   }
 
+  function expectProperties(exception, Type, contractFunction, condition, self, args, result) {
+    common.expectProperties.apply(undefined, arguments);
+    expect(exception).to.have.property("result").that.equals(result);
+  }
+
   //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
   var resultCases = [
     new Error("This is a result case"),
@@ -65,6 +70,7 @@ module.exports = (function() {
     resultCases: resultCases,
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost,
+    expectProperties: expectProperties,
     expectDetailsPost: expectDetailsPost
   };
   Object.setPrototypeOf(test, common);

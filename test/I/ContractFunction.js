@@ -236,7 +236,8 @@
           contractFunction,
           contractFunction.contract.post[3],
           self,
-          [wrongParameter]
+          [wrongParameter],
+          wrongResult
         );
         expect(exception).to.have.property("result").that.equals(wrongResult);
       }

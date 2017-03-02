@@ -21,6 +21,7 @@ module.exports = (function() {
   var common = require("./ConditionErrorCommon");
   var ConditionViolation = require("../../src/I/ConditionViolation");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
+  var conditionMetaErrorCommon = require("./ConditionMetaErrorCommon");
   var Contract = require("../../src/I/Contract");
   var testUtil = require("../_testUtil");
 
@@ -58,6 +59,8 @@ module.exports = (function() {
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
 
+    var expectProperties = this.expectProperties;
+
     describe("#verify()", function() {
       function expectPost(subject, contractFunction, condition, self, args, doctoredArgs, appliedSelf, appliedArgs, exception) {
         var outcome;
@@ -66,7 +69,7 @@ module.exports = (function() {
         }
         catch (ignore) {
           it("should throw a ConditionMetaError because the condition had an error", function() {
-            expectProperties(exception, ConditionMetaError, contractFunction, condition, self, doctoredArgs);
+            conditionMetaErrorCommon.expectProperties(exception, ConditionMetaError, contractFunction, condition, self, doctoredArgs);
           });
           return;
         }
@@ -91,7 +94,8 @@ module.exports = (function() {
           it("should throw a ...ConditionViolation that is correctly configured, " +
              "because the condition evaluated to false nominally",
             function() {
-              expectProperties(exception, subject.constructor, contractFunction, condition, self, args);
+              var extraProperty = doctoredArgs[args.length]; // might not exist
+              expectProperties(exception, subject.constructor, contractFunction, condition, self, args, extraProperty);
             }
           );
         }
@@ -196,12 +200,13 @@ module.exports = (function() {
         });
         if (thrown) {
           it("throws a ConditionMetaError if one of the conditions fails", function() {
-            expectProperties(exception, ConditionMetaError, contractFunction, firstFailure, self, doctoredArgs);
+            conditionMetaErrorCommon.expectProperties(exception, ConditionMetaError, contractFunction, firstFailure, self, doctoredArgs);
           });
         }
         else if (firstFailure) {
           it("throws a …ConditionViolation if one of the conditions evaluates nominally to false", function() {
-            expectProperties(exception, subject.constructor, contractFunction, firstFailure, self, args);
+            var extraProperty = doctoredArgs[args.length]; // might not exist
+            expectProperties(exception, subject.constructor, contractFunction, firstFailure, self, args, extraProperty);
           });
         }
         else {

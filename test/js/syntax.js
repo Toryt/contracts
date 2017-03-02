@@ -167,6 +167,15 @@
           }
         });
       });
+
+      describe("an array entry past the lenght of the array", function() {
+        it("is undefined", function() {
+          var array = [1, "2", {three: 3}];
+          var result = array[array.length];
+          //noinspection BadExpressionStatementJS
+          expect(result).to.be.undefined;
+        });
+      });
     });
   // });
 })();

@@ -34,6 +34,12 @@ module.exports = (function() {
     expect(executionResult).to.have.property("exception").that.equals(exception);
   }
 
+
+  function expectProperties(exception, Type, contractFunction, condition, self, args, thrownException) {
+    common.expectProperties.apply(undefined, arguments);
+    expect(exception).to.have.property("exception").that.equals(thrownException);
+  }
+
   function expectDetailsPost(subject, result) {
     common.expectDetailsPost(subject, result);
     expect(result).to.contain(subject.exception);
@@ -65,6 +71,7 @@ module.exports = (function() {
     exceptionCases: exceptionCases,
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost,
+    expectProperties: expectProperties,
     expectDetailsPost: expectDetailsPost
   };
   Object.setPrototypeOf(test, common);
