@@ -1,8 +1,15 @@
+Versions
+--------
+
+* I
+  * I/1.0  : First release, minimally functional
+
+
+
 TODO
 ----
 
 * I
-  * I/1.0  : PostconditionViolation, ExceptionConditionViolation
   * I/2.0  : Documentation en README
   * I/3.0  : npm
   * I/4.0  : Use it in web projects; bower

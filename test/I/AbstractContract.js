@@ -77,7 +77,7 @@
           var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(AbstractContract.displayNamePrefix + "anonymousFunction");
+          // TODO this does not work in older node expect(result).to.be.equal(AbstractContract.displayNamePrefix + "anonymousFunction");
         });
 
         it("returns the expected display name with an anonymous function with an implementation property that has a display name", function() {
@@ -140,7 +140,7 @@
           var result = AbstractContract.contractFunctionDisplayName(f);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(AbstractContract.displayNamePrefix + "f");
+          // TODO this does not work in older node expect(result).to.be.equal(AbstractContract.displayNamePrefix + "f");
         });
 
         it("returns the expected display name with an anonymous function as a method", function() {
@@ -151,7 +151,7 @@
           var result = AbstractContract.contractFunctionDisplayName(obj.anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(Abstract.displayNamePrefix + "anonymousFunction");
+          // TODO this does not work in older node expect(result).to.be.equal(Abstract.displayNamePrefix + "anonymousFunction");
         });
 
         it("returns the expected display name with an named function function as a method", function() {
