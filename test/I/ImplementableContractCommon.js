@@ -18,7 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var expect = require("chai").expect;
-  var common = require("./ContractCommon");
+  var common = require("./AbstractContractCommon");
   var ImplementableContract = require("../../src/I/ImplementableContract");
 
   function expectInvariants(subject) {

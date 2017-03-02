@@ -18,7 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var ConditionViolation = require("./ConditionViolation");
-  var Contract = require("./Contract");
+  var AbstractContract = require("./AbstractContract");
   var util = require("./../_private/util");
 
   /**
@@ -51,7 +51,7 @@ module.exports = (function() {
    *                implementation execution is always the second-to-last entry.
    */
   function PostconditionViolation(contractFunction, condition, self, args) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+    util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
@@ -63,7 +63,7 @@ module.exports = (function() {
   }
 
   PostconditionViolation.prototype = new ConditionViolation(
-    Contract.root.abstract,
+    AbstractContract.root.abstract,
     function() {return "This is a dummy condition in the PostconditionViolation prototype."},
     undefined,
     []

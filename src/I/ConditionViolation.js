@@ -18,7 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var ConditionError = require("./ConditionError");
-  var Contract = require("./Contract");
+  var AbstractContract = require("./AbstractContract");
   var ConditionMetaError = require("./ConditionMetaError");
   var util = require("./../_private/util");
 
@@ -33,7 +33,7 @@ module.exports = (function() {
    *                The arguments with which the contract function that failed, was called.
    */
   function ConditionViolation(contractFunction, condition, self, args) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+    util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
@@ -41,7 +41,7 @@ module.exports = (function() {
   }
 
   ConditionViolation.prototype = new ConditionError(
-    Contract.root.abstract,
+    AbstractContract.root.abstract,
     function() {return "This is a dummy condition in the ConditionViolation prototype."},
     undefined,
     []
@@ -67,7 +67,7 @@ module.exports = (function() {
     ConditionViolation.prototype,
     "verifyAll",
     function(contractFunction, conditions, self, args) {
-      util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+      util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
       util.pre(this, function() {
         return conditions
                && util.typeOf(conditions) === "array"
@@ -99,7 +99,7 @@ module.exports = (function() {
     ConditionViolation.prototype,
     "verify",
     function(contractFunction, condition, self, args) {
-      util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+      util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
       util.pre(this, function() {return util.typeOf(condition) === "function";});
       util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 

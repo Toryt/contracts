@@ -20,27 +20,27 @@ interface FunctionWithImplementation
 Function <.. FunctionWithImplementation: instanceof
 FunctionWithImplementation --> "implementation" Function
 
-abstract class Contract {
+abstract class AbstractContract {
   +{static} displayNamePrefix: String
   +pre: Array <<readonly>>
   +post: Array <<readonly>>
   +exception: Array <<readonly>>
   +location: String <<readonly>>
   +{static} displayNamePrefix: String
-  +{static} root: Contract
+  +{static} root: AbstractContract
   +{static} contractFunctionDisplayName(f: FunctionWithImplementation): String
   +{static} bindContractFunction: Function
   +{static} isAContractFunction(f: Any): Boolean
-  +{static} bless(contractFunction: ContractFunction, contract: Contract, implFunction: Function, location: String): void
+  +{static} bless(contractFunction: ContractFunction, contract: AbstractContract, implFunction: Function, location: String): void
   +{static} falseCondition(): Boolean = false
-  +{static} Contract(pre: Function[]?, post: Function[]?, exception: Function[]?)
+  +{static} AbstractContract(pre: Function[]?, post: Function[]?, exception: Function[]?)
 }
 
 class ImplementableContract {
   +{static} ImplementableContract(pre: Function[]?, post: Function[]?, exception: Function[]?)
   +implementation(implFunction: Function): ContractFunction
 }
-Contract <|-- ImplementableContract
+AbstractContract <|-- ImplementableContract
 
 interface ContractFunction {
   +location: String <<readonly>>
@@ -51,11 +51,11 @@ interface ContractFunction {
 class AbstractContractFunction
 ContractFunction <|- AbstractContractFunction
 
-Contract +-- ContractFunction
+AbstractContract +-- ContractFunction
 FunctionWithImplementation <|-- ContractFunction
 
-ContractFunction --> "contract" Contract
-Contract --> "abstract <<readonly>>" AbstractContractFunction
+ContractFunction --> "contract" AbstractContract
+AbstractContract --> "abstract <<readonly>>" AbstractContractFunction
 
 abstract class ContractError {
   +name: String = "Contract Error"
@@ -70,11 +70,11 @@ class AbstractError {
   +message: String = ""
   +{static} AbstractError(contract)
 }
-Contract +-- AbstractError
+AbstractContract +-- AbstractError
 ContractError <|-- AbstractError
 AbstractContractFunction ..> AbstractError : "<<throws>>"
 
-AbstractError --> "contract <<readonly>>" Contract
+AbstractError --> "contract <<readonly>>" AbstractContract
 
 abstract class ConditionError {
   +name: String = "Contract Condition Error"

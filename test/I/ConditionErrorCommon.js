@@ -20,9 +20,9 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var common = require("./ContractErrorCommon");
   var ConditionError = require("../../src/I/ConditionError");
-  var contractCommon = require("./ContractCommon");
+  var abstractContractCommon = require("./AbstractContractCommon");
   var util = require("../../src/_private/util");
-  var Contract = require("../../src/I/Contract");
+  var AbstractContract = require("../../src/I/AbstractContract");
   var testUtil = require("../_testUtil");
   var path = require("path");
 
@@ -94,7 +94,7 @@ module.exports = (function() {
     common.expectInvariants(subject);
     testUtil.expectOwnFrozenProperty(subject, "contractFunction");
     expect(subject).to.have.property("contractFunction").that.satisfies(function(cf) {
-      return Contract.isAContractFunction(cf);
+      return AbstractContract.isAContractFunction(cf);
     });
     expect(subject).to.have.property("condition").that.is.a("function");
     testUtil.expectOwnFrozenProperty(subject, "condition");
@@ -163,7 +163,7 @@ module.exports = (function() {
     expectDetailsPost: expectDetailsPost,
     expectInvariants: expectInvariants,
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
-    createCandidateContractFunction: contractCommon.createCandidateContractFunction
+    createCandidateContractFunction: abstractContractCommon.createCandidateContractFunction
   };
   Object.setPrototypeOf(test, common);
   return test;

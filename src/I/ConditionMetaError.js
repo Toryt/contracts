@@ -18,7 +18,7 @@ module.exports = (function() {
   "use strict";
 
   var ConditionError = require("./ConditionError");
-  var Contract = require("./Contract");
+  var AbstractContract = require("./AbstractContract");
   var util = require("./../_private/util");
 
   /**
@@ -30,7 +30,7 @@ module.exports = (function() {
    * Therefor, a ConditionMetaError is also civilized if the error is falsy.
    */
   function ConditionMetaError(contractFunction, condition, self, args, error) {
-    util.pre(this, function() {return Contract.isAContractFunction(contractFunction);});
+    util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
@@ -42,7 +42,7 @@ module.exports = (function() {
   }
 
   ConditionMetaError.prototype = new ConditionError(
-    Contract.root.abstract,
+    AbstractContract.root.abstract,
     function() {return "This is a dummy condition in the ConditionMetaError prototype."},
     undefined,
     []

@@ -21,7 +21,7 @@
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
   var ImplementableContract = require("../../src/I/ImplementableContract");
-  var Contract = require("../../src/I/Contract");
+  var AbstractContract = require("../../src/I/AbstractContract");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var PreconditionViolation = require("../../src/I/PreconditionViolation");
   var PostconditionViolation = require("../../src/I/PostconditionViolation");
@@ -231,7 +231,7 @@
           expect(exception.args[0]).to.equal(param);
           if (extraArgs) {
             expect(exception.args[1]).to.equal(extraArgs[0]);
-            expect(exception.args[2]).to.satisfy(function(f) {return Contract.isAContractFunction(f);});
+            expect(exception.args[2]).to.satisfy(function(f) {return AbstractContract.isAContractFunction(f);});
           }
           expect(exception.error).to.equal(intentionalError);
         });

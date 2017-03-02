@@ -18,48 +18,48 @@
   "use strict";
 
   var expect = require("chai").expect;
-  var common = require("./ContractCommon");
+  var common = require("./AbstractContractCommon");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
-  var Contract = require("../../src/I/Contract");
+  var AbstractContract = require("../../src/I/AbstractContract");
 
   // describe("I", function() {
-    describe("I/Contract", function() {
+    describe("I/AbstractContract", function() {
 
-      describe("Contract", function() {
+      describe("AbstractContract", function() {
         it("has the expected properties", function() {
-          expect(Contract).to.haveOwnProperty("displayNamePrefix");
-          expect(Contract).to.have.property("displayNamePrefix").that.is.a("string");
-          expect(Contract).to.haveOwnProperty("contractFunctionDisplayName");
-          expect(Contract).to.have.property("contractFunctionDisplayName").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("bindContractFunction");
-          expect(Contract).to.have.property("bindContractFunction").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("isAContractFunction");
-          expect(Contract).to.have.property("isAContractFunction").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("bless");
-          expect(Contract).to.have.property("bless").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("falseCondition");
-          expect(Contract).to.have.property("falseCondition").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("root");
-          expect(Contract).to.have.property("root").that.is.an.instanceof(Contract);
-          var root = Contract.root;
+          expect(AbstractContract).to.haveOwnProperty("displayNamePrefix");
+          expect(AbstractContract).to.have.property("displayNamePrefix").that.is.a("string");
+          expect(AbstractContract).to.haveOwnProperty("contractFunctionDisplayName");
+          expect(AbstractContract).to.have.property("contractFunctionDisplayName").that.is.a("function");
+          expect(AbstractContract).to.haveOwnProperty("bindContractFunction");
+          expect(AbstractContract).to.have.property("bindContractFunction").that.is.a("function");
+          expect(AbstractContract).to.haveOwnProperty("isAContractFunction");
+          expect(AbstractContract).to.have.property("isAContractFunction").that.is.a("function");
+          expect(AbstractContract).to.haveOwnProperty("bless");
+          expect(AbstractContract).to.have.property("bless").that.is.a("function");
+          expect(AbstractContract).to.haveOwnProperty("falseCondition");
+          expect(AbstractContract).to.have.property("falseCondition").that.is.a("function");
+          expect(AbstractContract).to.haveOwnProperty("root");
+          expect(AbstractContract).to.have.property("root").that.is.an.instanceof(AbstractContract);
+          var root = AbstractContract.root;
           common.expectInvariants(root);
           expect(root).to.have.property("pre").to.have.lengthOf(1);
-          expect(root.pre[0]).to.equal(Contract.falseCondition);
+          expect(root.pre[0]).to.equal(AbstractContract.falseCondition);
           expect(root).to.have.property("post").to.have.lengthOf(0);
           expect(root).to.have.property("exception").to.have.lengthOf(0);
-          expect(Contract).to.haveOwnProperty("AbstractError");
-          expect(Contract).to.have.property("AbstractError").that.is.a("function");
-          expect(Contract).to.have.property("AbstractError").to.have.property("prototype").that.is.instanceof(Error);
+          expect(AbstractContract).to.haveOwnProperty("AbstractError");
+          expect(AbstractContract).to.have.property("AbstractError").that.is.a("function");
+          expect(AbstractContract).to.have.property("AbstractError").to.have.property("prototype").that.is.instanceof(Error);
         });
       });
 
-      describe("Contract.contractFunctionDisplayName", function() {
+      describe("AbstractContract.contractFunctionDisplayName", function() {
         it("returns the expected display name with a named function", function() {
           function namedFunction() {}
 
-          var result = Contract.contractFunctionDisplayName(namedFunction);
-          expect(result).to.be.equal(Contract.displayNamePrefix + "namedFunction");
+          var result = AbstractContract.contractFunctionDisplayName(namedFunction);
+          expect(result).to.be.equal(AbstractContract.displayNamePrefix + "namedFunction");
         });
 
         it("returns the expected display name with a named function with a display name", function() {
@@ -67,17 +67,17 @@
           var displayName = "display name";
           namedFunction.displayName = displayName;
 
-          var result = Contract.contractFunctionDisplayName(namedFunction);
-          expect(result).to.be.equal(Contract.displayNamePrefix + "namedFunction");
+          var result = AbstractContract.contractFunctionDisplayName(namedFunction);
+          expect(result).to.be.equal(AbstractContract.displayNamePrefix + "namedFunction");
         });
 
         it("returns the expected display name with an anonymous function assigned to a variable", function() {
           var anonymousFunction = function() {};
 
-          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + "anonymousFunction");
+          // MUDO this does not work in older node expect(result).to.be.equal(AbstractContract.displayNamePrefix + "anonymousFunction");
         });
 
         it("returns the expected display name with an anonymous function with an implementation property that has a display name", function() {
@@ -86,20 +86,20 @@
           var implementationDisplayName = "implemenation display name";
           anonymousFunction.implementation.displayName = implementationDisplayName;
 
-          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          expect(result).to.be.equal(Contract.displayNamePrefix + implementationDisplayName);
+          expect(result).to.be.equal(AbstractContract.displayNamePrefix + implementationDisplayName);
         });
 
         it("returns the expected display name with an anonymous function with an implementation property that has no display name, but has a name", function() {
           var anonymousFunction = (function() {return function() {};})();
           anonymousFunction.implementation = function implementationWithNoName() {};
 
-          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          expect(result).to.be.equal(Contract.displayNamePrefix + "implementationWithNoName");
+          expect(result).to.be.equal(AbstractContract.displayNamePrefix + "implementationWithNoName");
         });
 
 
@@ -110,8 +110,8 @@
           expect(anonymousFunction).to.have.property("name").that.is.not.ok;
           expect(anonymousFunction).not.to.have.property("implementation");
 
-          var result = Contract.contractFunctionDisplayName(anonymousFunction);
-          expect(result).to.be.equal(Contract.displayNamePrefix + "<<anonymous>>");
+          var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
+          expect(result).to.be.equal(AbstractContract.displayNamePrefix + "<<anonymous>>");
         });
 
         it("returns the expected display name with an anonymous function with an implementation property that has no display name and no name", function() {
@@ -126,10 +126,10 @@
           expect(anonymousFunction).to.have.property("implementation").that.has.property("name").that.is.not.ok;
           expect(anonymousFunction).to.have.property("implementation").not.to.have.property("displayName");
 
-          var result = Contract.contractFunctionDisplayName(anonymousFunction);
+          var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          expect(result).to.be.equal(Contract.displayNamePrefix + "<<anonymous>>");
+          expect(result).to.be.equal(AbstractContract.displayNamePrefix + "<<anonymous>>");
         });
 
         it("returns the expected display name with an anonymous function assigned to a variable with a display name", function() {
@@ -137,10 +137,10 @@
           var displayName = "display name";
           f.displayName = displayName;
 
-          var result = Contract.contractFunctionDisplayName(f);
+          var result = AbstractContract.contractFunctionDisplayName(f);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + "f");
+          // MUDO this does not work in older node expect(result).to.be.equal(AbstractContract.displayNamePrefix + "f");
         });
 
         it("returns the expected display name with an anonymous function as a method", function() {
@@ -148,10 +148,10 @@
             anonymousFunction: function() {}
           };
 
-          var result = Contract.contractFunctionDisplayName(obj.anonymousFunction);
+          var result = AbstractContract.contractFunctionDisplayName(obj.anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          // MUDO this does not work in older node expect(result).to.be.equal(Contract.displayNamePrefix + "anonymousFunction");
+          // MUDO this does not work in older node expect(result).to.be.equal(Abstract.displayNamePrefix + "anonymousFunction");
         });
 
         it("returns the expected display name with an named function function as a method", function() {
@@ -159,35 +159,35 @@
             f: function namedFunction() {}
           };
 
-          var result = Contract.contractFunctionDisplayName(obj.f);
+          var result = AbstractContract.contractFunctionDisplayName(obj.f);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-          expect(result).to.be.equal(Contract.displayNamePrefix + "namedFunction");
+          expect(result).to.be.equal(AbstractContract.displayNamePrefix + "namedFunction");
         });
 
       });
 
-      describe("Contract.bindContractFunction", function() {
+      describe("AbstractContract.bindContractFunction", function() {
         it("behaves as expected", function() {
           var subject = common.createCandidateContractFunction();
-          var result = Contract.bindContractFunction.apply(subject);
-          expect(result).to.satisfy(function(r) {return Contract.isAContractFunction(r);});
+          var result = AbstractContract.bindContractFunction.apply(subject);
+          expect(result).to.satisfy(function(r) {return AbstractContract.isAContractFunction(r);});
         });
       });
 
-      describe("Contract.isAContractFunction", function() {
+      describe("AbstractContract.isAContractFunction", function() {
 
-        it("says yes if there is an implementation Function, a Contract, and a location, and all 3 properties are " +
+        it("says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 properties are " +
            "frozen, and it has the expected display name", function() {
           var candidate = common.createCandidateContractFunction();
           //noinspection BadExpressionStatementJS
-          expect(Contract.isAContractFunction(candidate)).to.be.ok;
+          expect(AbstractContract.isAContractFunction(candidate)).to.be.ok;
         });
 
         common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
           it("says no if the argument is not a function, but " + thing, function() {
               //noinspection BadExpressionStatementJS
-            expect(Contract.isAContractFunction(thing)).not.to.be.ok;
+            expect(AbstractContract.isAContractFunction(thing)).not.to.be.ok;
           });
         });
 
@@ -195,40 +195,40 @@
           it("says no if the " + dontFreezeProperty + " property is not frozen", function() {
             var candidate = common.createCandidateContractFunction(dontFreezeProperty);
             //noinspection BadExpressionStatementJS
-            expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
+            expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
           });
         });
 
         [
-          {propertyName: "contract", expected: "a Contract", extra: [function() {}]},
-          {propertyName: "implementation", expected: "a Function", extra: [new Contract({})]},
+          {propertyName: "contract", expected: "an AbstractContract", extra: [function() {}]},
+          {propertyName: "implementation", expected: "a Function", extra: [new AbstractContract({})]},
           {propertyName: "location", expected: "a location outside this library", extra: ["    at", "at /"]},
-          {propertyName: "bind", expected: "Contract.bindContractFunction", extra: []},
+          {propertyName: "bind", expected: "AbstractContract.bindContractFunction", extra: []},
           {
             propertyName: "displayName",
             expected: "the contractFunctionDisplayName",
-            extra: ["candidate", Contract.displayNamePrefix]
+            extra: ["candidate", AbstractContract.displayNamePrefix]
           }
         ].forEach(function(aCase) {
           common.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach(function(v) {
             it("says no if the " + aCase.propertyName + " is not " + aCase.expected + " but " + v, function() {
               var candidate = common.createCandidateContractFunction(null, aCase.propertyName, v);
               //noinspection BadExpressionStatementJS
-              expect(Contract.isAContractFunction(candidate)).not.to.be.ok;
+              expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
             });
           });
         });
 
       });
 
-      describe("Contract.bless", function() {
+      describe("AbstractContract.bless", function() {
         it("behaves as expected", function() {
           var contractFunction = function() {};
-          var contract = new Contract({});
+          var contract = new AbstractContract({});
           var implFunction = function() {};
           var location = util.firstLocationOutsideLibrary();
-          Contract.bless(contractFunction, contract, implFunction, location);
-          expect(contractFunction).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
+          AbstractContract.bless(contractFunction, contract, implFunction, location);
+          expect(contractFunction).to.satisfy(function(cf) {return AbstractContract.isAContractFunction(cf);});
           testUtil.expectOwnFrozenProperty(contractFunction, "contract");
           expect(contractFunction).to.have.property("contract").that.equals(contract);
           testUtil.expectOwnFrozenProperty(contractFunction, "implementation");
@@ -236,22 +236,22 @@
           testUtil.expectOwnFrozenProperty(contractFunction, "location");
           expect(contractFunction).to.have.property("location").that.equals(location);
           testUtil.expectOwnFrozenProperty(contractFunction, "bind");
-          expect(contractFunction).to.have.property("bind").that.equals(Contract.bindContractFunction);
+          expect(contractFunction).to.have.property("bind").that.equals(AbstractContract.bindContractFunction);
           testUtil.expectFrozenDerivedPropertyOnAPrototype(contractFunction, "displayName");
           expect(contractFunction).to.haveOwnProperty("displayName");
           expect(contractFunction).to.have.property("displayName")
-            .that.equals(Contract.contractFunctionDisplayName(contractFunction));
+            .that.equals(AbstractContract.contractFunctionDisplayName(contractFunction));
         });
       });
 
-      describe("Contract.falseCondition", function() {
+      describe("AbstractContract.falseCondition", function() {
         it("always returns false", function() {
-          var result = Contract.falseCondition();
+          var result = AbstractContract.falseCondition();
           expect(result).to.equal(false);
         });
       });
 
-      describe("#Contract()", function() {
+      describe("#AbstractContract()", function() {
         common.constructorPreCases.forEach(function(pre) {
           common.constructorPostCases.forEach(function(post) {
             common.constructorExceptionCases.forEach(function(exception) {
@@ -259,7 +259,7 @@
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
-                var result = new Contract({pre: preConditions, post: postConditions, exception: exceptionConditions});
+                var result = new AbstractContract({pre: preConditions, post: postConditions, exception: exceptionConditions});
                 common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
               });
             });
@@ -268,7 +268,7 @@
       });
 
       common.generatePrototypeMethodsDescriptions(
-        function() {return new Contract({});},
+        function() {return new AbstractContract({});},
         testUtil
           .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
           .map(function(parameters) {
@@ -277,7 +277,7 @@
               var postConditions = parameters[1]();
               var exceptionConditions = parameters[2]();
               return {
-                subject: new Contract({pre: preConditions, post: postConditions, exception: exceptionConditions}),
+                subject: new AbstractContract({pre: preConditions, post: postConditions, exception: exceptionConditions}),
                 description: parameters.join(" - ")
               };
             };

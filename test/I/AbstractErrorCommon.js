@@ -19,7 +19,7 @@ module.exports = (function() {
 
   var expect = require("chai").expect;
   var common = require("./ContractErrorCommon");
-  var AbstractError = require("../../src/I/Contract").AbstractError;
+  var AbstractError = require("../../src/I/AbstractContract").AbstractError;
   var testUtil = require("../_testUtil");
 
 

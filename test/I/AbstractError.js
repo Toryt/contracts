@@ -19,8 +19,8 @@
 
   var expect = require("chai").expect;
   var common = require("./AbstractErrorCommon");
-  var Contract = require("../../src/I/Contract");
-  var AbstractError = Contract.AbstractError;
+  var AbstractContract = require("../../src/I/AbstractContract");
+  var AbstractError = AbstractContract.AbstractError;
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 
@@ -28,9 +28,9 @@
     describe("I/AbstractError", function() {
 
       describe("#AbstractError()", function() {
-        it("creates an instance with all toppings for Contract.root", function() {
-          var result = new AbstractError(Contract.root);
-          common.expectConstructorPost(result, AbstractError.message, Contract.root);
+        it("creates an instance with all toppings for AbstractContract.root", function() {
+          var result = new AbstractError(AbstractContract.root);
+          common.expectConstructorPost(result, AbstractError.message, AbstractContract.root);
           common.expectInvariants(result);
           testUtil.log("result.stack:\n%s", result.stack);
         });
@@ -38,11 +38,11 @@
 
       common.generatePrototypeMethodsDescriptions(
         function () {
-          return new AbstractError(Contract.root);
+          return new AbstractError(AbstractContract.root);
         },
         [{
-          subject: new AbstractError(Contract.root),
-          description: "Contract.root"
+          subject: new AbstractError(AbstractContract.root),
+          description: "AbstractContract.root"
         }]
       );
 

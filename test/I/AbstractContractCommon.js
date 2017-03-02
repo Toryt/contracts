@@ -20,7 +20,7 @@ module.exports = (function() {
   var expect = require("chai").expect;
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
-  var Contract = require("../../src/I/Contract");
+  var AbstractContract = require("../../src/I/AbstractContract");
 
   var someConditions = [
     function() {return [];},
@@ -67,7 +67,7 @@ module.exports = (function() {
   var location = util.eol + "    at /";
 
   function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(Contract);
+    expect(subject).to.be.an.instanceOf(AbstractContract);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "pre", "_pre");
     testUtil.expectToBeArrayOfFunctions(subject.pre);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "post", "_post");
@@ -78,9 +78,9 @@ module.exports = (function() {
     expect(subject.location).to.satisfy(function(location) {return util.isALocationOutsideLibrary(location);});
     testUtil.expectOwnFrozenProperty(subject, "abstract");
     var abstract = subject.abstract;
-    expect(abstract).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
+    expect(abstract).to.satisfy(function(cf) {return AbstractContract.isAContractFunction(cf);});
     expect(abstract).to.satisfy(function(cf) {return subject.isImplementedBy(cf);});
-    expect(abstract).to.throw(Contract.AbstractError, Contract.AbstractError.message);
+    expect(abstract).to.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message);
     try {
       abstract();
     }
@@ -127,10 +127,10 @@ module.exports = (function() {
 
     var contract = otherPropertyName === "contract"
       ? otherPropertyValue
-      : new Contract({});
+      : new AbstractContract({});
     var implementation = otherPropertyName === "implementation" ? otherPropertyValue : impl;
     var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
-    var bind = otherPropertyName === "bind" ? otherPropertyValue : Contract.bindContractFunction;
+    var bind = otherPropertyName === "bind" ? otherPropertyValue : AbstractContract.bindContractFunction;
 
     if (dontFreezeProperty === "contract") {
       candidate.contract = contract;
@@ -159,7 +159,7 @@ module.exports = (function() {
     candidate.displayName =
       (otherPropertyName === "displayName")
         ? otherPropertyValue
-        : Contract.contractFunctionDisplayName(candidate);
+        : AbstractContract.contractFunctionDisplayName(candidate);
     return candidate;
   }
 
