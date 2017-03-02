@@ -20,7 +20,6 @@
   var expect = require("chai").expect;
   var common = require("./ExceptionConditionViolationCommon");
   var ExceptionConditionViolation = require("../../src/I/ExceptionConditionViolation");
-  var Contract = require("../../src/I/Contract");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 

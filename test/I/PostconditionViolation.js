@@ -20,7 +20,6 @@
   var expect = require("chai").expect;
   var common = require("./PostconditionViolationCommon");
   var PostconditionViolation = require("../../src/I/PostconditionViolation");
-  var Contract = require("../../src/I/Contract");
   var util = require("../../src/_private/util");
   var testUtil = require("../_testUtil");
 

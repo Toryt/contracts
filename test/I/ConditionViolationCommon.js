@@ -22,7 +22,6 @@ module.exports = (function() {
   var ConditionViolation = require("../../src/I/ConditionViolation");
   var ConditionMetaError = require("../../src/I/ConditionMetaError");
   var conditionMetaErrorCommon = require("./ConditionMetaErrorCommon");
-  var Contract = require("../../src/I/Contract");
   var testUtil = require("../_testUtil");
 
   var selfVerifyCases = [

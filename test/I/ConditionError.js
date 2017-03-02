@@ -21,7 +21,6 @@
   var common = require("./ConditionErrorCommon");
   var ConditionError = require("../../src/I/ConditionError");
   var util = require("../../src/_private/util");
-  var Contract = require("../../src/I/Contract");
   var testUtil = require("../_testUtil");
 
   // describe("I", function() {
