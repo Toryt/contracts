@@ -67,7 +67,7 @@ Error <|-- ContractError
 
 class AbstractError {
   +name: String = "Abstract Error"
-  +message: String = ""
+  +message: String <<readonly>>
   +{static} AbstractError(contract)
 }
 AbstractContract +-- AbstractError
@@ -81,9 +81,8 @@ abstract class ConditionError {
   +self: Object <<readonly>>
   +args: ArrayLike <<readonly>>
   +/stack: String <<multiline>>
+  +getDetails(): String
   +{static} ConditionError(contractFunction, condition, self, args)
-  #moreDetail(): String
-  +{static} createMessage(contractFunction, condition, self, args): String
 }
 ContractError <|-- ConditionError
 
@@ -91,41 +90,32 @@ class ConditionMetaError {
   +{static} name: String <<readonly>>
   +error: Any <<readonly>>
   +message: String <<readonly>>
+  +getDetails(): String
   +{static} ConditionMetaError(contractFunction, condition, self, args, error)
-  #moreDetail(): String
-  +{static} createMessage(contractFunction, condition, self, args): String
 }
 
 abstract class ConditionViolation {
   +{static} name: String <<readonly>>
-  +message: String <<readonly>>
+  +verify(contractFunction, condition, self, args): void <<prototype>>
+  +verifyAll(contractFunction, conditions, self, args): void <<prototype>>
   +{static} ConditionViolation(contractFunction, condition, self, args)
-  +{static} createMessage(contractFunction, condition, self, args): String
-  +{static} verify(contractFunction, condition, self, args): void <<prototype>>
-  +{static} verifyAll(contractFunction, conditions, self, args): void <<prototype>>
 }
 class PreconditionViolation {
   +{static} name: String <<readonly>>
-  +message: String <<readonly>>
   +{static} PreconditionViolation(contractFunction, condition, self, args)
-  +{static} createMessage(contractFunction, condition, self, args): String
 }
-class PostconditionViolation <<todo>> {
+class PostconditionViolation {
   +{static} name: String <<readonly>>
   +result: Any <<readonly>>
-  +message: String <<readonly>>
+  +getDetails(): String
   +{static} PostconditionViolation(contractFunction, condition, self, args, result: Any)
-  #moreDetail(): String
-  +{static} createMessage(contractFunction, condition, self, args): String
 }
 
-class ExceptionConditionViolation <<todo>> {
+class ExceptionConditionViolation {
   +{static} name: String <<readonly>>
   +exception: Any <<readonly>>
-  +message: String <<readonly>>
+  +getDetails(): String
   +{static} ExceptionConditionViolation(contractFunction, condition, self, args, exception: Any)
-  #moreDetail(): String
-  +{static} createMessage(contractFunction, condition, self, args): String
 }
 
 ConditionError --> "contractFunction <<readonly>>" ContractFunction
