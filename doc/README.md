@@ -1,6 +1,6 @@
 # Prism
 
-This website uses [Prism] by [Lea Verou][leaverou] to show source code.
+This website uses a [forked version][prism-eval] of [Prism] by [Lea Verou][leaverou] to show source code.
 
 ## Download
 
@@ -28,8 +28,8 @@ Both the `js` and the `css` file need to be downloaded.
 ## Source
 
 The [Prism] source code is at [GitHub][prism-git] ([clone][clone-prism]), and forked at 
-[github][prism-toryt-fork-github] ([clone][clone-prism-toryt-fork-github]) and
-[bitbucket][prism-toryt-fork-bitbucket] ([clone][clone-prism-toryt-fork-bitbucket])  for safe keeping.
+[github][prism-toryt-fork-github] and
+[bitbucket][prism-toryt-fork-bitbucket] for safe keeping.
 
 
 ## Usage notes
@@ -38,13 +38,12 @@ The [Prism] source code is at [GitHub][prism-git] ([clone][clone-prism]), and fo
 
 
 [Prism]: http://prismjs.com
+[Prism-eval]: http://eval-prismjs.toryt.org
 [MIT license]: http://www.opensource.org/licenses/mit-license.php/
 [clone-prism]: https://github.com/PrismJS/prism.git
 [leaverou]: http://lea.verou.me
 [prism-git]: https://github.com/PrismJS/prism
-[prism-toryt-fork-github]: https://github.com/Toryt/prism
-[clone-prism-toryt-fork-github]: https://github.com/Toryt/prism.git
-[prism-toryt-fork-bitbucket]: https://bitbucket.org/toryt/prism
-[clone-prism-toryt-fork-bitbucket]: https://jandockx@bitbucket.org/toryt/prism.git
-[prism-download]: http://prismjs.com/download.html?themes=prism-coy&languages=clike+javascript&plugins=line-highlight+line-numbers+file-highlight+jsonp-highlight+remove-initial-line-feed
+[prism-toryt-fork-github]: https://github.com/jandockx/prism-eval
+[prism-toryt-fork-bitbucket]:https://bitbucket.org/jandockx/prism-eval
+[prism-download]: http://eval-prismjs.toryt.org/download.html?themes=prism-coy&languages=clike+javascript&plugins=line-highlight+line-numbers+file-highlight+jsonp-highlight+remove-initial-line-feed+eval
  
