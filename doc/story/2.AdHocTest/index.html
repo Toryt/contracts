@@ -12,24 +12,21 @@
 
 <p>The solution to our problems is to work with contracts. We should explicitly
   mention (all?) <em>preconditions</em> the implementation depends on,
-  and all <em>postconditions</em> we, as implementer, want to guarantee.
+  and all <em>postconditions</em> we, as implementer, want to guarantee. <!-- MUDO add reference to Hoare 1968 -->
   We know the theory. The rest of this story is about how to make it tractable to
   do that.</p>
 <p>The first step is to introduce the
   <a href="#code.3-10">pre-</a> and
   <a href="#code.26-38">postconditions</a>
   with <em>ad hoc</em> code.</p>
-<p>The <a href="#code.12-24">implementation</a> itself is the basically same, except</p>
-<ul>
-  <li>that we introduced a <a href="#code.19-21">programming error</a>
-    for demonstration purposes, for <code class="language-javascript">fibonacci(8)</code>:
-    that will return -3, instead of the nominally expected 21;</li>
-  <li>that we cannot return a result immediately in the conditional statements, but that
-    we need to store the result in a <a href="#code.12">variable</a>, so that we can
-    put it through <a href="#code.26-38">postcondition</a> validation.</li>
-</ul>
-<p>The latter means that we need to change the control flow from the original implementation.
-  All in all, it is annoying.</p>
+<p>The <a href="#code.12-24">implementation</a> itself is basically the same, except that we cannot return
+   a result immediately in the conditional statements, but that we need to store the result in a
+  <a href="#code.12">variable</a>, so that we can put it through
+  <a href="#code.26-38">postcondition</a> validation. This implies that we need to change the control
+  flow from the original implementation. This is annoying. Note that the last postcondition is recursive.</p>
+<p>We still feature the <a href="#code.19-21">programming error</a>
+  for demonstration purposes, for <code class="language-javascript">fibonacci(8)</code>:
+   that will return -3, instead of the nominally expected 21.</p>
 <pre id="code" class="line-numbers" data-src="code.js"
      data-line="3-10,4-6,7-9,12-24,12,19-21,26-38,27-29,30-32,33-37"></pre>
 
