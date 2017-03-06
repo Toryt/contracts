@@ -15,243 +15,252 @@
   limitations under the License.
  */
 
- module.exports = (function() {
+(function(factory) {
+  "use strict";
 
-   var os = require("os");
-   var path = require("path");
+  var dependencies = ["os", "path"];
+  
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(os, path) {
+  "use strict";
 
-   //noinspection MagicNumberJS
-   var util = {
+  //noinspection MagicNumberJS
+  var util = {
 
-     eol: os.EOL,
+    eol: os.EOL,
 
-     contractLibPath: path.dirname(path.dirname(module.filename)), // 2 directories up
+    contractLibPath: path.dirname(path.dirname(module.filename)), // 2 directories up
 
-     /**
-      * A better type then Object.toString() or typeof.
-      * - toType(undefined); //"undefined"
-      * - toType(new); //"null"
-      * - toType({a: 4}); //"object"
-      * - toType([1, 2, 3]); //"array"
-      * - (function() {console.log(toType(arguments))})(); //arguments
-      * - toType(new ReferenceError); //"error"
-      * - toType(new Date); //"date"
-      * - toType(/a-z/); //"regexp"
-      * - toType(Math); //"math"
-      * - toType(JSON); //"json"
-      * - toType(new Number(4)); //"number"
-      * - toType(new String("abc")); //"string"
-      * - toType(new Boolean(true)); //"boolean"
-      *
-      * Based on
-      * http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
-      */
-     typeOf: function(obj) {
-       if (obj === null) { // workaround for some weird implementations
-         return "null";
-       }
-       var result = Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
-       // on some browsers, the main window returns as "global" (WebKit) or "window" (FF), but this is an object too
-       if (result === "global" || result === "window") {
-         result = "object";
-       }
-       return result; // return String
-     },
+    /**
+     * A better type then Object.toString() or typeof.
+     * - toType(undefined); //"undefined"
+     * - toType(new); //"null"
+     * - toType({a: 4}); //"object"
+     * - toType([1, 2, 3]); //"array"
+     * - (function() {console.log(toType(arguments))})(); //arguments
+     * - toType(new ReferenceError); //"error"
+     * - toType(new Date); //"date"
+     * - toType(/a-z/); //"regexp"
+     * - toType(Math); //"math"
+     * - toType(JSON); //"json"
+     * - toType(new Number(4)); //"number"
+     * - toType(new String("abc")); //"string"
+     * - toType(new Boolean(true)); //"boolean"
+     *
+     * Based on
+     * http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+     */
+    typeOf: function(obj) {
+      if (obj === null) { // workaround for some weird implementations
+        return "null";
+      }
+      var result = Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+      // on some browsers, the main window returns as "global" (WebKit) or "window" (FF), but this is an object too
+      if (result === "global" || result === "window") {
+        result = "object";
+      }
+      return result; // return String
+    },
 
-     /**
-      * p is a true primitive, i.e., not null, undefined, an object (which implies, not a Date, Math or JSON, nor any
-      * Error, and not an array or arguments, and wrapped primitives), not a function. p is a true string, number or
-      * boolean.
-      */
-     isPrimitive: function(p) {
-       return (p !== null) && 0 <= ["number", "string", "boolean"].indexOf(typeof p);
-     },
+    /**
+     * p is a true primitive, i.e., not null, undefined, an object (which implies, not a Date, Math or JSON, nor any
+     * Error, and not an array or arguments, and wrapped primitives), not a function. p is a true string, number or
+     * boolean.
+     */
+    isPrimitive: function(p) {
+      return (p !== null) && 0 <= ["number", "string", "boolean"].indexOf(typeof p);
+    },
 
-     isInteger: function(value) {
-       return Number.isInteger
-         ? Number.isInteger(value)
-         : typeof value === "number"
-           && isFinite(value)
-           && Math.floor(value) === value;
-     },
+    isInteger: function(value) {
+      return Number.isInteger
+        ? Number.isInteger(value)
+        : typeof value === "number"
+          && isFinite(value)
+          && Math.floor(value) === value;
+    },
 
-     pre: function(/*Object?*/ self, /*Function*/ condition) {
-       var shiftedCondition = condition || self;
-       var shiftedSelf = condition ? self : undefined;
-       if (!shiftedCondition.apply(self)) {
-         throw new Error("Precondition violation in Toryt Contracts: " + shiftedCondition);
-       }
-     },
+    pre: function(/*Object?*/ self, /*Function*/ condition) {
+      var shiftedCondition = condition || self;
+      var shiftedSelf = condition ? self : undefined;
+      if (!shiftedCondition.apply(self)) {
+        throw new Error("Precondition violation in Toryt Contracts: " + shiftedCondition);
+      }
+    },
 
-     setAndFreezeProperty: function(obj, propName, value) {
-       this.pre(function() {return !util.isPrimitive(obj);});
-       this.pre(function() {return util.typeOf(propName) === "string";});
+    setAndFreezeProperty: function(obj, propName, value) {
+      this.pre(function() {return !util.isPrimitive(obj);});
+      this.pre(function() {return util.typeOf(propName) === "string";});
 
-       Object.defineProperty(
-         obj,
-         propName,
-         {
-           configurable: false,
-           enumerable: true,
-           writable: false,
-           value: value
-         }
-       );
-     },
+      Object.defineProperty(
+        obj,
+        propName,
+        {
+          configurable: false,
+          enumerable: true,
+          writable: false,
+          value: value
+        }
+      );
+    },
 
-     defineConfigurableDerivedProperty: function(prototype, propertyName, derivation) {
-       util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
-       util.pre(function() {return util.typeOf(propertyName) === "string";});
-       util.pre(function() {return util.typeOf(derivation) === "function";});
+    defineConfigurableDerivedProperty: function(prototype, propertyName, derivation) {
+      util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
+      util.pre(function() {return util.typeOf(propertyName) === "string";});
+      util.pre(function() {return util.typeOf(derivation) === "function";});
 
-       Object.defineProperty(
-         prototype,
-         propertyName,
-         {
-           configurable: true,
-           enumerable: true,
-           get: derivation,
-           set: undefined
-         }
-       );
-     },
+      Object.defineProperty(
+        prototype,
+        propertyName,
+        {
+          configurable: true,
+          enumerable: true,
+          get: derivation,
+          set: undefined
+        }
+      );
+    },
 
-     defineFrozenDerivedProperty: function(prototype, propertyName, derivation) {
-       util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
-       util.pre(function() {return util.typeOf(propertyName) === "string";});
-       util.pre(function() {return util.typeOf(derivation) === "function";});
+    defineFrozenDerivedProperty: function(prototype, propertyName, derivation) {
+      util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
+      util.pre(function() {return util.typeOf(propertyName) === "string";});
+      util.pre(function() {return util.typeOf(derivation) === "function";});
 
-       Object.defineProperty(
-         prototype,
-         propertyName,
-         {
-           configurable: false,
-           enumerable: true,
-           get: derivation,
-           set: undefined
-         }
-       );
-     },
+      Object.defineProperty(
+        prototype,
+        propertyName,
+        {
+          configurable: false,
+          enumerable: true,
+          get: derivation,
+          set: undefined
+        }
+      );
+    },
 
-     defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
-       this.pre(function() {return !util.isPrimitive(prototype);});
-       this.pre(function() {return util.typeOf(propName) === "string";});
-       this.pre(function() {return util.typeOf(privatePropName) === "string";});
-       this.pre(function() {return propName !== privatePropName;});
+    defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
+      this.pre(function() {return !util.isPrimitive(prototype);});
+      this.pre(function() {return util.typeOf(propName) === "string";});
+      this.pre(function() {return util.typeOf(privatePropName) === "string";});
+      this.pre(function() {return propName !== privatePropName;});
 
-       this.defineFrozenDerivedProperty(
-         prototype,
-         propName,
-         function() {return this[privatePropName].slice();}
-       );
-     },
+      this.defineFrozenDerivedProperty(
+        prototype,
+        propName,
+        function() {return this[privatePropName].slice();}
+      );
+    },
 
-     isFrozenOwnProperty: function(obj, propName) {
-       this.pre(function() {return obj !== null && obj !== undefined;});
+    isFrozenOwnProperty: function(obj, propName) {
+      this.pre(function() {return obj !== null && obj !== undefined;});
 
-       var descriptor = Object.getOwnPropertyDescriptor(obj, propName);
-       return descriptor
-              && descriptor.enumerable === true
-              && descriptor.configurable === false
-              && (descriptor.writable === false || (this.typeOf(descriptor.get) === "function" && !descriptor.set));
-     },
+      var descriptor = Object.getOwnPropertyDescriptor(obj, propName);
+      return descriptor
+             && descriptor.enumerable === true
+             && descriptor.configurable === false
+             && (descriptor.writable === false || (this.typeOf(descriptor.get) === "function" && !descriptor.set));
+    },
 
-     nrOfLines: function(str) {
-       return ("" + str).split(this.eol).length;
-     },
+    nrOfLines: function(str) {
+      return ("" + str).split(this.eol).length;
+    },
 
-     isALocationOutsideLibrary: function(location) {
-       if (this.typeOf(location) !== "string") {
-         return false;
-       }
-       var lines = location.split(this.eol);
-       return lines.length === 1
-              && lines[0].search(/^    at/) === 0
-              && 0 <= lines[0].indexOf("/")
-              && lines[0].indexOf(this.contractLibPath) < 0;
-     },
+    isALocationOutsideLibrary: function(location) {
+      if (this.typeOf(location) !== "string") {
+        return false;
+      }
+      var lines = location.split(this.eol);
+      return lines.length === 1
+             && lines[0].search(/^    at/) === 0
+             && 0 <= lines[0].indexOf("/")
+             && lines[0].indexOf(this.contractLibPath) < 0;
+    },
 
-     /**
-      * The first line from a stack trace created here that refers to code that is not inside this library,
-      * and does not refer to native code. Returns the empty string if no such line is found.
-      *
-      * When this result is used as a line on its own, it is clickable to navigate to the referred source code
-      * in most console.
-      */
-     firstLocationOutsideLibrary: function() {
-       var stackSource = new Error();
-       var stack = stackSource.stack.split(this.eol);
-       stack = stack.slice(this.nrOfLines(stackSource)); // throw away the message lines
-       for (var i = this.nrOfLines(stackSource); i < stack.length; i++) {
-         // skip the message lines, and then look for the first line that refers to code not in this library,
-         // that is not native code (i.e., the reference does contain a '/')
-         if (0 <= stack[i].indexOf("/") && stack[i].indexOf(this.contractLibPath) < 0) {
-           return stack[i];
-         }
-       }
-       return ""; // could not find a line outside this library
-     },
+    /**
+     * The first line from a stack trace created here that refers to code that is not inside this library,
+     * and does not refer to native code. Returns the empty string if no such line is found.
+     *
+     * When this result is used as a line on its own, it is clickable to navigate to the referred source code
+     * in most console.
+     */
+    firstLocationOutsideLibrary: function() {
+      var stackSource = new Error();
+      var stack = stackSource.stack.split(this.eol);
+      stack = stack.slice(this.nrOfLines(stackSource)); // throw away the message lines
+      for (var i = this.nrOfLines(stackSource); i < stack.length; i++) {
+        // skip the message lines, and then look for the first line that refers to code not in this library,
+        // that is not native code (i.e., the reference does contain a '/')
+        if (0 <= stack[i].indexOf("/") && stack[i].indexOf(this.contractLibPath) < 0) {
+          return stack[i];
+        }
+      }
+      return ""; // could not find a line outside this library
+    },
 
-     /**
-      * Input an error, and transform its stack so it only contains lines that refer to
-      * code outside this library, and not to native code. The initial name and message is removed,
-      * taking into account that the message could be multi-line.
-      */
-     stackOutsideThisLibrary: function(error) {
-       util.pre(function() {return error instanceof Error;});
-       util.pre(function() {return !!error.stack;});
+    /**
+     * Input an error, and transform its stack so it only contains lines that refer to
+     * code outside this library, and not to native code. The initial name and message is removed,
+     * taking into account that the message could be multi-line.
+     */
+    stackOutsideThisLibrary: function(error) {
+      util.pre(function() {return error instanceof Error;});
+      util.pre(function() {return !!error.stack;});
 
-       var messageLines = util.nrOfLines(error.message); // start after the message
-       var foundALineOutsideTheLibrary = false;
-       var result = error.stack
-         .split(util.eol)
-         .splice(messageLines) // everything after the message lines
-         .reduce(
-           function(acc, line, index) {
-             if (!foundALineOutsideTheLibrary &&
-                 line.indexOf(util.contractLibPath) < 0 &&
-                 0 <= line.indexOf("/")) {
-               // we found the first line of code that uses util library, if we haven't found such a line earlier,
-               // and we are past the message, and the line does not refer to util library or native code
-               foundALineOutsideTheLibrary = true;
-             }
-             if (line.indexOf(util.contractLibPath) < 0 &&
-                  (0 <= line.indexOf("/") || foundALineOutsideTheLibrary)) {
-               // copy all the message lines, and the lines not referring to util library that are not referring to
-               // native code, and the lines that are referring to native code once we encountered the first line
-               // of non-native code that refers to code outside util library
-               acc.push(line);
-             }
-             return acc;
-           },
-           []
-         );
-       return result.join(util.eol);
-     },
+      var messageLines = util.nrOfLines(error.message); // start after the message
+      var foundALineOutsideTheLibrary = false;
+      var result = error.stack
+        .split(util.eol)
+        .splice(messageLines) // everything after the message lines
+        .reduce(
+          function(acc, line, index) {
+            if (!foundALineOutsideTheLibrary &&
+                line.indexOf(util.contractLibPath) < 0 &&
+                0 <= line.indexOf("/")) {
+              // we found the first line of code that uses util library, if we haven't found such a line earlier,
+              // and we are past the message, and the line does not refer to util library or native code
+              foundALineOutsideTheLibrary = true;
+            }
+            if (line.indexOf(util.contractLibPath) < 0 &&
+                 (0 <= line.indexOf("/") || foundALineOutsideTheLibrary)) {
+              // copy all the message lines, and the lines not referring to util library that are not referring to
+              // native code, and the lines that are referring to native code once we encountered the first line
+              // of non-native code that refers to code outside util library
+              acc.push(line);
+            }
+            return acc;
+          },
+          []
+        );
+      return result.join(util.eol);
+    },
 
-     maxLengthOfConciseRepresentation: 80,
-     lengthOfEndConciseRepresentation: 15,
-     conciseSeparator: " … ",
+    maxLengthOfConciseRepresentation: 80,
+    lengthOfEndConciseRepresentation: 15,
+    conciseSeparator: " … ",
 
-     /**
-      * Returns a concise representation of <code>f</code> to be used in output.
-      */
-     conciseConditionRepresentation: function(prefix, f) {
-       util.pre(function() {return util.typeOf(prefix) === "string";});
+    /**
+     * Returns a concise representation of <code>f</code> to be used in output.
+     */
+    conciseConditionRepresentation: function(prefix, f) {
+      util.pre(function() {return util.typeOf(prefix) === "string";});
 
-       var result = (f && f.displayName) || (prefix + " " + ((f && f.name) || f));
-       result = result.replace(/\s\s+/g, " ");
-       if (util.maxLengthOfConciseRepresentation < result.length) {
-         var startLength = util.maxLengthOfConciseRepresentation
-                           - util.lengthOfEndConciseRepresentation
-                           - util.conciseSeparator.length;
-         var start = result.slice(0, startLength);
-         var end = result.slice(-util.lengthOfEndConciseRepresentation);
-         result = start + util.conciseSeparator + end;
-       }
-       return result;
-     }
-   };
+      var result = (f && f.displayName) || (prefix + " " + ((f && f.name) || f));
+      result = result.replace(/\s\s+/g, " ");
+      if (util.maxLengthOfConciseRepresentation < result.length) {
+        var startLength = util.maxLengthOfConciseRepresentation
+                          - util.lengthOfEndConciseRepresentation
+                          - util.conciseSeparator.length;
+        var start = result.slice(0, startLength);
+        var end = result.slice(-util.lengthOfEndConciseRepresentation);
+        result = start + util.conciseSeparator + end;
+      }
+      return result;
+    }
+  };
 
-   return util;
- })();
+  return util;
+}));

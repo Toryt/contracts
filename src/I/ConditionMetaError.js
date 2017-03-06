@@ -14,12 +14,19 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var ConditionError = require("./ConditionError");
-  var AbstractContract = require("./AbstractContract");
-  var util = require("./../_private/util");
+  var dependencies = ["./../_private/util", "./ConditionError", "./AbstractContract"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(util, ConditionError, AbstractContract) {
+  "use strict";
 
   /**
    * The condition could not be evaluated. There is probably a programming error in the condition itself.
@@ -70,4 +77,4 @@ module.exports = (function() {
   );
 
   return ConditionMetaError;
-})();
+}));

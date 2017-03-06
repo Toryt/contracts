@@ -13,11 +13,20 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-module.exports = (function() {
+
+(function(factory) {
   "use strict";
 
-  var util = require("./../_private/util");
-  var ContractError = require("./ContractError");
+  var dependencies = ["./../_private/util", "./ContractError"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(util, ContractError) {
+  "use strict";
 
   var displayNamePrefix = "contract function ";
 
@@ -207,4 +216,4 @@ module.exports = (function() {
   AbstractContract.AbstractError = AbstractError;
 
   return AbstractContract;
-})();
+}));

@@ -13,15 +13,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-module.exports = (function() {
+
+(function(factory) {
   "use strict";
 
-  var util = require("./../_private/util");
-  var AbstractContract = require("./AbstractContract");
-  var ConditionError = require("./ConditionError");
-  var PreconditionViolation = require("./PreconditionViolation");
-  var PostconditionViolation = require("./PostconditionViolation");
-  var ExceptionConditionViolation = require("./ExceptionConditionViolation");
+  var dependencies = ["./../_private/util", "./ConditionError", "./AbstractContract",
+                      "./PreconditionViolation", "./PostconditionViolation", "./ExceptionConditionViolation"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(util, ConditionError, AbstractContract,
+           PreconditionViolation, PostconditionViolation, ExceptionConditionViolation) {
+  "use strict";
 
   /**
    * The separation between AbstractContract and Contract is necessary to break a dependency
@@ -76,4 +83,4 @@ module.exports = (function() {
   Contract.root = AbstractContract.root;
 
   return Contract;
-})();
+}));

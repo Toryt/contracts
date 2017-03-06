@@ -14,13 +14,19 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var ConditionError = require("./ConditionError");
-  var AbstractContract = require("./AbstractContract");
-  var ConditionMetaError = require("./ConditionMetaError");
-  var util = require("./../_private/util");
+  var dependencies = ["./../_private/util", "./ConditionError", "./AbstractContract", "./ConditionMetaError"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(util, ConditionError, AbstractContract, ConditionMetaError) {
+  "use strict";
 
   /**
    * Super type for objects that are thrown to signal a condition violation.
@@ -121,4 +127,4 @@ module.exports = (function() {
   );
 
   return ConditionViolation;
-})();
+}));

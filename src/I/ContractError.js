@@ -14,7 +14,19 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
+  "use strict";
+
+  var dependencies = ["./../_private/util"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(util, ConditionError, AbstractContract,
+           PreconditionViolation, PostconditionViolation, ExceptionConditionViolation) {
   "use strict";
 
   /* NOTE: Custom Error types are notoriously difficult in JavaScript.
@@ -56,8 +68,6 @@ module.exports = (function() {
      For fileName and lineNumber, we have the same problem as with the stack: we need a reference to somewhere else
      than where we create the custom error.
    */
-
-  var util = require("./../_private/util");
 
   var stackSourceName= "Stack source";
   var stackSourceMessage = "internal error used to get a sensible stack";
@@ -102,4 +112,4 @@ module.exports = (function() {
   ContractError.message = message;
 
   return ContractError;
-})();
+}));

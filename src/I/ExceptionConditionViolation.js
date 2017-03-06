@@ -14,12 +14,19 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var ConditionViolation = require("./ConditionViolation");
-  var AbstractContract = require("./AbstractContract");
-  var util = require("./../_private/util");
+  var dependencies = ["./../_private/util", "./ConditionViolation", "./AbstractContract"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(util, ConditionViolation, AbstractContract) {
+  "use strict";
 
   /**
    * <p>An ExceptionConditionViolation is the means by which Toryt Contracts tells developers that it detected that an
@@ -85,4 +92,4 @@ module.exports = (function() {
   );
 
   return ExceptionConditionViolation;
-})();
+}));

@@ -14,13 +14,19 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var util = require("./../_private/util");
-  var ContractError = require("./ContractError");
-  var AbstractContract = require("./AbstractContract");
-  var path = require("path");
+  var dependencies = ["./../_private/util", "./ContractError", "./AbstractContract", "path"];
+  
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(util, ContractError, AbstractContract, path) {
+  "use strict";
 
   var contractLibPath = path.dirname(module.filename);
 
@@ -159,4 +165,4 @@ module.exports = (function() {
   );
 
   return ConditionError;
-})();
+}));
