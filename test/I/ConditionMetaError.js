@@ -14,14 +14,22 @@
  limitations under the License.
  */
 
-(function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var common = require("./ConditionMetaErrorCommon");
-  var ConditionMetaError = require("../../src/I/ConditionMetaError");
-  var util = require("../../src/_private/util");
-  var testUtil = require("../_testUtil");
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
+                      "./ConditionMetaErrorCommon", "../../src/I/ConditionMetaError"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, testUtil, util, common, ConditionMetaError) {
+  "use strict";
+
+  var expect = chai.expect;
 
   // describe("I", function() {
     describe("I/ConditionMetaError", function() {
@@ -75,4 +83,4 @@
     });
   // });
 
-})();
+}));

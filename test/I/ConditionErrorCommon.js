@@ -14,17 +14,25 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var common = require("./ContractErrorCommon");
-  var ConditionError = require("../../src/I/ConditionError");
-  var abstractContractCommon = require("./AbstractContractCommon");
-  var util = require("../../src/_private/util");
-  var AbstractContract = require("../../src/I/AbstractContract");
-  var testUtil = require("../_testUtil");
-  var path = require("path");
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
+                      "./ContractErrorCommon", "../../src/I/ConditionError",
+                      "../../src/I/AbstractContract", "./AbstractContractCommon",
+                      "path"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, testUtil, util, common, ConditionError, AbstractContract, abstractContractCommon, path) {
+  "use strict";
+
+  var expect = chai.expect;
 
   var contractLibTestPath = path.dirname(module.filename);
   var contractLibPath = path.dirname(path.dirname(contractLibTestPath)) + "/src/I";
@@ -168,4 +176,4 @@ module.exports = (function() {
   Object.setPrototypeOf(test, common);
   return test;
 
-})();
+}));

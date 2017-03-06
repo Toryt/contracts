@@ -14,13 +14,22 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var util = require("../../src/_private/util");
-  var testUtil = require("../_testUtil");
-  var AbstractContract = require("../../src/I/AbstractContract");
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
+                      "../../src/I/AbstractContract"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, testUtil, util, AbstractContract) {
+  "use strict";
+
+  var expect = chai.expect;
 
   var someConditions = [
     function() {return [];},
@@ -211,4 +220,4 @@ module.exports = (function() {
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
   };
 
-})();
+}));

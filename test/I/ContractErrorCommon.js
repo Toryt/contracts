@@ -14,14 +14,22 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var ContractError = require("../../src/I/ContractError");
-  var util = require("../../src/_private/util");
-  var testUtil = require("../_testUtil");
-  var path = require("path");
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
+                      "../../src/I/ContractError", "path"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, testUtil, util, ContractError, path) {
+  "use strict";
+
+  var expect = chai.expect;
 
   var contractLibTestPath = path.dirname(module.filename);
   var contractLibPath = path.dirname(path.dirname(contractLibTestPath)) + "/src/I";
@@ -74,4 +82,4 @@ module.exports = (function() {
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
   };
 
-})();
+}));

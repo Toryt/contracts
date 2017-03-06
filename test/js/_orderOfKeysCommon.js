@@ -14,10 +14,19 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var randomString = require("randomstring");
+  var dependencies = ["randomstring"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(randomString) {
+  "use strict";
 
   function randomName(/*Number*/ n) {
     var nString = "$$" + n + "$$";
@@ -64,4 +73,4 @@ module.exports = (function() {
     objectLiteral: objectLiteral
   };
 
-})();
+}));

@@ -14,11 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var util = require("../src/_private/util");
+  var dependencies = ["chai", "../src/_private/util"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, util) {
+  "use strict";
+
+  var expect = chai.expect;
 
   function x() {
     if (arguments.length <= 0) {
@@ -150,4 +160,4 @@ module.exports = (function() {
     propertyIsWritable: propertyIsWritable
   };
 
-})();
+}));

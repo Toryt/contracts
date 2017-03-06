@@ -14,11 +14,22 @@
  limitations under the License.
  */
 
-(function() {
+(function(factory) {
+  "use strict";
+
+  var dependencies = ["chai"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai) {
   "use strict";
 
   //noinspection JSUnresolvedFunction
-  var expect = require("chai").expect;
+  var expect = chai.expect;
 
   // describe("js", function() {
     describe("js/Function", function() {
@@ -44,7 +55,7 @@
           expect(otherThisResult).to.equal(boundThisPropertyValue);
         });
       });
-
     });
   // });
-})();
+
+}));

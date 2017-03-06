@@ -14,22 +14,30 @@
  limitations under the License.
  */
 
-(function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var util = require("../../src/_private/util");
-  var testUtil = require("../_testUtil");
-  var Contract = require("../../src/I/Contract");
-  var AbstractContract = require("../../src/I/AbstractContract");
-  var ConditionMetaError = require("../../src/I/ConditionMetaError");
-  var PreconditionViolation = require("../../src/I/PreconditionViolation");
-  var PostconditionViolation = require("../../src/I/PostconditionViolation");
-  var ExceptionConditionViolation = require("../../src/I/ExceptionConditionViolation");
-  var conditionMetaErrorCommon = require("./ConditionMetaErrorCommon");
-  var preconditionViolationCommon = require("./PreconditionViolationCommon");
-  var postconditionViolationCommon = require("./PostconditionViolationCommon");
-  var exceptionConditionViolationCommon = require("./ExceptionConditionViolationCommon");
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
+                      "../../src/I/Contract", "../../src/I/AbstractContract", "../../src/I/ConditionMetaError",
+                      "../../src/I/PreconditionViolation", "../../src/I/PostconditionViolation",
+                      "../../src/I/ExceptionConditionViolation",
+                      "./ConditionMetaErrorCommon", "./PreconditionViolationCommon", "./PostconditionViolationCommon",
+                      "./ExceptionConditionViolationCommon"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, testUtil, util,
+           Contract, AbstractContract, ConditionMetaError,
+           PreconditionViolation, PostconditionViolation, ExceptionConditionViolation,
+           conditionMetaErrorCommon, preconditionViolationCommon, postconditionViolationCommon,
+           exceptionConditionViolationCommon) {
+  "use strict";
+
+  var expect = chai.expect;
 
   /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
      specific for ContractFunction: we test extensively whether the contract function works as expected here.
@@ -441,4 +449,4 @@
     });
   // });
 
-})();
+}));

@@ -14,11 +14,21 @@
  limitations under the License.
  */
 
-(function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var orderOfKeysCommon = require("./_orderOfKeysCommon");
+  var dependencies = ["chai", "./_orderOfKeysCommon"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, orderOfKeysCommon) {
+  "use strict";
+
+  var expect = chai.expect;
 
   // describe("js", function() {
     describe("js/Object", function() {
@@ -172,4 +182,5 @@
       });
     });
   // });
-})();
+
+}));

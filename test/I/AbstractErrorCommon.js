@@ -14,14 +14,23 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var common = require("./ContractErrorCommon");
-  var AbstractError = require("../../src/I/AbstractContract").AbstractError;
-  var testUtil = require("../_testUtil");
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
+                      "./ContractErrorCommon", "../../src/I/AbstractContract"];
 
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, testUtil, util, common, AbstractContract) {
+  "use strict";
+
+  var expect = chai.expect;
+  var AbstractError = AbstractContract.AbstractError;
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(AbstractError);
@@ -57,4 +66,4 @@ module.exports = (function() {
   Object.setPrototypeOf(test, common);
   return test;
 
-})();
+}));

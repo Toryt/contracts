@@ -14,15 +14,22 @@
  limitations under the License.
  */
 
-module.exports = (function() {
+(function(factory) {
   "use strict";
 
-  var expect = require("chai").expect;
-  var common = require("./ConditionErrorCommon");
-  var ConditionViolation = require("../../src/I/ConditionViolation");
-  var ConditionMetaError = require("../../src/I/ConditionMetaError");
-  var conditionMetaErrorCommon = require("./ConditionMetaErrorCommon");
-  var testUtil = require("../_testUtil");
+  var dependencies = ["chai", "../_testUtil", "./ConditionErrorCommon",
+                      "../../src/I/ConditionMetaError", "../../src/I/ConditionViolation", "./ConditionMetaErrorCommon"];
+
+  if (typeof define === 'function' && define.amd) {
+    define(dependencies, factory);
+  }
+  else if (typeof exports === 'object') {
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  }
+}(function(chai, testUtil, common, ConditionMetaError, ConditionViolation, conditionMetaErrorCommon) {
+  "use strict";
+
+  var expect = chai.expect;
 
   var selfVerifyCases = [
     function() {return undefined;},
@@ -364,4 +371,4 @@ module.exports = (function() {
   Object.setPrototypeOf(test, common);
   return test;
 
-})();
+}));
