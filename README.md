@@ -1,3 +1,7 @@
+The web, nor node, are ready for ES6 modules at 2017-03-06.
+So, we will still use [UMD].
+
+
 Versions
 --------
 
@@ -25,3 +29,7 @@ TODO
   * III/3.0: test support Mocha
   * III/4.0: test support intern
   
+
+  
+  
+[UMD]: http://davidbcalhoun.com/2014/what-is-amd-commonjs-and-umd/
