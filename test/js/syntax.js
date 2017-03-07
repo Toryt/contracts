@@ -123,6 +123,7 @@
       });
 
       describe("#typeof", function() {
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
         [
           undefined,
           null,
@@ -158,6 +159,7 @@
           expect(subject).not.to.have.property("name");
           var name = "This is a name";
           try {
+            //noinspection JSPrimitiveTypeWrapperUsage
             subject.name = name;
             expect(subject).not.to.have.property("name"); // silently fail, or …
           }
