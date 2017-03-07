@@ -26,6 +26,7 @@
   var getGlobal = new Function("return this;");
 
   function generateMutableStuff() {
+    //noinspection JSPrimitiveTypeWrapperUsage,JSHint
     var result = [
       {subject: {a: 4}, expected: "object"},
       {subject: [1, 2, 3], expected: "array"},
