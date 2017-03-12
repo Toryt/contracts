@@ -86,7 +86,6 @@
 
   var argsCases = [
     [],
-    ["one argument"],
     selfCases
   ];
   argsCases = argsCases.concat(argsCases.map(function(c) {
