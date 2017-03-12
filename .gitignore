@@ -93,4 +93,10 @@ xcuserdata
 *.moved-aside
 *.xcuserstate
 
-# Created by .ignore support plugin (hsz.mobi)
+
+
+### node
+node_modules
+
+### Bower
+bower_components

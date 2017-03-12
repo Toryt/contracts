@@ -1,0 +1,40 @@
+{
+  "name": "toryt-contracts-i",
+  "description": "Design-by-Contract and Test-by-Contract for JavaScript",
+  "main": "src/I/Contract.js",
+  "moduleType": [
+    "amd",
+    "node"
+  ],
+  "authors": [
+    {
+      "name": "Jan Dockx",
+      "email": "jandockx@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/toryt/contracts.git"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "design-by-contract",
+    "test-by-contract",
+    "Toryt",
+    "unit",
+    "test",
+    "contract",
+    "contracts",
+    "precondition",
+    "postcondition",
+    "invariant"
+  ],
+  "homepage": "https://bitbucket.org/toryt/contracts#readme",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "doc",
+    "test"
+  ]
+}
