@@ -2,7 +2,8 @@ require.config({
   baseUrl: "./",
   paths: {
     mocha: "../bower_components/mocha/mocha",
-    chai: "../bower_components/chai/chai"
+    chai: "../bower_components/chai/chai",
+    "just.randomstring": "../bower_components/just.randomstring/just.randomstring"
   },
   shim: {
     "mocha": {
@@ -13,12 +14,15 @@ require.config({
         this.mocha.globals([]);
         return this.mocha;
       }
+    },
+    "just.randomstring": {
+      exports: "just.randomstring"
     }
   }
 });
 
 require(["mocha"], function(mocha) {
-  require(["./js/Function"], function() {
+  require(["./js/Object", "./js/Function"], function() {
     mocha.run();
   });
 });

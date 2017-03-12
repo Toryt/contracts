@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["randomstring"];
+  var dependencies = ["just.randomstring"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -30,7 +30,7 @@
 
   function randomName(/*Number*/ n) {
     var nString = "$$" + n + "$$";
-    return randomString.generate() + nString;
+    return randomString() + nString;
   }
 
   function nFromRandomName(/*String*/ str) {

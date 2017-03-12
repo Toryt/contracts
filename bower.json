@@ -38,8 +38,11 @@
     "test"
   ],
   "dependencies": {
-    "requirejs": "^2.3.3",
+    "requirejs": "^2.3.3"
+  },
+  "devDependencies": {
     "mocha": "^3.2.0",
-    "chai": "^3.5.0"
+    "chai": "^3.5.0",
+    "just.randomstring": "*"
   }
 }
