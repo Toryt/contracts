@@ -53,30 +53,10 @@
     expect(result).to.contain(subject.exception);
   }
 
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-  var exceptionCases = [
-    new Error("This is an exception case"),
-    undefined,
-    null,
-    1,
-    0,
-    "a string that is used as an exception",
-    "",
-    true,
-    false,
-    new Date(),
-    /foo/,
-    function() {},
-    new Number(42),
-    new Boolean(false),
-    new String("lalala"),
-    arguments,
-    {},
-    {a: 1, b: "b", c: {}, d: {d1: undefined, d2: "d2", d3: {d31: 31}}}
-  ];
+  var exceptionCaseGenerators = common.anyCasesGenerators("exception");
 
   var test = {
-    exceptionCases: exceptionCases,
+    exceptionCaseGenerators: exceptionCaseGenerators,
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost,
     expectProperties: expectProperties,
