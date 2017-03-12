@@ -37,9 +37,10 @@
     describe("I/ExceptionConditionViolation", function() {
 
       describe("#ExceptionConditionViolation()", function() {
-        common.selfCases.forEach(function(self) {
+        common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
           argsCases.forEach(function(args) {
             common.exceptionCaseGenerators.forEach(function(exceptionCaseGenerator) {
+              var self = selfCaseGenerator();
               var exception = exceptionCaseGenerator();
               it("creates an instance with all toppings for " + self + " - " + args + " - " + exception, function() {
                 var contractFunction = common.createCandidateContractFunction();
@@ -85,15 +86,15 @@
           return new ExceptionConditionViolation(contractFunction, common.conditionCase, self, doctoredArgs);
         },
         testUtil
-          .x(common.conditionCases, common.selfCases, argsCases, common.exceptionCaseGenerators)
+          .x(common.conditionCases, common.selfCaseGenerators, argsCases, common.exceptionCaseGenerators)
           .map(function(parameters) {
             return function() {
               var contractFunction = common.createCandidateContractFunction();
-              var self = parameters[1];
+              var self = parameters[1]();
               var doctoredArgs = doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]());
               return {
                 subject: new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs),
-                description: parameters.join(" - ")
+                description: parameters[0] + " — " + self + " – " + parameters[2] + " – " + parameters[3]
               };
             };
           }),

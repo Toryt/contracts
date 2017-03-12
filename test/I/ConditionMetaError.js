@@ -35,9 +35,10 @@
     describe("I/ConditionMetaError", function() {
 
       describe("#ConditionMetaError()", function() {
-        common.selfCases.forEach(function(self) {
+        common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
           common.argsCases.forEach(function(args) {
             common.errorCases.forEach(function(error) {
+              var self = selfCaseGenerator();
               it("creates an instance with all toppings for " + self + " - " + args + " - " + error, function() {
                 var contractFunction = common.createCandidateContractFunction();
                 var result = new ConditionMetaError(contractFunction, common.conditionCase, self, args, error);
@@ -62,18 +63,19 @@
           );
         },
         testUtil
-          .x(common.conditionCases, common.selfCases, common.argsCases, common.errorCases)
+          .x(common.conditionCases, common.selfCaseGenerators, common.argsCases, common.errorCases)
           .map(function(parameters) {
             return function() {
+              var self = parameters[1]();
               return {
                 subject: new ConditionMetaError(
                   common.createCandidateContractFunction(),
                   parameters[0],
-                  parameters[1],
+                  self,
                   parameters[2],
                   parameters[3]
                 ),
-                description: parameters.join(" - ")
+                description: parameters[0] + " — " + self + " – " + parameters[2] + " – " + parameters[3]
               };
             };
           }),

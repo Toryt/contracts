@@ -37,9 +37,10 @@
     describe("I/PostconditionViolation", function() {
 
       describe("#PostconditionViolation()", function() {
-        common.selfCases.forEach(function(self) {
+        common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
           argsCases.forEach(function(args) {
             common.resultCaseGenerators.forEach(function(resultCaseGenerator) {
+              var self = selfCaseGenerator();
               var result = resultCaseGenerator();
               it("creates an instance with all toppings for " + self + " - " + args + " - " + result, function() {
                 var contractFunction = common.createCandidateContractFunction();
@@ -85,15 +86,15 @@
           return new PostconditionViolation(contractFunction, common.conditionCase, self, doctoredArgs);
         },
         testUtil
-          .x(common.conditionCases, common.selfCases, argsCases, common.resultCaseGenerators)
+          .x(common.conditionCases, common.selfCaseGenerators, argsCases, common.resultCaseGenerators)
           .map(function(parameters) {
             return function() {
               var contractFunction = common.createCandidateContractFunction();
-              var self = parameters[1];
+              var self = parameters[1]();
               var doctoredArgs = doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]());
               return {
                 subject: new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs),
-                description: parameters.join(" - ")
+                description: parameters[0] + " — " + self + " – " + parameters[2] + " – " + parameters[3]
               };
             };
           }),

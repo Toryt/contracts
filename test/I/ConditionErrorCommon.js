@@ -103,24 +103,11 @@
     ];
   }
 
-  var selfCases = [
-    undefined,
-    null,
-    4,
-    -1,
-    "",
-    "A string",
-    new Date(),
-    true,
-    false,
-    {},
-    /foo/,
-    function() {return "This simulates a self";}
-  ];
+  var selfCaseGenerators = anyCasesGenerators("self");
 
   var argsCases = [
     [],
-    selfCases
+    anyCasesGenerators("arguments element").map(function(g) {return g();})
   ];
   argsCases = argsCases.concat(argsCases.map(function(c) {
     function asArgs(args) {
@@ -168,12 +155,12 @@
 
   function expectDetailsPost(subject, result) {
     expect(result).to.be.a("string");
-    expect(result).to.contain(subject.condition);
-    expect(result).to.contain(util.eol + subject.contractFunction.contract.location);
-    expect(result).to.contain(subject.self);
+    expect(result).to.contain("" + subject.condition);
+    expect(result).to.contain("" + util.eol + subject.contractFunction.contract.location);
+    expect(result).to.contain("" + subject.self);
     Array.prototype.forEach.call(
       subject.args,
-      function(arg) {expect(result).to.contain(arg);}
+      function(arg) {expect(result).to.contain("" + arg);}
     );
   }
 
@@ -196,7 +183,7 @@
 
   var test = {
     anyCasesGenerators: anyCasesGenerators,
-    selfCases: selfCases,
+    selfCaseGenerators: selfCaseGenerators,
     argsCases: argsCases,
     conditionCase: conditionCase,
     conditionCases: conditionCases,
