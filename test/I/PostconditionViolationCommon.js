@@ -52,30 +52,44 @@
     expect(exception).to.have.property("result").that.equals(result);
   }
 
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-  var resultCases = [
-    new Error("This is a result case"),
-    undefined,
-    null,
-    1,
-    0,
-    "a string that is used as a result",
-    "",
-    true,
-    false,
-    new Date(),
-    /foo/,
-    function() {},
-    new Number(42),
-    new Boolean(false),
-    new String("lalala"),
-    arguments,
-    {},
-    {a: 1, b: "b", c: {}, d: {d1: undefined, d2: "d2", d3: {d31: 31}}}
-  ];
+  function anyCasesGenerators(discriminator) {
+    return [
+      function() {return new Error("This is a " + discriminator + " case");},
+      function() {return undefined;},
+      function() {return null;},
+      function() {return 1;},
+      function() {return 0;},
+      function() {return "a string that is used as a " + discriminator;},
+      function() {return "";},
+      function() {return true;},
+      function() {return false;},
+      function() {return new Date();},
+      function() {return /foo/;},
+      function() {return function() {};},
+      function() {
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint,MagicNumberJS
+        return new Number(42);
+      },
+      function() {
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
+        return new Boolean(false);
+      },
+      function() {
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
+        return new String(discriminator + " string");
+      },
+      function() {return arguments;},
+      function() {return {};},
+      function() {//noinspection MagicNumberJS
+        return {a: 1, b: "b", c: {}, d: {d1: undefined, d2: "d2", d3: {d31: 31}}};
+      }
+    ];
+  }
+
+  var resultCaseGenerators = anyCasesGenerators("result");
 
   var test = {
-    resultCases: resultCases,
+    resultCaseGenerators: resultCaseGenerators,
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost,
     expectProperties: expectProperties,
