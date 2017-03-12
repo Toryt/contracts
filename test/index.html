@@ -1,28 +1,12 @@
 <!DOCTYPE html>
-
-https://sosuke.com/unit-testing-a-javascript-app-using-requirejs-with-mocha-phantomjs-chai-sinonjs/?linkedin
-http://www.g9labs.com/2014/06/06/running-mocha-tests-with-es6-amd-modules/
-https://coderwall.com/p/kpqqfg/test-a-requirejs-project-using-mocha-phantomjs-chai-and-sinon
-https://coderwall.com/p/g4neba/yeoman-amd-requirejs-mocha-chai
-
 <html>
 <head>
   <meta charset="utf-8">
   <title>Mocha Tests</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.min.css" rel="stylesheet" />
+  <link href="../bower_components/mocha/mocha.css" rel="stylesheet" />
+  <script data-main="mochaMain" src="../bower_components/requirejs/require.js" async="async"></script>
 </head>
 <body>
   <div id="mocha"></div>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.min.js"></script>
-
-  <script>mocha.setup("bdd")</script>
-  <!--<script src="test.array.js"></script>-->
-  <script>
-    mocha.checkLeaks();
-    mocha.globals([]);
-    mocha.run();
-  </script>
 </body>
 </html>
