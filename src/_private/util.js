@@ -18,21 +18,33 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["os", "path"];
-  
+  var dependencies = ["path"];
+
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(os, path) {
+}(function(path) {
   "use strict";
+
+  /**
+   * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform, and is offered by
+   * the os-module.
+   */
+  var eol = "\n";
+  if (typeof exports === 'object') {
+    eol = require("os").EOL;
+  }
 
   //noinspection MagicNumberJS
   var util = {
 
-    eol: os.EOL,
+    /**
+     * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform.
+     */
+    eol: eol,
 
     contractLibPath: path.dirname(path.dirname(module.filename)), // 2 directories up
 
