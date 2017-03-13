@@ -33,9 +33,6 @@
 
   var expect = chai.expect;
 
-  var contractLibTestPath = util.dirname(module.filename);
-  var contractLibPath = util.dirname(util.dirname(contractLibTestPath)) + "/src/I";
-
   var conditionCase = function() {return "This simulates a condition";};
 
   function generateMultiLineAnonymousFunction() {

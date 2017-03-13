@@ -31,9 +31,6 @@
 
   var expect = chai.expect;
 
-  var contractLibTestPath = util.dirname(module.filename);
-  var contractLibPath = util.dirname(util.dirname(contractLibTestPath)) + "/src/I";
-
   function expectStackInvariants(subject) {
     expect(subject).to.have.property("stack").to.be.a("string");
     var stack = subject.stack;

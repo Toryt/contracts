@@ -28,8 +28,6 @@
 }(function(util, ContractError, AbstractContract) {
   "use strict";
 
-  var contractLibPath = util.dirname(module.filename);
-
   /**
    * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
    * ConditionError itself is to be considered abstract.
