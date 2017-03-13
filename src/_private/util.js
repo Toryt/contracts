@@ -243,7 +243,11 @@
       }
       var lines = location.split(this.eol);
       return lines.length === 1
-             && lines[0].search(/^    at/) === 0
+             && (lines[0].search(/^    at/) === 0 // node and chrome use "    at"
+                 || ( // FF or Safari use [function_name@], but sometimes nothing
+                      typeof window === "object"
+                      && 0 <= lines[0].indexOf(window.location.protocol + "//" + window.location.host + "/")
+                      && 0 <= lines[0].search(/:\d+:\d+$/))) // but they always end with line and column
              && 0 <= lines[0].indexOf("/")
              && lines[0].indexOf(this.contractLibPath) < 0;
     },
