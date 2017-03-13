@@ -22,7 +22,7 @@ require.config({
 });
 
 require(["mocha"], function(mocha) {
-  require(["./js/Object", "./js/Function", "./js/syntax"], function() {
+  require(["./js/Object", "./js/Function", "./js/syntax", "./_private/util"], function() {
     mocha.run();
   });
 });

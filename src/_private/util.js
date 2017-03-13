@@ -21,12 +21,13 @@
   var dependencies = [];
 
   if (typeof define === 'function' && define.amd) {
+    dependencies.push("module");
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function() {
+}(function(amdModule, amdRequire) {
   "use strict";
 
   /**
@@ -44,7 +45,42 @@
   }
 
   var dirSeparator = "/";
+  var thisDirectory = ".";
+  var parentDirectory = "..";
 
+  function browserModuleLocation() {
+    var location = window.location.href;
+    location = location.split(dirSeparator);
+    if (0 <= location[location.length - 1].indexOf(".")) { // last entry is a file
+      location.pop();
+    }
+    location = location.concat(amdModule.uri.split(dirSeparator));
+    var dotLocation = location.indexOf(thisDirectory); // remove "this directory" path elements
+    while (0 <= dotLocation) {
+      location.splice(dotLocation, 1);
+      dotLocation = location.indexOf(thisDirectory);
+    }
+    dotLocation = location.indexOf(parentDirectory); // remove "parent directory" path elements
+    while (0 <= dotLocation) {
+      location.splice(dotLocation - 1, 2);
+      dotLocation = location.indexOf(parentDirectory);
+    }
+    return location.join(dirSeparator);
+  }
+
+  var fileName = (typeof module === "object") ? module.filename : browserModuleLocation();
+
+  function typeOf(obj) {
+    if (obj === null) { // workaround for some weird implementations
+      return "null";
+    }
+    var result = Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+    // on some browsers, the main window returns as "global" (WebKit) or "window" (FF), but this is an object too
+    if (result === "global" || result === "window") {
+      result = "object";
+    }
+    return result; // return String
+  }
 
   /**
    * <p>Returns the directory name of a path, similar to the Unix dirname command.
@@ -60,7 +96,7 @@
   var dirname = path
     ? path.dirname
     : function(path) {
-        if (util.typeOf(path) !== "string") {
+        if (typeOf(path) !== "string") {
           throw new TypeError("path is not a string");
         }
         var result = path.split(dirSeparator);
@@ -76,7 +112,7 @@
      */
     eol: eol,
 
-    contractLibPath: dirname(dirname(module.filename)), // 2 directories up
+    contractLibPath: dirname(dirname(fileName)), // 2 directories up
 
     /**
      * A better type then Object.toString() or typeof.
@@ -97,17 +133,7 @@
      * Based on
      * http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
      */
-    typeOf: function(obj) {
-      if (obj === null) { // workaround for some weird implementations
-        return "null";
-      }
-      var result = Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
-      // on some browsers, the main window returns as "global" (WebKit) or "window" (FF), but this is an object too
-      if (result === "global" || result === "window") {
-        result = "object";
-      }
-      return result; // return String
-    },
+    typeOf: typeOf,
 
     /**
      * p is a true primitive, i.e., not null, undefined, an object (which implies, not a Date, Math or JSON, nor any

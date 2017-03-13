@@ -20,17 +20,46 @@
   var dependencies = ["chai", "../_testUtil", "../../src/_private/util"];
 
   if (typeof define === 'function' && define.amd) {
+    dependencies.push("module");
+    dependencies.push("require");
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(chai, testUtil, util) {
+}(function(chai, testUtil, util, amdModule, amdRequire) {
   "use strict";
 
   var expect = chai.expect;
 
-  var contractLibTestPath = util.dirname(util.dirname(module.filename));
+  var dirSeparator = "/";
+  var thisDirectory = ".";
+  var parentDirectory = "..";
+
+  function browserModuleLocation() {
+    var location = window.location.href;
+    location = location.split(dirSeparator);
+    if (0 <= location[location.length - 1].indexOf(".")) { // last entry is a file
+      location.pop();
+    }
+    location = location.concat(amdModule.uri.split(dirSeparator));
+    var dotLocation = location.indexOf(thisDirectory); // remove "this directory" path elements
+    while (0 <= dotLocation) {
+      location.splice(dotLocation, 1);
+      dotLocation = location.indexOf(thisDirectory);
+    }
+    dotLocation = location.indexOf(parentDirectory); // remove "parent directory" path elements
+    while (0 <= dotLocation) {
+      location.splice(dotLocation - 1, 2);
+      dotLocation = location.indexOf(parentDirectory);
+    }
+    return location.join(dirSeparator);
+  }
+
+  var fileName = (typeof module === "object") ? module.filename : browserModuleLocation();
+
+
+  var contractLibTestPath = util.dirname(util.dirname(fileName));
   var getGlobal = new Function("return this;");
 
   function generateMutableStuff() {
@@ -469,7 +498,7 @@
             testUtil.log("result:\n%s", result);
             var stackLines = result.split(util.eol);
             expect(stackLines).to.have.length.of.at.least(1);
-            expect(stackLines[0]).to.satisfy(function(l) {return 0 <= l.indexOf(module.filename);});
+            expect(stackLines[0]).to.satisfy(function(l) {return 0 <= l.indexOf(fileName);});
             stackLines.forEach(function(line) {
               expect(line).to.be.a("string");
               expect(line).to.match(/^    at /);
@@ -479,12 +508,14 @@
               expect(line).not.to.have.string(util.contractLibPath);
               /* In our tests, the code that uses the library is our test code in .../test/_private/util, or the
                  test framework library, in .../mocha/..., except for the last few lines. These lines will be
-                 node-internal, and have no slash, or be internal/module.js. The first line should be our own code. */
+                 node-internal, and have no slash, or be internal/module.js, or, in the browser, be requirejs.
+                 The first line should be our own code. */
               expect(line).to.satisfy(function(l) {
                 return 0 <= l.indexOf(contractLibTestPath) ||
                        0 <= l.indexOf("/mocha/") ||
                        l.indexOf("/") < 0 ||
-                       0 <= l.indexOf("require (internal/module.js");
+                       0 <= l.indexOf("require (internal/module.js") ||
+                       0 <= l.indexOf("/requirejs/require.js");
               });
             });
             // all the lines, after the message, that are outside the library, are in the result,
