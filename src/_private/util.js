@@ -27,7 +27,7 @@
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(amdModule, amdRequire) {
+}(function(amdModule) {
   "use strict";
 
   /**
@@ -48,7 +48,7 @@
   var thisDirectory = ".";
   var parentDirectory = "..";
 
-  function browserModuleLocation() {
+  function browserModuleLocation(amdModule) {
     var location = window.location.href;
     location = location.split(dirSeparator);
     if (0 <= location[location.length - 1].indexOf(".")) { // last entry is a file
@@ -68,7 +68,7 @@
     return location.join(dirSeparator);
   }
 
-  var fileName = (typeof module === "object") ? module.filename : browserModuleLocation();
+  var fileName = (typeof module === "object") ? module.filename : browserModuleLocation(amdModule);
 
   function typeOf(obj) {
     if (obj === null) { // workaround for some weird implementations
@@ -340,7 +340,9 @@
      * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
      * directly.
      */
-    dirname: dirname
+    dirname: dirname,
+
+    browserModuleLocation: browserModuleLocation
   };
 
   return util;

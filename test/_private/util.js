@@ -21,44 +21,17 @@
 
   if (typeof define === 'function' && define.amd) {
     dependencies.push("module");
-    dependencies.push("require");
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(chai, testUtil, util, amdModule, amdRequire) {
+}(function(chai, testUtil, util, amdModule) {
   "use strict";
 
   var expect = chai.expect;
 
-  var dirSeparator = "/";
-  var thisDirectory = ".";
-  var parentDirectory = "..";
-
-  function browserModuleLocation() {
-    var location = window.location.href;
-    location = location.split(dirSeparator);
-    if (0 <= location[location.length - 1].indexOf(".")) { // last entry is a file
-      location.pop();
-    }
-    location = location.concat(amdModule.uri.split(dirSeparator));
-    var dotLocation = location.indexOf(thisDirectory); // remove "this directory" path elements
-    while (0 <= dotLocation) {
-      location.splice(dotLocation, 1);
-      dotLocation = location.indexOf(thisDirectory);
-    }
-    dotLocation = location.indexOf(parentDirectory); // remove "parent directory" path elements
-    while (0 <= dotLocation) {
-      location.splice(dotLocation - 1, 2);
-      dotLocation = location.indexOf(parentDirectory);
-    }
-    return location.join(dirSeparator);
-  }
-
-  var fileName = (typeof module === "object") ? module.filename : browserModuleLocation();
-
-
+  var fileName = (typeof module === "object") ? module.filename : util.browserModuleLocation(amdModule);
   var contractLibTestPath = util.dirname(util.dirname(fileName));
   var getGlobal = new Function("return this;");
 

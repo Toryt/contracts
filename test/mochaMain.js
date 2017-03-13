@@ -22,7 +22,14 @@ require.config({
 });
 
 require(["mocha"], function(mocha) {
-  require(["./js/Object", "./js/Function", "./js/syntax", "./_private/util"], function() {
-    mocha.run();
-  });
+  require(
+    ["./js/Object", "./js/Error", "./js/Function", "./js/syntax",
+     "./_private/util",
+     "./I/AbstractContract", "./I/AbstractError", "./I/ConditionError", "./I/ConditionMetaError",
+     "./I/ConditionViolation", "./I/Contract", "./I/ContractError", "./I/ContractFunction",
+     "./I/ExceptionConditionViolation", "./I/PostconditionViolation", "./I/PreconditionViolation"],
+    function() {
+      mocha.run();
+    }
+  );
 });
