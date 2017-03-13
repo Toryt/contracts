@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "../../src/_private/util", "path"];
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -25,12 +25,12 @@
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(chai, testUtil, util, path) {
+}(function(chai, testUtil, util) {
   "use strict";
 
   var expect = chai.expect;
 
-  var contractLibTestPath = path.dirname(path.dirname(module.filename));
+  var contractLibTestPath = util.dirname(util.dirname(module.filename));
   var getGlobal = new Function("return this;");
 
   function generateMutableStuff() {

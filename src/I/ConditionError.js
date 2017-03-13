@@ -17,18 +17,18 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["./../_private/util", "./ContractError", "./AbstractContract", "path"];
-  
+  var dependencies = ["./../_private/util", "./ContractError", "./AbstractContract"];
+
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(util, ContractError, AbstractContract, path) {
+}(function(util, ContractError, AbstractContract) {
   "use strict";
 
-  var contractLibPath = path.dirname(module.filename);
+  var contractLibPath = util.dirname(module.filename);
 
   /**
    * ConditionError is the general supertype of all errors thrown by Toryt Contracts.

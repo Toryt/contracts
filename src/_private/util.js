@@ -18,7 +18,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["path"];
+  var dependencies = [];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -26,7 +26,7 @@
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(path) {
+}(function() {
   "use strict";
 
   /**
@@ -34,9 +34,39 @@
    * the os-module.
    */
   var eol = "\n";
-  if (typeof exports === 'object') {
+  if (typeof exports === "object") {
     eol = require("os").EOL;
   }
+
+  var path;
+  if (typeof exports === "object") {
+    path = require("path");
+  }
+
+  var dirSeparator = "/";
+
+
+  /**
+   * <p>Returns the directory name of a path, similar to the Unix dirname command.
+   * For example:</p>
+   * <pre>
+   * path.dirname('/foo/bar/baz/asdf/quux');
+   * // Returns: '/foo/bar/baz/asdf'
+   * </pre>
+   * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
+   * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
+   * directly.
+   */
+  var dirname = path
+    ? path.dirname
+    : function(path) {
+        if (util.typeOf(path) !== "string") {
+          throw new TypeError("path is not a string");
+        }
+        var result = path.split(dirSeparator);
+        result.pop();
+        return result.join(dirSeparator);
+      };
 
   //noinspection MagicNumberJS
   var util = {
@@ -46,7 +76,7 @@
      */
     eol: eol,
 
-    contractLibPath: path.dirname(path.dirname(module.filename)), // 2 directories up
+    contractLibPath: dirname(dirname(module.filename)), // 2 directories up
 
     /**
      * A better type then Object.toString() or typeof.
@@ -271,7 +301,20 @@
         result = start + util.conciseSeparator + end;
       }
       return result;
-    }
+    },
+
+    /**
+     * <p>Returns the directory name of a path, similar to the Unix dirname command.
+     * For example:</p>
+     * <pre>
+     * path.dirname('/foo/bar/baz/asdf/quux');
+     * // Returns: '/foo/bar/baz/asdf'
+     * </pre>
+     * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
+     * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
+     * directly.
+     */
+    dirname: dirname
   };
 
   return util;
