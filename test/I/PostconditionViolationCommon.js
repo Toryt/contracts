@@ -54,12 +54,22 @@
 
   var resultCaseGenerators = common.anyCasesGenerators("result");
 
+  function doctorArgs(args, boundContractFunction, result) {
+    var doctored = Array.prototype.slice.call(args);
+    //noinspection MagicNumberJS
+    var r = arguments.length >= 3 ? result : 42;
+    doctored.push(r); // a result
+    doctored.push(boundContractFunction);
+    return doctored;
+  }
+
   var test = {
     resultCaseGenerators: resultCaseGenerators,
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost,
     expectProperties: expectProperties,
-    expectDetailsPost: expectDetailsPost
+    expectDetailsPost: expectDetailsPost,
+    doctorArgs: doctorArgs
   };
   Object.setPrototypeOf(test, common);
   return test;

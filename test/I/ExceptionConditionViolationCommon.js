@@ -55,12 +55,22 @@
 
   var exceptionCaseGenerators = common.anyCasesGenerators("exception");
 
+  function doctorArgs(args, boundContractFunction, exception) {
+    var doctored = Array.prototype.slice.call(args);
+    //noinspection MagicNumberJS
+    var e = arguments.length >= 3 ? exception : new Error("Dummy exception for ExceptionConditionViolation");
+    doctored.push(e); // an exception
+    doctored.push(boundContractFunction);
+    return doctored;
+  }
+
   var test = {
     exceptionCaseGenerators: exceptionCaseGenerators,
     expectInvariants: expectInvariants,
     expectConstructorPost: expectConstructorPost,
     expectProperties: expectProperties,
-    expectDetailsPost: expectDetailsPost
+    expectDetailsPost: expectDetailsPost,
+    doctorArgs: doctorArgs
   };
   Object.setPrototypeOf(test, common);
   return test;

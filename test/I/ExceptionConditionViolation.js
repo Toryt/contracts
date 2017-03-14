@@ -69,20 +69,11 @@
         });
       });
 
-      function doctorArgs(args, boundContractFunction, exception) {
-        var doctored = Array.prototype.slice.call(args);
-        //noinspection MagicNumberJS
-        var e = arguments.length >= 3 ? exception : new Error("Dummy exception for ExceptionConditionViolation");
-        doctored.push(e); // a result
-        doctored.push(boundContractFunction);
-        return doctored;
-      }
-
       common.generatePrototypeMethodsDescriptions(
         function() {
           var contractFunction = common.createCandidateContractFunction();
           var self = null;
-          var doctoredArgs = doctorArgs(common.argsCases[0], contractFunction.bind(self));
+          var doctoredArgs = common.doctorArgs(common.argsCases[0], contractFunction.bind(self));
           return new ExceptionConditionViolation(contractFunction, common.conditionCase, self, doctoredArgs);
         },
         testUtil
@@ -91,14 +82,13 @@
             return function() {
               var contractFunction = common.createCandidateContractFunction();
               var self = parameters[1]();
-              var doctoredArgs = doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]());
+              var doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]());
               return {
                 subject: new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs),
                 description: parameters[0] + " — " + self + " – " + parameters[2] + " – " + parameters[3]
               };
             };
-          }),
-        doctorArgs
+          })
       );
 
     });

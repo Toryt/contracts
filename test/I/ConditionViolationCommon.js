@@ -61,7 +61,11 @@
     expect(exception).to.be.frozen;
   }
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, doctorArgs) {
+  function doctorArgs(args, boundContractFunction) {
+    return args;
+  }
+
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
@@ -155,7 +159,7 @@
             var self = selfGenerator();
             var args = argGenerator();
             var contractFunction = common.createCandidateContractFunction();
-            var doctoredArgs = doctorArgs ? doctorArgs(args, contractFunction.bind(self)) : args;
+            var doctoredArgs = that.doctorArgs(args, contractFunction.bind(self));
             describe("works for " + condition + " - " + self + " - " + args, function() {
               var exception;
               try {
@@ -343,7 +347,7 @@
             var self = selfGenerator();
             var args = argGenerator();
             var contractFunction = common.createCandidateContractFunction();
-            var doctoredArgs = doctorArgs ? doctorArgs(args, contractFunction.bind(self)) : args;
+            var doctoredArgs = that.doctorArgs(args, contractFunction.bind(self));
             describe("works for " + conditions + " - " + self + " - " + args, function() {
               var exception;
               try {
@@ -366,7 +370,8 @@
     argsVerifyCases: argsVerifyCases,
     generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
     expectInvariants: expectInvariants,
-    expectProperties: expectProperties
+    expectProperties: expectProperties,
+    doctorArgs: doctorArgs
   };
   Object.setPrototypeOf(test, common);
   return test;
