@@ -72,7 +72,7 @@
     function() {
       return ConditionError.prototype.getDetails.call(this) + util.eol +
              "caused by:" + util.eol +
-             (this.error && this.error.stack ? this.error.stack : ("" + this.error));
+             util.extensiveThrownRepresentation(this.error);
     }
   );
 

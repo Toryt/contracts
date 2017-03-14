@@ -334,6 +334,32 @@
     },
 
     /**
+     * <p>Returns a moderately normalized extensive, multiline representation of a <em>thrown</em>.
+     * <p>Anything can be thrown, not only Error instances.</p>
+     * <p>The stack of an Error is different in different environments. In node and Chrome, the first line of the
+     *   stack is actually the toString of the Error, followed by the true stack, one call per line, that starts
+     *   with <code>/^    at/</code>, followed by the path of the file where the call was made.
+     *   In Firefox and Safari, the stack only contains the true stack, and the lines
+     *   are the name of the called function (or the empty string for anonymous functions), followed by <code>@</code>,
+     *   followed by the path of the file where the call was made.</p>
+     * <p>If the <em>thrown</em> does not have a stack property, its standard string representation is returned.</p>
+     * <p>If the <em>thrown</em> does have a stack property, its stack is returned. If the stack starts with
+     *   the string representation of the <em>thrown</em>, that's it. Otherwise, the string representation of the
+     *   <em>thrown</em> is added in the front on a separate line.
+     */
+    extensiveThrownRepresentation: function(thrown) {
+      var thrownString = "" + thrown;
+      var stack = thrown && thrown.stack;
+      if (!stack) {
+        return thrownString;
+      }
+      stack = "" + stack; // make sure it is a string
+      /* On node and chrome, the stack starts with thrown.toString (name and message).
+         On safari and FF, it doesn't: thrown.stack it is the pure stack. We add the toString ourselves */
+      return (stack.indexOf(thrownString) === 0) ? stack : (thrownString + this.eol + stack);
+    },
+
+    /**
      * <p>Returns the directory name of a path, similar to the Unix dirname command.
      * For example:</p>
      * <pre>
