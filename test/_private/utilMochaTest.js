@@ -590,6 +590,52 @@
           }
         });
       });
+
+      describe("#extensiveThrownRepresentation", function() {
+        var caseGenerators = testUtil.anyCasesGenerators("thrown");
+        var toStringString = "This is the toString";
+        var stackString = "This is the stack";
+
+        function stackDoesNotContainToString() {
+          return {
+            stack: stackString,
+            toString: function() {return toStringString;}
+          };
+        }
+
+        function stackDoesContainToString() {
+          return {
+            stack: toStringString + util.eol + stackString,
+            toString: function() {return toStringString;}
+          };
+        }
+
+        caseGenerators.push(stackDoesNotContainToString);
+        caseGenerators.push(stackDoesContainToString);
+        caseGenerators = caseGenerators.concat(testUtil.anyCasesGenerators("throw stack").map(function(ac) {
+          return function() {
+            return {
+              stack: ac(),
+              toString: function() {return toStringString;}
+            };
+          };
+        }));
+        caseGenerators.forEach(function(thrownGenerator) {
+          var thrown = thrownGenerator();
+          it("returns the expected, normalized string representation for " + thrown, function() {
+            var result = util.extensiveThrownRepresentation(thrown);
+            expect(result).to.be.a("string");
+            expect(result).to.satisfy(function(str) {return str.indexOf("" + thrown) === 0;});
+            var stack = thrown && thrown.stack;
+            if (stack) {
+              stack = util.eol + stack;
+              var expectedStart = result.length - stack.length;
+              expect(result).to.satisfy(function(str) {return str.lastIndexOf(stack) === expectedStart;});
+            }
+            testUtil.log(result);
+          });
+        });
+      });
     });
   // });
 
