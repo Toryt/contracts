@@ -98,7 +98,6 @@
               };
             };
           }),
-        common.expectInvariants,
         doctorArgs
       );
 

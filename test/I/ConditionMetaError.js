@@ -78,8 +78,7 @@
                 description: parameters[0] + " — " + self + " – " + parameters[2] + " – " + parameters[3]
               };
             };
-          }),
-        common.expectInvariants
+          })
       );
 
     });

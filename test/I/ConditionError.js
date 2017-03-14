@@ -70,8 +70,7 @@
                 description: parameters[0] + " — " + self + " – " + parameters[2]
               };
             };
-          }),
-        common.expectInvariants
+          })
       );
 
     });

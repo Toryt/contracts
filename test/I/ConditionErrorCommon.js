@@ -160,20 +160,19 @@
     );
   }
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants) {
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
-    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
+    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
-    var expectInvariants = this.expectInvariants;
-    var expectDetailsPost = this.expectDetailsPost;
+    var self = this;
 
     describe("#getDetails()", function() {
       allSubjectGenerators.forEach(function(generator) {
         var testCase = generator();
         it("returns the details as expected for " + testCase.description, function() {
           var result = testCase.subject.getDetails();
-          expectDetailsPost(testCase.subject, result);
-          expectInvariants(testCase.subject);
+          self.expectDetailsPost(testCase.subject, result);
+          self.expectInvariants(testCase.subject);
         });
       });
     });

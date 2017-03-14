@@ -61,11 +61,11 @@
     expect(exception).to.be.frozen;
   }
 
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants, doctorArgs) {
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, doctorArgs) {
 
-    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
+    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
-    var expectProperties = this.expectProperties;
+    var that = this;
 
     describe("#verify()", function() {
       function expectPost(subject, contractFunction, condition, self, args, doctoredArgs, appliedSelf, appliedArgs, exception) {
@@ -101,7 +101,7 @@
              "because the condition evaluated to false nominally",
             function() {
               var extraProperty = doctoredArgs[args.length]; // might not exist
-              expectProperties(exception, subject.constructor, contractFunction, condition, self, args, extraProperty);
+              that.expectProperties(exception, subject.constructor, contractFunction, condition, self, args, extraProperty);
             }
           );
         }
@@ -112,7 +112,7 @@
           });
         }
         it("adheres to the invariants", function() {
-          expectInvariants(subject);
+          that.expectInvariants(subject);
         });
       }
 
@@ -212,7 +212,7 @@
         else if (firstFailure) {
           it("throws a …ConditionViolation if one of the conditions evaluates nominally to false", function() {
             var extraProperty = doctoredArgs[args.length]; // might not exist
-            expectProperties(exception, subject.constructor, contractFunction, firstFailure, self, args, extraProperty);
+            that.expectProperties(exception, subject.constructor, contractFunction, firstFailure, self, args, extraProperty);
           });
         }
         else {
@@ -248,7 +248,7 @@
           }
         });
         it("adheres to the invariants", function() {
-          expectInvariants(subject);
+          that.expectInvariants(subject);
         });
       }
 
