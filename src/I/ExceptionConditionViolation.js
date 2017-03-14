@@ -84,8 +84,19 @@
     ExceptionConditionViolation.prototype,
     "getDetails",
     function() {
-      var exceptionRepresentation = this.exception && this.exception.stack;
-      exceptionRepresentation = exceptionRepresentation || ("" + this.exception);
+      var exceptionRepresentation;
+      var exceptionString = "" + this.exception;
+      if (this.exception && this.exception.stack) {
+        exceptionRepresentation = this.exception.stack;
+        /* On node and chrome, the stack starts with exception.toString (name and message).
+           On safari and FF, it doesn't: exception.stack it is the pure stack. We add the toString ourselves */
+        if (exceptionRepresentation.indexOf(exceptionString) !== 0) {
+          exceptionRepresentation = exceptionString + util.eol + exceptionRepresentation;
+        }
+      }
+      else {
+        exceptionRepresentation = exceptionString;
+      }
       return ConditionViolation.prototype.getDetails.call(this) + util.eol +
              "exception (" + util.typeOf(this.exception) + "):" + util.eol + exceptionRepresentation;
     }

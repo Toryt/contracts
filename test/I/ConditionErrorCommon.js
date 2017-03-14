@@ -164,6 +164,9 @@
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, expectInvariants);
 
+    var expectInvariants = this.expectInvariants;
+    var expectDetailsPost = this.expectDetailsPost;
+
     describe("#getDetails()", function() {
       allSubjectGenerators.forEach(function(generator) {
         var testCase = generator();

@@ -18,7 +18,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "./ConditionErrorCommon",
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util", "./ConditionErrorCommon",
                       "../../src/I/ConditionMetaError"];
 
   if (typeof define === 'function' && define.amd) {
@@ -27,7 +27,7 @@
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(chai, testUtil, common, ConditionMetaError) {
+}(function(chai, testUtil, util, common, ConditionMetaError) {
   "use strict";
 
   var expect = chai.expect;
