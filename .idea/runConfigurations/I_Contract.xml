@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="test/js" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
+  <configuration default="false" name="I/Contract" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
@@ -7,9 +7,8 @@
     <envs />
     <ui>bdd</ui>
     <extra-mocha-options />
-    <test-kind>DIRECTORY</test-kind>
-    <test-directory>$PROJECT_DIR$/test/js</test-directory>
-    <recursive>true</recursive>
+    <test-kind>TEST_FILE</test-kind>
+    <test-file>$PROJECT_DIR$/test/I/ContractMochaTest.js</test-file>
     <method />
   </configuration>
 </component>

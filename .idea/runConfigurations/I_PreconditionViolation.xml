@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="test/I/PreconditionViolation" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
+  <configuration default="false" name="I/PreconditionViolation" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
@@ -8,7 +8,7 @@
     <ui>bdd</ui>
     <extra-mocha-options />
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/I/PreconditionViolation.js</test-file>
+    <test-file>$PROJECT_DIR$/test/I/PreconditionViolationMochaTest.js</test-file>
     <method />
   </configuration>
 </component>

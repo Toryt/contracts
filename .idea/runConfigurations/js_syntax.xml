@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="test/js/syntax" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
+  <configuration default="false" name="js/syntax" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
@@ -8,7 +8,7 @@
     <ui>bdd</ui>
     <extra-mocha-options />
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/js/syntax.js</test-file>
+    <test-file>$PROJECT_DIR$/test/js/syntaxMochaTest.js</test-file>
     <method />
   </configuration>
 </component>

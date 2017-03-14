@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Mocha" type="mocha-javascript-test-runner" factoryName="Mocha">
+  <configuration default="false" name="I/ConditionMetaError" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
@@ -7,8 +7,8 @@
     <envs />
     <ui>bdd</ui>
     <extra-mocha-options />
-    <test-kind>PATTERN</test-kind>
-    <test-pattern>test/**/*MochaTest.js</test-pattern>
+    <test-kind>TEST_FILE</test-kind>
+    <test-file>$PROJECT_DIR$/test/I/ConditionMetaErrorMochaTest.js</test-file>
     <method />
   </configuration>
 </component>
