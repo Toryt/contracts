@@ -33,6 +33,7 @@
   var message = "A message";
   var env = testUtil.environment;
   var isFF = (env === "firefox");
+  var isFFOrSafari = isFF || (env === "safari");
 
   // describe("js", function() {
     describe("js/Error", function() {
@@ -84,15 +85,23 @@
         });
       });
       describe("#stack", function() {
-        it("has a stack, is a string, that starts with the toString()", function() {
-          var subject = new Error(message);
-          var stack = subject.stack;
-          testUtil.log("stack: %s", subject.stack);
-          //noinspection BadExpressionStatementJS
-          expect(stack).to.be.ok; // not supported in old IE
-          expect(stack).to.be.a("string");
-          expect(stack.indexOf(subject.toString())).to.equal(0);
-        });
+        it("has a stack, that is a string, that " + (isFFOrSafari ? "does not start" : "starts")
+           + " with the toString() on " + env,
+          function() {
+            var subject = new Error(message);
+            var stack = subject.stack;
+            testUtil.log("stack: %s", subject.stack);
+            //noinspection BadExpressionStatementJS
+            expect(stack).to.be.ok; // not supported in old IE
+            expect(stack).to.be.a("string");
+            if (isFFOrSafari) {
+              expect(stack).not.to.contain(subject.toString());
+            }
+            else {
+              expect(stack.indexOf(subject.toString())).to.equal(0);
+            }
+          }
+        );
         it("has a stack, that reports where the error is created", function() {
           function createAnError() {
             return new Error(message);
@@ -109,18 +118,16 @@
           catch(err) {
             testUtil.log("err.stack: %s", err.stack);
             //noinspection BadExpressionStatementJS
-            expect(err.stack).to.be.ok; // not supported in old IE
-            expect(err.stack.indexOf("createAnError")).to.be.at.least(0);
+            expect(err).to.have.property("stack").that.is.ok; // not supported in old IE
+            expect(err).to.have.property("stack").that.contains("createAnError");
             // and be on the first line
             var lines = err.stack.split("\n");
+            if (lines[0] === err.toString()) {
+              // some environments add the toString of the error on the first line
+              lines.shift();
+            }
             lines.forEach(function(l, i) {
-              var found = l.indexOf("createAnError");
-              if (i === 1) {
-                expect(found).to.be.at.least(0);
-              }
-              else {
-                expect(found).to.be.below(0);
-              }
+              expect(l).to[i === 0 ? "to" : "not"].contain("createAnError");
             });
           }
         });
@@ -162,22 +169,20 @@
           catch (err2) {
             testUtil.log("err.stack: %s", err2.stack);
             //noinspection BadExpressionStatementJS
-            expect(err2.stack).to.be.ok; // not supported in old IE
-            expect(err2.stack.indexOf("createAnError")).to.be.below(0);
-            expect(err2.stack.indexOf("throwAnError")).to.be.below(0);
-            expect(err2.stack.indexOf("captureTheStackTrace1")).to.be.at.least(0);
-            expect(err2.stack.indexOf("captureTheStackTrace2")).to.be.at.least(0);
-            expect(err2.stack.indexOf("captureTheStackTrace3")).to.be.at.least(0);
+            expect(err2).to.have.property("stack").that.is.ok; // not supported in old IE
+            expect(err2).to.have.property("stack").that.not.contains("createAnError");
+            expect(err2).to.have.property("stack").that.not.contains("throwAnError");
+            expect(err2).to.have.property("stack").that.contains("captureTheStackTrace1");
+            expect(err2).to.have.property("stack").that.contains("captureTheStackTrace2");
+            expect(err2).to.have.property("stack").that.contains("captureTheStackTrace3");
             // and be on the first line
             var lines = err2.stack.split("\n");
+            if (lines[0] === err2.toString()) {
+              // some environments add the toString of the error on the first line
+              lines.shift();
+            }
             lines.forEach(function(l, i) {
-              var found = l.indexOf("captureTheStackTrace");
-              if (1 <= i && i <= 3) {
-                expect(found).to.be.at.least(0);
-              }
-              else {
-                expect(found).to.be.below(0);
-              }
+              expect(l).to[0 <= i && i <= 2 ? "to" : "not"].contain("captureTheStackTrace");
             });
           }
         });
