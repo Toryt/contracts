@@ -53,7 +53,7 @@
     expect(result).to.contain(subject.exception);
   }
 
-  var exceptionCaseGenerators = common.anyCasesGenerators("exception");
+  var exceptionCaseGenerators = testUtil.anyCasesGenerators("exception");
 
   function doctorArgs(args, boundContractFunction, exception) {
     var doctored = Array.prototype.slice.call(args);

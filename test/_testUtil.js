@@ -146,6 +146,40 @@ limitations under the License.
     return !pd || pd.writable;
   }
 
+  function anyCasesGenerators(discriminator) {
+    return [
+      function() {return new Error("This is a " + discriminator + " case");},
+      function() {return undefined;},
+      function() {return null;},
+      function() {return 1;},
+      function() {return 0;},
+      function() {return "a string that is used as a " + discriminator;},
+      function() {return "";},
+      function() {return true;},
+      function() {return false;},
+      function() {return new Date();},
+      function() {return /foo/;},
+      function() {return function() {return "this simulates a " + discriminator;};},
+      function() {
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint,MagicNumberJS
+        return new Number(42);
+      },
+      function() {
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
+        return new Boolean(false);
+      },
+      function() {
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
+        return new String(discriminator + " string");
+      },
+      function() {return arguments;},
+      function() {return {};},
+      function() {//noinspection MagicNumberJS
+        return {a: 1, b: "b", c: {}, d: {d1: undefined, d2: "d2", d3: {d31: 31}}};
+      }
+    ];
+  }
+
   return {
     x: x,
     expectOwnFrozenProperty: expectOwnFrozenProperty,
@@ -157,7 +191,8 @@ limitations under the License.
     log: log,
     showStack: showStack,
     regExpEscape: regExpEscape,
-    propertyIsWritable: propertyIsWritable
+    propertyIsWritable: propertyIsWritable,
+    anyCasesGenerators: anyCasesGenerators
   };
 
 }));

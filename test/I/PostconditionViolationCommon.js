@@ -52,7 +52,7 @@
     expect(exception).to.have.property("result").that.equals(result);
   }
 
-  var resultCaseGenerators = common.anyCasesGenerators("result");
+  var resultCaseGenerators = testUtil.anyCasesGenerators("result");
 
   function doctorArgs(args, boundContractFunction, result) {
     var doctored = Array.prototype.slice.call(args);
