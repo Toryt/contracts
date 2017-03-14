@@ -31,6 +31,8 @@
   var expect = chai.expect;
 
   var message = "A message";
+  var env = testUtil.environment;
+  var isFF = (env === "firefox");
 
   // describe("js", function() {
     describe("js/Error", function() {
@@ -58,27 +60,27 @@
         });
       });
       describe("#fileName", function() {
-        it("has no file name in node", function() {
+        it("has " + (isFF ? "a" : "no") +" file name in " + env, function() {
           var subject = new Error(message);
           testUtil.log("fileName: %s", subject.fileName);
           //noinspection BadExpressionStatementJS
-          expect(subject.fileName).not.to.be.ok; // not supported in node
+          expect(subject.fileName)[isFF ? "to" : "not"].to.be.ok; // not supported in node
         });
       });
       describe("#lineNumber", function() {
-        it("has no line number in node", function() {
+        it("has " + (isFF ? "a" : "no") + " line number in " + env, function() {
           var subject = new Error(message);
           testUtil.log("lineNumber: %s", subject.lineNumber);
           //noinspection BadExpressionStatementJS
-          expect(subject.lineNumber).not.to.be.ok; // not supported in node
+          expect(subject.lineNumber)[isFF ? "to" : "not"].to.be.ok; // not supported in node
         });
       });
       describe("#columnNumber", function() {
-        it("has no column number in node", function() {
+        it("has " + (isFF ? "a" : "no") + " column number in " + env, function() {
           var subject = new Error(message);
           testUtil.log("columnNumber: %s", subject.columnNumber);
           //noinspection BadExpressionStatementJS
-          expect(subject.columnNumber).not.to.be.ok; // not supported in node
+          expect(subject.columnNumber)[isFF ? "to" : "not"].to.be.ok; // not supported in node
         });
       });
       describe("#stack", function() {

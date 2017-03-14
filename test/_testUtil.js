@@ -122,7 +122,7 @@ limitations under the License.
     });
   }
 
-  var doLog = false;
+  var doLog = true;
 
   function log() {
     if (doLog) {
@@ -180,6 +180,42 @@ limitations under the License.
     ];
   }
 
+  // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+  function environment() {
+    if ((new Function("try {return this===global;}catch(e){return false;}"))()) {
+      return "node";
+    }
+    if ((!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(" OPR/") >= 0) {
+      return "opera";
+    }
+    if (typeof InstallTrigger !== "undefined") {
+      return "firefox";
+    }
+    if (/constructor/i.test(window.HTMLElement)
+        || (function(p) {
+              return p.toString() === "[object SafariRemoteNotification]";
+             })(!window["safari"] || safari.pushNotification)) {
+      return "safari";
+    }
+    //noinspection PointlessBooleanExpressionJS
+    if (/*@cc_on!@*/false || !!document.documentMode) {
+      return "ie";
+    }
+    if (!!window.StyleMedia) {
+      return "edge";
+    }
+    if (!!window.chrome && !!window.chrome.webstore) {
+      return "chrome";
+    }
+    if (!!window.CSS) {
+      return "blink";
+    }
+    if ((new Function("try {return this===window;}catch(e){ return false;}"))()) {
+      return "browser";
+    }
+    return undefined;
+  }
+
   return {
     x: x,
     expectOwnFrozenProperty: expectOwnFrozenProperty,
@@ -192,7 +228,8 @@ limitations under the License.
     showStack: showStack,
     regExpEscape: regExpEscape,
     propertyIsWritable: propertyIsWritable,
-    anyCasesGenerators: anyCasesGenerators
+    anyCasesGenerators: anyCasesGenerators,
+    environment: environment()
   };
 
 }));
