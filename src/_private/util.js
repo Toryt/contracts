@@ -112,6 +112,8 @@
      */
     eol: eol,
 
+    atLocation: /^    at (.*)(:\d+:\d+\)?| \(native\))$/,
+
     contractLibPath: dirname(dirname(fileName)), // 2 directories up
 
     /**

@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "../../src/_private/util"];
+  var dependencies = ["chai", "../_testUtil", "../../src/_private/util", "./stacks"];
 
   if (typeof define === 'function' && define.amd) {
     dependencies.push("module");
@@ -26,7 +26,7 @@
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(chai, testUtil, util, amdModule) {
+}(function(chai, testUtil, util, stacks, amdModule) {
   "use strict";
 
   var expect = chai.expect;
@@ -74,6 +74,27 @@
         it("is a string", function() {
           expect(util.eol).to.be.a("string");
           testUtil.log("eol: start>" + util.eol + "<end" );
+        });
+      });
+
+      describe("#atLocation", function() {
+        it("is a RegExp", function() {
+          expect(util).to.have.property("atLocation").that.is.instanceof(RegExp);
+        });
+        var environments = ["node", "chrome", "current environment"];
+        Object.keys(stacks).forEach(function(env) {
+          var lines = stacks[env].split(util.eol).forEach(function(l) {
+            if (0 <= environments.indexOf(env)) {
+              it("matches the " + env + " stack line \"" + l + "\"", function() {
+                expect(expect(l).to.match(util.atLocation));
+              });
+            }
+            else {
+              it("does not match the " + env + " stack line \"" + l + "\"", function() {
+                expect(expect(l).to.not.match(util.atLocation));
+              });
+            }
+          });
         });
       });
 
