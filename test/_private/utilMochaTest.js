@@ -67,6 +67,28 @@
     {subject: getGlobal(), expected: "object", isPrimitive: false}
   ].concat(generateMutableStuff());
 
+  function describeLocationTest(propertyName, environments) {
+    describe("#" + propertyName, function() {
+      it("is a RegExp", function() {
+        expect(util).to.have.property(propertyName).that.is.instanceof(RegExp);
+      });
+      Object.keys(stacks).forEach(function(env) {
+        var lines = stacks[env].split(util.eol).forEach(function(l) {
+          if (0 <= environments.indexOf(env)) {
+            it("matches the " + env + " stack line \"" + l + "\"", function() {
+              expect(expect(l).to.match(util[propertyName]));
+            });
+          }
+          else {
+            it("does not match the " + env + " stack line \"" + l + "\"", function() {
+              expect(expect(l).to.not.match(util[propertyName]));
+            });
+          }
+        });
+      });
+    });
+  }
+
   // describe("_private", function() {
     describe("_private/util", function() {
 
@@ -77,26 +99,7 @@
         });
       });
 
-      describe("#atLocation", function() {
-        it("is a RegExp", function() {
-          expect(util).to.have.property("atLocation").that.is.instanceof(RegExp);
-        });
-        var environments = ["node", "chrome", "current environment"];
-        Object.keys(stacks).forEach(function(env) {
-          var lines = stacks[env].split(util.eol).forEach(function(l) {
-            if (0 <= environments.indexOf(env)) {
-              it("matches the " + env + " stack line \"" + l + "\"", function() {
-                expect(expect(l).to.match(util.atLocation));
-              });
-            }
-            else {
-              it("does not match the " + env + " stack line \"" + l + "\"", function() {
-                expect(expect(l).to.not.match(util.atLocation));
-              });
-            }
-          });
-        });
-      });
+      describeLocationTest("atLocation", ["node", "chrome", "current environment"]);
 
       describe("#contractLibPath", function() {
         it("is a string", function() {
