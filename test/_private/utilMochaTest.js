@@ -89,6 +89,11 @@
     });
   }
 
+  var atLocationEnvironments = ["node", "chrome"];
+  var ATLocationEnvironments = ["firefox", "safari"];
+  (0 <= atLocationEnvironments.indexOf(testUtil.environment) ? atLocationEnvironments : ATLocationEnvironments)
+    .push("current environment");
+
   // describe("_private", function() {
     describe("_private/util", function() {
 
@@ -99,8 +104,8 @@
         });
       });
 
-      describeLocationTest("atLocation", ["node", "chrome", "current environment"]);
-      describeLocationTest("@Location", ["firefox", "safari"]);
+      describeLocationTest("atLocation", atLocationEnvironments);
+      describeLocationTest("@Location", ATLocationEnvironments);
 
       describe("#contractLibPath", function() {
         it("is a string", function() {
