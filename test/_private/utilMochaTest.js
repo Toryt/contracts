@@ -100,6 +100,7 @@
       });
 
       describeLocationTest("atLocation", ["node", "chrome", "current environment"]);
+      describeLocationTest("@Location", ["firefox", "safari"]);
 
       describe("#contractLibPath", function() {
         it("is a string", function() {

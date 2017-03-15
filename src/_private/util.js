@@ -113,6 +113,7 @@
     eol: eol,
 
     atLocation: /^    at (.*)(:\d+:\d+\)?| \(native\))$/,
+    "@Location": /^(.*@)?https?:\/\/[^\/]*\/([^:\/]*\/)*[^:\/]*.js:\d+:\d+$/,
 
     contractLibPath: dirname(dirname(fileName)), // 2 directories up
 
