@@ -122,7 +122,7 @@ limitations under the License.
     });
   }
 
-  var doLog = true;
+  var doLog = false;
 
   function log() {
     if (doLog) {
