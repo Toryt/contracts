@@ -104,8 +104,8 @@
         });
       });
 
-      describeLocationTest("atLocation", atLocationEnvironments);
-      describeLocationTest("@Location", ATLocationEnvironments);
+      describeLocationTest("atStackLocation", atLocationEnvironments);
+      describeLocationTest("@StackLocation", ATLocationEnvironments);
 
       describe("#contractLibPath", function() {
         it("is a string", function() {
