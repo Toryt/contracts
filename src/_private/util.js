@@ -277,9 +277,15 @@
      */
     firstLocationOutsideLibrary: function() {
       var stackSource = new Error();
-      var stack = stackSource.stack.split(this.eol);
-      stack = stack.slice(this.nrOfLines(stackSource)); // throw away the message lines
-      for (var i = this.nrOfLines(stackSource); i < stack.length; i++) {
+
+      var nrOfMessageLines = 0;
+      var stack = stackSource.stack;
+      var messageLines = stackSource.toString();
+      if (stack.indexOf(messageLines) === 0) {
+        nrOfMessageLines = util.nrOfLines(messageLines); // skip these
+      }
+      stack = stack.split(this.eol);
+      for (var i = nrOfMessageLines; i < stack.length; i++) {
         // skip the message lines, and then look for the first line that refers to code not in this library,
         // that is not native code (i.e., the reference does contain a '/')
         if (0 <= stack[i].indexOf("/") && stack[i].indexOf(this.contractLibPath) < 0) {
