@@ -75,6 +75,7 @@
       Object.keys(stacks).forEach(function(env) {
         var lines = stacks[env]
           .split(util.eol)
+          .filter(function(l) {return l;}) // some environments add an empty line at the end of the stack
           .forEach(function(l) {
           if (0 <= environments.indexOf(env)) {
             it("matches the " + env + " stack line \"" + l + "\"", function() {
@@ -115,6 +116,7 @@
         });
         var lines = stacks["current environment"]
           .split(util.eol)
+          .filter(function(l) {return l;}) // some environments add an empty line at the end of the stack
           .forEach(function(l) {
             it("matches the current environment stack line \"" + l + "\"", function() {
               expect(expect(l).to.match(util.stackLocation));
