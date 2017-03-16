@@ -548,9 +548,14 @@
             });
             // all the lines, after the message, that are outside the library, are in the result,
             // and the order has not changed
+            var nrOfMessageLines = 0;
+            var messageLines = testCase.error.stack.toString();
+            if (testCase.error.stack.indexOf(messageLines) === 0) {
+              nrOfMessageLines = util.nrOfLines(messageLines); // skip these
+            }
             testCase.error.stack
               .split(util.eol)
-              .splice(util.nrOfLines(testCase.error.message))
+              .splice(nrOfMessageLines)
               .filter(function(line) {return line.indexOf(util.contractLibPath) < 0;})
               .forEach(function(line, sourceIndex) {
                 expect(stackLines).to.satisfy(function(lines) {
