@@ -252,17 +252,18 @@
       return ("" + str).split(this.eol).length;
     },
 
+    /**
+     * <code>location</code> is a stack line location, that refers to code that is not inside this library,
+     * and does not refer to native code. Native code is defined as a location that does not contain a &quot;/&quot;.
+     * The latter is only relevant on node. This is not an issue in browsers.
+     */
     isALocationOutsideLibrary: function(location) {
       if (this.typeOf(location) !== "string") {
         return false;
       }
       var lines = location.split(this.eol);
       return lines.length === 1
-             && (lines[0].search(/^    at/) === 0 // node and chrome use "    at"
-                 || ( // FF or Safari use [function_name@], but sometimes nothing
-                      typeof window === "object"
-                      && 0 <= lines[0].indexOf(window.location.protocol + "//" + window.location.host + "/")
-                      && 0 <= lines[0].search(/:\d+:\d+$/))) // but they always end with line and column
+             && this.stackLocation.test(lines[0])
              && 0 <= lines[0].indexOf("/")
              && lines[0].indexOf(this.contractLibPath) < 0;
     },

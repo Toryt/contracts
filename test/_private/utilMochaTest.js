@@ -437,43 +437,51 @@
               expect(result).not.to.be.ok;
             });
           });
-        ["single line", util.eol + "3 lines" + util.eol]
-          .forEach(function(value) {
-            it("reports false on a string that is not 2 lines long, but " + value.length, function() {
-              var result = util.isALocationOutsideLibrary(value);
+        it("reports false on an empty string", function() {
+          var result = util.isALocationOutsideLibrary("");
+          //noinspection BadExpressionStatementJS
+          expect(result).not.to.be.ok;
+        });
+        it("reports false on a string that is 2 lines long, where both are stack lines", function() {
+          var stack = (new Error("This is an error as a test case for a stack"))
+            .stack
+            .split(util.eol)
+            .splice(1, 2)
+            .join(util.eol);
+          var result = util.isALocationOutsideLibrary(stack);
+          //noinspection BadExpressionStatementJS
+          expect(result).not.to.be.ok;
+          stack.split(util.eol).forEach(function(l) {
+            var result = util.isALocationOutsideLibrary(l);
+            //noinspection BadExpressionStatementJS
+            expect(result).to.be.ok;
+          });
+        });
+        (new Error("This is an error as a test case for a stack"))
+          .stack
+          .split(util.eol)
+          .splice(1)
+          .filter(function(l) {return l.indexOf("/") < 0;})
+          .forEach(function(l) {
+            it("reports false on the string \"" + l + "\" that is a stack line, but doesn't contain a slash", function() {
+              // This doesn't seem to occur in browsers.
+              var result = util.isALocationOutsideLibrary(l);
               //noinspection BadExpressionStatementJS
               expect(result).not.to.be.ok;
             });
           });
-        it("reports false on a string that is 2 lines long, but where the first line is not empty", function() {
-          var value = "there is stuff on the first line" + util.eol + "    at /";
-          var result = util.isALocationOutsideLibrary(value);
-          //noinspection BadExpressionStatementJS
-          expect(result).not.to.be.ok;
-        });
-        ["at /", " at /", "   at /", "    /"]
-          .forEach(function(secondLine) {
-            it("reports false on a string that is 2 lines long, where the first line is empty, " +
-               "but the second line does not start with 4 spaces and at, but is \"" + secondLine + "\"", function() {
-              var value = util.eol + secondLine;
-              var result = util.isALocationOutsideLibrary(value);
+        (new Error("This is an error as a test case for a stack"))
+          .stack
+          .split(util.eol)
+          .splice(1)
+          .filter(function(l) {return 0 <= l.indexOf("/");})
+          .forEach(function(l) {
+            it("reports true on the valid location outside the library \"" + l + "\"", function() {
+              var result = util.isALocationOutsideLibrary(l);
               //noinspection BadExpressionStatementJS
-              expect(result).not.to.be.ok;
+              expect(result).to.be.ok;
             });
-        });
-        it("reports false on a string that is 2 lines long, where the first line is empty, " +
-           "and the second line does start with 4 spaces and at, but is does not contain a slash", function() {
-          var value = util.eol + "    at and other text but not a slash";
-          var result = util.isALocationOutsideLibrary(value);
-          //noinspection BadExpressionStatementJS
-          expect(result).not.to.be.ok;
-        });
-        it("reports true on a valid location outside the library", function() {
-          var value = "    at /";
-          var result = util.isALocationOutsideLibrary(value);
-          //noinspection BadExpressionStatementJS
-          expect(result).to.be.ok;
-        });
+          });
       });
 
       describe("#firstLocationOutsideLibrary", function() {
