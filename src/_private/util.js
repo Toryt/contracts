@@ -34,6 +34,7 @@
    * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform, and is offered by
    * the os-module.
    */
+  // TODO is there no way to do this without the os-dependency?
   var eol = "\n";
   if (typeof exports === "object") {
     eol = require("os").EOL;
@@ -82,6 +83,8 @@
     return result; // return String
   }
 
+  /* MUDO we still need a unit test for this function; better then to just do away with ugly path dependency
+     once and for all */
   /**
    * <p>Returns the directory name of a path, similar to the Unix dirname command.
    * For example:</p>
