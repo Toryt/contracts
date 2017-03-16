@@ -112,7 +112,14 @@
      */
     eol: eol,
 
+    /**
+     * Pattern that matches stack lines on node and Chrome, and not on Safari or Firefox.
+     */
     atStackLocation: /^    at (.*)(:\d+:\d+\)?| \(native\))$/,
+
+    /**
+     * Pattern that matches stack lines on Safari or Firefox, and not on node and Chrome.
+     */
     "@StackLocation": /^(.*@)?https?:\/\/[^\/]*\/([^:\/]*\/)*[^:\/]*.js:\d+:\d+$/,
 
     contractLibPath: dirname(dirname(fileName)), // 2 directories up
