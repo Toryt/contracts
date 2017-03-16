@@ -529,7 +529,7 @@
             expect(stackLines[0]).to.satisfy(function(l) {return 0 <= l.indexOf(fileName);});
             stackLines.forEach(function(line) {
               expect(line).to.be.a("string");
-              expect(line).to.satisfy(function(l) {return util.isALocationOutsideLibrary(l);});
+              expect(line).to.match(util.stackLocation);
               /* .../src/... contains the library code. This should never be mentioned in the stack trace.
                It is inner workings, and confuses the target audience, which is only interested in the code that
                uses the library. */
