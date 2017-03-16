@@ -73,7 +73,9 @@
         expect(util).to.have.property(propertyName).that.is.instanceof(RegExp);
       });
       Object.keys(stacks).forEach(function(env) {
-        var lines = stacks[env].split(util.eol).forEach(function(l) {
+        var lines = stacks[env]
+          .split(util.eol)
+          .forEach(function(l) {
           if (0 <= environments.indexOf(env)) {
             it("matches the " + env + " stack line \"" + l + "\"", function() {
               expect(expect(l).to.match(util[propertyName]));
@@ -106,6 +108,19 @@
 
       describeLocationTest("atStackLocation", atLocationEnvironments);
       describeLocationTest("@StackLocation", ATLocationEnvironments);
+
+      describe("#stackLocation", function() {
+        it("is a RegExp", function() {
+          expect(util).to.have.property("stackLocation").that.is.instanceof(RegExp);
+        });
+        var lines = stacks["current environment"]
+          .split(util.eol)
+          .forEach(function(l) {
+            it("matches the current environment stack line \"" + l + "\"", function() {
+              expect(expect(l).to.match(util.stackLocation));
+            });
+          });
+      });
 
       describe("#contractLibPath", function() {
         it("is a string", function() {

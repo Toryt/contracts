@@ -122,6 +122,11 @@
      */
     "@StackLocation": /^(.*@)?https?:\/\/[^\/]*\/([^:\/]*\/)*[^:\/]*.js:\d+:\d+$/,
 
+    /**
+     * Pattern that matches stack lines on the current platform.
+     */
+    stackLocation: null,
+
     contractLibPath: dirname(dirname(fileName)), // 2 directories up
 
     /**
@@ -384,6 +389,18 @@
 
     browserModuleLocation: browserModuleLocation
   };
+
+  // not the first line, because on some platforms, that is the toString
+  var stackLine = (new Error("Error for setup")).stack.split(util.eol)[2];
+  if (util.atStackLocation.test(stackLine)) {
+    util.stackLocation = util.atStackLocation;
+  }
+  else if (util["@StackLocation"].test(stackLine)) {
+    util.stackLocation = util["@StackLocation"];
+  }
+  else {
+    throw new Error("Determined from an Error stack line that the current platform is not supported.");
+  }
 
   return util;
 }));
