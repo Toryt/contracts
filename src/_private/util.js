@@ -298,11 +298,16 @@
       util.pre(function() {return error instanceof Error;});
       util.pre(function() {return !!error.stack;});
 
-      var messageLines = util.nrOfLines(error.message); // start after the message
+      var nrOfMessageLines = 0;
+      var stack = error.stack;
+      var messageLines = error.toString();
+      if (stack.indexOf(messageLines) === 0) {
+        nrOfMessageLines = util.nrOfLines(messageLines); // skip these
+      }
       var foundALineOutsideTheLibrary = false;
       var result = error.stack
         .split(util.eol)
-        .splice(messageLines) // everything after the message lines
+        .splice(nrOfMessageLines) // everything after the message lines
         .reduce(
           function(acc, line, index) {
             if (!foundALineOutsideTheLibrary &&
