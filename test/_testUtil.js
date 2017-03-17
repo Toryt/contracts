@@ -182,7 +182,7 @@ limitations under the License.
 
   // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
   function environment() {
-    if ((new Function("try {return this===global;}catch(e){return false;}"))()) {
+    if ((new Function("try {return this === global;}catch(e){return false;}"))()) {
       return "node";
     }
     if ((!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(" OPR/") >= 0) {
@@ -210,7 +210,7 @@ limitations under the License.
     if (!!window.CSS) {
       return "blink";
     }
-    if ((new Function("try {return this===window;}catch(e){ return false;}"))()) {
+    if ((new Function("try {return this === window;}catch(e){ return false;}"))()) {
       return "browser";
     }
     return undefined;
