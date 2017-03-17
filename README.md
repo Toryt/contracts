@@ -1,7 +1,7 @@
 Tested with Mocha,
 
 * on Mac, with
-  * node
+  * node v6.9.5
   * Chrome Version 57.0.2987.110 (64-bit)
   * Firefox 52.0.1 (64-bit)
   * Safari Version 10.0.3 (12602.4.8)
