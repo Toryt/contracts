@@ -38,10 +38,6 @@
 
   function browserModuleLocation(amdModule) {
     // there seems to be no sensible way to test what the result actually is
-    if (isNode) {
-      throw new Error("browserModuleLocation only works in a browser");
-    }
-
     var location = window.location.href;
     location = location.split(dirSeparator);
     if (0 <= location[location.length - 1].indexOf(".")) { // last entry is a file

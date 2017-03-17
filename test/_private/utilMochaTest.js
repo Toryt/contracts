@@ -716,6 +716,33 @@
           expect(result).to.equal(dirPath);
         });
       });
+
+      describe("#browserModuleLocation", function() {
+        var isNode = testUtil.environment === "node";
+        [
+          {uri: "simple.js", expectedEnd: "simple.js"},
+          {uri: "./peer.js", expectedEnd: "peer.js"},
+          {uri: "./dir/dir/deep.js", expectedEnd: "/dir/dir/deep.js"},
+          {uri: "../../down/down/other.js", expectedEnd: "other.js"},
+          {uri: "./../.././down/down/../../down/./complex.js", expectedEnd: "/down/complex.js"}
+        ].forEach(function(testCase) {
+          it("returns a sensible result with AMD module URI \"" + testCase.uri + "\"", function() {
+            if (isNode) {
+              global.window = {location: {href: "http://localhost:63342/contracts/test/index.html"}};
+            }
+            var amdModule = {uri: testCase.uri};
+            var result = util.browserModuleLocation(amdModule);
+            expect(result).to.be.a("string");
+            expect(result).to.match(new RegExp(testCase.expectedEnd + "$"));
+            expect(result).to.match(/^https?:\/\/[^.]+(:\d+)?\//);
+            expect(result).not.to.match(/\/\.{1,2}\//);
+            if (isNode) {
+              delete global.window;
+            }
+            testUtil.log("browserModuleLocation: %s", result);
+          });
+        });
+      });
     });
   // });
 
