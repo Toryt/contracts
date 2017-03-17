@@ -62,7 +62,7 @@
           function(n, result) {return n !== 0 || result === 0;},
           function(n, result) {return n !== 1 || result === 1;},
           function(n, result, fibonacci) {
-            // Note: don't refer to a specific implementation ("fibonacci") in the Contract!
+            // don't refer to a specific implementation ("fibonacci") in the Contract!
             return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2);
           }
         ],
@@ -98,8 +98,7 @@
           function(n, result) {return util.isInteger(result);},
           function(n, result) {return n !== 0 || result === 1;},
           function(n, result, f) {
-            // Note: don't refer to a specific implementation in the Contract!
-
+            // don't refer to a specific implementation in the Contract!
             return n < 1 || result === n * f(n - 1);
           }
         ],

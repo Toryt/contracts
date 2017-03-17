@@ -29,7 +29,7 @@
            PreconditionViolation, PostconditionViolation, ExceptionConditionViolation) {
   "use strict";
 
-  /* NOTE: Custom Error types are notoriously difficult in JavaScript.
+  /* Custom Error types are notoriously difficult in JavaScript.
      See, e.g.,
      - http://stackoverflow.com/questions/1382107/whats-a-good-way-to-extend-error-in-javascript
      - http://pastebin.com/aRpPr5Sd
