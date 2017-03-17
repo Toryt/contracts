@@ -1,3 +1,11 @@
+Tested with Mocha,
+
+* on Mac, with
+  * node
+  * Chrome Version 57.0.2987.110 (64-bit)
+  * Firefox 52.0.1 (64-bit)
+  * Safari Version 10.0.3 (12602.4.8)
+
 The web, nor node, are ready for ES6 modules at 2017-03-06.
 So, we will still use [UMD].
 
@@ -7,6 +15,7 @@ Versions
 
 * I
   * I/1.0  : First release, minimally functional, Mac - node
+  * I/2.0  : Use it in web projects, Mac
 
 
 
@@ -14,7 +23,6 @@ TODO
 ----
 
 * I
-  * I/2.0  : Use it in web projects, Mac
   * I/3.0  : Windows
   * I/4.0  : Documentation en README
   * I/5.0  : npm, bower
