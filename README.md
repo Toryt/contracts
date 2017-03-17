@@ -5,6 +5,9 @@ Tested with Mocha,
   * Chrome Version 57.0.2987.110 (64-bit)
   * Firefox 52.0.1 (64-bit)
   * Safari Version 10.0.3 (12602.4.8)
+* on Linux, with
+  * node v6.10.0
+  * node v7.7.3
 
 The web, nor node, are ready for ES6 modules at 2017-03-06.
 So, we will still use [UMD].
@@ -16,6 +19,7 @@ Versions
 * I
   * I/1.0  : First release, minimally functional, Mac - node
   * I/2.0  : Use it in web projects, Mac
+  * I/2.1  : Use it with node on linux (Travis)
 
 
 
