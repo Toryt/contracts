@@ -135,6 +135,7 @@
       describe("#contractLibPath", function() {
         it("is a string", function() {
           expect(util.contractLibPath).to.be.a("string");
+          // there seems to be no sensible way to test what the result actually is
           testUtil.log("contractLibPath: " + util.contractLibPath);
         });
       });
