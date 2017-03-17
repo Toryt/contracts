@@ -32,11 +32,6 @@
 
   var isNode = (new Function("try {return this === global;}catch(e){return false;}"))();
 
-  var path;
-  if (typeof exports === "object") {
-    path = require("path");
-  }
-
   var dirSeparator = "/";
   var thisDirectory = ".";
   var parentDirectory = "..";
@@ -88,8 +83,8 @@
    * <p>This method is a wrapper around node's <code>path.pathUp</code>, which is not available on the browser
    * directly.
    */
-  var pathUp = path
-    ? path.dirname
+  var pathUp = isNode
+    ? require("path").dirname
     : function(path) {
         if (typeOf(path) !== "string") {
           throw new TypeError("path is not a string");
