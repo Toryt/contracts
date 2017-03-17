@@ -30,6 +30,8 @@
 }(function(amdModule) {
   "use strict";
 
+  var isNode = (new Function("try {return this === global;}catch(e){return false;}"))();
+
   var path;
   if (typeof exports === "object") {
     path = require("path");
@@ -101,9 +103,14 @@
   var util = {
 
     /**
+     * Are we running on nodejs?
+     */
+    isNode: isNode,
+
+    /**
      * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform.
      */
-    eol: (new Function("try {return this === global;}catch(e){return false;}"))() ? require("os").EOL : "\n",
+    eol: isNode ? require("os").EOL : "\n",
 
     /**
      * Pattern that matches stack lines on node and Chrome, and not on Safari or Firefox.

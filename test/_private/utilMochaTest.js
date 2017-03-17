@@ -100,6 +100,14 @@
   // describe("_private", function() {
     describe("_private/util", function() {
 
+      describe("#isNode", function() {
+        it("is a Boolean", function() {
+          // there seems no way to check the correctness of this, without using the same code, creating a tautology
+          expect(util).to.have.property("isNode").that.is.a("boolean");
+          expect(util).to.have.property("isNode").that.equals(testUtil.environment === "node");
+        });
+      });
+
       describe("#eol", function() {
         it("is a string", function() {
           expect(util.eol).to.be.a("string");
