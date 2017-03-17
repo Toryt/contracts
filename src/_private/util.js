@@ -30,16 +30,6 @@
 }(function(amdModule) {
   "use strict";
 
-  /**
-   * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform, and is offered by
-   * the os-module.
-   */
-  // TODO is there no way to do this without the os-dependency?
-  var eol = "\n";
-  if (typeof exports === "object") {
-    eol = require("os").EOL;
-  }
-
   var path;
   if (typeof exports === "object") {
     path = require("path");
@@ -113,7 +103,7 @@
     /**
      * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform.
      */
-    eol: eol,
+    eol: (new Function("try {return this === global;}catch(e){return false;}"))() ? require("os").EOL : "\n",
 
     /**
      * Pattern that matches stack lines on node and Chrome, and not on Safari or Firefox.
