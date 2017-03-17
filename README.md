@@ -6,7 +6,7 @@ Versions
 --------
 
 * I
-  * I/1.0  : First release, minimally functional
+  * I/1.0  : First release, minimally functional, Mac - node
 
 
 
@@ -14,10 +14,11 @@ TODO
 ----
 
 * I
-  * I/2.0  : Documentation en README
-  * I/3.0  : npm
-  * I/4.0  : Use it in web projects; bower
-  * I/5.0  : jsdoc
+  * I/2.0  : Use it in web projects, Mac
+  * I/3.0  : Windows
+  * I/4.0  : Documentation en README
+  * I/5.0  : npm, bower
+  * I/6.0  : jsdoc
 * II
   * II/1.0 : conditions-per-argument
   * II/2.0 : old-support
