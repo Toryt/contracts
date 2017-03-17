@@ -2,3 +2,7 @@ language: node_js
 node_js:
   - "node"
   - "6"
+"os":
+  - "linux"
+# Node js is not supported on macOS on Travis
+# Windows is not supported at all. Bummer.
