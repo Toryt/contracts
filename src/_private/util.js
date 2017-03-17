@@ -367,14 +367,14 @@
     },
 
     /**
-     * <p>Returns the directory name of a path, similar to the Unix pathUp command.
+     * <p>Returns the directory name of a path, similar to the Unix dirname command.
      * For example:</p>
      * <pre>
-     * path.pathUp('/foo/bar/baz/asdf/quux');
+     * util.pathUp('/foo/bar/baz/asdf/quux');
      * // Returns: '/foo/bar/baz/asdf'
      * </pre>
      * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
-     * <p>This method is a wrapper around node's <code>path.pathUp</code>, which is not available on the browser
+     * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
      * directly.
      */
     pathUp: pathUp,
