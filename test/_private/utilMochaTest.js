@@ -32,7 +32,7 @@
   var expect = chai.expect;
 
   var fileName = (typeof module === "object") ? module.filename : util.browserModuleLocation(amdModule);
-  var contractLibTestPath = util.dirname(util.dirname(fileName));
+  var contractLibTestPath = util.pathUp(util.pathUp(fileName));
   var getGlobal = new Function("return this;");
 
   function generateMutableStuff() {

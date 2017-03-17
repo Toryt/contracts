@@ -86,17 +86,17 @@
   /* MUDO we still need a unit test for this function; better then to just do away with ugly path dependency
      once and for all */
   /**
-   * <p>Returns the directory name of a path, similar to the Unix dirname command.
+   * <p>Returns the directory name of a path, similar to the Unix pathUp command.
    * For example:</p>
    * <pre>
-   * path.dirname('/foo/bar/baz/asdf/quux');
+   * path.pathUp('/foo/bar/baz/asdf/quux');
    * // Returns: '/foo/bar/baz/asdf'
    * </pre>
    * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
-   * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
+   * <p>This method is a wrapper around node's <code>path.pathUp</code>, which is not available on the browser
    * directly.
    */
-  var dirname = path
+  var pathUp = path
     ? path.dirname
     : function(path) {
         if (typeOf(path) !== "string") {
@@ -130,7 +130,7 @@
      */
     stackLocation: null,
 
-    contractLibPath: dirname(dirname(fileName)), // 2 directories up
+    contractLibPath: pathUp(pathUp(fileName)), // 2 directories up
 
     /**
      * A better type then Object.toString() or typeof.
@@ -390,17 +390,17 @@
     },
 
     /**
-     * <p>Returns the directory name of a path, similar to the Unix dirname command.
+     * <p>Returns the directory name of a path, similar to the Unix pathUp command.
      * For example:</p>
      * <pre>
-     * path.dirname('/foo/bar/baz/asdf/quux');
+     * path.pathUp('/foo/bar/baz/asdf/quux');
      * // Returns: '/foo/bar/baz/asdf'
      * </pre>
      * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
-     * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
+     * <p>This method is a wrapper around node's <code>path.pathUp</code>, which is not available on the browser
      * directly.
      */
-    dirname: dirname,
+    pathUp: pathUp,
 
     browserModuleLocation: browserModuleLocation
   };
