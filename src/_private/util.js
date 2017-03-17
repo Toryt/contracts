@@ -56,8 +56,6 @@
     return location.join(dirSeparator);
   }
 
-  var fileName = (typeof module === "object") ? module.filename : browserModuleLocation(amdModule);
-
   function typeOf(obj) {
     if (obj === null) { // workaround for some weird implementations
       return "null";
@@ -70,19 +68,6 @@
     return result; // return String
   }
 
-  /* MUDO we still need a unit test for this function; better then to just do away with ugly path dependency
-     once and for all */
-  /**
-   * <p>Returns the directory name of a path, similar to the Unix pathUp command.
-   * For example:</p>
-   * <pre>
-   * path.pathUp('/foo/bar/baz/asdf/quux');
-   * // Returns: '/foo/bar/baz/asdf'
-   * </pre>
-   * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
-   * <p>This method is a wrapper around node's <code>path.pathUp</code>, which is not available on the browser
-   * directly.
-   */
   var pathUp = isNode
     ? require("path").dirname
     : function(path) {
@@ -122,7 +107,7 @@
      */
     stackLocation: null,
 
-    contractLibPath: pathUp(pathUp(fileName)), // 2 directories up
+    contractLibPath: pathUp(pathUp(isNode ? module.filename : browserModuleLocation(amdModule))), // 2 directories up
 
     /**
      * A better type then Object.toString() or typeof.
