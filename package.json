@@ -9,7 +9,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha --reporter min test/**/*MochaTest.js"
+    "mocha": "mocha --reporter min test/**/*MochaTest.js",
+    "intern": "node_modules/.bin/intern-client config=test/intern",
+    "test": "node_modules/.bin/intern-client config=test/intern"
   },
   "repository": {
     "type": "git",
@@ -41,10 +43,10 @@
     "node": ">=6.9.2",
     "npm": ">=3.10.8"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
+    "intern": "^3.4.2",
     "just.randomstring": "^0.1.1",
     "mocha": "^3.2.0"
   }
