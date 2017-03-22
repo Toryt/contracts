@@ -25,9 +25,9 @@ require.config({
   },
   map: {
     test: {
-      "test/describe": "test/mocha-amd/describe",
-      "test/it": "test/mocha-amd/it",
-      "test/expect": "test/mocha-amd/expect"
+      "test/_util/describe": "test/_util/mocha-amd/describe",
+      "test/_util/it": "test/_util/mocha-amd/it",
+      "test/_util/expect": "test/_util/mocha-amd/expect"
     }
   }
 });

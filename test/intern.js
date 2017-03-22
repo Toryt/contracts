@@ -48,9 +48,9 @@ define({
     },
     map: {
       test: {
-        "test/describe": "test/intern/describe",
-        "test/it": "test/intern/it",
-        "test/expect": "test/intern/expect"
+        "test/_util/describe": "test/_util/intern/describe",
+        "test/_util/it": "test/_util/intern/it",
+        "test/_util/expect": "test/_util/intern/expect"
       }
     }
 	},
