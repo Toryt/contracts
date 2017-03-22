@@ -36,10 +36,11 @@ define({
 	// <https://theintern.github.io/intern/#option-useLoader> for more information.
 	loaderOptions: {
     packages: [
+      {name: "𝕋合同", location: "src"},
       {name: "test", location: "test"}
     ],
     paths: {
-      "just.randomstring": "../bower_components/just.randomstring/just.randomstring"
+      "just.randomstring": "bower_components/just.randomstring/just.randomstring"
     },
     shim: {
       "just.randomstring": {
@@ -56,7 +57,7 @@ define({
 	},
 
 	// Unit test suite(s) to run in each browser
-  suites: ["test/js/FunctionMochaTest"],
+  suites: ["test/js/FunctionMochaTest", "test/js/syntaxMochaTest"],
 
 	// Functional test suite(s) to execute against each browser once unit tests are completed
 	functionalSuites: [],

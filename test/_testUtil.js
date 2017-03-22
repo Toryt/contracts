@@ -17,7 +17,7 @@ limitations under the License.
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "𝕋合同/_private/util"];
+  var dependencies = ["./_util/expect", "𝕋合同/_private/util"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -25,10 +25,8 @@ limitations under the License.
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../src"));}));
   }
-}(function(chai, util) {
+}(function(expect, util) {
   "use strict";
-
-  var expect = chai.expect;
 
   function x() {
     if (arguments.length <= 0) {
