@@ -1,4 +1,9 @@
 require.config({
+  baseUrl: "../src",
+  packages: [
+    {name: "𝕋合同", location: "../src"},
+    {name: "test", location: "../test"}
+  ],
   paths: {
     mocha: "../bower_components/mocha/mocha",
     chai: "../bower_components/chai/chai",
@@ -21,7 +26,7 @@ require.config({
 });
 
 require(["mocha"], function(mocha) {
-  require(["./js/mochaTests", "./_private/mochaTests", "./I/mochaTests"], function() {
+  require(["test/js/mochaTests", "test/_private/mochaTests", "test/I/mochaTests"], function() {
     mocha.run();
   });
 });

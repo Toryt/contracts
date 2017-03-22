@@ -17,14 +17,15 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
-                      "./AbstractContractCommon", "../../src/I/AbstractContract"];
+  var dependencies = ["chai", "../_testUtil", "𝕋合同/_private/util",
+                      "./AbstractContractCommon", "𝕋合同/I/AbstractContract"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+    module.exports =
+      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
 }(function(chai, testUtil, util, common, AbstractContract) {
   "use strict";

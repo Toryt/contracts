@@ -17,10 +17,10 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "../../src/_private/util",
-                      "../../src/I/Contract", "../../src/I/AbstractContract", "../../src/I/ConditionMetaError",
-                      "../../src/I/PreconditionViolation", "../../src/I/PostconditionViolation",
-                      "../../src/I/ExceptionConditionViolation",
+  var dependencies = ["chai", "../_testUtil", "𝕋合同/_private/util",
+                      "𝕋合同/I/Contract", "𝕋合同/I/AbstractContract", "𝕋合同/I/ConditionMetaError",
+                      "𝕋合同/I/PreconditionViolation", "𝕋合同/I/PostconditionViolation",
+                      "𝕋合同/I/ExceptionConditionViolation",
                       "./ConditionMetaErrorCommon", "./PreconditionViolationCommon", "./PostconditionViolationCommon",
                       "./ExceptionConditionViolationCommon"];
 
@@ -28,7 +28,8 @@
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+    module.exports =
+      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
 }(function(chai, testUtil, util,
            Contract, AbstractContract, ConditionMetaError,

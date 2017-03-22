@@ -18,13 +18,14 @@
   "use strict";
 
   var dependencies = ["chai", "../_testUtil", "./ConditionErrorCommon",
-                      "../../src/I/ConditionMetaError", "../../src/I/ConditionViolation", "./ConditionMetaErrorCommon"];
+                      "𝕋合同/I/ConditionMetaError", "𝕋合同/I/ConditionViolation", "./ConditionMetaErrorCommon"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+    module.exports =
+      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
 }(function(chai, testUtil, common, ConditionMetaError, ConditionViolation, conditionMetaErrorCommon) {
   "use strict";

@@ -17,13 +17,13 @@ limitations under the License.
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../src/_private/util"];
+  var dependencies = ["chai", "𝕋合同/_private/util"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../src"));}));
   }
 }(function(chai, util) {
   "use strict";

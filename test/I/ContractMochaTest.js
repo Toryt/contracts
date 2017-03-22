@@ -18,13 +18,14 @@
   "use strict";
 
   var dependencies = ["chai", "../_testUtil", "./ContractCommon",
-                      "../../src/I/Contract", "../../src/I/AbstractContract"];
+                      "𝕋合同/I/Contract", "𝕋合同/I/AbstractContract"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
   }
   else if (typeof exports === 'object') {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+    module.exports =
+      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
 }(function(chai, testUtil, common, Contract, AbstractContract) {
   "use strict";
