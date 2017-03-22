@@ -165,7 +165,10 @@
           var subject = "This is a string";
           expect(subject).not.to.have.property("name");
           var name = "This is a name";
-          expect(function() {subject.name = name;}).to.throw(TypeError);
+          expect(function() {
+            //noinspection JSPrimitiveTypeWrapperUsage
+            subject.name = name;
+          }).to.throw(TypeError);
         });
       });
 
