@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai"];
+  var dependencies = ["../describe", "../it", "../expect"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -25,11 +25,8 @@
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(chai) {
+}(function(describe, it, expect) {
   "use strict";
-
-  //noinspection JSUnresolvedFunction
-  var expect = chai.expect;
 
   // describe("js", function() {
     describe("js/Function", function() {

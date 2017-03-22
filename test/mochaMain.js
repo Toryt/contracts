@@ -22,6 +22,13 @@ require.config({
     "just.randomstring": {
       exports: "just.randomstring"
     }
+  },
+  map: {
+    test: {
+      "test/describe": "test/mocha-amd/describe",
+      "test/it": "test/mocha-amd/it",
+      "test/expect": "test/mocha-amd/expect"
+    }
   }
 });
 

@@ -35,6 +35,9 @@ define({
 	// If you want to use a different loader than the default loader, see
 	// <https://theintern.github.io/intern/#option-useLoader> for more information.
 	loaderOptions: {
+    packages: [
+      {name: "test", location: "test"}
+    ],
     paths: {
       "just.randomstring": "../bower_components/just.randomstring/just.randomstring"
     },
@@ -43,11 +46,17 @@ define({
         exports: "just.randomstring"
       }
     },
-		packages: []
+    map: {
+      test: {
+        "test/describe": "test/intern/describe",
+        "test/it": "test/intern/it",
+        "test/expect": "test/intern/expect"
+      }
+    }
 	},
 
 	// Unit test suite(s) to run in each browser
-	suites: [ /* 'myPackage/tests/foo', 'myPackage/tests/bar' */ ],
+  suites: ["test/js/FunctionMochaTest"],
 
 	// Functional test suite(s) to execute against each browser once unit tests are completed
 	functionalSuites: [],
