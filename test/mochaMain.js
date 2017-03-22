@@ -1,13 +1,13 @@
 require.config({
-  baseUrl: "../src",
+  baseUrl: "../",
   packages: [
-    {name: "𝕋合同", location: "../src"},
-    {name: "test", location: "../test"}
+    {name: "𝕋合同", location: "src"},
+    {name: "test", location: "test"}
   ],
   paths: {
-    mocha: "../bower_components/mocha/mocha",
-    chai: "../bower_components/chai/chai",
-    "just.randomstring": "../bower_components/just.randomstring/just.randomstring"
+    mocha: "bower_components/mocha/mocha",
+    chai: "bower_components/chai/chai",
+    "just.randomstring": "bower_components/just.randomstring/just.randomstring"
   },
   shim: {
     "mocha": {
