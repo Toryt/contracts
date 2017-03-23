@@ -69,16 +69,14 @@
     return result; // return String
   }
 
-  var pathUp = isNode
-    ? require("path").dirname
-    : function(path) {
-        if (typeOf(path) !== "string") {
-          throw new TypeError("path is not a string");
-        }
-        var result = path.split(dirSeparator);
-        result.pop();
-        return result.join(dirSeparator);
-      };
+  var pathUp = function(path) {
+    if (typeOf(path) !== "string") {
+      throw new TypeError("path is not a string");
+    }
+    var result = path.split(dirSeparator);
+    result.pop();
+    return result.join(dirSeparator);
+  };
 
   //noinspection MagicNumberJS
   var util = {
