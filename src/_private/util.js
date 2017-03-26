@@ -1,4 +1,3 @@
-
  /*
   Copyright 2016 - 2017 by Jan Dockx
 
