@@ -51,7 +51,7 @@ require.config({
 });
 
 require(["mocha"], function(mocha) {
-  require(["test/js/mochaTests", "test/_private/mochaTests", "test/I/mochaTests"], function() { // jshint ignore:line
+  require(["test/js/suite", "test/_private/suite", "test/I/suite"], function() { // jshint ignore:line
     mocha.run();
   });
 });
