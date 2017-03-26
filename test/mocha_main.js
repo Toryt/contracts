@@ -51,7 +51,7 @@ require.config({
 });
 
 require(["mocha"], function(mocha) {
-  require(["test/js/suite", "test/_private/suite", "test/I/suite"], function() { // jshint ignore:line
+  require(["test/suite"], function() { // jshint ignore:line
     mocha.run();
   });
 });
