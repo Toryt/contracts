@@ -7,5 +7,5 @@ node_js:
 # Node js is not supported on macOS on Travis
 # Windows is not supported at all. Bummer.
 script:
-  - node node_modules/.bin/intern-client config=test/intern
-  - node node_modules/.bin/mocha --reporter min test/**/*MochaTest.js
+  - npm run intern
+  - npm run mocha
