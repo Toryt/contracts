@@ -1,3 +1,4 @@
+//noinspection JSFileReferences
 require.config({
   baseUrl: "../",
   packages: [
