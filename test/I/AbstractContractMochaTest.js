@@ -90,7 +90,7 @@
         it("returns the expected display name with an anonymous function with an implementation property that has a display name", function() {
           var anonymousFunction = (function() {return function() {};})();
           anonymousFunction.implementation = function() {};
-          var implementationDisplayName = "implemenation display name";
+          var implementationDisplayName = "implementation display name";
           anonymousFunction.implementation.displayName = implementationDisplayName;
 
           var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
