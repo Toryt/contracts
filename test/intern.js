@@ -52,7 +52,7 @@ define({
 	},
 
   reporters: [
-    "Pretty"
+    {id: "TeamCity", filename: "testreport.txt"}
   ],
 
 	// Unit test suite(s) to run in each browser
