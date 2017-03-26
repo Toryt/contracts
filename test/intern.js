@@ -42,11 +42,6 @@ define({
     paths: {
       "just.randomstring": "bower_components/just.randomstring/just.randomstring"
     },
-    shim: {
-      "just.randomstring": {
-        exports: "just.randomstring"
-      }
-    },
     map: {
       test: {
         "test/_util/describe": "test/_util/intern/describe",

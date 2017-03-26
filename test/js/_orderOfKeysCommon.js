@@ -30,7 +30,9 @@
 
   function randomName(/*Number*/ n) {
     var nString = "$$" + n + "$$";
-    return randomString() + nString;
+    // just.randomstring accessing as a global variable, not via dependency; ugly, but this is "just a test"
+    //noinspection JSUnresolvedFunction,JSHint
+    return (typeof just !== "undefined" ? just.randomstring : randomString)() + nString;
   }
 
   function nFromRandomName(/*String*/ str) {
