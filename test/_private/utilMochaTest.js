@@ -552,6 +552,7 @@
               expect(line).to.satisfy(function(l) {
                 return 0 <= l.indexOf(contractLibTestPath) ||
                        0 <= l.indexOf("/mocha/") ||
+                       0 <= l.indexOf("/intern/") ||
                        l.indexOf("/") < 0 ||
                        0 <= l.indexOf("require (internal/module.js") ||
                        0 <= l.indexOf("/requirejs/require.js");
