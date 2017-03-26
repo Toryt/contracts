@@ -84,6 +84,9 @@
           var result = AbstractContract.contractFunctionDisplayName(anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          // This is, at 2017-03-26, implemented in node, Chrome and Safari on Mac, but not yet in Firefox 52.
+          // Firefox 53, based on Gecko 53, will ship in April 2017, and will have this functionality:
+          // https://developer.mozilla.org/en-US/Firefox/Releases/53
           expect(result).to.be.equal(AbstractContract.displayNamePrefix + "anonymousFunction");
         });
 
@@ -147,6 +150,9 @@
           var result = AbstractContract.contractFunctionDisplayName(f);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          // This is, at 2017-03-26, implemented in node, Chrome and Safari on Mac, but not yet in Firefox 52.
+          // Firefox 53, based on Gecko 53, will ship in April 2017, and will have this functionality:
+          // https://developer.mozilla.org/en-US/Firefox/Releases/53
           expect(result).to.be.equal(AbstractContract.displayNamePrefix + "f");
         });
 
@@ -158,6 +164,9 @@
           var result = AbstractContract.contractFunctionDisplayName(obj.anonymousFunction);
           // in ES6, this function has the name of the variable
           // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+          // This is, at 2017-03-26, implemented in node, Chrome and Safari on Mac, but not yet in Firefox 52.
+          // Firefox 53, based on Gecko 53, will ship in April 2017, and will have this functionality:
+          // https://developer.mozilla.org/en-US/Firefox/Releases/53
           expect(result).to.be.equal(AbstractContract.displayNamePrefix + "anonymousFunction");
         });
 
