@@ -734,7 +734,7 @@
         ].forEach(function(testCase) {
           it("returns a sensible result with AMD module URI \"" + testCase.uri + "\"", function() {
             if (isNode) {
-              global.window = {location: {href: "http://localhost:63342/contracts/test/index.html"}};
+              global.window = {location: {href: "http://localhost:63342/contracts/test/mocha.html"}};
             }
             var amdModule = {uri: testCase.uri};
             var result = util.browserModuleLocation(amdModule);

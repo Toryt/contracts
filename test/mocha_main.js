@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-/* This file sets up Mocha browser testing. It is used in index.html */
+/* This file sets up Mocha browser testing. It is used in mocha.html */
 //noinspection JSFileReferences
 require.config({
   baseUrl: "../",
