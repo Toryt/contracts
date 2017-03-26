@@ -17,7 +17,8 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "𝕋合同/_private/util", "./stacks"];
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil",
+                      "𝕋合同/_private/util", "./stacks"];
 
   if (typeof define === 'function' && define.amd) {
     dependencies.push("module");
@@ -27,10 +28,8 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(chai, testUtil, util, stacks, amdModule) {
+}(function(describe, it, expect, testUtil, util, stacks, amdModule) {
   "use strict";
-
-  var expect = chai.expect;
 
   var fileName = (testUtil.environment === "node") ? (typeof module !== "undefined" && module.filename) || amdModule.uri // in node, commonjs or AMD
     : util.browserModuleLocation(typeof module !== "undefined" ? module : amdModule); // in browser, AMD, prefixed with location

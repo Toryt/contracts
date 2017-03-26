@@ -52,7 +52,7 @@ define({
 	},
 
 	// Unit test suite(s) to run in each browser
-  suites: ["test/js/FunctionMochaTest", "test/js/syntaxMochaTest"],
+  suites: ["test/js/FunctionMochaTest", "test/js/syntaxMochaTest", "test/_private/utilMochaTest"],
 
 	// Functional test suite(s) to execute against each browser once unit tests are completed
 	functionalSuites: [],
