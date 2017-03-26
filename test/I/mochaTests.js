@@ -1,6 +1,6 @@
-define(["./AbstractContractMochaTest", "./AbstractErrorMochaTest", "./ConditionErrorMochaTest",
-        "./ConditionMetaErrorMochaTest", "./ConditionViolationMochaTest", "./ContractMochaTest",
-        "./ContractErrorMochaTest", "./ContractFunctionMochaTest", "./ExceptionConditionViolationMochaTest",
-        "./PostconditionViolationMochaTest", "./PreconditionViolationMochaTest"],
+define(["./AbstractContractTest", "./AbstractErrorTest", "./ConditionErrorTest",
+        "./ConditionMetaErrorTest", "./ConditionViolationTest", "./ContractTest",
+        "./ContractErrorTest", "./ContractFunctionTest", "./ExceptionConditionViolationTest",
+        "./PostconditionViolationTest", "./PreconditionViolationTest"],
         function() {}
 );

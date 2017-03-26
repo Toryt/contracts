@@ -8,7 +8,7 @@
     <ui>bdd</ui>
     <extra-mocha-options />
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/_private/utilMochaTest.js</test-file>
+    <test-file>$PROJECT_DIR$/test/_private/utilTest.js</test-file>
     <method />
   </configuration>
 </component>

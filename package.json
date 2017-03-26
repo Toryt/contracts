@@ -9,7 +9,7 @@
     "test": "test"
   },
   "scripts": {
-    "mocha": "mocha --reporter min test/**/*MochaTest.js",
+    "mocha": "mocha --reporter min test/**/*Test.js",
     "intern": "node_modules/.bin/intern-client config=test/intern",
     "pretest": "bower install",
     "test": "node_modules/.bin/intern-client config=test/intern"

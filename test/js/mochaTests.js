@@ -1,1 +1,1 @@
-define(["./ObjectMochaTest", "./ErrorMochaTest", "./FunctionMochaTest", "./syntaxMochaTest"], function() {});
+define(["./ObjectTest", "./ErrorTest", "./FunctionTest", "./syntaxTest"], function() {});

@@ -1,1 +1,1 @@
-define(["./utilMochaTest"], function() {});
+define(["./utilTest"], function() {});

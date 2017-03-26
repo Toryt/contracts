@@ -712,7 +712,7 @@
       describe("#pathUp", function() {
         it("returns the directory of a file path in a browser", function() {
           var dirPath = "http://localhost:63342/contracts/test/_private";
-          var fileName = "utilMochaTest.js";
+          var fileName = "utilTest.js";
           var testCase = dirPath + "/" + fileName;
           var result = util.pathUp(testCase);
           expect(result).to.be.a("string");
