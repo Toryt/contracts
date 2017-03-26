@@ -33,6 +33,14 @@
   // describe("I", function() {
     describe("I/PreconditionViolation", function() {
 
+      describe("#prototype", function() {
+        it("has a condition", function() {
+          expect(PreconditionViolation.prototype).to.have.property("condition").that.is.a("function");
+          // mark the stereotype condition as covered
+          expect(PreconditionViolation.prototype).to.have.property("condition").to.not.throw();
+        });
+      });
+
       describe("#PreconditionViolation()", function() {
         common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
           common.argsCases.forEach(function(args) {

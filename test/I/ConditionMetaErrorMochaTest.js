@@ -33,6 +33,14 @@
   // describe("I", function() {
     describe("I/ConditionMetaError", function() {
 
+      describe("#prototype", function() {
+        it("has a condition", function() {
+          expect(ConditionMetaError.prototype).to.have.property("condition").that.is.a("function");
+          // mark the stereotype condition as covered
+          expect(ConditionMetaError.prototype).to.have.property("condition").to.not.throw();
+        });
+      });
+
       describe("#ConditionMetaError()", function() {
         common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
           common.argsCases.forEach(function(args) {
