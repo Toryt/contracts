@@ -717,6 +717,9 @@
           expect(result).to.be.a("string");
           expect(result).to.equal(dirPath);
         });
+        it("throws when the argument is not a string", function() {
+          expect(function() {return util.pathUp({});}).to.throw(TypeError);
+        });
       });
 
       describe("#browserModuleLocation", function() {
