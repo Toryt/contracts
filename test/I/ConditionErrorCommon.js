@@ -18,8 +18,8 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "𝕋合同/_private/util",
-                      "./ContractErrorCommon", "𝕋合同/I/ConditionError",
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil",
+                      "𝕋合同/_private/util", "./ContractErrorCommon", "𝕋合同/I/ConditionError",
                       "𝕋合同/I/AbstractContract", "./AbstractContractCommon"];
 
   if (typeof define === 'function' && define.amd) {
@@ -29,10 +29,8 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(chai, testUtil, util, common, ConditionError, AbstractContract, abstractContractCommon) {
+}(function(describe, it, expect, testUtil, util, common, ConditionError, AbstractContract, abstractContractCommon) {
   "use strict";
-
-  var expect = chai.expect;
 
   var conditionCase = function() {return "This simulates a condition";};
 

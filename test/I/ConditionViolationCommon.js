@@ -17,8 +17,9 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "./ConditionErrorCommon",
-                      "𝕋合同/I/ConditionMetaError", "𝕋合同/I/ConditionViolation", "./ConditionMetaErrorCommon"];
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil",
+                      "./ConditionErrorCommon", "𝕋合同/I/ConditionMetaError", "𝕋合同/I/ConditionViolation",
+                      "./ConditionMetaErrorCommon"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -27,10 +28,8 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(chai, testUtil, common, ConditionMetaError, ConditionViolation, conditionMetaErrorCommon) {
+}(function(describe, it, expect, testUtil, common, ConditionMetaError, ConditionViolation, conditionMetaErrorCommon) {
   "use strict";
-
-  var expect = chai.expect;
 
   var selfVerifyCases = [
     function() {return undefined;},

@@ -17,8 +17,9 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "𝕋合同/_private/util",
-                      "./ConditionViolationCommon", "𝕋合同/I/ConditionMetaError", "𝕋合同/I/ConditionViolation"];
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil",
+                      "𝕋合同/_private/util", "./ConditionViolationCommon", "𝕋合同/I/ConditionMetaError",
+                      "𝕋合同/I/ConditionViolation"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -27,10 +28,8 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(chai, testUtil, util, common, ConditionMetaError, ConditionViolation) {
+}(function(describe, it, expect, testUtil, util, common, ConditionMetaError, ConditionViolation) {
   "use strict";
-
-  var expect = chai.expect;
 
   // describe("I", function() {
     describe("I/ConditionViolation", function() {

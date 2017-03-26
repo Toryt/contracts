@@ -17,8 +17,8 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil", "./ContractCommon",
-                      "𝕋合同/I/Contract", "𝕋合同/I/AbstractContract"];
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil",
+                      "./ContractCommon", "𝕋合同/I/Contract", "𝕋合同/I/AbstractContract"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -27,10 +27,8 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(chai, testUtil, common, Contract, AbstractContract) {
+}(function(describe, it, expect, testUtil, common, Contract, AbstractContract) {
   "use strict";
-
-  var expect = chai.expect;
 
   // describe("I", function() {
     describe("I/Contract", function() {
