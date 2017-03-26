@@ -27,6 +27,7 @@ Versions
   * I/2.2  : Now also tests with Intern on node, on Mac and Linux.
              Intern is preferred over Mocha. This version only changes private code,
              test code, and build setup.
+  * I/2.3  : Cleanup, renaming, administration, license, fixing warnings
 
 
 
