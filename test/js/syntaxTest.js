@@ -19,10 +19,10 @@
 
   var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil", "./_orderOfKeysCommon"];
 
-  if (typeof define === 'function' && define.amd) {
+  if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
   }
-  else if (typeof exports === 'object') {
+  else if (typeof exports === "object") {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
 }(function(describe, it, expect, testUtil, orderOfKeysCommon) {

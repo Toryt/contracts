@@ -19,11 +19,11 @@
 
   var dependencies = [];
 
-  if (typeof define === 'function' && define.amd) {
+  if (typeof define === "function" && define.amd) {
     dependencies.push("module");
     define(dependencies, factory);
   }
-  else if (typeof exports === 'object') {
+  else if (typeof exports === "object") {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
 }(function(amdModule) {

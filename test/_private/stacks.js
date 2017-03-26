@@ -19,10 +19,10 @@
 
   var dependencies = ["𝕋合同/_private/util"];
 
-  if (typeof define === 'function' && define.amd) {
+  if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
   }
-  else if (typeof exports === 'object') {
+  else if (typeof exports === "object") {
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }

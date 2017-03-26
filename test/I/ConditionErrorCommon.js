@@ -21,10 +21,10 @@
                       "𝕋合同/_private/util", "./ContractErrorCommon", "𝕋合同/I/ConditionError",
                       "𝕋合同/I/AbstractContract", "./AbstractContractCommon"];
 
-  if (typeof define === 'function' && define.amd) {
+  if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
   }
-  else if (typeof exports === 'object') {
+  else if (typeof exports === "object") {
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
