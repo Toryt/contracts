@@ -106,7 +106,10 @@
      */
     stackLocation: null,
 
-    contractLibPath: pathUp(pathUp(isNode ? module.filename : browserModuleLocation(amdModule))), // 2 directories up
+    contractLibPath: pathUp(pathUp( // 2 directories up
+      isNode ? (typeof module !== "undefined" && module.filename) || amdModule.uri // in node, commonjs or AMD
+             : browserModuleLocation(typeof module !== "undefined" || amdModule) // in browser, AMD, prefixed with location
+    )),
 
     /**
      * A better type then Object.toString() or typeof.
