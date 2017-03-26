@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil",
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
                       "𝕋合同/_private/util", "./ConditionMetaErrorCommon", "𝕋合同/I/ConditionMetaError"];
 
   if (typeof define === 'function' && define.amd) {

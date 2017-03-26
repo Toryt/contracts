@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil",
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
                       "𝕋合同/_private/util", "𝕋合同/I/Contract", "𝕋合同/I/AbstractContract", "𝕋合同/I/ConditionMetaError",
                       "𝕋合同/I/PreconditionViolation", "𝕋合同/I/PostconditionViolation",
                       "𝕋合同/I/ExceptionConditionViolation",
