@@ -45,6 +45,8 @@
    *
    * Furthermore, an instance contains a `location` property, which is a line of text
    * that refers to the source code where the contract was created.
+   *
+   * @constructor
    */
   function AbstractContract(kwargs) {
     util.pre(function() {return !!kwargs;});
@@ -195,6 +197,8 @@
 
   /**
    * Thrown when an abstract method is called. You shouldn't.
+   *
+   * @constructor
    */
   function AbstractError(contract) {
     util.pre(function() {return contract instanceof AbstractContract;});

@@ -48,6 +48,7 @@
    *   is in an undefined state. Retrieving the state might not be possible, because invariants and preconditions
    *   will no longer be guaranteed.</p>
    *
+   * @constructor
    * @param {Function} contractFunction - The contract function that reports this violation
    * @param {Function} condition        - The condition that was violated
    * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
@@ -71,7 +72,7 @@
 
   PostconditionViolation.prototype = new ConditionViolation(
     AbstractContract.root.abstract,
-    function() {return "This is a dummy condition in the PostconditionViolation prototype."},
+    function() {return "This is a dummy condition in the PostconditionViolation prototype.";},
     undefined,
     []
   );

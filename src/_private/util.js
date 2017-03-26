@@ -26,10 +26,10 @@
   else if (typeof exports === "object") {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(amdModule) {
+}(function(amdModule) { // jshint ignore:line
   "use strict";
 
-  var isNode = (new Function("try {return this === global;}catch(e){return false;}"))();
+  var isNode = (new Function("try {return this === global;}catch(e){return false;}"))(); // jshint ignore:line
 
   var dirSeparator = "/";
   var thisDirectory = ".";
@@ -167,7 +167,7 @@
     pre: function(/*Object?*/ self, /*Function*/ condition) {
       var shiftedCondition = condition || self;
       var shiftedSelf = condition ? self : undefined;
-      if (!shiftedCondition.apply(self)) {
+      if (!shiftedCondition.apply(shiftedSelf)) {
         throw new Error("Precondition violation in Toryt Contracts: " + shiftedCondition);
       }
     },
@@ -312,7 +312,7 @@
         .split(util.eol)
         .splice(nrOfMessageLines) // everything after the message lines
         .reduce(
-          function(acc, line, index) {
+          function(acc, line) {
             if (!foundALineOutsideTheLibrary &&
                 line.indexOf(util.contractLibPath) < 0 &&
                 0 <= line.indexOf("/")) {

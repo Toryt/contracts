@@ -40,12 +40,6 @@
         });
       });
 
-      var subjects = testUtil
-        .x(common.preCases, common.postCases, common.exceptionCases)
-        .map(function(args) {
-          return function() {return new Contract(args[0](), args[1](), args[2]());};
-        });
-
       describe("#Contract()", function() {
         common.constructorPreCases.forEach(function(pre) {
           common.constructorPostCases.forEach(function(post) {

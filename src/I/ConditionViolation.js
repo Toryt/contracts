@@ -30,8 +30,9 @@
 
   /**
    * Super type for objects that are thrown to signal a condition violation.
-   * This is intented to be abstract.
+   * This is intended to be abstract.
    *
+   * @constructor
    * @param {Function} contractFunction - The contract function that reports this violation
    * @param {Function} condition        - The condition that was violated
    * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
@@ -48,7 +49,7 @@
 
   ConditionViolation.prototype = new ConditionError(
     AbstractContract.root.abstract,
-    function() {return "This is a dummy condition in the ConditionViolation prototype."},
+    function() {return "This is a dummy condition in the ConditionViolation prototype.";},
     undefined,
     []
   );

@@ -29,6 +29,7 @@ limitations under the License.
 }(function(expect, util) {
   "use strict";
 
+  //noinspection FunctionNamingConventionJS
   function x() {
     if (arguments.length <= 0) {
       return [];
@@ -63,6 +64,7 @@ limitations under the License.
     }).to.throw(TypeError);
   }
 
+  //noinspection FunctionNamingConventionJS
   function prototypeThatHasOwnPropertyDescriptor(subject, propertyName) {
     if (!subject) {
       return subject;
@@ -73,6 +75,7 @@ limitations under the License.
     return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName);
   }
 
+  //noinspection FunctionNamingConventionJS
   function expectDerivedPropertyOnAPrototype(subject, propertyName, configurable) {
     var prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName);
     //noinspection JSUnresolvedFunction
@@ -85,14 +88,16 @@ limitations under the License.
     expect(prototype).ownPropertyDescriptor(propertyName).not.to.have.property("writable");
     //noinspection JSUnresolvedFunction
     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("get").that.is.a("function");
-    //noinspection JSUnresolvedFunction,BadExpressionStatementJS
+    //noinspection JSUnresolvedFunction,BadExpressionStatementJS,JSHint
     expect(prototype).ownPropertyDescriptor(propertyName).to.have.property("set").that.is.not.ok;
   }
 
+  //noinspection FunctionNamingConventionJS
   function expectConfigurableDerivedPropertyOnAPrototype(subject, propertyName) {
     expectDerivedPropertyOnAPrototype(subject, propertyName, true);
   }
 
+  //noinspection FunctionNamingConventionJS
   function expectFrozenDerivedPropertyOnAPrototype(subject, propertyName) {
     expectDerivedPropertyOnAPrototype(subject, propertyName, false);
   }
@@ -102,12 +107,13 @@ limitations under the License.
     expectOwnFrozenProperty(prototype, propertyName);
   }
 
+  //noinspection FunctionNamingConventionJS
   function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propName, privatePropName) {
     expect(subject).to.have.ownProperty(privatePropName); // array not shared
     expect(subject).to.have.property(privatePropName).that.is.an("array");
-    this.expectOwnFrozenProperty(subject, privatePropName);
+    this.expectOwnFrozenProperty(subject, privatePropName); // jshint ignore:line
     expect(subject).to.have.property(propName).that.is.an("array");
-    this.expectFrozenDerivedPropertyOnAPrototype(subject, propName);
+    this.expectFrozenDerivedPropertyOnAPrototype(subject, propName); // jshint ignore:line
     expect(function() {
       //noinspection MagicNumberJS
       subject[propName] = 42 + " some outlandish other value";
@@ -123,6 +129,7 @@ limitations under the License.
 
   var doLog = false;
 
+  //noinspection FunctionNamingConventionJS
   function log() {
     if (doLog) {
       console.log.apply(undefined, arguments);
@@ -180,11 +187,11 @@ limitations under the License.
   }
 
   // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-  function environment() {
-    if ((new Function("try {return this === global;}catch(e){return false;}"))()) {
+  function environment() { // jshint ignore:line
+    if ((new Function("try {return this === global;}catch(e){return false;}"))()) { // jshint ignore:line
       return "node";
     }
-    if ((!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(" OPR/") >= 0) {
+    if ((!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(" OPR/") >= 0) { // jshint ignore:line
       return "opera";
     }
     if (typeof InstallTrigger !== "undefined") {
@@ -193,7 +200,7 @@ limitations under the License.
     if (/constructor/i.test(window.HTMLElement)
         || (function(p) {
               return p.toString() === "[object SafariRemoteNotification]";
-             })(!window["safari"] || safari.pushNotification)) {
+             })(!window["safari"] || safari.pushNotification)) { // jshint ignore:line
       return "safari";
     }
     //noinspection PointlessBooleanExpressionJS
@@ -209,7 +216,7 @@ limitations under the License.
     if (!!window.CSS) {
       return "blink";
     }
-    if ((new Function("try {return this === window;}catch(e){ return false;}"))()) {
+    if ((new Function("try {return this === window;}catch(e){ return false;}"))()) { // jshint ignore:line
       return "browser";
     }
     return undefined;

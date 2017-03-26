@@ -35,6 +35,8 @@
    * - to make it possible to use this as the prototype for more special types
    * - because in JavaScript, also undefined and null can be thrown
    * Therefor, a ConditionMetaError is also civilized if the error is falsy.
+   *
+   * @constructor
    */
   function ConditionMetaError(contractFunction, condition, self, args, error) {
     util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
@@ -50,7 +52,7 @@
 
   ConditionMetaError.prototype = new ConditionError(
     AbstractContract.root.abstract,
-    function() {return "This is a dummy condition in the ConditionMetaError prototype."},
+    function() {return "This is a dummy condition in the ConditionMetaError prototype.";},
     undefined,
     []
   );

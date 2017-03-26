@@ -49,9 +49,9 @@
   }
 
   function prepareAnObjectWithAProto() {
-    //noinspection MagicNumberJS
+    //noinspection MagicNumberJS,LocalVariableNamingConventionJS
     var oProto1 = prepareAnObject(200, 10);
-    //noinspection MagicNumberJS
+    //noinspection MagicNumberJS,LocalVariableNamingConventionJS
     var oProto2 = prepareAnObject(100, 10);
     Object.setPrototypeOf(oProto2, oProto1);
     var o = prepareAnObject(0, 10);

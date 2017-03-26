@@ -52,7 +52,7 @@
 
       common.generatePrototypeMethodsDescriptions(
         function () {
-          return new ConditionError(common.conditionCase, null, argsCases[0]);
+          return new ConditionError(common.conditionCase, null, common.argsCases[0]);
         },
         testUtil
           .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)

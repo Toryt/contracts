@@ -33,7 +33,7 @@
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ConditionMetaError);
     if (subject.error) {
-      //noinspection BadExpressionStatementJS
+      //noinspection BadExpressionStatementJS,JSHint
       expect(subject.error).to.be.frozen;
     }
     common.expectInvariants(subject);
@@ -50,7 +50,7 @@
     expect(result).to.have.property("error").that.equals(error);
   }
 
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
+  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint
   var errorCases = [
     new Error("This is an error case"),
     undefined,

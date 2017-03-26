@@ -71,8 +71,7 @@
 
         it("returns the expected display name with a named function with a display name", function() {
           function namedFunction() {}
-          var displayName = "display name";
-          namedFunction.displayName = displayName;
+          namedFunction.displayName = "display name";
 
           var result = AbstractContract.contractFunctionDisplayName(namedFunction);
           expect(result).to.be.equal(AbstractContract.displayNamePrefix + "namedFunction");
@@ -116,7 +115,7 @@
         it("returns the expected display name with a function without a name and without an implementation", function() {
           var anonymousFunction = (function() {return function() {};})();
           testUtil.log(anonymousFunction.name);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(anonymousFunction).to.have.property("name").that.is.not.ok;
           expect(anonymousFunction).not.to.have.property("implementation");
 
@@ -127,12 +126,12 @@
         it("returns the expected display name with an anonymous function with an implementation property that has no display name and no name", function() {
           var anonymousFunction = (function() {return function() {};})();
           testUtil.log(anonymousFunction.name);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(anonymousFunction).to.have.property("name").that.is.not.ok;
           anonymousFunction.implementation = (function() {return function() {};})();
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(anonymousFunction).to.have.property("implementation").that.is.ok;
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(anonymousFunction).to.have.property("implementation").that.has.property("name").that.is.not.ok;
           expect(anonymousFunction).to.have.property("implementation").not.to.have.property("displayName");
 
@@ -144,8 +143,7 @@
 
         it("returns the expected display name with an anonymous function assigned to a variable with a display name", function() {
           var f = function() {};
-          var displayName = "display name";
-          f.displayName = displayName;
+          f.displayName = "display name";
 
           var result = AbstractContract.contractFunctionDisplayName(f);
           // in ES6, this function has the name of the variable
@@ -196,21 +194,21 @@
         it("says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 properties are " +
            "frozen, and it has the expected display name", function() {
           var candidate = common.createCandidateContractFunction();
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(AbstractContract.isAContractFunction(candidate)).to.be.ok;
         });
 
         common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
           it("says no if the argument is not a function, but " + thing, function() {
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
             expect(AbstractContract.isAContractFunction(thing)).not.to.be.ok;
           });
         });
 
-        ["contract", "implementation", "location", "bind"].forEach(function(dontFreezeProperty) {
-          it("says no if the " + dontFreezeProperty + " property is not frozen", function() {
-            var candidate = common.createCandidateContractFunction(dontFreezeProperty);
-            //noinspection BadExpressionStatementJS
+        ["contract", "implementation", "location", "bind"].forEach(function(doNotFreezeProperty) {
+          it("says no if the " + doNotFreezeProperty + " property is not frozen", function() {
+            var candidate = common.createCandidateContractFunction(doNotFreezeProperty);
+            //noinspection BadExpressionStatementJS,JSHint
             expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
           });
         });
@@ -229,7 +227,7 @@
           common.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach(function(v) {
             it("says no if the " + aCase.propertyName + " is not " + aCase.expected + " but " + v, function() {
               var candidate = common.createCandidateContractFunction(null, aCase.propertyName, v);
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
             });
           });

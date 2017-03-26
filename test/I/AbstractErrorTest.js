@@ -30,6 +30,7 @@
 }(function(describe, it, expect, testUtil, util, common, AbstractContract) {
   "use strict";
 
+  //noinspection LocalVariableNamingConventionJS
   var AbstractError = AbstractContract.AbstractError;
 
   // describe("I", function() {

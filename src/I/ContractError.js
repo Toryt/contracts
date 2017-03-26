@@ -25,8 +25,7 @@
   else if (typeof exports === "object") {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(util, ConditionError, AbstractContract,
-           PreconditionViolation, PostconditionViolation, ExceptionConditionViolation) {
+}(function(util) {
   "use strict";
 
   /* Custom Error types are notoriously difficult in JavaScript.
@@ -88,6 +87,8 @@
    *     string ": ", and `message`, and is followed by stack code references, that do no contain references
    *     to the inner workings of the Toryt Contracts library.</li>
    * </ul>
+   *
+   * @constructor
    */
   function ContractError() {
     var stackSource = new Error(stackSourceMessage);

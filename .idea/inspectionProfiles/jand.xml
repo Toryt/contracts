@@ -1,6 +1,6 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
-    <option name="myName" value="Project Default" />
+    <option name="myName" value="jand" />
     <inspection_tool class="Annotator" enabled="false" level="INFO" enabled_by_default="false" />
     <inspection_tool class="AssignmentResultUsedJS" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
@@ -136,6 +136,9 @@
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="Eslint" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Application" level="ERROR" enabled="false" />
+    </inspection_tool>
     <inspection_tool class="ExceptionCaughtLocallyJS" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
@@ -239,6 +242,9 @@
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="JSClassNamingConvention" enabled="true" level="WARNING" enabled_by_default="false">
+      <scope name="Application" level="WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="JSClosureCompilerSyntax" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JSComparisonWithNaN" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
@@ -261,7 +267,9 @@
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
     <inspection_tool class="JSDuplicatedDeclaration" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="JSHint" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSHint" enabled="true" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Application" level="WEAK WARNING" enabled="true" />
+    </inspection_tool>
     <inspection_tool class="JSLastCommaInArrayLiteral" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="JSLint" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="JSMismatchedCollectionQueryUpdate" enabled="true" level="WARNING" enabled_by_default="true">
@@ -287,6 +295,9 @@
     <inspection_tool class="JSUnusedGlobalSymbols" enabled="true" level="INFO" enabled_by_default="true" />
     <inspection_tool class="JSUnusedLocalSymbols" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="myIgnoreUnusedCatchParameters" value="false" />
+    </inspection_tool>
+    <inspection_tool class="Jscs" enabled="true" level="ERROR" enabled_by_default="false">
+      <scope name="Application" level="ERROR" enabled="false" />
     </inspection_tool>
     <inspection_tool class="LabeledStatementJS" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />

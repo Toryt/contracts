@@ -62,7 +62,7 @@
         it("has " + (isFF ? "a" : "no") +" file name in " + env, function() {
           var subject = new Error(message);
           testUtil.log("fileName: %s", subject.fileName);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(subject.fileName)[isFF ? "to" : "not"].to.be.ok; // not supported in node
         });
       });
@@ -70,7 +70,7 @@
         it("has " + (isFF ? "a" : "no") + " line number in " + env, function() {
           var subject = new Error(message);
           testUtil.log("lineNumber: %s", subject.lineNumber);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(subject.lineNumber)[isFF ? "to" : "not"].to.be.ok; // not supported in node
         });
       });
@@ -78,7 +78,7 @@
         it("has " + (isFF ? "a" : "no") + " column number in " + env, function() {
           var subject = new Error(message);
           testUtil.log("columnNumber: %s", subject.columnNumber);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(subject.columnNumber)[isFF ? "to" : "not"].to.be.ok; // not supported in node
         });
       });
@@ -89,7 +89,7 @@
             var subject = new Error(message);
             var stack = subject.stack;
             testUtil.log("stack: %s", subject.stack);
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(stack).to.be.ok; // not supported in old IE
             expect(stack).to.be.a("string");
             if (isFFOrSafari) {
@@ -106,6 +106,7 @@
           }
 
           function throwAnError() {
+            //noinspection UnnecessaryLocalVariableJS
             var anError = createAnError();
             throw anError;
           }
@@ -115,7 +116,7 @@
           }
           catch(err) {
             testUtil.log("err.stack: %s", err.stack);
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(err).to.have.property("stack").that.is.ok; // not supported in old IE
             expect(err).to.have.property("stack").that.contains("createAnError");
             // and be on the first line
@@ -135,6 +136,7 @@
             return new Error(message);
           }
 
+          //noinspection FunctionNamingConventionJS
           function captureTheStackTrace1(err) {
             Error.captureStackTrace(err);
           }
@@ -145,10 +147,12 @@
             throw anError;
           }
 
+          //noinspection FunctionNamingConventionJS
           function captureTheStackTrace2(err) {
             captureTheStackTrace1(err);
           }
 
+          //noinspection FunctionNamingConventionJS
           function captureTheStackTrace3(err) {
             captureTheStackTrace2(err);
           }
@@ -166,7 +170,7 @@
           }
           catch (err2) {
             testUtil.log("err.stack: %s", err2.stack);
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(err2).to.have.property("stack").that.is.ok; // not supported in old IE
             expect(err2).to.have.property("stack").that.not.contains("createAnError");
             expect(err2).to.have.property("stack").that.not.contains("throwAnError");

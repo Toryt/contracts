@@ -25,6 +25,8 @@ define(["intern/lib/reporters/Pretty"], function(Pretty) { // jshint ignore:line
    * Intern reporter, based on <code>Pretty</code>, that does not report on successful tests, but only on error or fatal (!),
    * or test failures (×), but not on passed (✓) or skipped (~) tests.
    * We only overwrite the <code>runEnd</code> method.
+   *
+   * @constructor
    */
   function PrettyNoSuccess(config) {
     //noinspection JSCheckFunctionSignatures

@@ -33,6 +33,7 @@
 
   var conditionCase = function() {return "This simulates a condition";};
 
+  //noinspection FunctionNamingConventionJS
   function generateMultiLineAnonymousFunction() {
     return function() {
       var x = "This is a multi-line function";
@@ -96,8 +97,9 @@
       .that.contains(util.conciseConditionRepresentation("condition", subject.condition));
   }
 
+  //noinspection ParameterNamingConventionJS
   function expectProperties(exception, Type, contractFunction, condition, self, args) {
-    //noinspection BadExpressionStatementJS
+    //noinspection BadExpressionStatementJS,JSHint
     expect(exception).to.be.ok;
     expect(exception).to.be.instanceOf(Type);
     expect(exception).to.have.property("contractFunction").that.equals(contractFunction);
@@ -109,7 +111,7 @@
   function expectConstructorPost(result, contractFunction, condition, self, args) {
     common.expectConstructorPost(result, result.message);
     expectProperties(result, ConditionError, contractFunction, condition, self, args);
-    //noinspection BadExpressionStatementJS
+    //noinspection BadExpressionStatementJS,JSHint
     expect(result).to.be.extensible;
   }
 
@@ -124,11 +126,12 @@
     );
   }
 
+  //noinspection FunctionNamingConventionJS
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
-    var self = this;
+    var self = this; // jshint ignore:line
 
     describe("#getDetails()", function() {
       allSubjectGenerators.forEach(function(generator) {

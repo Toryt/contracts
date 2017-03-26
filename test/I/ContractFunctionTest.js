@@ -44,14 +44,16 @@
      Contract.generatePrototypeMethodsDescriptions tests the state postconditions only. */
 
   // describe("I", function() {
-    //noinspection FunctionTooLongJS
+  //noinspection FunctionTooLongJS,JSHint
     describe("I/ContractFunction", function() {
+
+      var fibonacci;
 
       function fibonacciImpl(n) {
         return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2);
       }
 
-      var fibonacci = new Contract({
+      fibonacci = new Contract({
         pre: [
           function(n) {return util.isInteger(n);},
           function(n) {return 0 <= n;}
@@ -74,6 +76,7 @@
       var wrongResult = -3;
 
       var fibonacciWrong = fibonacci.contract.implementation(function(n) {
+        //noinspection IfStatementWithTooManyBranchesJS
         if (n === 0) {
           return 0;
         }
@@ -188,7 +191,7 @@
           endsNominally = true;
         }
         catch (exception) {
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(exception).to.be.ok;
           var common = exception instanceof ConditionMetaError ? conditionMetaErrorCommon :
                        exception instanceof PreconditionViolation ? preconditionViolationCommon :
@@ -199,7 +202,7 @@
           expectException(exception);
           testUtil.showStack(exception);
         }
-        //noinspection BadExpressionStatementJS
+        //noinspection BadExpressionStatementJS,JSHint
         expect(endsNominally).not.to.be.ok;
       }
 
@@ -209,7 +212,7 @@
             expect(exception).to.be.an.instanceOf(PreconditionViolation);
             expect(exception.condition).to.equal(violatedCondition);
             if (!self) {
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(exception.self).not.to.be.ok;
             }
             else {
@@ -220,14 +223,22 @@
         });
       }
 
+      var intentionalError = new Error("This precondition intentionally fails.");
+
+      var contractWithAFailingPre = new Contract(
+        {
+          pre: [function() {throw intentionalError;}]
+        }
+      );
+
       function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
         var param = "a parameter";
         callAndExpectException(self, functionWithAMetaError, param, function(exception) {
           expect(exception).to.be.an.instanceOf(ConditionMetaError);
           expect(exception.condition).to.equal(conditionWithAMetaError);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           if (!self) {
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(exception.self).not.to.be.ok;
           }
           else {
@@ -274,6 +285,7 @@
           return n <= 1 ? n : this.fibonacci(n - 1) + this.fibonacci(n - 2);
         }),
         fibonacciWrong: fibonacci.contract.implementation(function(n) {
+          //noinspection IfStatementWithTooManyBranchesJS
           if (n === 0) {
             return 0;
           }
@@ -293,33 +305,34 @@
         fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
       };
 
-      var intentionalError = new Error("This precondition intentionally fails.");
-
-      var contractWithAFailingPre = new Contract({
-        pre: [function() {throw intentionalError;}]
-      });
-
       it("doesn't interfere when the implementation is correct", function() {
-        var ignore = fibonacci(5); // any exception will fail the test
+        // any exception will fail the test
+        var ignore = fibonacci(5); // jshint ignore:line
       });
       it("doesn't interfere when the implementation is correct too", function() {
-        var ignore = factorial(5); // any exception will fail the test
+        // any exception will fail the test
+        var ignore = factorial(5); // jshint ignore:line
       });
       it("doesn't interfere when the implementation is correct three", function() {
-        //noinspection MagicNumberJS
-        var ignore = defensiveIntegerSum(100); // any exception will fail the test
+        // any exception will fail the test
+        // noinspection MagicNumberJS
+        var ignore = defensiveIntegerSum(100); // jshint ignore:line
       });
       it("can deal with alternative implementations", function() {
-        var ignore = factorialIterative(5); // any exception will fail the test
+        // any exception will fail the test
+        var ignore = factorialIterative(5); // jshint ignore:line
       });
       it("works with a method that is correct", function() {
-        var ignore = self.fibonacci(5); // any exception will fail the test
+        // any exception will fail the test
+        var ignore = self.fibonacci(5); // jshint ignore:line
       });
       it("works with a method that is correct too", function() {
-        var ignore = self.factorial(5); // any exception will fail the test
+        // any exception will fail the test
+        var ignore = self.factorial(5); // jshint ignore:line
       });
       it("works with a method that is correct three", function() {
-        var ignore = self.defensiveIntegerSum(5); // any exception will fail the test
+        // any exception will fail the test
+        var ignore = self.defensiveIntegerSum(5); // jshint ignore:line
       });
       argumentsOfWrongType.forEach(function(wrongArg) {
         failsOnPreconditionViolation(undefined, fibonacci, wrongArg, fibonacci.contract.pre[0]);
@@ -376,6 +389,7 @@
         );
       });
       it("fails with a meta-error when an exception condition is kaput", function() {
+        //noinspection LocalVariableNamingConventionJS
         var contractWithAFailingExceptionCondition = new Contract({
           exception: [function() {throw intentionalError;}]
         });
@@ -389,6 +403,7 @@
         );
       });
       it("fails with a meta-error when an exception condition is kaput when it is a method", function() {
+        //noinspection LocalVariableNamingConventionJS
         var contractWithAFailingExceptionCondition = new Contract({
           exception: [function() {throw intentionalError;}]
         });

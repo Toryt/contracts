@@ -33,6 +33,8 @@
   /**
    * The separation between AbstractContract and Contract is necessary to break a dependency
    * cycle with ConditionError.
+   *
+   * @constructor
    */
   function Contract(kwargs) {
     util.pre(function() {return !!kwargs;});
@@ -52,12 +54,14 @@
     var location = util.firstLocationOutsideLibrary();
 
     function contractFunction() {
+      // cfThis: the this of the contract function call
+      var cfThis = this; // jshint ignore:line
       var extendedArgs = Array.prototype.slice.call(arguments);
-      PreconditionViolation.prototype.verifyAll(contractFunction, contract.pre, this, arguments);
+      PreconditionViolation.prototype.verifyAll(contractFunction, contract.pre, cfThis, arguments);
       var result;
       var exception;
       try {
-        result = implFunction.apply(this, arguments);
+        result = implFunction.apply(cfThis, arguments);
       }
       catch (exc) {
         if (exc instanceof ConditionError) { // necessary to report only the deepest failure clearly
@@ -66,12 +70,12 @@
         exception = exc;
       }
       extendedArgs.push(exception || result);
-      extendedArgs.push(contractFunction.bind(this));
+      extendedArgs.push(contractFunction.bind(cfThis));
       if (exception) {
-        ExceptionConditionViolation.prototype.verifyAll(contractFunction, contract.exception, this, extendedArgs);
+        ExceptionConditionViolation.prototype.verifyAll(contractFunction, contract.exception, cfThis, extendedArgs);
         throw exception;
       }
-      PostconditionViolation.prototype.verifyAll(contractFunction, contract.post, this, extendedArgs);
+      PostconditionViolation.prototype.verifyAll(contractFunction, contract.post, cfThis, extendedArgs);
       return result;
     }
 

@@ -73,7 +73,9 @@
           );
         });
         it("should return all properties in the order they were defined in a JSON object", function() {
+          //noinspection NodeModulesDependencies
           var json = JSON.stringify(orderOfKeysCommon.objectLiteral);
+          //noinspection NodeModulesDependencies
           var keys = Object.keys(JSON.parse(json));
           expect(keys.length).to.equal(3); // undefined and function not stringified
           var keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName);
@@ -90,6 +92,7 @@
         var propName = "aProperty";
 
         function defineAProp(obj) {
+          //noinspection MagicNumberJS
           Object.defineProperty(
             obj,
             propName,
@@ -102,6 +105,7 @@
           );
         }
 
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
         [
           undefined,
           null,
@@ -123,27 +127,26 @@
           new String("abc"),
           new Boolean(false)
         ].forEach(function(obj) {
-          it("sets a property on " + obj + " if it is non-primitive, and fails to do so if it is primitive", function() {
-            var type = typeof obj;
-            if (obj === null || type === "undefined" || type === "number" || type === "boolean" || type === "string") {
-              expect(function() {defineAProp(obj);}).to.throw(TypeError);
+          it("sets a property on " + obj + " if it is non-primitive, and fails to do so if it is primitive",
+            function() { // jshint ignore:line
+              var type = typeof obj;
+              if (obj === null || type === "undefined" || type === "number" || type === "boolean" || type === "string") {
+                expect(function() {defineAProp(obj);}).to.throw(TypeError);
+              }
+              else {
+                defineAProp(obj);
+                expect(obj).to.have.ownProperty(propName);
+                delete obj[propName]; // cleanup
+              }
             }
-            else {
-              defineAProp(obj);
-              expect(obj).to.have.ownProperty(propName);
-              delete obj[propName]; // cleanup
-            }
-          });
+          );
         });
       });
 
       describe("Object.getOwnPropertyDescriptor()", function() {
         var propName = "aProperty";
 
-        function defineAProp(obj) {
-          Object.getOwnPropertyDescriptor(obj, propName);
-        }
-
+        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
         [
           undefined,
           null,
@@ -167,13 +170,12 @@
         ].forEach(function(obj) {
           it("gets a property from " +
              obj + " if it is not null or undefined, and fails to do so if it is primitive", function() {
-            var type = typeof obj;
             if (obj === null || obj === undefined) {
               expect(function() {Object.getOwnPropertyDescriptor(obj, propName);}).to.throw(TypeError);
             }
             else {
               var result = Object.getOwnPropertyDescriptor(obj, propName);
-              expect(result).not.to.be.ok;
+              expect(result).not.to.be.ok; // jshint ignore:line
             }
           });
         });

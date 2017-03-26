@@ -44,8 +44,8 @@
     function() {return null;}
   ].concat(someConditions);
 
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-  var thingsThatAreNotAFunctionNorAContract = [
+  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint
+  var notAFunctionNorAContract = [
     undefined,
     null,
     "",
@@ -74,7 +74,7 @@
 
   var location = util.eol + "    at /";
 
-  function expectInvariants(subject) {
+  function expectInvariants(/*AbstractContract*/ subject) {
     expect(subject).to.be.an.instanceOf(AbstractContract);
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "pre", "_pre");
     testUtil.expectToBeArrayOfFunctions(subject.pre);
@@ -105,7 +105,7 @@
       else {
         expect(result[privatePropName]).to.eql(array);
         expect(result[privatePropName]).to.not.equal(array);  // it must be copy, don't share the array
-        //noinspection BadExpressionStatementJS
+        //noinspection BadExpressionStatementJS,JSHint
         expect(result[privatePropName]).to.be.frozen;
         expect(result[propName]).to.eql(array);
         expect(result[propName]).to.not.equal(result[privatePropName]);  // it must be copy, don't share the array
@@ -126,7 +126,7 @@
     });
   }
 
-  function createCandidateContractFunction(dontFreezeProperty,
+  function createCandidateContractFunction(doNotFreezeProperty, // jshint ignore:line
                                            otherPropertyName,
                                            otherPropertyValue) {
     function candidate() {}
@@ -140,25 +140,25 @@
     var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
     var bind = otherPropertyName === "bind" ? otherPropertyValue : AbstractContract.bindContractFunction;
 
-    if (dontFreezeProperty === "contract") {
+    if (doNotFreezeProperty === "contract") {
       candidate.contract = contract;
     }
     else {
       util.setAndFreezeProperty(candidate, "contract", contract);
     }
-    if (dontFreezeProperty === "implementation") {
+    if (doNotFreezeProperty === "implementation") {
       candidate.implementation = implementation;
     }
     else {
       util.setAndFreezeProperty(candidate, "implementation", implementation);
     }
-    if (dontFreezeProperty === "location") {
+    if (doNotFreezeProperty === "location") {
       candidate.location = location;
     }
     else {
       util.setAndFreezeProperty(candidate, "location", location);
     }
-    if (dontFreezeProperty === "bind") {
+    if (doNotFreezeProperty === "bind") {
       candidate.bind = bind;
     }
     else {
@@ -171,23 +171,24 @@
     return candidate;
   }
 
+  //noinspection JSUnusedLocalSymbols,FunctionNamingConventionJS
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
-    var self = this;
+    var self = this; // jshint ignore:line
 
     describe("#isImplementedBy()", function() {
       it("says yes if the argument is a contract function for the contract", function() {
         var subject = oneSubjectGenerator();
         var f = createCandidateContractFunction(null, "contract", subject);
-        //noinspection BadExpressionStatementJS
+        //noinspection BadExpressionStatementJS,JSHint
         expect(subject.isImplementedBy(f)).to.be.ok;
         self.expectInvariants(subject);
       });
-      thingsThatAreNotAFunctionNorAContract
+      notAFunctionNorAContract
         .concat(["function() {}"])
         .forEach(function(thing) {
           it("says no if the argument is not a contract function but " + thing, function() {
             var subject = oneSubjectGenerator();
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(subject.isImplementedBy(thing)).not.to.be.ok;
             self.expectInvariants(subject);
           });
@@ -196,7 +197,7 @@
         var subject = oneSubjectGenerator();
         var otherContract = oneSubjectGenerator();
         var f = createCandidateContractFunction(null, "contract", otherContract);
-        //noinspection BadExpressionStatementJS
+        //noinspection BadExpressionStatementJS,JSHint
         expect(subject.isImplementedBy(f)).not.to.be.ok;
         self.expectInvariants(subject);
       });
@@ -208,7 +209,7 @@
     preCases: preCases,
     postCases: postCases,
     exceptionCases: exceptionCases,
-    thingsThatAreNotAFunctionNorAContract: thingsThatAreNotAFunctionNorAContract,
+    thingsThatAreNotAFunctionNorAContract: notAFunctionNorAContract,
     constructorPreCases: constructorPreCases,
     constructorPostCases: constructorPostCases,
     constructorExceptionCases: constructorExceptionCases,

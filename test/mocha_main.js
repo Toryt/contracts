@@ -15,7 +15,7 @@
  */
 
 /* This file sets up Mocha browser testing. It is used in mocha.html */
-//noinspection JSFileReferences
+//noinspection JSFileReferences,JSUnusedGlobalSymbols
 require.config({
   baseUrl: "../",
   packages: [

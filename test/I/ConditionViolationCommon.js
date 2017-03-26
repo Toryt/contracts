@@ -55,21 +55,24 @@
     expect(subject).to.have.property("verifyAll").that.is.a("function");
   }
 
+  //noinspection ParameterNamingConventionJS
   function expectProperties(exception, Type, contractFunction, condition, self, args) {
     common.expectProperties.apply(undefined, arguments);
-    //noinspection BadExpressionStatementJS
+    //noinspection BadExpressionStatementJS,JSHint
     expect(exception).to.be.frozen;
   }
 
+  //noinspection JSUnusedLocalSymbols
   function doctorArgs(args, boundContractFunction) {
     return args;
   }
 
+  //noinspection FunctionNamingConventionJS
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
-    var that = this;
+    var that = this; // jshint ignore:line
 
     describe("#verify()", function() {
       function expectPost(subject, contractFunction, condition, self, args, doctoredArgs, appliedSelf, appliedArgs, exception) {
@@ -87,9 +90,9 @@
           expect(appliedSelf).to.equal(self);
         });
         it("should have called the condition with the given arguments", function() {
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(appliedArgs).to.be.ok;
-          //noinspection JSAnnotator,BadExpressionStatementJS
+          //noinspection JSAnnotator,BadExpressionStatementJS,JSHint
           expect(appliedArgs).to.be.arguments;
           // doctoredArgs might be arguments, or Array
           expect(Array.prototype.slice.call(doctoredArgs)).to.eql(Array.prototype.slice.call(appliedArgs));
@@ -111,7 +114,7 @@
         }
         else {
           it("should not throw an exception, because the condition evaluated to true nominally", function() {
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(exception).to.not.be.ok;
           });
         }
@@ -179,7 +182,7 @@
       function expectPost(subject, contractFunction, conditions, self, args, doctoredArgs, exception) {
         if (conditions.length <= 0) {
           it("doesn't throw an exception if there are no conditions", function() {
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(exception).not.to.be.ok;
           });
           return;
@@ -221,7 +224,7 @@
         }
         else {
           it("ends nominally if all conditions evaluate nominally to true", function() {
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(exception).not.to.be.ok;
           });
         }
@@ -229,12 +232,12 @@
           for (var j = 0; j <= firstFailureIndex; j++) {
             expect(selfAndArgs[j].self).to.equal(self);
             var appliedArgs = selfAndArgs[j].args;
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(appliedArgs).to.be.ok;
-            //noinspection JSAnnotator,BadExpressionStatementJS
+            //noinspection JSAnnotator,BadExpressionStatementJS,JSHint
             expect(appliedArgs).to.be.arguments;
             if (!args) {
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(appliedArgs).to.be.empty;
             }
             else {
@@ -245,9 +248,9 @@
         });
         it("does not evaluate conditions after the first failure", function() {
           for (var j = firstFailureIndex + 1; j < conditions.length; j++) {
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(selfAndArgs[j].self).not.to.be.ok;
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(selfAndArgs[j].args).not.to.be.ok;
           }
         });

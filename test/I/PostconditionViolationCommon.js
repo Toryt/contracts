@@ -47,6 +47,7 @@
     expect(result).to.contain(subject.result);
   }
 
+  //noinspection ParameterNamingConventionJS
   function expectProperties(exception, Type, contractFunction, condition, self, args, result) {
     common.expectProperties.apply(undefined, arguments);
     expect(exception).to.have.property("result").that.equals(result);

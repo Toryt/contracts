@@ -36,14 +36,15 @@
     expect(subject).to.have.property("implementation").that.is.a("function");
   }
 
+  //noinspection FunctionNamingConventionJS
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
-    var self = this;
+    var self = this; // jshint ignore:line
 
     //noinspection FunctionTooLongJS
     describe("#implementation", function() {
       function expectPost(contract, implFunction , result) {
-        //noinspection BadExpressionStatementJS
+        //noinspection BadExpressionStatementJS,JSHint
         expect(contract.isImplementedBy(result)).to.be.ok;
         expect(result).to.have.property("contract").that.equals(contract);
         expect(result).to.have.property("implementation").that.equals(implFunction);
@@ -61,6 +62,7 @@
         var subject = oneSubjectGenerator();
         var impl = function() {};
         var result = subject.implementation(impl);
+        //noinspection LocalVariableNamingConventionJS
         var result2 = subject.implementation(impl);
         expectPost(subject, impl, result2);
         expect(result2).to.not.equal(result);
@@ -69,8 +71,10 @@
       it("returns a different Contract function with a different implementation", function() {
         var subject = oneSubjectGenerator();
         var impl = function() {};
+        //noinspection LocalVariableNamingConventionJS
         var impl2 = function() {};
         var result = subject.implementation(impl);
+        //noinspection LocalVariableNamingConventionJS
         var result2 = subject.implementation(impl2);
         expectPost(subject, impl2, result2);
         expect(result2).to.not.equal(result);

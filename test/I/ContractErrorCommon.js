@@ -43,7 +43,7 @@
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(ContractError);
     testUtil.expectOwnFrozenProperty(subject, "_stackSource");
-    //noinspection BadExpressionStatementJS
+    //noinspection BadExpressionStatementJS,JSHint
     expect(subject).to.have.property("_stackSource").that.is.frozen;
     expect(subject).to.have.property("_stackSource").that.is.instanceOf(Error);
     expect(subject).to.have.deep.property("_stackSource.name").that.equals(ContractError.stackSourceName);
@@ -59,12 +59,13 @@
   }
 
   function expectConstructorPost(result, message) {
-    //noinspection BadExpressionStatementJS
+    //noinspection BadExpressionStatementJS,JSHint
     expect(result).to.be.extensible;
     expect(result).to.have.property("name").that.equals(result.constructor.name);
     expect(result).to.have.property("message").that.equals(message);
   }
 
+  //noinspection FunctionNamingConventionJS
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
     // NOP: no methods here

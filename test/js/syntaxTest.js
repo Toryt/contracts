@@ -79,9 +79,11 @@
           expect(count).to.equal(5);
         });
         it("should return all properties in the order they were defined in a JSON object", function() {
+          //noinspection NodeModulesDependencies
           var json = JSON.stringify(orderOfKeysCommon.objectLiteral);
           var count = 0;
           var previous = -1;
+          //noinspection NodeModulesDependencies
           for (var key in JSON.parse(json)) { // jshint ignore:line
             count++;
             var current = orderOfKeysCommon.nFromRandomName(key);
@@ -176,7 +178,7 @@
         it("is undefined", function() {
           var array = [1, "2", {three: 3}];
           var result = array[array.length];
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(result).to.be.undefined;
         });
       });

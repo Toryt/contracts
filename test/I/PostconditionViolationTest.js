@@ -30,7 +30,7 @@
 }(function(describe, it, expect, testUtil, util, common, PostconditionViolation) {
   "use strict";
 
-  var argsCases = common.argsCases.filter(function(a) {return util.typeOf(a) === "array"});
+  var argsCases = common.argsCases.filter(function(a) {return util.typeOf(a) === "array";});
 
   // describe("I", function() {
     describe("I/PostconditionViolation", function() {

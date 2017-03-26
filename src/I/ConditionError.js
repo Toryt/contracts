@@ -108,6 +108,8 @@
    *     and by stack code references, that do not contain references to the inner workings of the Toryt
    *     Contracts library.</li>
    * </ul>
+   *
+   * @constructor
    */
   function ConditionError(contractFunction, condition, self, args) {
     util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});

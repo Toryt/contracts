@@ -43,6 +43,7 @@
   }
 
 
+  //noinspection ParameterNamingConventionJS
   function expectProperties(exception, Type, contractFunction, condition, self, args, thrownException) {
     common.expectProperties.apply(undefined, arguments);
     expect(exception).to.have.property("exception").that.equals(thrownException);

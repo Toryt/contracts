@@ -35,7 +35,7 @@
     : util.browserModuleLocation(typeof module !== "undefined" ? module : amdModule); // in browser, AMD, prefixed with location
 
   var contractLibTestPath = util.pathUp(util.pathUp(fileName));
-  var getGlobal = new Function("return this;");
+  var getGlobal = new Function("return this;"); // jshint ignore:line
 
   function generateMutableStuff() {
     //noinspection JSPrimitiveTypeWrapperUsage,JSHint
@@ -75,26 +75,27 @@
         expect(util).to.have.property(propertyName).that.is.instanceof(RegExp);
       });
       Object.keys(stacks).forEach(function(env) {
-        var lines = stacks[env]
+        stacks[env]
           .split(util.eol)
           .filter(function(l) {return l;}) // some environments add an empty line at the end of the stack
           .forEach(function(l) {
-          if (0 <= environments.indexOf(env)) {
-            it("matches the " + env + " stack line \"" + l + "\"", function() {
-              expect(expect(l).to.match(util[propertyName]));
-            });
-          }
-          else {
-            it("does not match the " + env + " stack line \"" + l + "\"", function() {
-              expect(expect(l).to.not.match(util[propertyName]));
-            });
-          }
-        });
+            if (0 <= environments.indexOf(env)) {
+              it("matches the " + env + " stack line \"" + l + "\"", function() {
+                expect(expect(l).to.match(util[propertyName]));
+              });
+            }
+            else {
+              it("does not match the " + env + " stack line \"" + l + "\"", function() {
+                expect(expect(l).to.not.match(util[propertyName]));
+              });
+            }
+          });
       });
     });
   }
 
   var atLocationEnvironments = ["node", "chrome"];
+  //noinspection LocalVariableNamingConventionJS
   var ATLocationEnvironments = ["firefox", "safari"];
   (0 <= atLocationEnvironments.indexOf(testUtil.environment) ? atLocationEnvironments : ATLocationEnvironments)
     .push("current environment");
@@ -124,7 +125,7 @@
         it("is a RegExp", function() {
           expect(util).to.have.property("stackLocation").that.is.instanceof(RegExp);
         });
-        var lines = stacks["current environment"]
+        stacks["current environment"]
           .split(util.eol)
           .filter(function(l) {return l;}) // some environments add an empty line at the end of the stack
           .forEach(function(l) {
@@ -198,7 +199,7 @@
         ].forEach(function(nr) {
           it("should return false for " + nr, function() {
             var result = util.isInteger(nr);
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(result).to.be.false;
           });
         });
@@ -218,7 +219,7 @@
 
       var falsySelf = {truth: undefined};
 
-      function selfCondition() {return this.truth;}
+      function selfCondition() {return this.truth;} // jshint ignore:line
 
       describe("#pre()", function() {
         it("ends nominally with a condition that returns true without self", function() {
@@ -262,7 +263,7 @@
           var propertyName = "a new property";
           util.setAndFreezeProperty(subject, propertyName);
           testUtil.expectOwnFrozenProperty(subject, propertyName);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(subject[propertyName]).to.be.undefined;
         });
       });
@@ -336,7 +337,7 @@
           if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
             it ("reports true if the property is an own property, " +
                 "and it is enumerable, not configurable and not writable", function() {
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(result).to.be.true;
             });
           }
@@ -345,13 +346,13 @@
                " enumerable === " + values[1] +
                " configurable === " + values[0] +
                " writable === " + values[2], function() {
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(result).not.to.be.ok;
             });
           }
           it("reports false if the property does not exist", function() {
             var result = util.isFrozenOwnProperty(subject, "some other, non-existing property name");
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(result).not.to.be.ok;
           });
           var specialized = {};
@@ -362,7 +363,7 @@
              " enumerable === " + values[1] +
              " configurable === " + values[0] +
              " writable === " + values[2], function() {
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(specializedResult).not.to.be.ok;
           });
         });
@@ -371,7 +372,7 @@
           // cannot set a property on primitives
           it("reports false if the first parameter is a primitive (" + util.typeOf(notAnObject) + ")", function() {
             var result = util.isFrozenOwnProperty(notAnObject, propName);
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(result).not.to.be.ok;
           });
         });
@@ -389,7 +390,6 @@
             }
           );
           var result = util.isFrozenOwnProperty(subject, propName);
-          var v3type = util.typeOf(values[3]);
           if (!values[0]
               && values[1]
               && util.typeOf(values[2]) === "function"
@@ -397,7 +397,7 @@
               && subject.hasOwnProperty(propName)) {
             it("reports true if the property is an own property, " +
                "and it is enumerable, and not configurable, has a getter, but not a setter", function() {
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(result).to.be.true;
             });
           }
@@ -407,7 +407,7 @@
                " configurable === " + values[0] +
                " get === " + values[2] +
                " set === " + values[3], function() {
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(result).not.to.be.ok;
             });
           }
@@ -417,6 +417,7 @@
       describe("#nrOfLines", function() {
         var regExp = new RegExp(util.eol, "gi");
 
+        //noinspection NodeModulesDependencies
         stuff
           .map(function(s) {return s.subject;})
           .concat([
@@ -444,13 +445,13 @@
           .forEach(function(value) {
             it("reports false on a location that is not a string: " + value, function() {
               var result = util.isALocationOutsideLibrary(value);
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(result).not.to.be.ok;
             });
           });
         it("reports false on an empty string", function() {
           var result = util.isALocationOutsideLibrary("");
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(result).not.to.be.ok;
         });
         it("reports false on a string that is 2 lines long, where both are stack lines", function() {
@@ -460,11 +461,11 @@
             .splice(1, 2)
             .join(util.eol);
           var result = util.isALocationOutsideLibrary(stack);
-          //noinspection BadExpressionStatementJS
+          //noinspection BadExpressionStatementJS,JSHint
           expect(result).not.to.be.ok;
           stack.split(util.eol).forEach(function(l) {
             var result = util.isALocationOutsideLibrary(l);
-            //noinspection BadExpressionStatementJS
+            //noinspection BadExpressionStatementJS,JSHint
             expect(result).to.be.ok;
           });
         });
@@ -477,7 +478,7 @@
             it("reports false on the string \"" + l + "\" that is a stack line, but doesn't contain a slash", function() {
               // This doesn't seem to occur in browsers.
               var result = util.isALocationOutsideLibrary(l);
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(result).not.to.be.ok;
             });
           });
@@ -489,7 +490,7 @@
           .forEach(function(l) {
             it("reports true on the valid location outside the library \"" + l + "\"", function() {
               var result = util.isALocationOutsideLibrary(l);
-              //noinspection BadExpressionStatementJS
+              //noinspection BadExpressionStatementJS,JSHint
               expect(result).to.be.ok;
             });
           });
@@ -517,10 +518,12 @@
           }
         }
 
+        //noinspection FunctionNamingConventionJS,JSHint
         function defineErrorRecursively2(togo) {
           return defineErrorRecursively3(togo);
         }
 
+        //noinspection FunctionNamingConventionJS,JSHint
         function defineErrorRecursively3(togo) {
           return defineErrorRecursively(togo);
         }
@@ -612,6 +615,7 @@
         displayNamedStuff
           .forEach(function(ms) {ms.subject.displayName = alternativeName;});
 
+        //noinspection FunctionNamingConventionJS
         function generateMultiLineAnonymousFunction() {
           return function() {
             var x = "This is a multi-line function";

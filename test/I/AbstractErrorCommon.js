@@ -30,6 +30,7 @@
 }(function(describe, it, expect, testUtil, util, common, AbstractContract) {
   "use strict";
 
+  //noinspection LocalVariableNamingConventionJS
   var AbstractError = AbstractContract.AbstractError;
 
   function expectInvariants(subject) {
@@ -50,6 +51,7 @@
     expect(result).to.have.property("contract").that.equals(contract);
   }
 
+  //noinspection FunctionNamingConventionJS
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
 
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
