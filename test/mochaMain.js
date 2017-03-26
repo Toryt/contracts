@@ -31,7 +31,7 @@ require.config({
     "mocha": {
       exports: "mocha",
       init: function() {
-        this.mocha.setup("bdd");
+        this.mocha.setup("bdd"); // jshint ignore:line
         this.mocha.checkLeaks();
         this.mocha.globals([]);
         return this.mocha;
@@ -51,7 +51,7 @@ require.config({
 });
 
 require(["mocha"], function(mocha) {
-  require(["test/js/mochaTests", "test/_private/mochaTests", "test/I/mochaTests"], function() {
+  require(["test/js/mochaTests", "test/_private/mochaTests", "test/I/mochaTests"], function() { // jshint ignore:line
     mocha.run();
   });
 });
