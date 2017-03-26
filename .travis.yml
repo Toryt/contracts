@@ -6,3 +6,4 @@ node_js:
   - "linux"
 # Node js is not supported on macOS on Travis
 # Windows is not supported at all. Bummer.
+script: node_modules/.bin/intern-runner config=tests/intern
