@@ -51,6 +51,10 @@ define({
     }
 	},
 
+  reporters: [
+    "Pretty"
+  ],
+
 	// Unit test suite(s) to run in each browser
   suites: ["test/js/mochaTests", "test/_private/mochaTests", "test/I/mochaTests"],
 
