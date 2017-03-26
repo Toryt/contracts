@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["chai", "../_testUtil"];
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_testUtil"];
 
   if (typeof define === 'function' && define.amd) {
     define(dependencies, factory);
@@ -25,10 +25,8 @@
   else if (typeof exports === 'object') {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(chai, testUtil) {
+}(function(describe, it, expect, testUtil) {
   "use strict";
-
-  var expect = chai.expect;
 
   var message = "A message";
   var env = testUtil.environment;
