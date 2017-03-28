@@ -9,6 +9,9 @@ Tested
 * with Intern
   * on Mac, with
     * node v6.9.5
+    * Chrome Version 57.0.2987.110 (64-bit)
+    * Firefox 52.0.1 (64-bit)
+    * Safari Version 10.1 (12603.1.30.0.34)
   * on Linux, with
     * node v6.10.1
     * node v7.7.4
@@ -28,6 +31,8 @@ Versions
              Intern is preferred over Mocha. This version only changes private code,
              test code, and build setup.
   * I/2.3  : Cleanup, renaming, administration, license, fixing warnings
+  * I/2.4  : Now also tests with Intern on Mac on Chrome, Safari, 
+             Firefox (3 failures, waiting for april version 53)
 
 
 
