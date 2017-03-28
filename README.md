@@ -5,7 +5,7 @@ Tested
     * node v6.9.5
     * Chrome Version 57.0.2987.110 (64-bit)
     * Firefox 52.0.1 (64-bit)
-    * Safari Version 10.0.3 (12602.4.8)
+    * Safari Version 10.1 (12603.1.30.0.34)
 * with Intern
   * on Mac, with
     * node v6.9.5
