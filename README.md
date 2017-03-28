@@ -1,4 +1,8 @@
+Test-by-contract. Pre- and postcondition verification for Javascript.
+
+
 Tested
+------
 
 * with Mocha,
   * on Mac, with
