@@ -25,19 +25,30 @@ define({ // jshint ignore:line
 	//
 	// Note that the `build` capability will be filled in with the current commit ID or build tag from the CI
 	// environment automatically
+
+  // the command is:
+  // node_modules/.bin/intern-runner config=test/intern
+
 	capabilities: {
-		"browserstack.selenium_version": "2.45.0"
+    project: "Toryt contracts",
+    build: "development",
+		//"browserstack.selenium_version": "3.3.1",
+    "browserstack.video": false,
+    "browserstack.ie.noFlash": true
 	},
 
 	// Browsers to run integration testing against. Options that will be permutated are browserName, version, platform,
 	// and platformVersion; any other capabilities options specified for an environment will be copied as-is. Note that
 	// browser and platform names, and version number formats, may differ between cloud testing systems.
 	environments: [
-		{ browserName: "internet explorer", platform: "WINDOWS" },
-		{ browserName: "firefox", platform: [ "WINDOWS", "MAC" ] },
-		{ browserName: "chrome", platform: [ "WINDOWS", "MAC" ] },
-		{ browserName: "safari", platform: "MAC" }
-	],
+    //{browserName: "firefox", version: "53 Beta", platform: "WIN8"} works, but we get the "wait" button, which we can't click …
+    {browserName: "chrome", version: "57..latest", platform: "WIN8"}
+    //{browserName: "chrome", version: "57..latest", platform: ["WINDOWS", "WIN8", "MAC"]},
+    //{browserName: "firefox", version: "52..latest", platform: ["WINDOWS", "WIN8", "MAC"]},
+    //{browserName: "safari", version: "10..latest", platform: ["MAC"]},
+    //{browserName: "edge", version: "14..latest", platform: ["WIN10"]},
+    //{browserName: "internet explorer", version: "11..latest", platform: ["WINDOWS", "WIN8"]}
+  ],
 
 	// Maximum number of simultaneous integration tests that should be executed on the remote WebDriver service
 	maxConcurrency: 2,
