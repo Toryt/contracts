@@ -118,7 +118,7 @@
     /**
      * Pattern that matches stack lines on Safari or Firefox, and not on node and Chrome.
      */
-    "@StackLocation": /^(.*@)?https?:\/\/[^\/]*\/([^:\/]*\/)*[^:\/]*.js:\d+:\d+$/,
+    "@StackLocation": /^(.*@)?https?:\/\/[^\/]*\/([^:\/]*\/)*[^:\/]*.js:\d+:\d+|\[native code]$/,
 
     /**
      * Pattern that matches stack lines on the current platform.
