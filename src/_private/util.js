@@ -37,6 +37,10 @@
 
   function browserModuleLocation(amdModule) {
     // there seems to be no sensible way to test what the result actually is
+    if (amdModule.uri.charAt(0) === "/") {
+      // server relative path
+      return window.location.origin + amdModule.uri;
+    }
     var location = window.location.href;
     location = location.split(dirSeparator);
     if (0 <= location[location.length - 1].indexOf(".")) { // last entry is a file

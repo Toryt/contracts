@@ -734,18 +734,22 @@
           {uri: "./peer.js", expectedEnd: "peer.js"},
           {uri: "./dir/dir/deep.js", expectedEnd: "/dir/dir/deep.js"},
           {uri: "../../down/down/other.js", expectedEnd: "other.js"},
-          {uri: "./../.././down/down/../../down/./complex.js", expectedEnd: "/down/complex.js"}
+          {uri: "./../.././down/down/../../down/./complex.js", expectedEnd: "/down/complex.js"},
+          {uri: "/dir/dir/deep.js", expectedEnd: "/dir/dir/deep.js"}
         ].forEach(function(testCase) {
           it("returns a sensible result with AMD module URI \"" + testCase.uri + "\"", function() {
+            var origin = "http://localhost:63342";
             if (isNode) {
-              global.window = {location: {href: "http://localhost:63342/contracts/test/mocha.html"}};
+              global.window = {location: {href: origin + "/contracts/test/mocha.html", origin: origin}};
             }
             var amdModule = {uri: testCase.uri};
             var result = util.browserModuleLocation(amdModule);
             expect(result).to.be.a("string");
             expect(result).to.match(new RegExp(testCase.expectedEnd + "$"));
             expect(result).to.match(/^https?:\/\/[^.]+(:\d+)?\//);
+            expect(result).to.match(new RegExp("^" + origin));
             expect(result).not.to.match(/\/\.{1,2}\//);
+            expect(result).to.satisfy(function(r) {return r.match(/\/{2,}/g).length <= 1;});
             if (isNode) {
               delete global.window;
             }
