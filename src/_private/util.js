@@ -113,7 +113,7 @@
     /**
      * Pattern that matches stack lines on node and Chrome, and not on Safari or Firefox.
      */
-    atStackLocation: /^    at (.*)(:\d+:\d+\)?| \(native\))$/,
+    atStackLocation: /^ {4}at (.*)(:\d+:\d+\)?| \(native\))$/,
 
     /**
      * Pattern that matches stack lines on Safari or Firefox, and not on node and Chrome.
