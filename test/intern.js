@@ -27,7 +27,7 @@ define({ // jshint ignore:line
 	// environment automatically
 
   // the command is:
-  // node_modules/.bin/intern-runner config=test/intern
+  // > node_modules/.bin/intern-runner config=test/intern > intern-output.txt 2>&1
 
 	capabilities: {
     project: "Toryt contracts",
@@ -78,10 +78,10 @@ define({ // jshint ignore:line
     }
 	},
 
-  reporters: [
-    {id: "test/_util/intern/PrettyNoSuccess", showProgress: false}
-  ],
-
+  //reporters: [
+  //  {id: "test/_util/intern/PrettyNoSuccess", showProgress: false}
+  //],
+  //
 	// Unit test suite(s) to run in each browser
   suites: ["test/suite"],
 
