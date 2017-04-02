@@ -29,6 +29,8 @@ define({ // jshint ignore:line
   // the command is:
   // > node_modules/.bin/intern-runner config=test/intern > intern-output.txt 2>&1
 
+  // TODO on the Firefox "script too slow" issue: https://github.com/theintern/intern/issues/477
+
 	capabilities: {
     project: "Toryt contracts",
     build: "development",
@@ -42,10 +44,49 @@ define({ // jshint ignore:line
 	// and platformVersion; any other capabilities options specified for an environment will be copied as-is. Note that
 	// browser and platform names, and version number formats, may differ between cloud testing systems.
 	environments: [
-    //{browserName: "firefox", version: "53 Beta", platform: "WIN8"} works, but we get the "wait" button, which we can't click …
-    {browserName: "chrome", version: "57..latest", platform: "WIN8"}
-    //{browserName: "chrome", version: "57..latest", platform: ["WINDOWS", "WIN8", "MAC"]},
-    //{browserName: "firefox", version: "52..latest", platform: ["WINDOWS", "WIN8", "MAC"]},
+    // {browserName: "firefox", version: "53 Beta", os: "WINDOWS", os_version: 10}, // doesn't work; I still get FF 52
+    //{browserName: "chrome", version: "57..latest", platform: ["WINDOWS", "WIN8"]} // OK
+    //{browserName: "firefox", version: "52", os: "WINDOWS", os_version: 10}, // "..latest" doesn't work -- browserstack thinks latest is 28
+    /* MUDO Fails
+     Timeout (Session timed out because the browser was idle for 90 seconds)
+     */
+
+    //{browserName: "edge", version: "14..latest", os: "WINDOWS", os_version: 10},
+    /* MUDO
+    Fails:
+
+     Error: Determined from an Error stack line that the current platform is not supported. at http://localhost:9000/src/_private/util.js:510:13
+     at Anonymous function  <__intern/lib/executors/PreExecutor.js:357:6>
+     at dispatcher  <__intern/browser_modules/dojo/aspect.js:66:21>[0m
+
+     Yet another stack format (as I was afraid).
+     */
+    //{browserName: "internet explorer", version: "11", os: "WINDOWS", os_version: 10},
+    /* MUDO
+    Fails:
+     Error: Could not determine EOL for this platform. It is not Windows \r\n, nor Unix \n.
+     at Anonymous function  </Users/jand/Scratchpad/toryt/contracts/src/_private/util.js:103:4>
+     at execModule  <__intern/browser_modules/dojo/loader.js:332:13>
+     at Anonymous function  <__intern/browser_modules/dojo/loader.js:320:21>
+     at execModule  <__intern/browser_modules/dojo/loader.js:318:13>
+     at Anonymous function  <__intern/browser_modules/dojo/loader.js:320:21>
+     at execModule  <__intern/browser_modules/dojo/loader.js:318:13>
+     at Anonymous function  <__intern/browser_modules/dojo/loader.js:320:21>
+     at execModule  <__intern/browser_modules/dojo/loader.js:318:13>
+     at Anonymous function  <__intern/browser_modules/dojo/loader.js:320:21>
+     at execModule  <__intern/browser_modules/dojo/loader.js:318:13>[0m
+     */
+    //{browserName: "iPad", device: "iPad Pro"},
+    //{browserName: "iPhone", device: "iPhone 6S Plus"},
+    /* MUDO
+      Both fail:
+     Error: TypeError: Attempting to define property on object that is not extensible. at http://localhost:9000/src/I/ConditionMetaError.js:68:26
+     at <__intern/lib/executors/PreExecutor.js:357:32>
+     at dispatcher  <__intern/browser_modules/dojo/aspect.js:66:47>[0m
+     */
+    {browserName: "android"} // Could not find device: Galaxy Tab 4 10.1, Nexus 5 not found
+    // like this, running on Google Nexus 5; takes ages; time to call it a day
+
     //{browserName: "safari", version: "10..latest", platform: ["MAC"]},
     //{browserName: "edge", version: "14..latest", platform: ["WIN10"]},
     //{browserName: "internet explorer", version: "11..latest", platform: ["WINDOWS", "WIN8"]}
@@ -79,9 +120,9 @@ define({ // jshint ignore:line
     }
 	},
 
-  reporters: [
-    {id: "test/_util/intern/PrettyNoSuccess", showProgress: false}
-  ],
+  //reporters: [
+  //  {id: "test/_util/intern/PrettyNoSuccess", showProgress: false}
+  //],
 
 	// Unit test suite(s) to run in each browser
   suites: ["test/suite"],
