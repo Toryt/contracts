@@ -37,6 +37,7 @@ Versions
   * I/2.3  : Cleanup, renaming, administration, license, fixing warnings
   * I/2.4  : Now also tests with Intern on Mac on Chrome, Safari, 
              Firefox (3 failures, waiting for april version 53)
+  * I/2.5  : Fix in behavior and test of util.browserModuleLocation
 
 
 
