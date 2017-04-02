@@ -79,10 +79,10 @@ define({ // jshint ignore:line
     }
 	},
 
-  //reporters: [
-  //  {id: "test/_util/intern/PrettyNoSuccess", showProgress: false}
-  //],
-  //
+  reporters: [
+    {id: "test/_util/intern/PrettyNoSuccess", showProgress: false}
+  ],
+
 	// Unit test suite(s) to run in each browser
   suites: ["test/suite"],
 
