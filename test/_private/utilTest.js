@@ -746,7 +746,7 @@
             var result = util.browserModuleLocation(amdModule);
             expect(result).to.be.a("string");
             expect(result).to.match(new RegExp(testCase.expectedEnd + "$"));
-            expect(result).to.match(/^https?:\/\/[^.]+(:\d+)?\//);
+            expect(result).to.match(/^https?:\/{2,}\[?[\w\.:-]+]?(?::[0-9]*)?\//);
             expect(result).to.match(new RegExp("^" + origin));
             expect(result).not.to.match(/\/\.{1,2}\//);
             expect(result).to.satisfy(function(r) {return r.match(/\/{2,}/g).length <= 1;});
