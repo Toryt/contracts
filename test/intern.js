@@ -34,7 +34,8 @@ define({ // jshint ignore:line
     build: "development",
 		//"browserstack.selenium_version": "3.3.1",
     "browserstack.video": false,
-    "browserstack.ie.noFlash": true
+    "browserstack.ie.noFlash": true,
+    "browserstack.debug": false
 	},
 
 	// Browsers to run integration testing against. Options that will be permutated are browserName, version, platform,
