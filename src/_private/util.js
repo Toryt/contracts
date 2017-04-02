@@ -54,6 +54,12 @@
     }
     dotLocation = location.indexOf(parentDirectory); // remove "parent directory" path elements
     while (0 <= dotLocation) {
+      if (dotLocation <= 3) {
+        throw new Error("AMD module location \"" + amdModule.uri + "\" is illegal in the context of window location \""
+                        + window.location + "\". "
+                        + "It would bring us above the root of the server. There are too many \"..\" elements "
+                        + "at the start of the uri.");
+      }
       location.splice(dotLocation - 1, 2);
       dotLocation = location.indexOf(parentDirectory);
     }

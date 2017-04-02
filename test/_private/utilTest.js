@@ -728,17 +728,18 @@
       });
 
       describe("#browserModuleLocation", function() {
+        // Note: for these tests to work, we must be at least 1 directory down from the server root.
         var isNode = testUtil.environment === "node";
         [
           {uri: "simple.js", expectedEnd: "simple.js"},
           {uri: "./peer.js", expectedEnd: "peer.js"},
           {uri: "./dir/dir/deep.js", expectedEnd: "/dir/dir/deep.js"},
-          {uri: "../../down/down/other.js", expectedEnd: "other.js"},
-          {uri: "./../.././down/down/../../down/./complex.js", expectedEnd: "/down/complex.js"},
+          {uri: "../down/other.js", expectedEnd: "other.js"},
+          {uri: "./.././down/down/../../down/down/./complex.js", expectedEnd: "/down/complex.js"},
           {uri: "/dir/dir/deep.js", expectedEnd: "/dir/dir/deep.js"}
         ].forEach(function(testCase) {
           it("returns a sensible result with AMD module URI \"" + testCase.uri + "\"", function() {
-            var origin = "http://localhost:63342";
+            var origin = typeof window === "undefined" ? "http://localhost:23494" : window.location.origin;
             if (isNode) {
               global.window = {location: {href: origin + "/contracts/test/mocha.html", origin: origin}};
             }
@@ -755,6 +756,18 @@
             }
             testUtil.log("browserModuleLocation: %s", result);
           });
+        });
+
+        it("throws an error if the AMD module URI would bring us above the root of the server", function() {
+          var origin = typeof window === "undefined" ? "http://localhost:23494" : window.location.origin;
+          if (isNode) {
+            global.window = {location: {href: origin + "/contracts/test/mocha.html", origin: origin}};
+          }
+          var amdModule = {uri: "../../../../../../down/down/other.js"};
+          expect(util.browserModuleLocation.bind(util, amdModule)).to.throw(Error);
+          if (isNode) {
+            delete global.window;
+          }
         });
       });
     });
