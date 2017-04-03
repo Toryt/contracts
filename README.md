@@ -12,7 +12,7 @@ Tested
     * Chrome Version 57.0.2987.110 (64-bit)
     * Firefox 52.0.2 (64-bit)
     * Safari Version 10.1 (12603.1.30.0.34)
-* with [Intern] ![Intern logo]
+* with [Intern]
   * on Mac, with
     * node v6.9.5
     * Chrome Version 57.0.2987.110 (64-bit)
@@ -21,7 +21,7 @@ Tested
   * on Linux, with
     * node v6.10.1
     * node v7.7.4
-  * on Windows 8 and 10 (with [Browserstack])
+  * on Windows 8 and 10 with [Browserstack] ![Browserstack logo]
     * Chrome Version 57
 
 Currently, [Intern] is the major testing framework, intended to test the code itself.
@@ -31,8 +31,6 @@ Mocha are supported.
 
 Status
 ------
-
- ![Intern logo] ![Browserstack logo]
 
 The project is currently experimenting with [Browserstack] and [Intern], to get it running on all modern platforms
 (see the `branches experiment/browserstack_#`). 
@@ -134,4 +132,3 @@ TODO
 [supported by Intern]: https://theintern.github.io/intern/#hosted-selenium
 [Browserstack logo]: https://www.browserstack.com/images/mail/browserstack-logo-footer.png
 [BrowserStack Status]: https://www.browserstack.com/automate/badge.svg?badge_key=aEZaaFphdUw4L0p1Wk1RZHRhdGk5OEFlYmlsVlVtWDgwb2JTT1R2WnRBST0tLWVaamdQdWszYzFwbXNad2Mrd1JuaFE9PQ==--02f4bb9220a2c3ad513a12c26c9a45345584f230
-[Intern logo]: data:image/png;base64,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
