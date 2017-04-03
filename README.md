@@ -62,7 +62,7 @@ go back in versions as much as possible, to see how compatible the code is. If t
 supported, this will be our basis. Code will not be changed to support older versions, but it is interesting to
 know how far back we can go.
 
-nodejs testing is now only done for Mac, by hand, and on Linux, by Travis. It is necessary to also find a way to
+nodejs testing is now only done for Mac, by hand, and on Linux, by [Travis]. It is necessary to also find a way to
 do continuous testing for nodejs on Windows 10 at least. Again, code will not be changed to support older versions, 
 but it is interesting to know how far back we can go.
  
@@ -86,7 +86,7 @@ Versions
 * I
   * I/1.0  : First release, minimally functional, Mac - node
   * I/2.0  : Use it in web projects, Mac
-  * I/2.1  : Use it with node on linux (Travis)
+  * I/2.1  : Use it with node on linux ([Travis])
   * I/2.2  : Now also tests with [Intern] on node, on Mac and Linux.
              [Intern] is preferred over Mocha. This version only changes private code,
              test code, and build setup.
@@ -120,7 +120,8 @@ TODO
   
   
 [UMD]: http://davidbcalhoun.com/2014/what-is-amd-commonjs-and-umd/
-[intern issue 447]]: https://github.com/theintern/intern/issues/477
+[Travis]: https://travis-ci.org
+[intern issue 447]: https://github.com/theintern/intern/issues/477
 [Intern]: https://theintern.github.io
 [Browserstack]: https://www.browserstack.com/
 [supported by Intern]: https://theintern.github.io/intern/#hosted-selenium
