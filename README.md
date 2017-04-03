@@ -33,7 +33,11 @@ Status
 ------
 
 The project is currently experimenting with [Browserstack] and [Intern], to get it running on all modern platforms
-(see the `branches experiment/browserstack_#`). The current status is
+(see the `branches experiment/browserstack_#`). 
+
+![BrowserStack Status]
+
+The current status is
 * on Windows 8 and Windows 10
   * Chrome 57 is ok
 * on Windows 10
@@ -125,3 +129,4 @@ TODO
 [Intern]: https://theintern.github.io
 [Browserstack]: https://www.browserstack.com/
 [supported by Intern]: https://theintern.github.io/intern/#hosted-selenium
+[BrowserStack Status]: https://www.browserstack.com/automate/badge.svg?badge_key=aEZaaFphdUw4L0p1Wk1RZHRhdGk5OEFlYmlsVlVtWDgwb2JTT1R2WnRBST0tLWVaamdQdWszYzFwbXNad2Mrd1JuaFE9PQ==--02f4bb9220a2c3ad513a12c26c9a45345584f230
