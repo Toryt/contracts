@@ -18,7 +18,7 @@ Tested
     * Chrome Version 57.0.2987.110 (64-bit)
     * Firefox 52.0.2 (64-bit)
     * Safari Version 10.1 (12603.1.30.0.34)
-  * on Linux, with
+  * on Linux, with, via [Travis] [![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)](https://travis-ci.org/Toryt/contracts)
     * node v6.10.1
     * node v7.7.4
   * on Windows 8 and 10 with [Browserstack] ![Browserstack logo]
