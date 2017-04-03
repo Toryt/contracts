@@ -50,6 +50,14 @@ define({ // jshint ignore:line
     // but nobody is complaining. I don't know what that means.
     // Should retry with debugging, so I can follow what's happening. Wait for response on Open Source Project
     // account, and try again after vacation.
+    /* Closing down for the week. The session has ended after 2 hours, after a sort of ping every minute:
+    …
+     119:22 0 Get URL⇒http://localhost:9000/__intern/client.html?config=test%2Fintern&basePath=%2F&initialBaseUrl=%2F&reporters=%7B%22id%22%3A%22WebDriver%22%7D&rootSuiteName=firefox%20on%20any%20platform%20-%20unit%20tests&sessionId=32f77f19d981788fb246b9e39a684eea31ebe6bc
+     120:22 0 Get URL⇒http://localhost:9000/__intern/client.html?config=test%2Fintern&basePath=%2F&initialBaseUrl=%2F&reporters=%7B%22id%22%3A%22WebDriver%22%7D&rootSuiteName=firefox%20on%20any%20platform%20-%20unit%20tests&sessionId=32f77f19d981788fb246b9e39a684eea31ebe6bc
+     121:20 0 Get URL⇒http://localhost:9000/__intern/client.html?config=test%2Fintern&basePath=%2F&initialBaseUrl=%2F&reporters=%7B%22id%22%3A%22WebDriver%22%7D&rootSuiteName=firefox%20on%20any%20platform%20-%20unit%20tests&sessionId=32f77f19d981788fb246b9e39a684eea31ebe6bc
+     122:26 0 STOP SESSION
+     SESSION LIMIT REACHED
+     */
     //{browserName: "chrome", version: "57..latest", platform: ["WINDOWS", "WIN8"]} // OK
     //{browserName: "firefox", version: "52", os: "WINDOWS", os_version: 10}, // "..latest" doesn't work -- browserstack thinks latest is 28
     /* MUDO Fails
