@@ -81,7 +81,7 @@ I am aware of (except for the developer beta programs, for which there is no sup
 When we get to test-by-contract, it might be interesting to also include testing with Jasmine, the other important
 Javascript testing framework.
 
-In that respect, it might also prove useful to use other services [supported by Intern] in the future.
+In that respect, it might also prove useful to use other browser testing services [supported by Intern] in the future.
 
 
 Versions
