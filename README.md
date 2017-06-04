@@ -20,7 +20,7 @@ Tested
     * Safari Version 10.1 (12603.1.30.0.34)
   * on Linux, with, via [Travis] [![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)](https://travis-ci.org/Toryt/contracts)
     * node v6.10.1
-    * node v7.7.4
+    * the latest node version; you will find builds that are tested ok with node v7.7.4, node v8.0.0, … on [Travis]
   * on Windows 8 and 10 with [Browserstack] ![Browserstack logo]
     * Chrome Version 57
 
@@ -99,6 +99,8 @@ Versions
   * I/2.4  : Now also tests with [Intern] on Mac on Chrome, Safari, 
              Firefox (3 failures, waiting for april version 53)
   * I/2.5  : Fix in behavior and test of util.browserModuleLocation
+  * I/2.6  : First release on npm. The code is functional on node, and there is no need to wait for browser validation
+             to start using it on node.
 
 
 
@@ -108,8 +110,7 @@ TODO
 * I
   * I/3.0  : Windows
   * I/4.0  : Documentation en README
-  * I/5.0  : npm, bower
-  * I/6.0  : jsdoc
+  * I/5.0  : jsdoc
 * II
   * II/1.0 : conditions-per-argument
   * II/2.0 : old-support
@@ -125,7 +126,7 @@ TODO
   
   
 [UMD]: http://davidbcalhoun.com/2014/what-is-amd-commonjs-and-umd/
-[Travis]: https://travis-ci.org
+[Travis]: https://travis-ci.org/Toryt/contracts
 [intern issue 447]: https://github.com/theintern/intern/issues/477
 [Intern]: https://theintern.github.io
 [Browserstack]: https://www.browserstack.com/
