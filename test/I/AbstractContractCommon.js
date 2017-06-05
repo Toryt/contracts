@@ -89,6 +89,7 @@
     testUtil.expectOwnFrozenProperty(subject, "abstract");
     var abstract = subject.abstract;
     expect(abstract).to.satisfy(function(cf) {return AbstractContract.isAContractFunction(cf);});
+    expect(abstract).to.have.property("location").that.equals(subject.location);
     expect(abstract).to.satisfy(function(cf) {return subject.isImplementedBy(cf);});
     expect(abstract).to.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message);
     try {
