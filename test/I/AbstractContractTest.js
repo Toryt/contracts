@@ -34,6 +34,7 @@
     describe("I/AbstractContract", function() {
 
       describe("AbstractContract", function() {
+        //noinspection FunctionTooLongJS
         it("has the expected properties", function() {
           expect(AbstractContract).to.haveOwnProperty("prototype");
           expect(AbstractContract).to.have.property("prototype").that.is.an("object");
@@ -56,6 +57,11 @@
           expect(AbstractContract).to.have.property("isAContractFunction").that.is.a("function");
           expect(AbstractContract).to.haveOwnProperty("bless");
           expect(AbstractContract).to.have.property("bless").that.is.a("function");
+          expect(AbstractContract).to.haveOwnProperty("internalLocation");
+          expect(AbstractContract).to.have.property("internalLocation").that.is.an("object");
+          expect(AbstractContract).to.have.property("internalLocation").that.satisfies(function(internalLocation) {
+            return "" + internalLocation === "INTERNAL";
+          });
           expect(AbstractContract).to.haveOwnProperty("falseCondition");
           expect(AbstractContract).to.have.property("falseCondition").that.is.a("function");
           expect(AbstractContract).to.haveOwnProperty("root");

@@ -178,6 +178,13 @@
   };
 
   /**
+   * Object to be used as location for contracts and implementations that are generated inside this library.
+   */
+  AbstractContract.internalLocation = {
+    toString: function() {return "INTERNAL";}
+  };
+
+  /**
    * Function that always returns <code>false</code>.
    */
   AbstractContract.falseCondition = function() {return false;};
