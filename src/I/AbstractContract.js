@@ -34,7 +34,7 @@
    * Abstract definition of a function contract.
    *
    * A AbstractContract consists of an array of preconditions, an array of nominal postconditions,
-   * and an array of exceptional preconditions.
+   * and an array of exceptional postconditions.
    *
    * The conditions are functions whose result is interpreted as a booleany value.
    * The conditions are called with the same `this` and arguments as the functional call in which they are
