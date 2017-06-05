@@ -44,7 +44,8 @@
    * nominal and exceptional postconditions. This function reference can be used in contracts that use recursion.
    *
    * Furthermore, an instance contains a `location` property, which is a line of text
-   * that refers to the source code where the contract was created.
+   * that refers to the source code where the contract was created. For internal contracts, this is
+   * `AbstractContract.internalLocation.
    *
    * @constructor
    */
@@ -66,6 +67,13 @@
     util.setAndFreezeProperty(self, "location", Object.freeze(location));
     util.setAndFreezeProperty(self, "abstract", abstract);
   }
+
+  /**
+   * Object to be used as location for contracts and implementations that are generated inside this library.
+   */
+  AbstractContract.internalLocation = Object.freeze({
+    toString: function() {return "INTERNAL";}
+  });
 
   AbstractContract.prototype = {
     constructor: AbstractContract,
@@ -176,13 +184,6 @@
       "displayName",
       function() {return AbstractContract.contractFunctionDisplayName(this);}
     );
-  };
-
-  /**
-   * Object to be used as location for contracts and implementations that are generated inside this library.
-   */
-  AbstractContract.internalLocation = {
-    toString: function() {return "INTERNAL";}
   };
 
   /**
