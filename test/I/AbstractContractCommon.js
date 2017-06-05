@@ -83,7 +83,9 @@
     testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "exception", "_exception");
     testUtil.expectToBeArrayOfFunctions(subject.exception);
     testUtil.expectOwnFrozenProperty(subject, "location");
-    expect(subject.location).to.satisfy(function(location) {return util.isALocationOutsideLibrary(location);});
+    expect(subject.location).to.satisfy(function(location) {
+      return location === AbstractContract.internalLocation || util.isALocationOutsideLibrary(location);
+    });
     testUtil.expectOwnFrozenProperty(subject, "abstract");
     var abstract = subject.abstract;
     expect(abstract).to.satisfy(function(cf) {return AbstractContract.isAContractFunction(cf);});

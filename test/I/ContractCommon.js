@@ -18,7 +18,7 @@
   "use strict";
 
   var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./AbstractContractCommon", "𝕋合同/I/Contract"];
+                      "𝕋合同/_private/util", "./AbstractContractCommon", "𝕋合同/I/Contract"];
 
   if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
@@ -27,12 +27,13 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(describe, it, expect, testUtil, common, Contract) {
+}(function(describe, it, expect, testUtil, util, common, Contract) {
   "use strict";
 
   function expectInvariants(subject) {
     expect(subject).to.be.an.instanceOf(Contract);
     common.expectInvariants(subject);
+    expect(subject.location).to.satisfy(function(location) {return util.isALocationOutsideLibrary(location);});
     expect(subject).to.have.property("implementation").that.is.a("function");
   }
 
