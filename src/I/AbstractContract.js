@@ -146,7 +146,8 @@
            && util.isFrozenOwnProperty(f, "contract")
            && util.typeOf(f.implementation) === "function"
            && util.isFrozenOwnProperty(f, "implementation")
-           && util.isALocationOutsideLibrary(f.location)
+           && (f.location === AbstractContract.internalLocation || util.isALocationOutsideLibrary(f.location))
+           // TODO consider definining a subtype that is more strict, where it must be a isALocationOutsideLibrary
            && util.isFrozenOwnProperty(f, "location")
            && f.displayName === this.contractFunctionDisplayName(f)
            && util.isFrozenOwnProperty(f, "bind")
@@ -174,7 +175,9 @@
     util.pre(function() {return contractFunction.bind === Function.prototype.bind;});
     util.pre(function() {return contract instanceof AbstractContract;});
     util.pre(function() {return util.typeOf(implFunction) === "function";});
-    util.pre(function() {return util.isALocationOutsideLibrary(location);});
+    util.pre(function() {
+      return location === AbstractContract.internalLocation || util.isALocationOutsideLibrary(location);
+    });
 
     util.setAndFreezeProperty(contractFunction, "contract", contract);
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
