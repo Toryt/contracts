@@ -18,7 +18,7 @@
   "use strict";
 
   var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./ContractCommon", "𝕋合同/I/Contract", "𝕋合同/I/AbstractContract"];
+                      "./ContractCommon", "𝕋合同/I/Contract", "./AbstractContractCommon", "𝕋合同/I/AbstractContract"];
 
   if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
@@ -27,7 +27,7 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(describe, it, expect, testUtil, common, Contract, AbstractContract) {
+}(function(describe, it, expect, testUtil, common, Contract, AbstractContractCommon, AbstractContract) {
   "use strict";
 
   // describe("I", function() {
@@ -35,6 +35,9 @@
 
       describe("Contract", function() {
         it("has the expected properties", function() {
+          expect(Contract).to.haveOwnProperty("prototype");
+          AbstractContractCommon.expectInvariants(Contract.prototype);
+          expect(Contract.prototype).to.have.property("implementation").that.is.a("function");
           expect(Contract).to.haveOwnProperty("root");
           expect(Contract).to.have.property("root").that.equals(AbstractContract.root);
         });

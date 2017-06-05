@@ -35,6 +35,17 @@
 
       describe("AbstractContract", function() {
         it("has the expected properties", function() {
+          expect(AbstractContract).to.haveOwnProperty("prototype");
+          expect(AbstractContract).to.have.property("prototype").that.is.an("object");
+          var prototype = AbstractContract.prototype;
+          expect(prototype).to.have.property("_pre").to.be.null;
+          expect(prototype).to.have.property("_post").to.be.null;
+          expect(prototype).to.have.property("_post").to.be.null;
+          expect(prototype).to.have.property("_exception").to.be.null;
+          expect(prototype).to.have.property("location").that.satisfies(function(location) {
+            return util.isALocationOutsideLibrary(location);
+          });
+          expect(prototype).to.have.property("isImplementedBy").that.is.a("function");
           expect(AbstractContract).to.haveOwnProperty("displayNamePrefix");
           expect(AbstractContract).to.have.property("displayNamePrefix").that.is.a("string");
           expect(AbstractContract).to.haveOwnProperty("contractFunctionDisplayName");
