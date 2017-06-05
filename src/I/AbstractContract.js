@@ -49,17 +49,18 @@
    *
    * @constructor
    */
-  function AbstractContract(kwargs) {
+  function AbstractContract(kwargs, /*Object?*/ internalLocation) {
     util.pre(function() {return !!kwargs;});
     util.pre(function() {return !kwargs.pre || util.typeOf(kwargs.pre) === "array";});
     util.pre(function() {return !kwargs.post || util.typeOf(kwargs.post) === "array";});
     util.pre(function() {return !kwargs.exception || util.typeOf(kwargs.exception) === "array";});
+    util.pre(function() {return !internalLocation || internalLocation === AbstractContract.internalLocation;});
 
     var self = this;
 
     function abstract() {throw new AbstractContract.AbstractError(self);}
 
-    var location = util.firstLocationOutsideLibrary();
+    var location = internalLocation || util.firstLocationOutsideLibrary();
     AbstractContract.bless(abstract, self, abstract, location);
     util.setAndFreezeProperty(self, "_pre", Object.freeze(kwargs.pre ? kwargs.pre.slice() : []));
     util.setAndFreezeProperty(self, "_post", Object.freeze(kwargs.post ? kwargs.post.slice() : []));
@@ -87,7 +88,7 @@
   util.defineFrozenReadOnlyArrayProperty(AbstractContract.prototype, "pre", "_pre");
   util.defineFrozenReadOnlyArrayProperty(AbstractContract.prototype, "post", "_post");
   util.defineFrozenReadOnlyArrayProperty(AbstractContract.prototype, "exception", "_exception");
-  util.setAndFreezeProperty(AbstractContract.prototype, "location", util.firstLocationOutsideLibrary());
+  util.setAndFreezeProperty(AbstractContract.prototype, "location", AbstractContract.internalLocation);
   util.setAndFreezeProperty(AbstractContract.prototype, "abstract", null);
 
   AbstractContract.displayNamePrefix = displayNamePrefix;
@@ -196,11 +197,14 @@
    * be weakened by specializations, and the most general nominal and exceptional postconditions (anything goes),
    * which can be strengthened by specializations.
    */
-  AbstractContract.root = new AbstractContract({
-    pre: [AbstractContract.falseCondition],
-    post: [],
-    exception: []
-  });
+  AbstractContract.root = new AbstractContract(
+    {
+      pre: [AbstractContract.falseCondition],
+      post: [],
+      exception: []
+    },
+    AbstractContract.internalLocation
+  );
 
   var message = "an abstract function cannot be executed";
 

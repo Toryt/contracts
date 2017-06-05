@@ -45,7 +45,10 @@
     AbstractContract.apply(this, arguments);
   }
 
-  Contract.prototype = new AbstractContract({pre: [AbstractContract.falseCondition]});
+  Contract.prototype = new AbstractContract(
+    {pre: [AbstractContract.falseCondition]},
+    AbstractContract.internalLocation
+  );
   Contract.prototype.constructor = Contract;
   Contract.prototype.implementation = function(implFunction) {
     util.pre(this, function() {return implFunction && util.typeOf(implFunction) === "function";});
