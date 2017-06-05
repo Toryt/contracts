@@ -34,6 +34,7 @@
     expect(subject).to.be.an.instanceOf(Contract);
     common.expectInvariants(subject);
     expect(subject.location).to.satisfy(function(location) {return util.isALocationOutsideLibrary(location);});
+    // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
     expect(subject).to.have.property("implementation").that.is.a("function");
   }
 
