@@ -7,9 +7,12 @@
     "test": "test"
   },
   "scripts": {
-    "mocha": "mocha --reporter min test/**/*Test.js",
+    "commonjsLoadTest": "node test/commonjsLoadTest.js",
+    "premocha": "node test/commonjsLoadTest.js",
+    "mocha": "mocha --reporter min test/commonjsLoadTest test/**/*Test.js",
+    "preintern": "node test/commonjsLoadTest.js",
     "intern": "node_modules/.bin/intern-client config=test/intern",
-    "pretest": "bower install",
+    "pretest": "node test/commonjsLoadTest.js && bower install",
     "test": "node_modules/.bin/intern-client config=test/intern"
   },
   "repository": {
