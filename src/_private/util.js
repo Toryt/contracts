@@ -280,7 +280,7 @@
      * and does not refer to native code. Returns the empty string if no such line is found.
      *
      * When this result is used as a line on its own, it is clickable to navigate to the referred source code
-     * in most console.
+     * in most consoles.
      */
     firstLocationOutsideLibrary: function() {
       var stackSource = new Error();
