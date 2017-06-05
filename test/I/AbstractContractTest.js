@@ -77,6 +77,7 @@
           expect(prototype).to.have.property("location").that.satisfies(function(location) {
             return location === AbstractContract.internalLocation;
           });
+          expect(prototype).to.have.property("abstract").to.be.null;
           expect(prototype).to.have.property("isImplementedBy").that.is.a("function");
         });
       });

@@ -80,6 +80,7 @@
   util.defineFrozenReadOnlyArrayProperty(AbstractContract.prototype, "post", "_post");
   util.defineFrozenReadOnlyArrayProperty(AbstractContract.prototype, "exception", "_exception");
   util.setAndFreezeProperty(AbstractContract.prototype, "location", util.firstLocationOutsideLibrary());
+  util.setAndFreezeProperty(AbstractContract.prototype, "abstract", null);
 
   AbstractContract.displayNamePrefix = displayNamePrefix;
 
