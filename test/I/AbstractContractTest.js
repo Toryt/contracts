@@ -61,9 +61,7 @@
           expect(root.pre[0]).to.equal(AbstractContract.falseCondition);
           expect(root).to.have.property("post").to.have.lengthOf(0);
           expect(root).to.have.property("exception").to.have.lengthOf(0);
-          expect(root).to.have.property("location").that.satisfies(function(location) {
-            return location === AbstractContract.internalLocation;
-          });
+          expect(root).to.have.property("location").that.equals(AbstractContract.internalLocation);
           expect(AbstractContract).to.haveOwnProperty("AbstractError");
           expect(AbstractContract).to.have.property("AbstractError").that.is.a("function");
           expect(AbstractContract).to.have.property("AbstractError").to.have.property("prototype").that.is.instanceof(Error);
@@ -74,9 +72,7 @@
           expect(prototype).to.have.property("_post").to.be.null;
           expect(prototype).to.have.property("_post").to.be.null;
           expect(prototype).to.have.property("_exception").to.be.null;
-          expect(prototype).to.have.property("location").that.satisfies(function(location) {
-            return location === AbstractContract.internalLocation;
-          });
+          expect(prototype).to.have.property("location").that.equals(AbstractContract.internalLocation);
           expect(prototype).to.have.property("abstract").to.be.null;
           expect(prototype).to.have.property("isImplementedBy").that.is.a("function");
         });
