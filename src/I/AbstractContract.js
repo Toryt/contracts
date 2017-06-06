@@ -82,7 +82,7 @@
     _post: null,
     _exception: null,
     isImplementedBy: function(f) {
-      return AbstractContract.isAContractFunction(f) && f.contract === this;
+      return AbstractContract.isAGeneralContractFunction(f) && f.contract === this;
     }
   };
   util.defineFrozenReadOnlyArrayProperty(AbstractContract.prototype, "pre", "_pre");

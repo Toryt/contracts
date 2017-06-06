@@ -179,7 +179,7 @@
     var self = this; // jshint ignore:line
 
     describe("#isImplementedBy()", function() {
-      it("says yes if the argument is a contract function for the contract", function() {
+      it("says yes if the argument is a general contract function for the contract", function() {
         var subject = oneSubjectGenerator();
         var f = createCandidateContractFunction(null, "contract", subject);
         //noinspection BadExpressionStatementJS,JSHint
@@ -189,7 +189,7 @@
       notAFunctionNorAContract
         .concat(["function() {}"])
         .forEach(function(thing) {
-          it("says no if the argument is not a contract function but " + thing, function() {
+          it("says no if the argument is not a general contract function but " + thing, function() {
             var subject = oneSubjectGenerator();
             //noinspection BadExpressionStatementJS,JSHint
             expect(subject.isImplementedBy(thing)).not.to.be.ok;
