@@ -99,7 +99,8 @@ Versions
   * I/2.4  : Now also tests with [Intern] on Mac on Chrome, Safari, 
              Firefox (3 failures, waiting for april version 53)
   * I/2.5  : Fix in behavior and test of util.browserModuleLocation
-  * I/2.6  : First release on npm. The code is functional on node, and there is no need to wait for browser validation
+* II
+  * II/1.0  : First release on npm. The code is functional on node, and there is no need to wait for browser validation
              to start using it on node.
 
 
@@ -107,20 +108,20 @@ Versions
 TODO
 ----
 
-* I
-  * I/3.0  : Windows
-  * I/4.0  : Documentation en README
-  * I/5.0  : jsdoc
 * II
-  * II/1.0 : conditions-per-argument
-  * II/2.0 : old-support
-  * II/3.0 : type conditions
-  * II/4.0 : chai-like conditions
+  * II/2.0  : Windows
+  * II/3.0  : Documentation en README
+  * II/4.0  : jsdoc
 * III
-  * III/1.0: Specialization / generalization
-  * III/2.0: support for type definitions ("classes")
-  * III/3.0: test support Mocha
-  * III/4.0: test support [Intern]
+  * III/1.0 : conditions-per-argument
+  * III/2.0 : old-support
+  * III/3.0 : type conditions
+  * III/4.0 : chai-like conditions
+* IV
+  * IV/1.0: Specialization / generalization
+  * IV/2.0: support for type definitions ("classes")
+  * IV/3.0: test support Mocha
+  * IV/4.0: test support [Intern]
   
 
   
