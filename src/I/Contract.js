@@ -88,6 +88,7 @@
   };
 
   Contract.root = AbstractContract.root;
+  Contract.isAContractFunction = AbstractContract.isAContractFunction;
 
   return Contract;
 }));

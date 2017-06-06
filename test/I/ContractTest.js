@@ -40,6 +40,8 @@
           expect(Contract.prototype).to.have.property("implementation").that.is.a("function");
           expect(Contract).to.haveOwnProperty("root");
           expect(Contract).to.have.property("root").that.equals(AbstractContract.root);
+          expect(Contract).to.haveOwnProperty("isAContractFunction");
+          expect(Contract).to.have.property("isAContractFunction").that.equals(AbstractContract.isAContractFunction);
         });
       });
 
