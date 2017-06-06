@@ -123,22 +123,21 @@
   };
 
   /**
-   * A Contract Function is an implementation of an AbstractContract. This function verifies whether a function
-   * given as a parameter is a Contract Function.
+   * A General Contract Function is an implementation of an AbstractContract. This function verifies whether a function
+   * given as a parameter is a General Contract Function.
    *
-   * To be a Contract Function, the subject must
+   * To be a General Contract Function, the subject must
    * <ul>
    *   <li>be a function,</li>
    *   <li>have a frozen `contract` property that refers to a AbstractContract,</li>
    *   <li>have a frozen `implementation` property that refers to a function (which realizes the contract),</li>
-   *   <li>have a frozen `location` property, which is a string that represents a location in source code,
-   *     outside this library,</li>
+   *   <li>have a frozen `location` property, that has a value,</li>
    *   <li>have a frozen `bind` property, which is {@link AbstractContract.bindContractFunction}, and</li>
    *   <li>have a `displayName` that is a contract function display name, which is a string that gives
    *     information for a programmer to understand which contract function this is.</li>
    * </ul>
    */
-  AbstractContract.isAContractFunction = function(f) {
+  AbstractContract.isAGeneralContractFunction = function(f) {
     // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
     // freeze it, and not guaranteed in all engines.
     return util.typeOf(f) === "function"
@@ -146,12 +145,26 @@
            && util.isFrozenOwnProperty(f, "contract")
            && util.typeOf(f.implementation) === "function"
            && util.isFrozenOwnProperty(f, "implementation")
-           && (f.location === AbstractContract.internalLocation || util.isALocationOutsideLibrary(f.location))
-           // TODO consider definining a subtype that is more strict, where it must be a isALocationOutsideLibrary
            && util.isFrozenOwnProperty(f, "location")
+           && f.location
            && f.displayName === this.contractFunctionDisplayName(f)
            && util.isFrozenOwnProperty(f, "bind")
            && f.bind === AbstractContract.bindContractFunction;
+  };
+
+  /**
+   * A Contract Function is an implementation of a Contract. This function verifies whether a function
+   * given as a parameter is a Contract Function.
+   *
+   * To be a Contract Function, the subject must
+   * <ul>
+   *   <li>be a [general contract function]{@linkplain #isAGeneralContractFunction()},</li>
+   *   <li>have a frozen `location` property, which is a string that represents a location in source code,
+   *     outside this library.</li>
+   * </ul>
+   */
+  AbstractContract.isAContractFunction = function(f) {
+    return this.isAGeneralContractFunction(f) && util.isALocationOutsideLibrary(f.location);
   };
 
   /**
