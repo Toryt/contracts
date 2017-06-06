@@ -83,7 +83,7 @@
     common.expectInvariants(subject);
     testUtil.expectOwnFrozenProperty(subject, "contractFunction");
     expect(subject).to.have.property("contractFunction").that.satisfies(function(cf) {
-      return AbstractContract.isAContractFunction(cf);
+      return AbstractContract.isAGeneralContractFunction(cf);
     });
     expect(subject).to.have.property("condition").that.is.a("function");
     testUtil.expectOwnFrozenProperty(subject, "condition");

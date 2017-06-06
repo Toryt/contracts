@@ -61,7 +61,7 @@
    *                is always the second-to-last entry.
    */
   function ExceptionConditionViolation(contractFunction, condition, self, args) {
-    util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
+    util.pre(this, function() {return AbstractContract.isAGeneralContractFunction(contractFunction);});
     util.pre(this, function() {return util.typeOf(condition) === "function";});
     util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
 
