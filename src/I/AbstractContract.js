@@ -147,7 +147,7 @@
            && util.isFrozenOwnProperty(f, "implementation")
            && util.isFrozenOwnProperty(f, "location")
            && f.location
-           && f.displayName === this.contractFunctionDisplayName(f)
+           && f.displayName === AbstractContract.contractFunctionDisplayName(f)
            && util.isFrozenOwnProperty(f, "bind")
            && f.bind === AbstractContract.bindContractFunction;
   };
@@ -164,7 +164,7 @@
    * </ul>
    */
   AbstractContract.isAContractFunction = function(f) {
-    return this.isAGeneralContractFunction(f) && util.isALocationOutsideLibrary(f.location);
+    return AbstractContract.isAGeneralContractFunction(f) && util.isALocationOutsideLibrary(f.location);
   };
 
   /**
