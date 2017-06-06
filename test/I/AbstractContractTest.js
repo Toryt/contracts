@@ -202,7 +202,12 @@
         it("behaves as expected", function() {
           var subject = common.createCandidateContractFunction();
           var result = AbstractContract.bindContractFunction.apply(subject);
-          expect(result).to.satisfy(function(r) {return AbstractContract.isAContractFunction(r);});
+          expect(result).to.satisfy(AbstractContract.isAGeneralContractFunction);
+          expect(result).to.have.property("contract").to.equal(subject.contract);
+          expect(result).to.have.property("location").to.equal(subject.location);
+          if (AbstractContract.isAContractFunction(subject)) {
+            expect(result).to.satisfy(AbstractContract.isAContractFunction);
+          }
         });
       });
 

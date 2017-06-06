@@ -114,7 +114,7 @@
    * way as the resulting contract function itself.
    */
   AbstractContract.bindContractFunction = function bind() {
-    util.pre(this, function() {return AbstractContract.isAContractFunction(this);});
+    util.pre(this, function() {return AbstractContract.isAGeneralContractFunction(this);});
 
     var bound = Function.prototype.bind.apply(this, arguments);
     var boundImplementation = Function.prototype.bind.apply(this.implementation, arguments);
