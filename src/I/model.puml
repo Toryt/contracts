@@ -31,26 +31,31 @@ class Error {
   +toString(): String
 }
 
-interface FunctionWithImplementation
-
-Function <.. FunctionWithImplementation: instanceof
-FunctionWithImplementation --> "implementation" Function
+Function <.. GeneralContractFunction: instanceof
+GeneralContractFunction --> "implementation" Function
 
 abstract class AbstractContract {
-  +{static} displayNamePrefix: String
   +pre: Array <<readonly>>
   +post: Array <<readonly>>
   +exception: Array <<readonly>>
-  +location: String <<readonly>>
+  +location: object <<readonly>>
   +{static} displayNamePrefix: String
+  +{static} internalLocation: object<INTERNAL>
   +{static} root: AbstractContract
   +{static} contractFunctionDisplayName(f: FunctionWithImplementation): String
   +{static} bindContractFunction: Function
+  +{static} isAGeneralContractFunction(f: Any): Boolean
   +{static} isAContractFunction(f: Any): Boolean
-  +{static} bless(contractFunction: ContractFunction, contract: AbstractContract, implFunction: Function, location: String): void
+  +{static} bless(contractFunction: GeneralContractFunction, contract: AbstractContract, implFunction: Function, location: String): void
   +{static} falseCondition(): Boolean = false
-  +{static} AbstractContract(pre: Function[]?, post: Function[]?, exception: Function[]?)
+  +{static} AbstractContract({pre: Function[]?, post: Function[]?, exception: Function[]?}, location: object?)
 }
+
+class InternalContract {
+  +{static} InternalContract(pre: Function[]?, post: Function[]?, exception: Function[]?)
+  +location: object<INTERNAL>
+}
+AbstractContract <|-- InternalContract
 
 class Contract {
   +{static} Contract(pre: Function[]?, post: Function[]?, exception: Function[]?)
@@ -58,20 +63,41 @@ class Contract {
 }
 AbstractContract <|-- Contract
 
-interface ContractFunction {
-  +location: String <<readonly>>
+interface GeneralContractFunction {
+  +location: object <<readonly>>
   +/displayName: String
+  +bind(…): GeneralContractFunction
+}
+AbstractContract +-- GeneralContractFunction
+GeneralContractFunction --> "contract" AbstractContract
+
+interface InternalContractFunction {
+  +location: object<INTERNAL> <<readonly>>
+}
+GeneralContractFunction <|-- InternalContractFunction
+InternalContractFunction --> "contract" InternalContract
+
+interface ContractFunction {
+  +location: string <<readonly>>
   +bind(…): ContractFunction
 }
+AbstractContract +-- ContractFunction
+GeneralContractFunction <|.. ContractFunction
+ContractFunction --> "contract" Contract
+
+abstract class GeneralAbstractContractFunction
+GeneralContractFunction <|- GeneralAbstractContractFunction
+AbstractContract --> "abstract <<readonly>>" GeneralAbstractContractFunction
+
+class InternalAbstractContractFunction
+GeneralAbstractContractFunction <|-- InternalAbstractContractFunction
+InternalContractFunction <|.. InternalAbstractContractFunction
+InternalContract --> "abstract <<readonly>>" InternalAbstractContractFunction
 
 class AbstractContractFunction
-ContractFunction <|- AbstractContractFunction
-
-AbstractContract +-- ContractFunction
-FunctionWithImplementation <|-- ContractFunction
-
-ContractFunction --> "contract" AbstractContract
-AbstractContract --> "abstract <<readonly>>" AbstractContractFunction
+GeneralAbstractContractFunction <|- AbstractContractFunction
+ContractFunction <|.. AbstractContractFunction
+Contract --> "abstract <<readonly>>" AbstractContractFunction
 
 abstract class ContractError {
   +name: String = "Contract Error"
@@ -88,7 +114,7 @@ class AbstractError {
 }
 AbstractContract +-- AbstractError
 ContractError <|-- AbstractError
-AbstractContractFunction ..> AbstractError : "<<throws>>"
+GeneralAbstractContractFunction ..> AbstractError : "<<throws>>"
 
 AbstractError --> "contract <<readonly>>" AbstractContract
 
@@ -134,7 +160,7 @@ class ExceptionConditionViolation {
   +{static} ExceptionConditionViolation(contractFunction, condition, self, args, exception: Any)
 }
 
-ConditionError --> "contractFunction <<readonly>>" ContractFunction
+ConditionError --> "contractFunction <<readonly>>" GeneralContractFunction
 ConditionError --> "condition <<readonly>>" Function
 ConditionError --> "_stackSource <<readonly, frozen>>" Error
 
