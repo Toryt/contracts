@@ -211,19 +211,20 @@
         });
       });
 
-      describe("AbstractContract.isAContractFunction", function() {
-
-        it("says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 properties are " +
-           "frozen, and it has the expected display name", function() {
-          var candidate = common.createCandidateContractFunction();
-          //noinspection BadExpressionStatementJS,JSHint
-          expect(AbstractContract.isAContractFunction(candidate)).to.be.ok;
-        });
+      function generateIAGCFTests(isAGeneralizedContractFunction) {
+        it("says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 " +
+           "properties are frozen, and it has the expected display name",
+          function() {
+            var candidate = common.createCandidateContractFunction();
+            //noinspection BadExpressionStatementJS,JSHint
+            expect(isAGeneralizedContractFunction(candidate)).to.be.ok;
+          }
+        );
 
         common.thingsThatAreNotAFunctionNorAContract.forEach(function(thing) {
           it("says no if the argument is not a function, but " + thing, function() {
-              //noinspection BadExpressionStatementJS,JSHint
-            expect(AbstractContract.isAContractFunction(thing)).not.to.be.ok;
+            //noinspection BadExpressionStatementJS,JSHint
+            expect(isAGeneralizedContractFunction(thing)).not.to.be.ok;
           });
         });
 
@@ -231,30 +232,65 @@
           it("says no if the " + doNotFreezeProperty + " property is not frozen", function() {
             var candidate = common.createCandidateContractFunction(doNotFreezeProperty);
             //noinspection BadExpressionStatementJS,JSHint
-            expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
+            expect(isAGeneralizedContractFunction(candidate)).not.to.be.ok;
           });
         });
 
         [
           {propertyName: "contract", expected: "an AbstractContract", extra: [function() {}]},
           {propertyName: "implementation", expected: "a Function", extra: [new AbstractContract({})]},
-          {propertyName: "location", expected: "a location outside this library", extra: ["    at", "at /"]},
           {propertyName: "bind", expected: "AbstractContract.bindContractFunction", extra: []},
           {
             propertyName: "displayName",
-            expected: "the contractFunctionDisplayName",
-            extra: ["candidate", AbstractContract.displayNamePrefix]
+            expected:     "the contractFunctionDisplayName",
+            extra:        ["candidate", AbstractContract.displayNamePrefix]
           }
         ].forEach(function(aCase) {
           common.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach(function(v) {
             it("says no if the " + aCase.propertyName + " is not " + aCase.expected + " but " + v, function() {
               var candidate = common.createCandidateContractFunction(null, aCase.propertyName, v);
               //noinspection BadExpressionStatementJS,JSHint
-              expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
+              expect(isAGeneralizedContractFunction(candidate)).not.to.be.ok;
             });
           });
         });
+        common.thingsThatAreNotAFunctionNorAContract.filter(function(v) {return !v;}).forEach(function(v) {
+          it("says no if the location is not truthy but " + v, function() {
+            var candidate = common.createCandidateContractFunction(null, "location", v);
+            //noinspection BadExpressionStatementJS,JSHint
+            expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
+          });
+        });
+      }
 
+      describe("AbstractContract.isAGeneralizedContractFunction", function() {
+        generateIAGCFTests(AbstractContract.isAGeneralContractFunction);
+        common.thingsThatAreNotAFunctionNorAContract
+          .filter(function(v) {return !!v;})
+          .concat(["    at", "at /", {}, AbstractContract.internalLocation])
+          .forEach(function(v) {
+            it("says yes if there is an implementation Function, an AbstractContract, and a location that is " + v +
+               ", and all 3 properties are frozen, and it has the expected display name",
+              function() {
+                var candidate = common.createCandidateContractFunction(null, "location", v);
+                //noinspection BadExpressionStatementJS,JSHint
+                expect(AbstractContract.isAGeneralContractFunction(candidate)).to.be.ok;
+              }
+            );
+          });
+      });
+
+      describe("AbstractContract.isAContractFunction", function() {
+        generateIAGCFTests(AbstractContract.isAContractFunction);
+        common.thingsThatAreNotAFunctionNorAContract
+          .concat(["    at", "at /", {}, AbstractContract.internalLocation])
+          .forEach(function(v) {
+            it("says no if the location is not a location outside this library but " + v, function() {
+              var candidate = common.createCandidateContractFunction(null, "location", v);
+              //noinspection BadExpressionStatementJS,JSHint
+              expect(AbstractContract.isAContractFunction(candidate)).not.to.be.ok;
+            });
+          });
       });
 
       describe("AbstractContract.bless", function() {
