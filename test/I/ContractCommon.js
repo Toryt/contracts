@@ -49,6 +49,7 @@
       function expectPost(contract, implFunction , result) {
         //noinspection BadExpressionStatementJS,JSHint
         expect(contract.isImplementedBy(result)).to.be.ok;
+        expect(result).to.satisfy(Contract.isAContractFunction);
         expect(result).to.have.property("contract").that.equals(contract);
         expect(result).to.have.property("implementation").that.equals(implFunction);
         self.expectInvariants(contract);
