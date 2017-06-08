@@ -1,6 +1,6 @@
 {
   "name": "@toryt/contracts-ii",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
   "main": "src/II/Contract.js",
   "directories": {
