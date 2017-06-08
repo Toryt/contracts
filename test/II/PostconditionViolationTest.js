@@ -33,7 +33,7 @@
   var argsCases = common.argsCases.filter(function(a) {return util.typeOf(a) === "array";});
 
   // describe("I", function() {
-    describe("I/PostconditionViolation", function() {
+    describe("II/PostconditionViolation", function() {
 
       describe("#prototype", function() {
         it("has a condition", function() {

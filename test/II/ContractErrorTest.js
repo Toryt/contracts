@@ -31,7 +31,7 @@
   "use strict";
 
   // describe("I", function() {
-    describe("I/ContractError", function() {
+    describe("II/ContractError", function() {
 
       describe("#ContractError()", function() {
         it("creates an instance with all toppings", function() {

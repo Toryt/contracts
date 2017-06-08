@@ -31,7 +31,7 @@
   "use strict";
 
   // describe("I", function() {
-    describe("I/PreconditionViolation", function() {
+    describe("II/PreconditionViolation", function() {
 
       describe("#prototype", function() {
         it("has a condition", function() {

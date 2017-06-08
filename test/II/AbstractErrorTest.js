@@ -34,7 +34,7 @@
   var AbstractError = AbstractContract.AbstractError;
 
   // describe("I", function() {
-    describe("I/AbstractError", function() {
+    describe("II/AbstractError", function() {
 
       describe("#AbstractError()", function() {
         it("creates an instance with all toppings for AbstractContract.root", function() {

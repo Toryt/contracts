@@ -31,7 +31,7 @@
   "use strict";
 
   // describe("I", function() {
-    describe("I/ConditionError", function() {
+    describe("II/ConditionError", function() {
 
       describe("#ConditionError()", function() {
         common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
