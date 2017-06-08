@@ -44,7 +44,7 @@ define({ // jshint ignore:line
 	// and platformVersion; any other capabilities options specified for an environment will be copied as-is. Note that
 	// browser and platform names, and version number formats, may differ between cloud testing systems.
 	environments: [
-    {browserName: "firefox", "browser_version": "Firefox 53.0 beta", os: "WINDOWS", os_version: 10}
+    //{browserName: "firefox", "browser_version": "Firefox 54.0 beta", os: "WINDOWS", os_version: 10},
     // works, after syntax feedback from Ujwal Pathak@Browserstack.
     // Takes a long time, but we do not get a timeout like with FF52. As a consequence, my free minutes are up,
     // but nobody is complaining. I don't know what that means.
@@ -58,13 +58,14 @@ define({ // jshint ignore:line
      122:26 0 STOP SESSION
      SESSION LIMIT REACHED
      */
-    //{browserName: "chrome", version: "57..latest", platform: ["WINDOWS", "WIN8"]} // OK
-    //{browserName: "firefox", version: "52", os: "WINDOWS", os_version: 10}, // "..latest" doesn't work -- browserstack thinks latest is 28
+    {browserName: "chrome", version: "57..latest", platform: ["WINDOWS", "WIN8"]}, // OK
+    //{browserName: "firefox", version: "53", os: "WINDOWS", os_version: 10}, // "..latest" doesn't work -- browserstack thinks latest is 28
+    // firefox tests don't end
     /* MUDO Fails
      Timeout (Session timed out because the browser was idle for 90 seconds)
      */
 
-    //{browserName: "edge", version: "14..latest", os: "WINDOWS", os_version: 10},
+    {browserName: "edge", version: "14..latest", os: "WINDOWS", os_version: 10},
     /* MUDO
     Fails:
 
@@ -74,7 +75,7 @@ define({ // jshint ignore:line
 
      Yet another stack format (as I was afraid).
      */
-    //{browserName: "internet explorer", version: "11", os: "WINDOWS", os_version: 10},
+    {browserName: "internet explorer", version: "11", os: "WINDOWS", os_version: 10},
     /* MUDO
     Fails:
      Error: Could not determine EOL for this platform. It is not Windows \r\n, nor Unix \n.
@@ -97,7 +98,7 @@ define({ // jshint ignore:line
      at <__intern/lib/executors/PreExecutor.js:357:32>
      at dispatcher  <__intern/browser_modules/dojo/aspect.js:66:47>[0m
      */
-    //{browserName: "android"} // Could not find device: Galaxy Tab 4 10.1, Nexus 5 not found
+    {browserName: "android"} // Could not find device: Galaxy Tab 4 10.1, Nexus 5 not found
     // like this, running on Google Nexus 5; takes ages; time to call it a day
 
     //{browserName: "safari", version: "10..latest", platform: ["MAC"]},
