@@ -52,6 +52,43 @@
           expect(otherThisResult).to.equal(boundThisPropertyValue);
         });
       });
+      describe("#prototype", function() {
+        [
+          function simpleF() {return "This is a very simple function.";},
+          class SimpleClass {}
+        ].forEach(function(f) {
+          it("exists on function " + f, function() {
+            function otherSimpleF() {return "This is another very simple function.";}
+
+            expect(f).to.haveOwnProperty("prototype");
+            expect(f).to.have.property("prototype").that.is.an("object");
+            expect(f).to.have.property("prototype").instanceOf(Object);
+            //noinspection JSPotentiallyInvalidConstructorUsage
+            expect(f.prototype).to.satisfy(
+              function(simpleFProto) {return Object.getPrototypeOf(simpleFProto) === Object.prototype;}
+            );
+            //noinspection JSPotentiallyInvalidConstructorUsage
+            expect(f).to.have.property("prototype").that.not.equals(otherSimpleF.prototype);
+            //noinspection JSPotentiallyInvalidConstructorUsage
+            console.log(JSON.stringify(f.prototype));
+          });
+        });
+      });
+      describe("new", function() {
+        [
+          function simpleF() {return "This is a very simple function.";},
+          class SimpleClass {}
+        ].forEach(function(f) {
+          it("can be used as a constructor " + f, function() {
+            var result = new f();
+            expect(result).to.be.an("object");
+            expect(result).to.be.instanceOf(f);
+            expect(Object.getPrototypeOf(result)).to.equal(f.prototype);
+            //noinspection JSPotentiallyInvalidConstructorUsage
+            console.log(JSON.stringify(result));
+          });
+        });
+      });
     });
   // });
 
