@@ -458,6 +458,7 @@
           expectExceptionProperties.bind(undefined, self, self.fastDefensiveIntegerSumWrong)
         );
       });
+      //noinspection LocalVariableNamingConventionJS
       var PersonConstructorContract = new Contract({
         pre: [
           function(name) {return util.typeOf(name) === "string";},
