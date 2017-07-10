@@ -458,6 +458,56 @@
           expectExceptionProperties.bind(undefined, self, self.fastDefensiveIntegerSumWrong)
         );
       });
+      var PersonConstructorContract = new Contract({
+        pre: [
+          function(name) {return util.typeOf(name) === "string";},
+          function(name) {return !!name;}
+        ],
+        post: [
+          function(name, ignore) {return this.name === name;}
+        ],
+        exception: [
+          function() {return false;}
+        ]
+      });
+      it("works with a constructor", function() {
+        var PersonImplementation = function(name) {
+          this._name = name;
+        };
+        expect(PersonImplementation)
+          .to.have.property("prototype")
+          .that.has.property("constructor")
+          .that.equals(PersonImplementation);
+        PersonImplementation.prototype._name = null;
+        util.defineFrozenDerivedProperty(PersonImplementation.prototype, "name", function() {return this._name;});
+
+        var ContractPerson = PersonConstructorContract.implementation(PersonImplementation);
+        var caseName = "Jim";
+        var result = new ContractPerson(caseName);
+        expect(result).to.be.ok;
+        expect(result).to.be.instanceOf(ContractPerson);
+        expect(result).to.be.instanceOf(PersonImplementation);
+        expect(result).to.haveOwnProperty("name");
+        expect(result).to.have.property("name").that.equals(caseName);
+      });
+      it("works with a class", function() {
+        var ContractPerson = PersonConstructorContract.implementation(class PersonImplementation {
+          constructor(name) {
+            this._name = name;
+          }
+
+          get name() {
+            return _name;
+          }
+        });
+        var caseName = "Jim";
+        var result = new ContractPerson(caseName);
+        expect(result).to.be.ok;
+        expect(result).to.be.instanceOf(ContractPerson);
+        expect(result).to.be.instanceOf(PersonImplementation);
+        expect(result).to.haveOwnProperty("name");
+        expect(result).to.have.property("name").that.equals(caseName);
+      });
 
     });
   // });
