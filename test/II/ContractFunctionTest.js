@@ -485,6 +485,7 @@
       }
 
       it("works with a constructor", function() {
+        //noinspection LocalVariableNamingConventionJS
         var PersonImplementation = function(name) {
           this._name = name;
         };
@@ -504,7 +505,7 @@
           }
 
           get name() {
-            return _name;
+            return this._name;
           }
         }
 
