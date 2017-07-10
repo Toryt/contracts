@@ -470,6 +470,20 @@
           function() {return false;}
         ]
       });
+
+      //noinspection ParameterNamingConventionJS
+      function expectConstructorToWork(PersonImplementation) {
+        //noinspection LocalVariableNamingConventionJS
+        var ContractPerson = PersonConstructorContract.implementation(PersonImplementation);
+        var caseName = "Jim";
+        var result = new ContractPerson(caseName);
+        expect(result).to.be.ok;
+        expect(result).to.be.instanceOf(ContractPerson);
+        expect(result).to.be.instanceOf(PersonImplementation);
+        expect(result).to.haveOwnProperty("name");
+        expect(result).to.have.property("name").that.equals(caseName);
+      }
+
       it("works with a constructor", function() {
         var PersonImplementation = function(name) {
           this._name = name;
@@ -481,17 +495,10 @@
         PersonImplementation.prototype._name = null;
         util.defineFrozenDerivedProperty(PersonImplementation.prototype, "name", function() {return this._name;});
 
-        var ContractPerson = PersonConstructorContract.implementation(PersonImplementation);
-        var caseName = "Jim";
-        var result = new ContractPerson(caseName);
-        expect(result).to.be.ok;
-        expect(result).to.be.instanceOf(ContractPerson);
-        expect(result).to.be.instanceOf(PersonImplementation);
-        expect(result).to.haveOwnProperty("name");
-        expect(result).to.have.property("name").that.equals(caseName);
+        expectConstructorToWork(PersonImplementation);
       });
       it("works with a class", function() {
-        var ContractPerson = PersonConstructorContract.implementation(class PersonImplementation {
+        class PersonImplementation {
           constructor(name) {
             this._name = name;
           }
@@ -499,14 +506,9 @@
           get name() {
             return _name;
           }
-        });
-        var caseName = "Jim";
-        var result = new ContractPerson(caseName);
-        expect(result).to.be.ok;
-        expect(result).to.be.instanceOf(ContractPerson);
-        expect(result).to.be.instanceOf(PersonImplementation);
-        expect(result).to.haveOwnProperty("name");
-        expect(result).to.have.property("name").that.equals(caseName);
+        }
+
+        expectConstructorToWork(PersonImplementation);
       });
 
     });
