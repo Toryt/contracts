@@ -134,7 +134,12 @@
    *   <li>have a frozen `location` property, that has a value,</li>
    *   <li>have a frozen `bind` property, which is {@link AbstractContract.bindContractFunction}, and</li>
    *   <li>have a `displayName` that is a contract function display name, which is a string that gives
-   *     information for a programmer to understand which contract function this is.</li>
+   *     information for a programmer to understand which contract function this is,</li>
+   *   <li>have a `prototype` property,
+   *     <ul>
+   *       <li>that is an object,</li>
+   *       <li>that has a `constructor` property that is the contract function, and</li>
+   *       <li>that has `f.implementation.prototype` in its prototype chain, or is equal to it.
    * </ul>
    */
   AbstractContract.isAGeneralContractFunction = function(f) {
@@ -149,7 +154,10 @@
            && f.location
            && f.displayName === AbstractContract.contractFunctionDisplayName(f)
            && util.isFrozenOwnProperty(f, "bind")
-           && f.bind === AbstractContract.bindContractFunction;
+           && f.bind === AbstractContract.bindContractFunction
+           && util.typeOf(f.prototype) === "object"
+           && f.prototype.constructor === f
+           && (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation);
   };
 
   /**
