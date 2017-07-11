@@ -57,8 +57,9 @@
           expect(Function.prototype).not.to.have.property("prototype");
         });
         [
-          function simpleF() {return "This is a very simple function.";},
-          class SimpleClass {}
+          function simpleF() {return "This is a very simple function.";}
+          // TODO support class construct
+          //class SimpleClass {}
         ].forEach(function(f) {
           it("exists on function " + f, function() {
             function otherSimpleF() {return "This is another very simple function.";}
@@ -105,25 +106,27 @@
           simpleF.prototype = newObject;
           expect(simpleF).to.have.property("prototype").that.equals(newObject);
         });
-        it("is not writable for a class", function() {
-          class SimpleClass {}
-
-          expect(SimpleClass).to.have.ownPropertyDescriptor("prototype").that.has.property("writable", false);
-          console.log(JSON.stringify(Object.getOwnPropertyDescriptor(SimpleClass, "prototype")));
-          var newObject = {name: "a new object"};
-          try {
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            SimpleClass.prototype = newObject;
-          }
-          catch (err) {
-            expect(err).to.be.instanceOf(TypeError);
-          }
-        });
+        // TODO support class construct
+        //it("is not writable for a class", function() {
+        //  class SimpleClass {}
+        //
+        //  expect(SimpleClass).to.have.ownPropertyDescriptor("prototype").that.has.property("writable", false);
+        //  testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(SimpleClass, "prototype")));
+        //  var newObject = {name: "a new object"};
+        //  try {
+        //    //noinspection JSPotentiallyInvalidConstructorUsage
+        //    SimpleClass.prototype = newObject;
+        //  }
+        //  catch (err) {
+        //    expect(err).to.be.instanceOf(TypeError);
+        //  }
+        //});
       });
       describe("new", function() {
         [
-          function simpleF() {return "This is a very simple function.";},
-          class SimpleClass {}
+          function simpleF() {return "This is a very simple function.";}
+          // TODO support class construct
+          //class SimpleClass {}
         ].forEach(function(f) {
           it("can be used as a constructor " + f, function() {
             var result = new f();
