@@ -178,7 +178,10 @@
   /**
    * Helper function that transforms any function given as <code>contractFunction</code>
    * into a [contract function]{@linkplain AbstractContract#isAContractFunction}
-   * for the given <code>
+   * for the given parameters.
+   * The {@code contractFunction.prototype} is changed to an object that refers to
+   * {@code contractFunction} as {@code contractFunction.prototype.constructor}, is otherwise empty,
+   * and has {@code implFunction.prototype} as prototype.
    *
    * @param contractFunction {Function} the regular {Function} to be transformed into a contract function
    * @param contract {AbstractContract} the contract <code>contractFunction</code> is a realisation of
@@ -204,6 +207,8 @@
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
     util.setAndFreezeProperty(contractFunction, "location", location);
     util.setAndFreezeProperty(contractFunction, "bind", AbstractContract.bindContractFunction);
+    contractFunction.prototype = Object.create(implFunction.prototype);
+    util.setAndFreezeProperty(contractFunction.prototype, "constructor", contractFunction);
     util.defineFrozenDerivedProperty(
       contractFunction,
       "displayName",
