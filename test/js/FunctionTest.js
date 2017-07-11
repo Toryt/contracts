@@ -17,7 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect"];
+  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil"];
 
   if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
@@ -25,7 +25,7 @@
   else if (typeof exports === "object") {
     module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
   }
-}(function(describe, it, expect) {
+}(function(describe, it, expect, testUtil) {
   "use strict";
 
   // describe("js", function() {
@@ -81,10 +81,10 @@
             expect(f.prototype).to.haveOwnProperty("constructor");
             expect(f.prototype).to.have.property("constructor").that.equals(f);
             //noinspection JSPotentiallyInvalidConstructorUsage
-            console.log(JSON.stringify(f.prototype));
+            testUtil.log(JSON.stringify(f.prototype));
           });
           it("cannot be deleted (not enumerable and not configurable) from function " + f, function() {
-            console.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, "prototype")));
+            testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, "prototype")));
             try {
               delete f.prototype;
             }
@@ -93,14 +93,14 @@
             }
             expect(f).to.have.ownPropertyDescriptor("prototype").that.has.property("enumerable", false);
             expect(f).to.have.ownPropertyDescriptor("prototype").that.has.property("configurable", false);
-            console.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, "prototype")));
+            testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, "prototype")));
           });
         });
         it("is writable for a simple function", function() {
           function simpleF() {return "This is a very simple function.";}
 
           expect(simpleF).to.have.ownPropertyDescriptor("prototype").that.has.property("writable", true);
-          console.log(JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, "prototype")));
+          testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, "prototype")));
           var newObject = {name: "a new object"};
           //noinspection JSPotentiallyInvalidConstructorUsage
           simpleF.prototype = newObject;
@@ -134,7 +134,7 @@
             expect(result).to.be.instanceOf(f);
             expect(Object.getPrototypeOf(result)).to.equal(f.prototype);
             //noinspection JSPotentiallyInvalidConstructorUsage
-            console.log(JSON.stringify(result));
+            testUtil.log(JSON.stringify(result));
           });
         });
       });
