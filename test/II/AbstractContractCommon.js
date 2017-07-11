@@ -171,8 +171,6 @@
       (otherPropertyName === "displayName")
         ? otherPropertyValue
         : AbstractContract.contractFunctionDisplayName(candidate);
-    //noinspection JSPotentiallyInvalidConstructorUsage
-    candidate.prototype = Object.create(impl.prototype, {constructor: {value: candidate}});
     return candidate;
   }
 
