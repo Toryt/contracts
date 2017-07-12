@@ -51,6 +51,16 @@
           //noinspection JSUnresolvedVariable
           expect(otherThisResult).to.equal(boundThisPropertyValue);
         });
+        it("has no prototype", function() {
+          function testF(p) {return "just a function that returns " + p;} // jshint ignore:line
+
+          expect(testF).to.have.property("prototype");
+          var boundThis = {description: "An object to bind to"};
+          var boundP = "a string parameter";
+          var boundF = testF.bind(boundThis, boundP);
+          expect(boundF).to.not.have.property("prototype");
+          expect(boundF()).to.satisfy(function(result) {return result.endsWith(boundP)});
+        });
       });
       describe("#prototype", function() {
         it("does not exist on the Function.prototype", function() {
