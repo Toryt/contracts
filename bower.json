@@ -1,7 +1,7 @@
 {
   "name": "@toryt/contracts-ii",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
-  "main": "src/II/Contract.js",
+  "main": "src/III/Contract.js",
   "moduleType": [
     "amd",
     "node"

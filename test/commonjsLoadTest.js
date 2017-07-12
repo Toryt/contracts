@@ -32,15 +32,15 @@ var modules = {
     util: require("../src/_private/util")
   },
   I : {
-    AbstractContract: require("../src/II/AbstractContract"),
-    ConditionError: require("../src/II/ConditionError"),
-    ConditionMetaError: require("../src/II/ConditionMetaError"),
-    ConditionViolation: require("../src/II/ConditionViolation"),
-    Contract: require("../src/II/Contract"),
-    ContractError: require("../src/II/ContractError"),
-    ExceptionConditionViolation: require("../src/II/ExceptionConditionViolation"),
-    PostconditionViolation: require("../src/II/PostconditionViolation"),
-    PreconditionViolation: require("../src/II/PreconditionViolation")
+    AbstractContract: require("../src/III/AbstractContract"),
+    ConditionError: require("../src/III/ConditionError"),
+    ConditionMetaError: require("../src/III/ConditionMetaError"),
+    ConditionViolation: require("../src/III/ConditionViolation"),
+    Contract: require("../src/III/Contract"),
+    ContractError: require("../src/III/ContractError"),
+    ExceptionConditionViolation: require("../src/III/ExceptionConditionViolation"),
+    PostconditionViolation: require("../src/III/PostconditionViolation"),
+    PreconditionViolation: require("../src/III/PreconditionViolation")
   }
 };
 
