@@ -1,5 +1,5 @@
 {
-  "name": "@toryt/contracts-ii",
+  "name": "toryt-contracts-iii",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
   "main": "src/III/Contract.js",
   "moduleType": [
