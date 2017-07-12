@@ -59,6 +59,10 @@
           var boundP = "a string parameter";
           var boundF = testF.bind(boundThis, boundP);
           expect(boundF).to.not.have.property("prototype");
+          /* https://www.ecma-international.org/ecma-262/6.0/index.html#sec-function.prototype.bind
+             NOTE 1 Function objects created using Function.prototype.bind are exotic objects.
+             They also do not have a prototype property.
+           */
           expect(boundF()).to.satisfy(function(result) {return result.endsWith(boundP);});
         });
         [
