@@ -28,6 +28,7 @@
  * | > node test/commonjsLoadTest.js
  */
 var modules = {
+  testUtil: require("./_util/testUtil"),
   _private: {
     util: require("../src/_private/util")
   },
@@ -44,4 +45,4 @@ var modules = {
   }
 };
 
-console.log(modules.I.AbstractContract.root.location);
+modules.testUtil.log(modules.I.AbstractContract.root.location.toString());
