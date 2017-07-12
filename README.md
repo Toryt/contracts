@@ -8,20 +8,25 @@ Tested
 
 * with Mocha,
   * on Mac, with
-    * node v6.9.5
-    * Chrome Version 57.0.2987.110 (64-bit)
-    * Firefox 52.0.2 (64-bit)
-    * Safari Version 10.1 (12603.1.30.0.34)
+    * node v6.10.3
+    * Chrome Version 59.0.3071.115 (Official Build) (64-bit)
+    * Firefox 54.0 (64-bit)
+    * Safari Version 10.1.1 (12603.2.4)
 * with [Intern]
   * on Mac, with
-    * node v6.9.5
-    * Chrome Version 57.0.2987.110 (64-bit)
-    * Firefox 52.0.2 (64-bit)
-    * Safari Version 10.1 (12603.1.30.0.34)
+    * node v6.10.3
+    * Chrome Version 59.0.3071.115 (Official Build) (64-bit)
+      * There is 1 failure for `_private/util.stackOutsideThisLibrary`,
+        "only has stack lines outside the library, and the first line refers to this code, for a local error", we don't
+        get with Mocha on Chrome, or Firefox with [Intern]
+    * Firefox 54.0 (64-bit)
+    * Safari Version 10.1.1 (12603.2.4) _fails with "Cannot find the Node.js require"_, but passes with Mocha (although
+      it needs persuasion: for some reason it fails regularly with a timeout on just.randomstring.js)
   * on Linux, with, via [Travis] [![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)](https://travis-ci.org/Toryt/contracts)
-    * node v6.10.1
-    * the latest node version; you will find builds that are tested ok with node v7.7.4, node v8.0.0, … on [Travis]
-  * on Windows 8 and 10 with [Browserstack] ![Browserstack logo]
+    * node v6.11.1
+    * the latest node version (v8.1.4); you will find builds that are tested ok with node v7.7.4, node v8.0.0, … 
+      on [Travis]
+  * on Windows 8 and 10 with [Browserstack] ![Browserstack logo] _(not yet tested with version III)_
     * Chrome Version 57
 
 Currently, [Intern] is the major testing framework, intended to test the code itself.
@@ -89,39 +94,52 @@ Versions
 --------
 
 * I
-  * I/1.0  : First release, minimally functional, Mac - node
-  * I/2.0  : Use it in web projects, Mac
-  * I/2.1  : Use it with node on linux ([Travis])
-  * I/2.2  : Now also tests with [Intern] on node, on Mac and Linux.
-             [Intern] is preferred over Mocha. This version only changes private code,
-             test code, and build setup.
-  * I/2.3  : Cleanup, renaming, administration, license, fixing warnings
-  * I/2.4  : Now also tests with [Intern] on Mac on Chrome, Safari, 
-             Firefox (3 failures, waiting for april version 53)
-  * I/2.5  : Fix in behavior and test of util.browserModuleLocation
+  * I/1.0     : First release, minimally functional, Mac - node
+  * I/2.0     : Use it in web projects, Mac
+  * I/2.1     : Use it with node on linux ([Travis])
+  * I/2.2     : Now also tests with [Intern] on node, on Mac and Linux.
+                [Intern] is preferred over Mocha. This version only changes private code,
+                test code, and build setup.
+  * I/2.3     : Cleanup, renaming, administration, license, fixing warnings
+  * I/2.4     : Now also tests with [Intern] on Mac on Chrome, Safari, 
+                Firefox (3 failures, waiting for april version 53)
+  * I/2.5     : Fix in behavior and test of util.browserModuleLocation
 * II
-  * II/1.0  : First release on npm. The code is functional on node, and there is no need to wait for browser validation
-             to start using it on node.
+  * II/1.0    : First release on npm. The code is functional on node, and there is no need to wait for browser 
+                validation to start using it on node.
+* III
+  * III/3.0.0 : Now also supports contracts for (classic) constructors. In general, the prototype of an implementation
+                is "forwarded" to the contract function. The ECMAScript2015 "class" construct is not yet supported
+                (a "class" generated constructor cannot be `call`ed or `apply`ed). This is an incompatible change,
+                since we now require more of a general contract function.
+                Also, from now on, we will use versioning differently. Since npm insists on semantic versioning,
+                the major version number will be the arabic numeral of the roman mark version.
+                We now use `yarn`, but that is optional.
 
 
 
 TODO
 ----
 
-* II
-  * II/2.0  : Windows
-  * II/3.0  : Documentation en README
-  * II/4.0  : jsdoc
+The test suite is too unstable, and should be stabilized soon. The coverage is excellent, but in metrics as in
+reporting quirks, but the broad range of platforms and their evolution is tiresome.  
+
 * III
-  * III/1.0 : conditions-per-argument
-  * III/2.0 : old-support
-  * III/3.0 : type conditions
-  * III/4.0 : chai-like conditions
+  * III/3.1.0  : Select whether to include nothing, pre only, or pre and post at load time, and whether to validate
+                 nothing, pre only, or pre and post at runtime.
+  * III/3.2.0  : Windows
+  * III/3.3.0  : Documentation en README
+  * III/3.4.0  : jsdoc
 * IV
-  * IV/1.0: Specialization / generalization
-  * IV/2.0: support for type definitions ("classes")
-  * IV/3.0: test support Mocha
-  * IV/4.0: test support [Intern]
+  * IV/4.0.0 : conditions-per-argument
+  * IV/4.1.0 : old-support
+  * IV/4.2.0 : type conditions
+  * IV/4.3.0 : chai-like conditions
+* V
+  * V/5.0.0: Specialization / generalization
+  * V/5.1.0: support for type definitions ("classes")
+  * V/5.2.0: test support Mocha
+  * V/5.3.0: test support [Intern]
   
 
   
