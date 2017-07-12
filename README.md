@@ -12,6 +12,7 @@ Tested
     * Chrome Version 59.0.3071.115 (Official Build) (64-bit)
     * Firefox 54.0 (64-bit)
     * Safari Version 10.1.1 (12603.2.4)
+      * it needs persuasion: for some reason it fails regularly with a timeout on just.randomstring.js
 * with [Intern]
   * on Mac, with
     * node v6.10.3
@@ -19,9 +20,11 @@ Tested
       * There is 1 failure for `_private/util.stackOutsideThisLibrary`,
         "only has stack lines outside the library, and the first line refers to this code, for a local error", we don't
         get with Mocha on Chrome, or Firefox with [Intern]
-    * Firefox 54.0 (64-bit)
-    * Safari Version 10.1.1 (12603.2.4) _fails with "Cannot find the Node.js require"_, but passes with Mocha (although
-      it needs persuasion: for some reason it fails regularly with a timeout on just.randomstring.js)
+      * _fails with "Cannot find the Node.js require", after first having worked before a new npm install_
+    * Firefox 54.0 (64-bit) _fails with "Cannot find the Node.js require",
+      * _fails with "Cannot find the Node.js require", after first having worked before a new npm install_
+    * Safari Version 10.1.1 (12603.2.4) 
+      * _fails with "Cannot find the Node.js require"_
   * on Linux, with, via [Travis] [![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)](https://travis-ci.org/Toryt/contracts)
     * node v6.11.1
     * the latest node version (v8.1.4); you will find builds that are tested ok with node v7.7.4, node v8.0.0, … 
