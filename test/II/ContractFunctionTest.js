@@ -481,7 +481,7 @@
         expect(result).to.be.ok;
         expect(result).to.be.instanceOf(ContractPerson);
         expect(result).to.be.instanceOf(PersonImplementation);
-        expect(result).to.haveOwnProperty("name");
+        expect(result).to.haveOwnProperty("_name");
         expect(result).to.have.property("name").that.equals(caseName);
       }
 
