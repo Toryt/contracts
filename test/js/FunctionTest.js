@@ -113,6 +113,8 @@
           function simpleF() {return "This is a very simple function.";}
           // TODO support class construct
           //class SimpleClass {}
+          /* MUDO getters and setters do not have a prototype!
+             https://www.ecma-international.org/ecma-262/6.0/index.html#sec-method-definitions-runtime-semantics-propertydefinitionevaluation */
         ].forEach(function(f) {
           it("exists on function " + f, function() {
             function otherSimpleF() {return "This is another very simple function.";}
