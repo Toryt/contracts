@@ -182,6 +182,43 @@
           expect(result).to.be.undefined;
         });
       });
+
+      describe("instanceof", function() {
+        it("does not depend on the constructor property of a prototype", function() {
+          function Base() {}
+          Base.prototype.constructor = "Second something else";
+          function Derived() {}
+          Derived.prototype = Object.create(Base.prototype, {constructor: {value: "First something else"}});
+          function Unrelated() {}
+          var instance = new Derived();
+          expect(instance instanceof Derived).to.be.true;
+          expect(instance instanceof Base).to.be.true;
+          expect(instance instanceof Unrelated).to.be.false;
+          expect(instance instanceof Object).to.be.true;
+        });
+        it("is not true for the prototype itself", function() {
+          function Base() {}
+
+          Base.prototype.constructor = "Second something else";
+          function Derived() {}
+
+          Derived.prototype = Object.create(Base.prototype, {constructor: {value: "First something else"}});
+          function Unrelated() {}
+
+          expect(Derived.prototype instanceof Derived).to.be.false;
+          expect(Derived.prototype instanceof Base).to.be.true;
+          expect(Derived.prototype instanceof Unrelated).to.be.false;
+          expect(Derived.prototype instanceof Object).to.be.true;
+          expect(Base.prototype instanceof Derived).to.be.false;
+          expect(Base.prototype instanceof Base).to.be.false;
+          expect(Base.prototype instanceof Unrelated).to.be.false;
+          expect(Base.prototype instanceof Object).to.be.true;
+          expect(Unrelated.prototype instanceof Derived).to.be.false;
+          expect(Unrelated.prototype instanceof Base).to.be.false;
+          expect(Unrelated.prototype instanceof Unrelated).to.be.false;
+          expect(Unrelated.prototype instanceof Object).to.be.true;
+        });
+      });
     });
   // });
 
