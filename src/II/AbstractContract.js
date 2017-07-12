@@ -134,13 +134,14 @@
    *   <li>have a frozen `location` property, that has a value,</li>
    *   <li>have a frozen `bind` property, which is {@link AbstractContract.bindContractFunction}, and</li>
    *   <li>have a `displayName` that is a contract function display name, which is a string that gives
-   *     information for a programmer to understand which contract function this is,</li>
-   *   <li>have a `prototype` property,
+   *     information for a programmer to understand which contract function this is, and</li>
+   *   <li>if the `implementation` function has a `prototype`, have a `prototype` property,
    *     <ul>
    *       <li>that is an object,</li>
    *       <li>that has a `constructor` property that is the contract function, and</li>
    *       <li>that has `f.implementation.prototype` in its prototype chain, or is equal to it.
-   * </ul>
+   *     </ul>
+   *   </li>
    */
   AbstractContract.isAGeneralContractFunction = function(f) {
     // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
@@ -155,9 +156,10 @@
            && f.displayName === AbstractContract.contractFunctionDisplayName(f)
            && util.isFrozenOwnProperty(f, "bind")
            && f.bind === AbstractContract.bindContractFunction
-           && util.typeOf(f.prototype) === "object"
-           && f.prototype.constructor === f
-           && (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation);
+           && (!f.implementation.hasOwnProperty("prototype")
+               || (util.typeOf(f.prototype) === "object"
+                   && f.prototype.constructor === f
+                   && (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation)));
   };
 
   /**
@@ -179,9 +181,9 @@
    * Helper function that transforms any function given as <code>contractFunction</code>
    * into a [contract function]{@linkplain AbstractContract#isAContractFunction}
    * for the given parameters.
-   * The {@code contractFunction.prototype} is changed to an object that refers to
-   * {@code contractFunction} as {@code contractFunction.prototype.constructor}, is otherwise empty,
-   * and has {@code implFunction.prototype} as prototype.
+   * If {@code implFunction.prototype} exists, the {@code contractFunction.prototype} is changed to
+   * an object that refers to {@code contractFunction} as {@code contractFunction.prototype.constructor},
+   * is otherwise empty, and has {@code implFunction.prototype} as prototype.
    *
    * @param contractFunction {Function} the regular {Function} to be transformed into a contract function
    * @param contract {AbstractContract} the contract <code>contractFunction</code> is a realisation of
@@ -207,8 +209,10 @@
     util.setAndFreezeProperty(contractFunction, "implementation", implFunction);
     util.setAndFreezeProperty(contractFunction, "location", location);
     util.setAndFreezeProperty(contractFunction, "bind", AbstractContract.bindContractFunction);
-    contractFunction.prototype = Object.create(implFunction.prototype);
-    util.setAndFreezeProperty(contractFunction.prototype, "constructor", contractFunction);
+    if (implFunction.hasOwnProperty("prototype")) {
+      contractFunction.prototype = Object.create(implFunction.prototype);
+      util.setAndFreezeProperty(contractFunction.prototype, "constructor", contractFunction);
+    }
     util.defineFrozenDerivedProperty(
       contractFunction,
       "displayName",
