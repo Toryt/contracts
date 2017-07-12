@@ -473,9 +473,12 @@
       });
 
       //noinspection ParameterNamingConventionJS
-      function expectConstructorToWork(PersonImplementation) {
+      function expectConstructorToWork(PersonImplementation, doBind) {
         //noinspection LocalVariableNamingConventionJS
         var ContractPerson = PersonConstructorContract.implementation(PersonImplementation);
+        if (doBind) {
+          ContractPerson = ContractPerson.bind(undefined);
+        }
         var caseName = "Jim";
         var result = new ContractPerson(caseName);
         expect(result).to.be.ok;
@@ -498,6 +501,20 @@
         util.defineFrozenDerivedProperty(PersonImplementation.prototype, "name", function() {return this._name;});
 
         expectConstructorToWork(PersonImplementation);
+      });
+      it("works with a bound constructor", function() {
+        //noinspection LocalVariableNamingConventionJS
+        var PersonImplementation = function(name) {
+          this._name = name;
+        };
+        expect(PersonImplementation)
+          .to.have.property("prototype")
+          .that.has.property("constructor")
+          .that.equals(PersonImplementation);
+        PersonImplementation.prototype._name = null;
+        util.defineFrozenDerivedProperty(PersonImplementation.prototype, "name", function() {return this._name;});
+
+        expectConstructorToWork(PersonImplementation, true);
       });
       // TODO support class construct
       //it("works with a class", function() {
