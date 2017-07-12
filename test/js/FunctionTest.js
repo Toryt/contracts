@@ -61,53 +61,48 @@
           expect(boundF).to.not.have.property("prototype");
           expect(boundF()).to.satisfy(function(result) {return result.endsWith(boundP);});
         });
-        it("can be used out of the box as a constructor, and has weird instanceof behavior", function() {
-          //noinspection FunctionNamingConventionJS
-          function TestC(p) {this.p = p;} // jshint ignore:line
+        [
+          {description: "An object to bind to"},
+          undefined,
+          null
+        ].forEach(function(boundThis) {
+          it("can be used out of the box as a constructor, and has weird instanceof behavior, bound to " + JSON.stringify(boundThis), function() {
+            //noinspection FunctionNamingConventionJS
+            function TestC(pA, pB) {
+              expect(Object.getPrototypeOf(this)).to.equal(TestC.prototype);
+              this.pA = pA;
+              this.pB = pB;
+            }
 
-          expect(TestC).to.have.property("prototype");
-          var boundP = "a string parameter";
-          var testCInstance = new TestC(boundP);
-          expect(testCInstance).to.be.instanceof(TestC);
-          expect(testCInstance).to.have.property("p").that.equals(boundP);
-          expect(Object.getPrototypeOf(testCInstance)).to.equal(TestC.prototype);
-          var boundThis = {description: "An object to bind to"};
-          //noinspection LocalVariableNamingConventionJS
-          var BoundC = TestC.bind(boundThis, boundP);
-          expect(testCInstance).to.be.instanceof(BoundC);
-          // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
-          expect(BoundC).to.not.have.property("prototype");
-          expect(Object.getPrototypeOf(testCInstance)).not.to.equal(BoundC.prototype);
-          var boundCInstance = new BoundC();
-          expect(boundCInstance).to.be.instanceof(TestC);
-          expect(boundCInstance).to.be.instanceof(BoundC);
-          expect(boundCInstance).to.have.property("p").that.equals(boundP);
-          expect(boundCInstance).to.not.have.property("description");
-          expect(Object.getPrototypeOf(boundCInstance)).to.equal(TestC.prototype);
-          expect(Object.getPrototypeOf(boundCInstance)).not.to.equal(BoundC.prototype);
-        });
-        it("can be used out of the box as a constructor, and has weird instanceof behavior with undefined", function() {
-          //noinspection FunctionNamingConventionJS
-          function TestC(p) {this.p = p;} // jshint ignore:line
+            var boundPA = "a string parameter";
+            var boundPB = "another string parameter";
 
-          expect(TestC).to.have.property("prototype");
-          var boundP = "a string parameter";
-          var testCInstance = new TestC(boundP);
-          expect(testCInstance).to.be.instanceof(TestC);
-          expect(testCInstance).to.have.property("p").that.equals(boundP);
-          expect(Object.getPrototypeOf(testCInstance)).to.equal(TestC.prototype);
-          //noinspection LocalVariableNamingConventionJS
-          var BoundC = TestC.bind(undefined, boundP);
-          expect(testCInstance).to.be.instanceof(BoundC);
-          // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
-          expect(BoundC).to.not.have.property("prototype");
-          expect(Object.getPrototypeOf(testCInstance)).not.to.equal(BoundC.prototype);
-          var boundCInstance = new BoundC();
-          expect(boundCInstance).to.be.instanceof(TestC);
-          expect(boundCInstance).to.be.instanceof(BoundC);
-          expect(boundCInstance).to.have.property("p").that.equals(boundP);
-          expect(Object.getPrototypeOf(boundCInstance)).to.equal(TestC.prototype);
-          expect(Object.getPrototypeOf(boundCInstance)).not.to.equal(BoundC.prototype);
+            expect(TestC).to.have.property("prototype");
+
+            var testCInstance = new TestC(boundPA, boundPB);
+            expect(testCInstance).to.be.instanceof(TestC);
+            expect(testCInstance).to.have.property("pA").that.equals(boundPA);
+            expect(testCInstance).to.have.property("pB").that.equals(boundPB);
+            expect(Object.getPrototypeOf(testCInstance)).to.equal(TestC.prototype);
+
+            //noinspection LocalVariableNamingConventionJS
+            var BoundC = TestC.bind(boundThis, boundPA);
+            expect(testCInstance).to.be.instanceof(BoundC);
+            // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
+            expect(BoundC).to.not.have.property("prototype");
+            expect(Object.getPrototypeOf(testCInstance)).not.to.equal(BoundC.prototype);
+
+            var boundCInstance = new BoundC(boundPB);
+            /* NOTE This directly calls TestC, with a this with the TestC prototype, boundPA and boundPB. It is as if
+                    BoundC does not exist. The new knows what to do. */
+            expect(boundCInstance).to.be.instanceof(TestC);
+            expect(boundCInstance).to.be.instanceof(BoundC);
+            expect(boundCInstance).to.have.property("pA").that.equals(boundPA);
+            expect(boundCInstance).to.have.property("pB").that.equals(boundPB);
+            expect(boundCInstance).to.not.have.property("description");
+            expect(Object.getPrototypeOf(boundCInstance)).to.equal(TestC.prototype);
+            expect(Object.getPrototypeOf(boundCInstance)).not.to.equal(BoundC.prototype);
+          });
         });
       });
       describe("#prototype", function() {
