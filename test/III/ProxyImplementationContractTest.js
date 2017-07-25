@@ -1,5 +1,5 @@
 /*
- Copyright 2016 - 2017 by Jan Dockx
+ Copyright 2017 by Jan Dockx
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@
   "use strict";
 
   var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./WrapperImplementationContractCommon", "𝕋合同/III/Contract", "./AbstractContractCommon",
-                      "𝕋合同/III/AbstractContract"];
+                      "./ProxyImplementationContractCommon", "𝕋合同/III/ProxyImplementationContract",
+                      "./AbstractContractCommon", "𝕋合同/III/AbstractContract"];
 
   if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
@@ -28,25 +28,28 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(describe, it, expect, testUtil, common, Contract, AbstractContractCommon, AbstractContract) {
+}(function(describe, it, expect, testUtil, common, ProxyImplementationContract, AbstractContractCommon,
+           AbstractContract) {
   "use strict";
 
   // describe("I", function() {
-    describe("III/Contract", function() {
+    describe("III/ProxyImplementationContract", function() {
 
-      describe("Contract", function() {
+      describe("ProxyImplementationContract", function() {
         it("has the expected properties", function() {
-          expect(Contract).to.haveOwnProperty("prototype");
-          AbstractContractCommon.expectInvariants(Contract.prototype);
-          expect(Contract.prototype).to.have.property("implementation").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("root");
-          expect(Contract).to.have.property("root").that.equals(AbstractContract.root);
-          expect(Contract).to.haveOwnProperty("isAContractFunction");
-          expect(Contract).to.have.property("isAContractFunction").that.equals(AbstractContract.isAContractFunction);
+          expect(ProxyImplementationContract).to.haveOwnProperty("prototype");
+          AbstractContractCommon.expectInvariants(ProxyImplementationContract.prototype);
+          expect(ProxyImplementationContract.prototype).to.have.property("implementation").that.is.a("function");
+          expect(ProxyImplementationContract).to.haveOwnProperty("root");
+          expect(ProxyImplementationContract).to.have.property("root").that.equals(AbstractContract.root);
+          expect(ProxyImplementationContract).to.haveOwnProperty("isAContractFunction");
+          expect(ProxyImplementationContract)
+            .to.have.property("isAContractFunction")
+            .that.equals(AbstractContract.isAContractFunction);
         });
       });
 
-      describe("#Contract()", function() {
+      describe("#ProxyImplementationContract()", function() {
         common.constructorPreCases.forEach(function(pre) {
           common.constructorPostCases.forEach(function(post) {
             common.constructorExceptionCases.forEach(function(exception) {
@@ -54,7 +57,7 @@
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
-                var result = new Contract({
+                var result = new ProxyImplementationContract({
                   pre: preConditions,
                   post: postConditions,
                   exception: exceptionConditions
@@ -67,7 +70,7 @@
       });
 
       common.generatePrototypeMethodsDescriptions(
-        function() {return new Contract({});},
+        function() {return new ProxyImplementationContract({});},
         testUtil
           .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
           .map(function(parameters) {
@@ -76,7 +79,7 @@
               var postConditions = parameters[1]();
               var exceptionConditions = parameters[2]();
               return {
-                subject: new Contract({
+                subject: new ProxyImplementationContract({
                   pre: preConditions,
                   post: postConditions,
                   exception: exceptionConditions
