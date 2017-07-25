@@ -16,7 +16,7 @@
 
 define(["./AbstractContractTest", "./AbstractErrorTest", "./ConditionErrorTest",
         "./ConditionMetaErrorTest", "./ConditionViolationTest", "./ContractTest", "./ProxyImplementationContractTest",
-        "./ContractErrorTest", "./ContractFunctionTest", "./ExceptionConditionViolationTest",
-        "./PostconditionViolationTest", "./PreconditionViolationTest"],
+        "./ContractErrorTest", "./ContractFunctionTest", "./ProxyContractFunctionTest",
+        "./ExceptionConditionViolationTest", "./PostconditionViolationTest", "./PreconditionViolationTest"],
         function() {}
 );
