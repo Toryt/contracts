@@ -70,6 +70,7 @@
     if (obj === null) { // workaround for some weird implementations
       return "null";
     }
+    // MUDO support Symbols; Object.prototype.toString does not work on Symbols
     var result = Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
     // on some browsers, the main window returns as "global" (WebKit) or "window" (FF), but this is an object too
     if (result === "global" || result === "window") {

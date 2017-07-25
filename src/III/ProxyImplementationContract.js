@@ -51,39 +51,94 @@
   );
   Contract.prototype.constructor = Contract;
   Contract.prototype.implementation = function(implFunction) {
+    util.pre(this, function() {return !!Proxy;}); // jshint ignore:line
     util.pre(this, function() {return implFunction && util.typeOf(implFunction) === "function";});
 
     var contract = this;
     var location = util.firstLocationOutsideLibrary();
+    var prototype;
 
-    function contractFunction() {
-      // cfThis: the this of the contract function call
-      var cfThis = this; // jshint ignore:line
-      var extendedArgs = Array.prototype.slice.call(arguments);
-      PreconditionViolation.prototype.verifyAll(contractFunction, contract.pre, cfThis, arguments);
-      var result;
-      var exception;
-      try {
-        result = implFunction.apply(cfThis, arguments);
-      }
-      catch (exc) {
-        if (exc instanceof ConditionError) { // necessary to report only the deepest failure clearly
-          throw exc;
+    var propertyNames = ["contract", "implementation", "location", "bind", "displayName"];
+
+    var contractFunction = new Proxy(
+      implFunction,
+      {
+        get: function(implFunction, propName) { // jshint ignore:line
+          console.log("contractfunction getter - this: " + this);
+          console.log("contractfunction getter - implFunction: " + implFunction);
+          console.log("contractfunction getter - Getting contractFunction[" + propName + "]");
+          switch (propName) {
+            case "contract":
+              return contract;
+            case "implementation":
+              return implFunction;
+            case "location":
+              return location;
+            case "bind":
+              return AbstractContract.bindContractFunction;
+            case "displayName":
+              return AbstractContract.contractFunctionDisplayName(implFunction);
+            case "prototype":
+              if (implFunction.hasOwnProperty("prototype")) {
+                return prototype;
+              }
+              return implFunction[propName];
+            case "toString":
+              return function() {
+                return "[" + AbstractContract.contractFunctionDisplayName(implFunction) + "]";
+              };
+            default:
+              return implFunction[propName];
+          }
+        },
+        set: function(implFunction, propName, value) {
+          // properties are not writable
+          if (propertyNames.indexOf(propName) < 0) {
+            implFunction[propName] = value;
+          }
+          // else NOP
+        },
+        defineProperty: function(implFunction, propName, descriptor) {
+          if (0 <= propertyNames.indexOf(propName)) {
+            throw new TypeError(propName + " is not configurable");
+          }
+          return Object.defineProperty(implFunction, propName, descriptor);
+        },
+        apply: function(implFunction, cfThis, args) {
+          // cfThis: the this of the contract function call
+          var extendedArgs = Array.prototype.slice.call(arguments);
+          PreconditionViolation.prototype.verifyAll(contractFunction, contract.pre, cfThis, arguments);
+          var result;
+          var exception;
+          try {
+            result = implFunction.apply(cfThis, arguments);
+          }
+          catch (exc) {
+            if (exc instanceof ConditionError) { // necessary to report only the deepest failure clearly
+              throw exc;
+            }
+            exception = exc;
+          }
+          extendedArgs.push(exception || result);
+          extendedArgs.push(contractFunction.bind(cfThis));
+          if (exception) {
+            ExceptionConditionViolation.prototype.verifyAll(contractFunction, contract.exception, cfThis, extendedArgs);
+            throw exception;
+          }
+          PostconditionViolation.prototype.verifyAll(contractFunction, contract.post, cfThis, extendedArgs);
+          return result;
         }
-        exception = exc;
       }
-      extendedArgs.push(exception || result);
-      extendedArgs.push(contractFunction.bind(cfThis));
-      if (exception) {
-        ExceptionConditionViolation.prototype.verifyAll(contractFunction, contract.exception, cfThis, extendedArgs);
-        throw exception;
-      }
-      PostconditionViolation.prototype.verifyAll(contractFunction, contract.post, cfThis, extendedArgs);
-      return result;
+    );
+
+    if (implFunction.hasOwnProperty("prototype")) {
+      prototype = Object.create(implFunction.prototype);
+      util.setAndFreezeProperty(prototype, "constructor", contractFunction);
     }
 
-    AbstractContract.bless(contractFunction, contract, implFunction, location);
-
+    console.log("contractfunction created");
+    console.log("contractfunction created - toString: " + contractFunction.toString);
+    console.log("contractfunction created - toString(): " + contractFunction.toString());
     return contractFunction;
   };
 

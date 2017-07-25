@@ -46,9 +46,13 @@
     //noinspection FunctionTooLongJS
     describe("#implementation", function() {
       function expectPost(contract, implFunction , result) {
+        expect(result).to.satisfy(ImplementationContract.isAContractFunction);
         //noinspection BadExpressionStatementJS,JSHint
         expect(contract.isImplementedBy(result)).to.be.ok;
-        expect(result).to.satisfy(ImplementationContract.isAContractFunction);
+        console.log("result.contract: " + result.contract);
+        console.log("result.contract === contract: " + result.contract === contract);
+        console.log("result.implementation: " + result.implementation);
+        console.log("result.implementation === implFunction: " + result.implementation === implFunction);
         expect(result).to.have.property("contract").that.equals(contract);
         expect(result).to.have.property("implementation").that.equals(implFunction);
         self.expectInvariants(contract);
