@@ -18,7 +18,8 @@
   "use strict";
 
   var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./AbstractContractCommon", "𝕋合同/III/Contract"];
+                      "𝕋合同/_private/util", "./AbstractContractCommon", "𝕋合同/III/Contract",
+                      "𝕋合同/III/AbstractContract"];
 
   if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
@@ -27,7 +28,7 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(describe, it, expect, testUtil, util, common, Contract) {
+}(function(describe, it, expect, testUtil, util, common, Contract, AbstractContract) {
   "use strict";
 
   function expectInvariants(subject) {
@@ -87,9 +88,84 @@
 
   }
 
+    //noinspection ParameterNamingConventionJS
+  function generateDescriptions(name, ImplementationContract, implementationContractCommon) {
+    var self = this; // jshint ignore:line
+
+    // describe("I", function() {
+    describe("III/" + name, function() {
+
+      describe(name, function() {
+        it("has the expected properties", function() {
+          expect(ImplementationContract).to.haveOwnProperty("prototype");
+          common.expectInvariants(ImplementationContract.prototype);
+          expect(ImplementationContract.prototype).to.have.property("implementation").that.is.a("function");
+          expect(ImplementationContract).to.haveOwnProperty("root");
+          expect(ImplementationContract).to.have.property("root").that.equals(AbstractContract.root);
+          expect(ImplementationContract).to.haveOwnProperty("isAContractFunction");
+          expect(ImplementationContract)
+            .to.have.property("isAContractFunction")
+            .that.equals(AbstractContract.isAContractFunction);
+        });
+      });
+
+      describe("#" + name + "()", function() {
+        implementationContractCommon.constructorPreCases.forEach(function(pre) {
+          implementationContractCommon.constructorPostCases.forEach(function(post) {
+            implementationContractCommon.constructorExceptionCases.forEach(function(exception) {
+              describe("works for pre: " + pre + ", post: " + post + ", exception: " + exception, function() {
+                var preConditions = pre();
+                var postConditions = post();
+                var exceptionConditions = exception();
+                var result = new ImplementationContract({
+                  pre: preConditions,
+                  post: postConditions,
+                  exception: exceptionConditions
+                });
+                implementationContractCommon.expectConstructorPost(
+                  preConditions,
+                  postConditions,
+                  exceptionConditions,
+                  result
+                );
+              });
+            });
+          });
+        });
+      });
+
+      self.generatePrototypeMethodsDescriptions(
+        function() {return new ImplementationContract({});},
+        testUtil
+          .x(implementationContractCommon.constructorPreCases,
+             implementationContractCommon.constructorPostCases,
+             implementationContractCommon.constructorExceptionCases
+          )
+          .map(function(parameters) {
+            return function() {
+              var preConditions = parameters[0]();
+              var postConditions = parameters[1]();
+              var exceptionConditions = parameters[2]();
+              return {
+                subject: new ImplementationContract({
+                  pre: preConditions,
+                  post: postConditions,
+                  exception: exceptionConditions
+                }),
+                description: parameters.join(" - ")
+              };
+            };
+          })
+      );
+
+    });
+    // });
+  }
+
   var test = {
     expectInvariants: expectInvariants,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
+    generateDescriptions: generateDescriptions
   };
   Object.setPrototypeOf(test, common);
   return test;
