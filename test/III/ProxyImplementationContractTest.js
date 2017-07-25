@@ -32,24 +32,26 @@
            AbstractContract) {
   "use strict";
 
-  // describe("I", function() {
-    describe("III/ProxyImplementationContract", function() {
+  //noinspection ParameterNamingConventionJS
+  function generateDescriptions(name, ImplementationContract) {
+    // describe("I", function() {
+    describe("III/" + name, function() {
 
-      describe("ProxyImplementationContract", function() {
+      describe(name, function() {
         it("has the expected properties", function() {
-          expect(ProxyImplementationContract).to.haveOwnProperty("prototype");
-          AbstractContractCommon.expectInvariants(ProxyImplementationContract.prototype);
-          expect(ProxyImplementationContract.prototype).to.have.property("implementation").that.is.a("function");
-          expect(ProxyImplementationContract).to.haveOwnProperty("root");
-          expect(ProxyImplementationContract).to.have.property("root").that.equals(AbstractContract.root);
-          expect(ProxyImplementationContract).to.haveOwnProperty("isAContractFunction");
-          expect(ProxyImplementationContract)
+          expect(ImplementationContract).to.haveOwnProperty("prototype");
+          AbstractContractCommon.expectInvariants(ImplementationContract.prototype);
+          expect(ImplementationContract.prototype).to.have.property("implementation").that.is.a("function");
+          expect(ImplementationContract).to.haveOwnProperty("root");
+          expect(ImplementationContract).to.have.property("root").that.equals(AbstractContract.root);
+          expect(ImplementationContract).to.haveOwnProperty("isAContractFunction");
+          expect(ImplementationContract)
             .to.have.property("isAContractFunction")
             .that.equals(AbstractContract.isAContractFunction);
         });
       });
 
-      describe("#ProxyImplementationContract()", function() {
+      describe("#" + name + "()", function() {
         common.constructorPreCases.forEach(function(pre) {
           common.constructorPostCases.forEach(function(post) {
             common.constructorExceptionCases.forEach(function(exception) {
@@ -57,7 +59,7 @@
                 var preConditions = pre();
                 var postConditions = post();
                 var exceptionConditions = exception();
-                var result = new ProxyImplementationContract({
+                var result = new ImplementationContract({
                   pre: preConditions,
                   post: postConditions,
                   exception: exceptionConditions
@@ -70,7 +72,7 @@
       });
 
       common.generatePrototypeMethodsDescriptions(
-        function() {return new ProxyImplementationContract({});},
+        function() {return new ImplementationContract({});},
         testUtil
           .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
           .map(function(parameters) {
@@ -79,7 +81,7 @@
               var postConditions = parameters[1]();
               var exceptionConditions = parameters[2]();
               return {
-                subject: new ProxyImplementationContract({
+                subject: new ImplementationContract({
                   pre: preConditions,
                   post: postConditions,
                   exception: exceptionConditions
@@ -91,6 +93,8 @@
       );
 
     });
-  // });
+    // });
+  }
 
+  generateDescriptions("ProxyImplementationContract", ProxyImplementationContract);
 }));
