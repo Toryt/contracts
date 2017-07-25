@@ -17,9 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./WrapperImplementationContractCommon", "𝕋合同/III/Contract", "./AbstractContractCommon",
-                      "𝕋合同/III/AbstractContract"];
+  var dependencies = ["./WrapperImplementationContractCommon", "𝕋合同/III/Contract"];
 
   if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
@@ -28,66 +26,8 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(describe, it, expect, testUtil, common, Contract, AbstractContractCommon, AbstractContract) {
+}(function(common, Contract) {
   "use strict";
 
-  // describe("I", function() {
-    describe("III/Contract", function() {
-
-      describe("Contract", function() {
-        it("has the expected properties", function() {
-          expect(Contract).to.haveOwnProperty("prototype");
-          AbstractContractCommon.expectInvariants(Contract.prototype);
-          expect(Contract.prototype).to.have.property("implementation").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("root");
-          expect(Contract).to.have.property("root").that.equals(AbstractContract.root);
-          expect(Contract).to.haveOwnProperty("isAContractFunction");
-          expect(Contract).to.have.property("isAContractFunction").that.equals(AbstractContract.isAContractFunction);
-        });
-      });
-
-      describe("#Contract()", function() {
-        common.constructorPreCases.forEach(function(pre) {
-          common.constructorPostCases.forEach(function(post) {
-            common.constructorExceptionCases.forEach(function(exception) {
-              describe("works for pre: " + pre + ", post: " + post + ", exception: " + exception, function() {
-                var preConditions = pre();
-                var postConditions = post();
-                var exceptionConditions = exception();
-                var result = new Contract({
-                  pre: preConditions,
-                  post: postConditions,
-                  exception: exceptionConditions
-                });
-                common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
-              });
-            });
-          });
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function() {return new Contract({});},
-        testUtil
-          .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
-          .map(function(parameters) {
-            return function() {
-              var preConditions = parameters[0]();
-              var postConditions = parameters[1]();
-              var exceptionConditions = parameters[2]();
-              return {
-                subject: new Contract({
-                  pre: preConditions,
-                  post: postConditions,
-                  exception: exceptionConditions
-                }),
-                description: parameters.join(" - ")
-              };
-            };
-          })
-      );
-
-    });
-  // });
-
+  common.generateDescriptions("Contract", Contract, common);
 }));

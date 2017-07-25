@@ -17,8 +17,7 @@
 (function(factory) {
   "use strict";
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./ProxyImplementationContractCommon", "𝕋合同/III/ProxyImplementationContract"];
+  var dependencies = ["./ProxyImplementationContractCommon", "𝕋合同/III/ProxyImplementationContract"];
 
   if (typeof define === "function" && define.amd) {
     define(dependencies, factory);
@@ -27,7 +26,7 @@
     module.exports =
       factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
   }
-}(function(describe, it, expect, testUtil, common, ProxyImplementationContract) {
+}(function(common, ProxyImplementationContract) {
   "use strict";
 
   common.generateDescriptions("ProxyImplementationContract", ProxyImplementationContract, common);

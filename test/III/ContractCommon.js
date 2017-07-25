@@ -39,7 +39,7 @@
   }
 
   //noinspection FunctionNamingConventionJS
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, ImplementationContract) {
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
     var self = this; // jshint ignore:line
 
@@ -48,7 +48,7 @@
       function expectPost(contract, implFunction , result) {
         //noinspection BadExpressionStatementJS,JSHint
         expect(contract.isImplementedBy(result)).to.be.ok;
-        expect(result).to.satisfy(Contract.isAContractFunction);
+        expect(result).to.satisfy(ImplementationContract.isAContractFunction);
         expect(result).to.have.property("contract").that.equals(contract);
         expect(result).to.have.property("implementation").that.equals(implFunction);
         self.expectInvariants(contract);
@@ -155,7 +155,8 @@
                 description: parameters.join(" - ")
               };
             };
-          })
+          }),
+        ImplementationContract
       );
 
     });
