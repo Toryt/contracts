@@ -38,7 +38,7 @@
     expect(subject).to.have.property("implementation").that.is.a("function");
   }
 
-  //noinspection FunctionNamingConventionJS
+  //noinspection FunctionNamingConventionJS,ParameterNamingConventionJS
   function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators, ImplementationContract) {
     common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
     var self = this; // jshint ignore:line
