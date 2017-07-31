@@ -95,14 +95,19 @@
           }
           return propName in implFunction;
         },
+        enumerate: function(implFunction) {
+          return Object
+            .keys(implFunction)
+            .filter(key => propertyNames.indexOf(key) < 0 && (!prototype || key !== "prototype"))
+            .concat(propertyNames)[Symbol.iterator]();
+        },
         set: function(implFunction, propName, value) {
           // properties are not writable
           return false;
         },
         defineProperty: function(implFunction, propName, descriptor) {
-          if (0 <= propertyNames.indexOf(propName)) {
-            throw new TypeError(propName + " is not configurable, nor are any other properties");
-          }
+          // properties are not configurable
+          return false;
         },
         apply: function(implFunction, cfThis, args) {
           // cfThis: the this of the contract function call
