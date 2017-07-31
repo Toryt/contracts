@@ -108,18 +108,18 @@
             .filter(key => propertyNames.indexOf(key) < 0 && (!prototype || key !== "prototype"))
             .concat(propertyNames)[Symbol.iterator]();
         },
-        ownKeys: function(target) {
+        ownKeys: function() {
           var result = propertyNames.slice();
           if (prototype) {
             result.push(prototype);
           }
           return result;
         },
-        set: function(implFunction, propName, value) {
+        set: function() {
           // properties are not writable
           return false;
         },
-        defineProperty: function(implFunction, propName, descriptor) {
+        defineProperty: function() {
           // properties are not configurable
           return false;
         },
