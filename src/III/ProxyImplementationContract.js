@@ -30,6 +30,9 @@
            PreconditionViolation, PostconditionViolation, ExceptionConditionViolation) {
   "use strict";
 
+
+  var propertyNames = ["contract", "implementation", "location", "bind", "displayName", "toString"];
+
   /**
    * The separation between AbstractContract and Contract is necessary to break a dependency
    * cycle with ConditionError.
@@ -57,16 +60,14 @@
     var contract = this;
     var location = util.firstLocationOutsideLibrary();
     var prototype;
-
-    var propertyNames = ["contract", "implementation", "location", "bind", "displayName"];
+    if (implFunction.hasOwnProperty("prototype")) {
+      prototype = Object.create(implFunction.prototype);
+    }
 
     var contractFunction = new Proxy(
       implFunction,
       {
         get: function(implFunction, propName) { // jshint ignore:line
-          console.log("contractfunction getter - this: " + this);
-          console.log("contractfunction getter - implFunction: " + implFunction);
-          console.log("contractfunction getter - Getting contractFunction[" + propName + "]");
           switch (propName) {
             case "contract":
               return contract;
@@ -79,10 +80,7 @@
             case "displayName":
               return AbstractContract.contractFunctionDisplayName(implFunction);
             case "prototype":
-              if (implFunction.hasOwnProperty("prototype")) {
-                return prototype;
-              }
-              return implFunction[propName];
+              return prototype || implFunction[propName];
             case "toString":
               return function() {
                 return "[" + AbstractContract.contractFunctionDisplayName(implFunction) + "]";
@@ -91,18 +89,20 @@
               return implFunction[propName];
           }
         },
+        has: function(implFunction, propName) {
+          if (0 <= propertyNames.indexOf(propName) || (propertyName === "prototype" && prototype)) {
+            return true;
+          }
+          return propName in implFunction;
+        },
         set: function(implFunction, propName, value) {
           // properties are not writable
-          if (propertyNames.indexOf(propName) < 0) {
-            implFunction[propName] = value;
-          }
-          // else NOP
+          return false;
         },
         defineProperty: function(implFunction, propName, descriptor) {
           if (0 <= propertyNames.indexOf(propName)) {
-            throw new TypeError(propName + " is not configurable");
+            throw new TypeError(propName + " is not configurable, nor are any other properties");
           }
-          return Object.defineProperty(implFunction, propName, descriptor);
         },
         apply: function(implFunction, cfThis, args) {
           // cfThis: the this of the contract function call
@@ -131,14 +131,10 @@
       }
     );
 
-    if (implFunction.hasOwnProperty("prototype")) {
-      prototype = Object.create(implFunction.prototype);
+    if (prototype) {
       util.setAndFreezeProperty(prototype, "constructor", contractFunction);
     }
 
-    console.log("contractfunction created");
-    console.log("contractfunction created - toString: " + contractFunction.toString);
-    console.log("contractfunction created - toString(): " + contractFunction.toString());
     return contractFunction;
   };
 
