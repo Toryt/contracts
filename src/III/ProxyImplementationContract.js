@@ -89,6 +89,13 @@
               return implFunction[propName];
           }
         },
+        getOwnPropertyDescriptor: function(implFunction, propName) {
+          if (0 <= propertyNames.indexOf(propName) || (propertyName === "prototype" && prototype)) {
+            return {value: contractFunction[propName], writable: false, enumerable: true, configurable: true};
+            // MUDO https://stackoverflow.com/questions/40921884/create-dynamic-non-configurable-properties-using-proxy
+          }
+          return undefined;
+        },
         has: function(implFunction, propName) {
           if (0 <= propertyNames.indexOf(propName) || (propertyName === "prototype" && prototype)) {
             return true;
