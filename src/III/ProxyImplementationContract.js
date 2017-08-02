@@ -66,6 +66,9 @@
 
     var contractFunction = new Proxy(
       implFunction,
+      // https://ponyfoo.com/articles/more-es6-proxy-traps-in-depth#getownpropertydescriptor
+      // https://blog.risingstack.com/writing-a-javascript-framework-data-binding-es6-proxy/
+      // http://2ality.com/2014/12/es6-proxies.html
       {
         get: function(implFunction, propName) { // jshint ignore:line
           switch (propName) {
