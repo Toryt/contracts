@@ -107,9 +107,13 @@ Versions
   * I/2.4     : Now also tests with [Intern] on Mac on Chrome, Safari, 
                 Firefox (3 failures, waiting for april version 53)
   * I/2.5     : Fix in behavior and test of util.browserModuleLocation
+  * I/1.2.5   : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
 * II
   * II/1.0    : First release on npm. The code is functional on node, and there is no need to wait for browser 
                 validation to start using it on node.
+  * II/1.1    : Use scope in package name
+  * II/1.2    : Cosmetic changes
+  * II/2.1.3  : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
 * III
   * III/3.0.0 : Now also supports contracts for (classic) constructors. In general, the prototype of an implementation
                 is "forwarded" to the contract function. The ECMAScript2015 "class" construct is not yet supported
@@ -118,6 +122,7 @@ Versions
                 Also, from now on, we will use versioning differently. Since npm insists on semantic versioning,
                 the major version number will be the arabic numeral of the roman mark version.
                 We now use `yarn`, but that is optional.
+  * III/3.0.1 : Relax a test to support use of '(<anonymous)' in node 8.4
 
 
 
