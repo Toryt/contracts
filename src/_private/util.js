@@ -40,6 +40,7 @@
 
   function browserModuleLocation(amdModule) {
     // there seems to be no sensible way to test what the result actually is
+    var dirSeparator = "/"; // always "//" for a browser
     if (amdModule.uri.charAt(0) === dirSeparator) {
       // server relative path
       return window.location.origin + amdModule.uri;
