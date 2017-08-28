@@ -33,7 +33,7 @@
 
   var stackSample = (new Error("Error used to determine dir separator and EOL")).stack;
 
-  var dirSeparator = /src(.)_private(.)util/.exec(stackSample)[1];
+  var dirSeparator = /src(.)_private\1util/.exec(stackSample)[1];
 
   var thisDirectory = ".";
   var parentDirectory = "..";
