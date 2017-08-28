@@ -123,6 +123,7 @@ Versions
                 the major version number will be the arabic numeral of the roman mark version.
                 We now use `yarn`, but that is optional.
   * III/3.0.1 : Relax a test to support use of '(<anonymous)' in node 8.4
+  * III/3.1.0 : Works on Windows (node 8 and Chrome tested)
 
 
 
@@ -135,9 +136,8 @@ reporting quirks, but the broad range of platforms and their evolution is tireso
 * III
   * III/3.1.0  : Select whether to include nothing, pre only, or pre and post at load time, and whether to validate
                  nothing, pre only, or pre and post at runtime.
-  * III/3.2.0  : Windows
-  * III/3.3.0  : Documentation en README
-  * III/3.4.0  : jsdoc
+  * III/3.2.0  : Documentation en README
+  * III/3.3.0  : jsdoc
 * IV
   * IV/4.0.0 : conditions-per-argument
   * IV/4.1.0 : old-support

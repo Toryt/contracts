@@ -1,6 +1,6 @@
 {
   "name": "@toryt/contracts-iii",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
   "main": "src/III/Contract.js",
   "directories": {
