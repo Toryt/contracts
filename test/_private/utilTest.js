@@ -473,7 +473,7 @@
           .stack
           .split(util.eol)
           .splice(1)
-          .filter(function(l) {return l.indexOf("/") < 0;})
+          .filter(function(l) {return l.indexOf(util.dirSeparator) < 0;})
           .forEach(function(l) {
             it("reports false on the string \"" + l + "\" that is a stack line, but doesn't contain a slash", function() {
               // This doesn't seem to occur in browsers.
@@ -486,7 +486,7 @@
           .stack
           .split(util.eol)
           .splice(1)
-          .filter(function(l) {return 0 <= l.indexOf("/");})
+          .filter(function(l) {return 0 <= l.indexOf(util.dirSeparator);})
           .forEach(function(l) {
             it("reports true on the valid location outside the library \"" + l + "\"", function() {
               var result = util.isALocationOutsideLibrary(l);
@@ -554,12 +554,12 @@
                  The first line should be our own code. */
               expect(line).to.satisfy(function(l) {
                 return 0 <= l.indexOf(contractLibTestPath) ||
-                       0 <= l.indexOf("/mocha/") ||
-                       0 <= l.indexOf("/intern/") ||
-                       0 <= l.indexOf("/__intern/") || // intern test runner
-                       l.indexOf("/") < 0 ||
-                       0 <= l.indexOf("require (internal/module.js") ||
-                       0 <= l.indexOf("/requirejs/require.js");
+                       0 <= l.indexOf(util.dirSeparator + "mocha" + util.dirSeparator) ||
+                       0 <= l.indexOf(util.dirSeparator + "intern" + util.dirSeparator) ||
+                       0 <= l.indexOf(util.dirSeparator + "__intern" + util.dirSeparator) || // intern test runner
+                       l.indexOf(util.dirSeparator) < 0 ||
+                       0 <= l.indexOf("require (internal\" + util.dirSeparator + \"module.js") ||
+                       0 <= l.indexOf(util.dirSeparator + "requirejs" + util.dirSeparator + "require.js");
               });
             });
             // all the lines, after the message, that are outside the library, are in the result,
@@ -718,7 +718,7 @@
         it("returns the directory of a file path in a browser", function() {
           var dirPath = "http://localhost:63342/contracts/test/_private";
           var fileName = "utilTest.js";
-          var testCase = dirPath + "/" + fileName;
+          var testCase = dirPath + util.dirSeparator + fileName;
           var result = util.pathUp(testCase);
           expect(result).to.be.a("string");
           expect(result).to.equal(dirPath);
