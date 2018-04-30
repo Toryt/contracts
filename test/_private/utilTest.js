@@ -119,7 +119,7 @@
       });
 
       describeLocationTest("atStackLocation", atLocationEnvironments);
-      describeLocationTest("@StackLocation", ATLocationEnvironments);
+      describeLocationTest("atSignStackLocation", ATLocationEnvironments);
 
       describe("#stackLocation", function() {
         it("is a RegExp", function() {
