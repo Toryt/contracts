@@ -98,7 +98,7 @@
   //noinspection LocalVariableNamingConventionJS
   var ATLocationEnvironments = ["firefox", "safari"];
   (0 <= atLocationEnvironments.indexOf(testUtil.environment) ? atLocationEnvironments : ATLocationEnvironments)
-    .push("current environment");
+    .push("currentEnvironment");
 
   // describe("_private", function() {
     describe("_private/util", function() {
@@ -125,7 +125,7 @@
         it("is a RegExp", function() {
           expect(util).to.have.property("stackLocation").that.is.instanceof(RegExp);
         });
-        stacks["current environment"]
+        stacks["currentEnvironment"]
           .split(util.eol)
           .filter(function(l) {return l;}) // some environments add an empty line at the end of the stack
           .forEach(function(l) {
