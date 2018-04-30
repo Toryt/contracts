@@ -305,12 +305,12 @@
     </inspection_tool>
     <inspection_tool class="LocalVariableNamingConventionJS" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="Application" level="WARNING" enabled="true">
-        <option name="m_regex" value="[a-z][A-Za-z]*" />
+        <option name="m_regex" value="[a-z][A-Za-z0-9]*" />
         <option name="m_minLength" value="1" />
         <option name="m_maxLength" value="32" />
       </scope>
       <scope name="ppwcode" level="WARNING" enabled="true">
-        <option name="m_regex" value="[A-Za-z0-9]*" />
+        <option name="m_regex" value="[a-z][A-Za-z0-9]*" />
         <option name="m_minLength" value="1" />
         <option name="m_maxLength" value="32" />
       </scope>
