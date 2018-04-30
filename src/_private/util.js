@@ -14,8 +14,6 @@
   limitations under the License.
  */
 
-'use strict'
-
 const stackSample = (new Error('Error used to determine dir separator and EOL')).stack
 const thisDirectory = '.'
 const parentDirectory = '..'

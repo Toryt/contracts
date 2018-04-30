@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict'
-
 import * as util from '../../src/_private/util'
 import {expect} from 'chai'
 
