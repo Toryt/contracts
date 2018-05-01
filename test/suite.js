@@ -14,4 +14,4 @@
  limitations under the License.
  */
 
-define(["test/III/suite"], function() {}); // jshint ignore:line
+define(["test/IV/suite"], function() {}); // jshint ignore:line
