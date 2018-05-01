@@ -14,65 +14,50 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+'use strict'
 
-  var dependencies = ["just.randomstring"];
+const randomString = require('just.randomstring')
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
+function randomName (/* Number */ n) {
+  const nString = '$$' + n + '$$'
+  return randomString() + nString
+}
+
+function nFromRandomName (/* String */ str) {
+  return Number.parseInt(/\$\$(\d+)\$\$/.exec(str)[1])
+}
+
+function prepareAnObject (/* Number */ startValue, /* Number */ nrOfProperties) {
+  const max = startValue + nrOfProperties
+  const o = {}
+  for (let i = startValue; i < max; i++) {
+    o[randomName(i)] = i
   }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(randomString) {
-  "use strict";
+  return o
+}
 
-  function randomName(/*Number*/ n) {
-    var nString = "$$" + n + "$$";
-    // just.randomstring accessing as a global variable, not via dependency; ugly, but this is "just a test"
-    //noinspection JSUnresolvedFunction,JSHint
-    return (typeof just !== "undefined" ? just.randomstring : randomString)() + nString;
-  }
+function prepareAnObjectWithAProto () {
+  // noinspection MagicNumberJS
+  const oProto1 = prepareAnObject(200, 10)
+  // noinspection MagicNumberJS
+  const oProto2 = prepareAnObject(100, 10)
+  Object.setPrototypeOf(oProto2, oProto1)
+  const o = prepareAnObject(0, 10)
+  Object.setPrototypeOf(o, oProto2)
+  return o
+}
 
-  function nFromRandomName(/*String*/ str) {
-    return Number.parseInt(/\$\$(\d+)\$\$/.exec(str)[1]);
-  }
+const objectLiteral = {
+  'realFirst$$0$$': new Date(),
+  'first$$1$$': null,
+  'second$$2$$': 4,
+  'third$$3$$': undefined, // will not be stringified
+  'fourth$$4$$': function () {} // will not be stringified
+}
 
-  function prepareAnObject(/*Number*/ startValue, /*Number*/ nrOfProperties) {
-    var max = startValue + nrOfProperties;
-    var o = {};
-    for (var i = startValue; i < max; i++) {
-      o[randomName(i)] = i;
-    }
-    return o;
-  }
-
-  function prepareAnObjectWithAProto() {
-    //noinspection MagicNumberJS,LocalVariableNamingConventionJS
-    var oProto1 = prepareAnObject(200, 10);
-    //noinspection MagicNumberJS,LocalVariableNamingConventionJS
-    var oProto2 = prepareAnObject(100, 10);
-    Object.setPrototypeOf(oProto2, oProto1);
-    var o = prepareAnObject(0, 10);
-    Object.setPrototypeOf(o, oProto2);
-    return o;
-  }
-
-
-  var objectLiteral = {
-    "realFirst$$0$$": new Date(),
-    "first$$1$$": null,
-    "second$$2$$": 4,
-    "third$$3$$": undefined, // will not be stringified
-    "fourth$$4$$": function() {} // will not be stringified
-  };
-
-  return {
-    prepareAnObject: prepareAnObject,
-    nFromRandomName: nFromRandomName,
-    prepareAnObjectWithAProto: prepareAnObjectWithAProto,
-    objectLiteral: objectLiteral
-  };
-
-}));
+module.exports = {
+  prepareAnObject: prepareAnObject,
+  nFromRandomName: nFromRandomName,
+  prepareAnObjectWithAProto: prepareAnObjectWithAProto,
+  objectLiteral: objectLiteral
+}
