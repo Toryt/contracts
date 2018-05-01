@@ -549,11 +549,13 @@ describe('_private/util', function () {
              node-internal, and have no slash, or be internal/module.js, or, in the browser, be requirejs.
              The first line should be our own code. */
           expect(line).to.satisfy(function (l) {
-            return l.indexOf(contractLibTestPath) >= 0 ||
+            const result = l.indexOf(contractLibTestPath) >= 0 ||
                    l.indexOf(util.dirSeparator + 'mocha' + util.dirSeparator) >= 0 ||
                    l.indexOf(util.dirSeparator) < 0 ||
                    l.indexOf('require (internal' + util.dirSeparator + 'module.js') >= 0 ||
                    l.indexOf(util.dirSeparator + 'requirejs' + util.dirSeparator + 'require.js') >= 0
+            console.log(`${result}: "${l}"`)
+            return result
           })
         })
         // all the lines, after the message, that are outside the library, are in the result,
