@@ -4,9 +4,8 @@
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
     <pass-parent-env>true</pass-parent-env>
-    <envs />
     <ui>bdd</ui>
-    <extra-mocha-options />
+    <extra-mocha-options>--watch</extra-mocha-options>
     <test-kind>TEST_FILE</test-kind>
     <test-file>$PROJECT_DIR$/test/_private/utilTest.js</test-file>
     <method />
