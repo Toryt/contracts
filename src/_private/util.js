@@ -197,9 +197,9 @@ const util = {
   },
 
   defineConfigurableDerivedProperty: function (prototype, propertyName, derivation) {
-    util.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
-    util.pre(function () { return util.typeOf(propertyName) === 'string' })
-    util.pre(function () { return util.typeOf(derivation) === 'function' })
+    this.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
+    this.pre(function () { return util.typeOf(propertyName) === 'string' })
+    this.pre(function () { return util.typeOf(derivation) === 'function' })
 
     Object.defineProperty(
       prototype,
@@ -214,9 +214,9 @@ const util = {
   },
 
   defineFrozenDerivedProperty: function (prototype, propertyName, derivation) {
-    util.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
-    util.pre(function () { return util.typeOf(propertyName) === 'string' })
-    util.pre(function () { return util.typeOf(derivation) === 'function' })
+    this.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
+    this.pre(function () { return util.typeOf(propertyName) === 'string' })
+    this.pre(function () { return util.typeOf(derivation) === 'function' })
 
     Object.defineProperty(
       prototype,
@@ -306,8 +306,8 @@ const util = {
    * taking into account that the message could be multi-line.
    */
   stackOutsideThisLibrary: function (error) {
-    util.pre(function () { return error instanceof Error })
-    util.pre(function () { return !!error.stack })
+    this.pre(function () { return error instanceof Error })
+    this.pre(function () { return !!error.stack })
 
     let nrOfMessageLines = 0
     const stack = error.stack
@@ -350,7 +350,7 @@ const util = {
    * Returns a concise representation of <code>f</code> to be used in output.
    */
   conciseConditionRepresentation: function (prefix, f) {
-    util.pre(function () { return util.typeOf(prefix) === 'string' })
+    this.pre(function () { return util.typeOf(prefix) === 'string' })
 
     let result = (f && f.displayName) || (prefix + ' ' + ((f && f.name) || f))
     result = result.replace(/\s\s+/g, ' ')
