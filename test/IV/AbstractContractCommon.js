@@ -14,215 +14,186 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "𝕋合同/III/AbstractContract"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
+const AbstractContract = require('../../src/IV/AbstractContract')
+const testUtil = require('../_util/testUtil')
+const util = require('../../src/_private/util')
+
+const someConditions = [
+  function () { return [] },
+  function () { return [function () { return false }, function () { return true }] }
+]
+const preCases = [function () { return null }].concat(someConditions)
+const postCases = [function () { return null }].concat(someConditions)
+const exceptionCases = [function () { return null }].concat(someConditions)
+
+// noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
+const notAFunctionNorAContract = [
+  undefined,
+  null,
+  '',
+  'foo',
+  0,
+  -1,
+  true,
+  false,
+  /lala/,
+  {},
+  new Date(),
+  // eslint-disable-next-line
+  new Number(42),
+  // eslint-disable-next-line
+  new Boolean(true),
+  // eslint-disable-next-line
+  new String('lalala')
+]
+
+const constructorPreCases = [function () { return undefined }].concat(preCases)
+const constructorPostCases = [function () { return undefined }].concat(postCases)
+const constructorExceptionCases = [function () { return undefined }].concat(exceptionCases)
+
+const location = util.eol + '    at /'
+
+function expectInvariants (/* AbstractContract */ subject) {
+  subject.must.be.an.instanceof(AbstractContract)
+  testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
+  // noinspection JSUnresolvedVariable
+  testUtil.expectToBeArrayOfFunctions(subject.pre)
+  testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'post', '_post')
+  // noinspection JSUnresolvedVariable
+  testUtil.expectToBeArrayOfFunctions(subject.post)
+  testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'exception', '_exception')
+  // noinspection JSUnresolvedVariable
+  testUtil.expectToBeArrayOfFunctions(subject.exception)
+  testUtil.expectOwnFrozenProperty(subject, 'location')
+  // noinspection JSUnresolvedVariable
+  const location = subject.location
+  ; (location === AbstractContract.internalLocation || util.isALocationOutsideLibrary(location)).must.be.true()
+  testUtil.expectOwnFrozenProperty(subject, 'abstract')
+  // noinspection JSUnresolvedVariable
+  const abstract = subject.abstract
+  AbstractContract.isAGeneralContractFunction(abstract).must.be.true()
+  abstract.location.must.equal(location)
+  subject.isImplementedBy(abstract).must.be.true()
+  abstract.must.to.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message)
+  try {
+    abstract()
+  } catch (err) {
+    testUtil.log(err.stack)
   }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, AbstractContract) {
-  "use strict";
+}
 
-  var someConditions = [
-    function() {return [];},
-    function() {return [function() {return false;}, function() {return true;}];}
-  ];
-  var preCases = [
-    function() {return null;}
-  ].concat(someConditions);
-  var postCases = [
-    function() {return null;}
-  ].concat(someConditions);
-  var exceptionCases = [
-    function() {return null;}
-  ].concat(someConditions);
-
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint
-  var notAFunctionNorAContract = [
-    undefined,
-    null,
-    "",
-    "foo",
-    0,
-    -1,
-    true,
-    false,
-    /lala/,
-    {},
-    new Date(),
-    new Number(42),
-    new Boolean(true),
-    new String("lalala")
-  ];
-
-  var constructorPreCases = [
-    function() {return undefined;}
-  ].concat(preCases);
-  var constructorPostCases = [
-    function() {return undefined;}
-  ].concat(postCases);
-  var constructorExceptionCases = [
-    function() {return undefined;}
-  ].concat(exceptionCases);
-
-  var location = util.eol + "    at /";
-
-  function expectInvariants(/*AbstractContract*/ subject) {
-    expect(subject).to.be.an.instanceOf(AbstractContract);
-    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "pre", "_pre");
-    testUtil.expectToBeArrayOfFunctions(subject.pre);
-    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "post", "_post");
-    testUtil.expectToBeArrayOfFunctions(subject.post);
-    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "exception", "_exception");
-    testUtil.expectToBeArrayOfFunctions(subject.exception);
-    testUtil.expectOwnFrozenProperty(subject, "location");
-    expect(subject.location).to.satisfy(function(location) {
-      return location === AbstractContract.internalLocation || util.isALocationOutsideLibrary(location);
-    });
-    testUtil.expectOwnFrozenProperty(subject, "abstract");
-    var abstract = subject.abstract;
-    expect(abstract).to.satisfy(function(cf) {return AbstractContract.isAGeneralContractFunction(cf);});
-    expect(abstract).to.have.property("location").that.equals(subject.location);
-    expect(abstract).to.satisfy(function(cf) {return subject.isImplementedBy(cf);});
-    expect(abstract).to.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message);
-    try {
-      abstract();
+function expectConstructorPost (pre, post, exception, result) {
+  function expectArrayPost (array, propName, privatePropName) {
+    result[propName].must.be.an.array()
+    if (!array) {
+      result[propName].must.be.empty()
+    } else {
+      result[privatePropName].must.not.equal(array) // it must be copy, don't share the array
+      result[privatePropName].must.eql(array)
+      Object.isFrozen(result[privatePropName])
+      result[propName].must.eql(array)
+      result[propName].must.not.equal(result[privatePropName]) // it must be copy, don't share the array
     }
-    catch (err) {
-      testUtil.log(err.stack);
-    }
   }
 
-  function expectConstructorPost(pre, post, exception, result) {
-    function expectArrayPost(array, propName, privatePropName) {
-      if (!array) {
-        expect(result[propName]).to.eql([]);
-      }
-      else {
-        expect(result[privatePropName]).to.eql(array);
-        expect(result[privatePropName]).to.not.equal(array);  // it must be copy, don't share the array
-        //noinspection BadExpressionStatementJS,JSHint
-        expect(result[privatePropName]).to.be.frozen;
-        expect(result[propName]).to.eql(array);
-        expect(result[propName]).to.not.equal(result[privatePropName]);  // it must be copy, don't share the array
-      }
-    }
+  it('has a shallow copy of the given pre-conditions, and the private array is frozen', function () {
+    expectArrayPost(pre, 'pre', '_pre')
+  })
+  it('has a shallow copy of the given post-conditions, and the private array is frozen', function () {
+    expectArrayPost(post, 'post', '_post')
+  })
+  it('has a shallow copy of the given exception-conditions, and the private array is frozen', function () {
+    expectArrayPost(exception, 'exception', '_exception')
+  })
+  it('adheres to the invariants', function () {
+    expectInvariants(result)
+  })
+}
 
-    it("has a shallow copy of the given pre-conditions, and the private array is frozen", function() {
-      expectArrayPost(pre, "pre", "_pre");
-    });
-    it("has a shallow copy of the given post-conditions, and the private array is frozen", function() {
-      expectArrayPost(post, "post", "_post");
-    });
-    it("has a shallow copy of the given exception-conditions, and the private array is frozen", function() {
-      expectArrayPost(exception, "exception", "_exception");
-    });
-    it("adheres to the invariants", function() {
-      expectInvariants(result);
-    });
+function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName, otherPropertyValue) {
+  function candidate () {}
+
+  function impl () {}
+
+  const contract = otherPropertyName === 'contract' ? otherPropertyValue : new AbstractContract({})
+  const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
+  const location = otherPropertyName === 'location' ? otherPropertyValue : util.firstLocationOutsideLibrary()
+  const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractContract.bindContractFunction
+
+  if (doNotFreezeProperty === 'contract') {
+    candidate.contract = contract
+  } else {
+    util.setAndFreezeProperty(candidate, 'contract', contract)
   }
-
-  function createCandidateContractFunction(doNotFreezeProperty, // jshint ignore:line
-                                           otherPropertyName,
-                                           otherPropertyValue) {
-    function candidate() {}
-
-    function impl() {}
-
-    var contract = otherPropertyName === "contract"
+  if (doNotFreezeProperty === 'implementation') {
+    candidate.implementation = implementation
+  } else {
+    util.setAndFreezeProperty(candidate, 'implementation', implementation)
+  }
+  if (doNotFreezeProperty === 'location') {
+    candidate.location = location
+  } else {
+    util.setAndFreezeProperty(candidate, 'location', location)
+  }
+  if (doNotFreezeProperty === 'bind') {
+    candidate.bind = bind
+  } else {
+    util.setAndFreezeProperty(candidate, 'bind', bind)
+  }
+  candidate.displayName =
+    (otherPropertyName === 'displayName')
       ? otherPropertyValue
-      : new AbstractContract({});
-    var implementation = otherPropertyName === "implementation" ? otherPropertyValue : impl;
-    var location = otherPropertyName === "location" ? otherPropertyValue : util.firstLocationOutsideLibrary();
-    var bind = otherPropertyName === "bind" ? otherPropertyValue : AbstractContract.bindContractFunction;
+      : AbstractContract.contractFunctionDisplayName(candidate)
+  // noinspection JSPotentiallyInvalidConstructorUsage
+  candidate.prototype = Object.create(impl.prototype, {constructor: {value: candidate}})
+  return candidate
+}
 
-    if (doNotFreezeProperty === "contract") {
-      candidate.contract = contract;
-    }
-    else {
-      util.setAndFreezeProperty(candidate, "contract", contract);
-    }
-    if (doNotFreezeProperty === "implementation") {
-      candidate.implementation = implementation;
-    }
-    else {
-      util.setAndFreezeProperty(candidate, "implementation", implementation);
-    }
-    if (doNotFreezeProperty === "location") {
-      candidate.location = location;
-    }
-    else {
-      util.setAndFreezeProperty(candidate, "location", location);
-    }
-    if (doNotFreezeProperty === "bind") {
-      candidate.bind = bind;
-    }
-    else {
-      util.setAndFreezeProperty(candidate, "bind", bind);
-    }
-    candidate.displayName =
-      (otherPropertyName === "displayName")
-        ? otherPropertyValue
-        : AbstractContract.contractFunctionDisplayName(candidate);
-    //noinspection JSPotentiallyInvalidConstructorUsage
-    candidate.prototype = Object.create(impl.prototype, {constructor: {value: candidate}});
-    return candidate;
-  }
+// noinspection FunctionNamingConventionJS,JSUnusedLocalSymbols
+function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+  const self = this
 
-  //noinspection JSUnusedLocalSymbols,FunctionNamingConventionJS
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
-    var self = this; // jshint ignore:line
+  describe('#isImplementedBy()', function () {
+    it('says yes if the argument is a general contract function for the contract', function () {
+      const subject = oneSubjectGenerator()
+      const f = createCandidateContractFunction(null, 'contract', subject)
+      subject.isImplementedBy(f).must.be.truthy()
+      self.expectInvariants(subject)
+    })
+    notAFunctionNorAContract
+      .concat(['function() {}'])
+      .forEach(function (thing) {
+        it('says no if the argument is not a general contract function but ' + thing, function () {
+          const subject = oneSubjectGenerator()
+          subject.isImplementedBy(thing).must.be.falsy()
+          self.expectInvariants(subject)
+        })
+      })
+    it('says no if the argument is a contract function for another contract', function () {
+      const subject = oneSubjectGenerator()
+      const otherContract = oneSubjectGenerator()
+      const f = createCandidateContractFunction(null, 'contract', otherContract)
+      subject.isImplementedBy(f).must.be.falsy()
+      self.expectInvariants(subject)
+    })
+  })
+}
 
-    describe("#isImplementedBy()", function() {
-      it("says yes if the argument is a general contract function for the contract", function() {
-        var subject = oneSubjectGenerator();
-        var f = createCandidateContractFunction(null, "contract", subject);
-        //noinspection BadExpressionStatementJS,JSHint
-        expect(subject.isImplementedBy(f)).to.be.ok;
-        self.expectInvariants(subject);
-      });
-      notAFunctionNorAContract
-        .concat(["function() {}"])
-        .forEach(function(thing) {
-          it("says no if the argument is not a general contract function but " + thing, function() {
-            var subject = oneSubjectGenerator();
-            //noinspection BadExpressionStatementJS,JSHint
-            expect(subject.isImplementedBy(thing)).not.to.be.ok;
-            self.expectInvariants(subject);
-          });
-      });
-      it("says no if the argument is a contract function for another contract", function() {
-        var subject = oneSubjectGenerator();
-        var otherContract = oneSubjectGenerator();
-        var f = createCandidateContractFunction(null, "contract", otherContract);
-        //noinspection BadExpressionStatementJS,JSHint
-        expect(subject.isImplementedBy(f)).not.to.be.ok;
-        self.expectInvariants(subject);
-      });
-    });
-
-  }
-
-  return {
-    preCases: preCases,
-    postCases: postCases,
-    exceptionCases: exceptionCases,
-    thingsThatAreNotAFunctionNorAContract: notAFunctionNorAContract,
-    constructorPreCases: constructorPreCases,
-    constructorPostCases: constructorPostCases,
-    constructorExceptionCases: constructorExceptionCases,
-    location: location,
-    expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost,
-    createCandidateContractFunction: createCandidateContractFunction,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
-  };
-
-}));
+module.exports = {
+  preCases: preCases,
+  postCases: postCases,
+  exceptionCases: exceptionCases,
+  thingsThatAreNotAFunctionNorAContract: notAFunctionNorAContract,
+  constructorPreCases: constructorPreCases,
+  constructorPostCases: constructorPostCases,
+  constructorExceptionCases: constructorExceptionCases,
+  location: location,
+  expectInvariants: expectInvariants,
+  expectConstructorPost: expectConstructorPost,
+  createCandidateContractFunction: createCandidateContractFunction,
+  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+}
