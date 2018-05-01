@@ -14,190 +14,210 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(describe, it, expect, testUtil) {
-  "use strict";
+const testUtil = require('../_util/testUtil')
 
-  // describe("js", function() {
-    describe("js/Function", function() {
-      describe("#bind()", function() {
-        it("keeps a call of a bound function with another this bound to the bound this", function() {
-          function testF() {return this.property;} // jshint ignore:line
+describe('js/Function', function () {
+  describe('#bind()', function () {
+    it('keeps a call of a bound function with another this bound to the bound this', function () {
+      function testF () { return this.property }
 
-          var boundThisPropertyValue = "bound this property value";
-          var boundThis = {
-            property: boundThisPropertyValue
-          };
-          //noinspection JSUnresolvedFunction
-          var boundF = testF.bind(boundThis);
-          //noinspection JSUnresolvedVariable
-          expect(boundF()).to.equal(boundThisPropertyValue);
-          var otherThisPropertyValue = "other this property value";
-          var otherThis = {
-            property: otherThisPropertyValue
-          };
-          //noinspection JSUnresolvedFunction
-          var otherThisResult = boundF.call(otherThis);
-          //noinspection JSUnresolvedVariable
-          expect(otherThisResult).to.equal(boundThisPropertyValue);
-        });
-        it("has no prototype", function() {
-          function testF(p) {return "just a function that returns " + p;} // jshint ignore:line
+      const boundThisPropertyValue = 'bound this property value'
+      const boundThis = {
+        property: boundThisPropertyValue
+      }
+      const boundF = testF.bind(boundThis)
+      boundF().must.equal(boundThisPropertyValue)
+      const otherThisPropertyValue = 'other this property value'
+      const otherThis = {
+        property: otherThisPropertyValue
+      }
+      const otherThisResult = boundF.call(otherThis)
+      otherThisResult.must.equal(boundThisPropertyValue)
+    })
+    it('has no prototype', function () {
+      function testF (p) { return 'just a function that returns ' + p }
 
-          expect(testF).to.have.property("prototype");
-          var boundThis = {description: "An object to bind to"};
-          var boundP = "a string parameter";
-          var boundF = testF.bind(boundThis, boundP);
-          expect(boundF).to.not.have.property("prototype");
-          /* https://www.ecma-international.org/ecma-262/6.0/index.html#sec-function.prototype.bind
-             NOTE 1 Function objects created using Function.prototype.bind are exotic objects.
-             They also do not have a prototype property.
-           */
-          expect(boundF()).to.satisfy(function(result) {return result.endsWith(boundP);});
-        });
-        [
-          {description: "An object to bind to"},
-          undefined,
-          null
-        ].forEach(function(boundThis) {
-          it("can be used out of the box as a constructor, and has weird instanceof behavior, bound to " + JSON.stringify(boundThis), function() {
-            //noinspection FunctionNamingConventionJS
-            function TestC(pA, pB) {
-              expect(Object.getPrototypeOf(this)).to.equal(TestC.prototype);
-              this.pA = pA;
-              this.pB = pB;
-            }
+      testF.must.have.property('prototype')
+      const boundThis = {description: 'An object to bind to'}
+      const boundP = 'a string parameter'
+      const boundF = testF.bind(boundThis, boundP)
+      boundF.must.not.have.property('prototype')
+      /* https://www.ecma-international.org/ecma-262/6.0/index.html#sec-function.prototype.bind
+         NOTE 1 Function objects created using Function.prototype.bind are exotic objects.
+         They also do not have a prototype property.
+       */
+      boundF().must.endWith(boundP)
+    })
 
-            var boundPA = "a string parameter";
-            var boundPB = "another string parameter";
+    const cases = [
+      {description: 'An object to bind to'},
+      undefined,
+      null
+    ]
+    cases.forEach(function (boundThis) {
+      it('can be used out of the box as a constructor, and has weird instanceof behavior, bound to ' + JSON.stringify(boundThis), function () {
+        // noinspection FunctionNamingConventionJS
+        function TestC (pA, pB) {
+          Object.getPrototypeOf(this).must.equal(TestC.prototype)
+          this.pA = pA
+          this.pB = pB
+        }
 
-            expect(TestC).to.have.property("prototype");
+        const boundPA = 'a string parameter'
+        const boundPB = 'another string parameter'
 
-            var testCInstance = new TestC(boundPA, boundPB);
-            expect(testCInstance).to.be.instanceof(TestC);
-            expect(testCInstance).to.have.property("pA").that.equals(boundPA);
-            expect(testCInstance).to.have.property("pB").that.equals(boundPB);
-            expect(Object.getPrototypeOf(testCInstance)).to.equal(TestC.prototype);
+        TestC.must.have.property('prototype')
 
-            //noinspection LocalVariableNamingConventionJS
-            var BoundC = TestC.bind(boundThis, boundPA);
-            expect(testCInstance).to.be.instanceof(BoundC);
-            // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
-            expect(BoundC).to.not.have.property("prototype");
-            expect(Object.getPrototypeOf(testCInstance)).not.to.equal(BoundC.prototype);
+        const testCInstance = new TestC(boundPA, boundPB)
+        testCInstance.must.be.instanceof(TestC)
+        testCInstance.pA.must.equal(boundPA)
+        testCInstance.pB.must.equal(boundPB)
+        Object.getPrototypeOf(testCInstance).must.equal(TestC.prototype)
 
-            var boundCInstance = new BoundC(boundPB);
-            /* NOTE This directly calls TestC, with a this with the TestC prototype, boundPA and boundPB. It is as if
-                    BoundC does not exist. The new knows what to do. */
-            expect(boundCInstance).to.be.instanceof(TestC);
-            expect(boundCInstance).to.be.instanceof(BoundC);
-            expect(boundCInstance).to.have.property("pA").that.equals(boundPA);
-            expect(boundCInstance).to.have.property("pB").that.equals(boundPB);
-            expect(boundCInstance).to.not.have.property("description");
-            expect(Object.getPrototypeOf(boundCInstance)).to.equal(TestC.prototype);
-            expect(Object.getPrototypeOf(boundCInstance)).not.to.equal(BoundC.prototype);
-          });
-        });
-      });
-      describe("#prototype", function() {
-        it("does not exist on the Function.prototype", function() {
-          expect(Function.prototype).not.to.have.property("prototype");
-        });
-        [
-          function simpleF() {return "This is a very simple function.";}
-          // TODO support class construct
-          //class SimpleClass {}
-          /* MUDO getters and setters do not have a prototype!
-             https://www.ecma-international.org/ecma-262/6.0/index.html#sec-method-definitions-runtime-semantics-propertydefinitionevaluation */
-        ].forEach(function(f) {
-          it("exists on function " + f, function() {
-            function otherSimpleF() {return "This is another very simple function.";}
+        // noinspection LocalVariableNamingConventionJS
+        const BoundC = TestC.bind(boundThis, boundPA)
+        testCInstance.must.be.instanceof(BoundC)
+        // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
+        BoundC.must.not.have.property('prototype')
+        Object.getPrototypeOf(testCInstance).must.not.equal(BoundC.prototype)
 
-            expect(Object.getPrototypeOf(f)).to.equal(Function.prototype);
-            expect(f).to.haveOwnProperty("prototype");
-            expect(f).to.have.property("prototype").that.is.an("object");
-            expect(f).to.have.property("prototype").instanceOf(Object);
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            expect(f.prototype).to.satisfy(
-              function(simpleFProto) {return Object.getPrototypeOf(simpleFProto) === Object.prototype;}
-            );
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            expect(f).to.have.property("prototype").that.not.equals(Function.prototype);
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            expect(f).to.have.property("prototype").that.not.equals(Function.prototype.prototype);
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            expect(f).to.have.property("prototype").that.not.equals(otherSimpleF.prototype);
-            expect(f.prototype).to.haveOwnProperty("constructor");
-            expect(f.prototype).to.have.property("constructor").that.equals(f);
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            testUtil.log(JSON.stringify(f.prototype));
-          });
-          it("cannot be deleted (not enumerable and not configurable) from function " + f, function() {
-            testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, "prototype")));
-            try {
-              delete f.prototype;
-            }
-            catch (err) {
-              expect(err).to.be.instanceOf(TypeError);
-            }
-            expect(f).to.have.ownPropertyDescriptor("prototype").that.has.property("enumerable", false);
-            expect(f).to.have.ownPropertyDescriptor("prototype").that.has.property("configurable", false);
-            testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, "prototype")));
-          });
-        });
-        it("is writable for a simple function", function() {
-          function simpleF() {return "This is a very simple function.";}
-
-          expect(simpleF).to.have.ownPropertyDescriptor("prototype").that.has.property("writable", true);
-          testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, "prototype")));
-          var newObject = {name: "a new object"};
-          //noinspection JSPotentiallyInvalidConstructorUsage
-          simpleF.prototype = newObject;
-          expect(simpleF).to.have.property("prototype").that.equals(newObject);
-        });
-        // TODO support class construct
-        //it("is not writable for a class", function() {
-        //  class SimpleClass {}
-        //
-        //  expect(SimpleClass).to.have.ownPropertyDescriptor("prototype").that.has.property("writable", false);
-        //  testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(SimpleClass, "prototype")));
-        //  var newObject = {name: "a new object"};
-        //  try {
-        //    //noinspection JSPotentiallyInvalidConstructorUsage
-        //    SimpleClass.prototype = newObject;
-        //  }
-        //  catch (err) {
-        //    expect(err).to.be.instanceOf(TypeError);
-        //  }
-        //});
-      });
-      describe("new", function() {
-        [
-          function simpleF() {return "This is a very simple function.";}
-          // TODO support class construct
-          //class SimpleClass {}
-        ].forEach(function(f) {
-          it("can be used as a constructor " + f, function() {
-            var result = new f();
-            expect(result).to.be.an("object");
-            expect(result).to.be.instanceOf(f);
-            expect(Object.getPrototypeOf(result)).to.equal(f.prototype);
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            testUtil.log(JSON.stringify(result));
-          });
-        });
-      });
+        const boundCInstance = new BoundC(boundPB)
+        /* NOTE This directly calls TestC, with a this with the TestC prototype, boundPA and boundPB. It is as if
+                BoundC does not exist. The new knows what to do. */
+        boundCInstance.must.be.instanceof(TestC)
+        boundCInstance.must.be.instanceof(BoundC)
+        boundCInstance.pA.must.equal(boundPA)
+        boundCInstance.pB.must.equal(boundPB)
+        boundCInstance.must.not.have.property('description')
+        Object.getPrototypeOf(boundCInstance).must.equal(TestC.prototype)
+        Object.getPrototypeOf(boundCInstance).must.not.equal(BoundC.prototype)
+      })
+    })
+  })
+  describe('#prototype', function () {
+    it('does not exist on the Function.prototype', function () {
+      Function.prototype.must.not.have.property('prototype')
     });
-  // });
+    [
+      function simpleF () { return 'This is a very simple function.' }
+      // TODO support class construct
+      // class SimpleClass {}
+      /* MUDO getters and setters do not have a prototype!
+         https://www.ecma-international.org/ecma-262/6.0/index.html#sec-method-definitions-runtime-semantics-propertydefinitionevaluation */
+    ].forEach(function (f) {
+      it('exists on function ' + f, function () {
+        function otherSimpleF () { return 'This is another very simple function.' }
 
-}));
+        Object.getPrototypeOf(f).must.equal(Function.prototype)
+        f.must.have.ownProperty('prototype')
+        f.prototype.must.be.an.object()
+        f.prototype.must.be.an.instanceof(Object)
+        // noinspection JSPotentiallyInvalidConstructorUsage
+        Object.getPrototypeOf(f.prototype).must.equal(Object.prototype)
+        f.prototype.must.not.equal(Function.prototype)
+        f.prototype.must.not.equal(Function.prototype.prototype)
+        // noinspection JSPotentiallyInvalidConstructorUsage
+        f.prototype.must.not.equal(otherSimpleF.prototype)
+        f.prototype.must.have.ownProperty('constructor')
+        f.prototype.constructor.must.equal(f)
+        // noinspection JSPotentiallyInvalidConstructorUsage
+        testUtil.log(JSON.stringify(f.prototype))
+      })
+      it('cannot be deleted (not enumerable and not configurable) from function ' + f, function () {
+        testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
+        try {
+          delete f.prototype
+          true.must.false() // unreachable
+        } catch (err) {
+          err.must.be.an.instanceof(TypeError)
+        }
+        Object.getOwnPropertyDescriptor(f, 'prototype').must.be.an.object()
+        Object.getOwnPropertyDescriptor(f, 'prototype').enumerable.must.be.false()
+        Object.getOwnPropertyDescriptor(f, 'prototype').configurable.must.be.false()
+        testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
+      })
+    })
+    it('is writable for a simple function', function () {
+      function simpleF () { return 'This is a very simple function.' }
+
+      Object.getOwnPropertyDescriptor(simpleF, 'prototype').must.be.an.object()
+      Object.getOwnPropertyDescriptor(simpleF, 'prototype').writable.must.be.true()
+      testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, 'prototype')))
+      const newObject = {name: 'a new object'}
+      // noinspection JSPotentiallyInvalidConstructorUsage
+      simpleF.prototype = newObject
+      // noinspection JSPotentiallyInvalidConstructorUsage
+      simpleF.prototype.must.equal(newObject)
+    })
+    it('does not exist by default on an arrow function', function () {
+      const arrow = () => 'This is a very simple arrow function.'
+
+      Object.getPrototypeOf(arrow).must.equal(Function.prototype)
+      arrow.must.not.have.property('prototype')
+    })
+    it('can be created on an arrow function (but that makes no sense)', function () {
+      const arrow = () => 'This is a very simple arrow function.'
+
+      const p = {
+        constructor: arrow
+      }
+      arrow.prototype = p
+      Object.getPrototypeOf(arrow).must.equal(Function.prototype)
+      arrow.prototype.must.equal(p)
+      arrow.prototype.constructor.must.equal(arrow)
+    })
+    // TODO support class construct
+    // it("is not writable for a class", function() {
+    //  class SimpleClass {}
+    //
+    //  expect(SimpleClass).to.have.ownPropertyDescriptor("prototype").that.has.property("writable", false);
+    //  testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(SimpleClass, "prototype")));
+    //  const newObject = {name: "a new object"};
+    //  try {
+    //    //noinspection JSPotentiallyInvalidConstructorUsage
+    //    SimpleClass.prototype = newObject;
+    //  }
+    //  catch (err) {
+    //    expect(err).to.be.instanceOf(TypeError);
+    //  }
+    // });
+  })
+  describe('new', function () {
+    [
+      function simpleF () { return 'This is a very simple function.' }
+      // TODO support class construct
+      // class SimpleClass {}
+    ].forEach(function (C) {
+      it('can be used as a constructor ' + C, function () {
+        const result = new C()
+        result.must.be.an.object()
+        result.must.be.an.instanceOf(C)
+        Object.getPrototypeOf(result).must.equal(C.prototype)
+        testUtil.log(JSON.stringify(result))
+      })
+    })
+    it('cannot be used with an arrow function', function () {
+      // noinspection LocalVariableNamingConventionJS
+      const Arrow = () => 'This is a very simple arrow function.'
+
+      const p = {
+        constructor: Arrow
+      }
+      Arrow.prototype = p
+      Object.getPrototypeOf(Arrow).must.equal(Function.prototype)
+      Arrow.prototype.must.equal(p)
+      Arrow.prototype.constructor.must.equal(Arrow)
+
+      try {
+        const obj = new Arrow()
+        obj.must.not.be.an.object() // unreachable
+      } catch (err) {
+        err.must.be.an.error(TypeError)
+      }
+    })
+  })
+})
