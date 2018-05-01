@@ -551,8 +551,6 @@ describe('_private/util', function () {
           expect(line).to.satisfy(function (l) {
             return l.indexOf(contractLibTestPath) >= 0 ||
                    l.indexOf(util.dirSeparator + 'mocha' + util.dirSeparator) >= 0 ||
-                   l.indexOf(util.dirSeparator + 'intern' + util.dirSeparator) >= 0 ||
-                   l.indexOf(util.dirSeparator + '__intern' + util.dirSeparator) >= 0 || // intern test runner
                    l.indexOf(util.dirSeparator) < 0 ||
                    l.indexOf('require (internal' + util.dirSeparator + 'module.js') >= 0 ||
                    l.indexOf(util.dirSeparator + 'requirejs' + util.dirSeparator + 'require.js') >= 0
