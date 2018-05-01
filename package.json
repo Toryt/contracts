@@ -52,6 +52,8 @@
     "intern": "^3.4.2",
     "just.randomstring": "^0.1.1",
     "mocha": "^5.2.0",
+    "mocha-reporter": "^0.1.1",
+    "must": "^0.13.4",
     "standard": "^11.0.1"
   }
 }
