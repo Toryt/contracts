@@ -14,173 +14,175 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "./_orderOfKeysCommon"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(describe, it, expect, orderOfKeysCommon) {
-  "use strict";
+const must = require('must')
+const orderOfKeysCommon = require('./_orderOfKeysCommon')
 
-  // describe("js", function() {
-    describe("js/Object", function() {
-      describe("#keys()", function() {
-        /*
-         Does for ... iteration respect the order in which properties on an object are defined?
-         And in what order are the properties of the prototype handled?
+describe('js/Object', function () {
+  describe('#keys()', function () {
+    /*
+     Does for ... iteration respect the order in which properties on an object are defined?
+     And in what order are the properties of the prototype handled?
 
-         According to the spec, the order is undefined. However,
-         "All modern implementations of ECMAScript iterate through object properties in the order in which they were defined."
-         (http://ejohn.org/blog/javascript-in-chrome/, "for loop order".)
-         */
+     According to the spec, the order is undefined. However,
+     "All modern implementations of ECMAScript iterate through object properties in the order in which they were defined."
+     (http://ejohn.org/blog/javascript-in-chrome/, "for loop order".)
+     */
 
-        it("should return all properties in the order they were defined", function() {
-          //noinspection MagicNumberJS
-          var nrOfProperties = 10000;
-          var o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties);
-          var keys = Object.keys(o);
-          expect(keys.length).to.equal(nrOfProperties);
-          var keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName);
-          keyNumbers.reduce(function(previous, current) {
-              expect(current).to.equal(previous + 1);
-              return current;
-            },
-            -1
-          );
-        });
-        it("does not return properties of the prototype", function() {
-          var o = orderOfKeysCommon.prepareAnObjectWithAProto();
-          var keys = Object.keys(o);
-          //noinspection MagicNumberJS
-          expect(keys.length).not.to.equal(30);
-          expect(keys.length).to.equal(10);
-        });
-        it("should return all properties in the order they were defined in a literal", function() {
-          var keys = Object.keys(orderOfKeysCommon.objectLiteral);
-          expect(keys.length).to.equal(5);
-          var keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName);
-          keyNumbers.reduce(function(previous, current) {
-              expect(current).to.equal(previous + 1);
-              return current;
-            },
-            -1
-          );
-        });
-        it("should return all properties in the order they were defined in a JSON object", function() {
-          //noinspection NodeModulesDependencies
-          var json = JSON.stringify(orderOfKeysCommon.objectLiteral);
-          //noinspection NodeModulesDependencies
-          var keys = Object.keys(JSON.parse(json));
-          expect(keys.length).to.equal(3); // undefined and function not stringified
-          var keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName);
-          keyNumbers.reduce(function(previous, current) {
-              expect(current).to.equal(previous + 1);
-              return current;
-            },
-            -1
-          );
-        });
-      });
+    it('should return all properties in the order they were defined', function () {
+      // noinspection MagicNumberJS
+      const nrOfProperties = 10000
+      const o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties)
+      const keys = Object.keys(o)
+      keys.length.must.equal(nrOfProperties)
+      const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
+      keyNumbers.reduce(
+        (previous, current) => {
+          current.must.equal(previous + 1)
+          return current
+        },
+        -1
+      )
+    })
+    it('does not return properties of the prototype', function () {
+      const o = orderOfKeysCommon.prepareAnObjectWithAProto()
+      const keys = Object.keys(o)
+      // noinspection MagicNumberJS
+      keys.length.must.not.equal(30)
+      keys.length.must.equal(10)
+    })
+    it('should return all properties in the order they were defined in a literal', function () {
+      const keys = Object.keys(orderOfKeysCommon.objectLiteral)
+      keys.length.must.equal(5)
+      const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
+      keyNumbers.reduce(
+        (previous, current) => {
+          current.must.equal(previous + 1)
+          return current
+        },
+        -1
+      )
+    })
+    it('should return all properties in the order they were defined in a JSON object', function () {
+      // noinspection NodeModulesDependencies
+      const json = JSON.stringify(orderOfKeysCommon.objectLiteral)
+      // noinspection NodeModulesDependencies
+      const keys = Object.keys(JSON.parse(json))
+      keys.length.must.equal(3) // undefined and function not stringified
+      const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
+      keyNumbers.reduce(
+        (previous, current) => {
+          current.must.equal(previous + 1)
+          return current
+        },
+        -1
+      )
+    })
+  })
 
-      describe("Object.defineProperty()", function() {
-        var propName = "aProperty";
+  describe('Object.defineProperty()', function () {
+    const propName = 'aProperty'
 
-        function defineAProp(obj) {
-          //noinspection MagicNumberJS
-          Object.defineProperty(
-            obj,
-            propName,
-            {
-              configurable: true,
-              enumerable: true,
-              writable: false,
-              value: 42
-            }
-          );
+    function defineAProp (obj) {
+      // noinspection MagicNumberJS
+      Object.defineProperty(
+        obj,
+        propName,
+        {
+          configurable: true,
+          enumerable: true,
+          writable: false,
+          value: 42
         }
+      )
+    }
 
-        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
-        [
-          undefined,
-          null,
-          4,
-          -1,
-          "",
-          "A string",
-          new Date(),
-          true,
-          false,
-          {},
-          /foo/,
-          function() {return "This simulates a self";},
-          [],
-          new ReferenceError(),
-          Math,
-          JSON,
-          new Number(4),
-          new String("abc"),
-          new Boolean(false)
-        ].forEach(function(obj) {
-          it("sets a property on " + obj + " if it is non-primitive, and fails to do so if it is primitive",
-            function() { // jshint ignore:line
-              var type = typeof obj;
-              if (obj === null || type === "undefined" || type === "number" || type === "boolean" || type === "string") {
-                expect(function() {defineAProp(obj);}).to.throw(TypeError);
-              }
-              else {
-                defineAProp(obj);
-                expect(obj).to.have.ownProperty(propName);
-                delete obj[propName]; // cleanup
-              }
-            }
-          );
-        });
-      });
+    // noinspection JSPrimitiveTypeWrapperUsage
+    [
+      undefined,
+      null,
+      4,
+      -1,
+      '',
+      'A string',
+      new Date(),
+      true,
+      false,
+      {},
+      /foo/,
+      function () { return 'This simulates a self' },
+      () => 'This simulates a self',
+      [],
+      new ReferenceError(),
+      Math,
+      JSON,
+      // eslint-disable-next-line
+      new Number(4),
+      // eslint-disable-next-line
+      new String('abc'),
+      // eslint-disable-next-line
+      new Boolean(false)
+    ].forEach(obj => {
+      it(
+        'sets a property on ' + obj + ' if it is non-primitive, and fails to do so if it is primitive',
+        function () {
+          const type = typeof obj
+          if (obj === null || type === 'undefined' || type === 'number' || type === 'boolean' || type === 'string') {
+            defineAProp.bind(null, obj).must.throw(TypeError)
+          } else {
+            defineAProp(obj)
+            obj.must.have.ownProperty(propName)
+            delete obj[propName] // cleanup
+          }
+        }
+      )
+    })
+  })
 
-      describe("Object.getOwnPropertyDescriptor()", function() {
-        var propName = "aProperty";
+  describe('Object.getOwnPropertyDescriptor()', function () {
+    const propName = 'aProperty';
 
-        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
-        [
-          undefined,
-          null,
-          4,
-          -1,
-          "",
-          "A string",
-          new Date(),
-          true,
-          false,
-          {},
-          /foo/,
-          function() {return "This simulates a self";},
-          [],
-          new ReferenceError(),
-          Math,
-          JSON,
-          new Number(4),
-          new String("abc"),
-          new Boolean(false)
-        ].forEach(function(obj) {
-          it("gets a property from " +
-             obj + " if it is not null or undefined, and fails to do so if it is primitive", function() {
-            if (obj === null || obj === undefined) {
-              expect(function() {Object.getOwnPropertyDescriptor(obj, propName);}).to.throw(TypeError);
-            }
-            else {
-              var result = Object.getOwnPropertyDescriptor(obj, propName);
-              expect(result).not.to.be.ok; // jshint ignore:line
-            }
-          });
-        });
-      });
-    });
-  // });
-
-}));
+    // noinspection JSPrimitiveTypeWrapperUsage
+    [
+      undefined,
+      null,
+      4,
+      -1,
+      '',
+      'A string',
+      new Date(),
+      true,
+      false,
+      {},
+      /foo/,
+      function () { return 'This simulates a self' },
+      () => 'This simulates a self',
+      [],
+      new ReferenceError(),
+      Math,
+      JSON,
+      // eslint-disable-next-line
+      new Number(4),
+      // eslint-disable-next-line
+      new String('abc'),
+      // eslint-disable-next-line
+      new Boolean(false)
+    ].forEach(obj => {
+      it(
+        'gets a property from ' +
+        obj + ' if it is not null or undefined, and fails to do so if it is primitive',
+        function () {
+          if (obj === null || obj === undefined) {
+            Object.getOwnPropertyDescriptor.bind(null, obj, propName).must.throw(TypeError)
+          } else {
+            const result = Object.getOwnPropertyDescriptor(obj, propName)
+            must(result).be.falsy()
+          }
+        }
+      )
+    })
+  })
+})
