@@ -14,212 +14,213 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil", "./_orderOfKeysCommon"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
+const testUtil = require('../_util/testUtil')
+const must = require('must')
+const orderOfKeysCommon = require('./_orderOfKeysCommon')
+
+describe('js/syntax', function () {
+  describe('#for-in', function () {
+    /*
+     Does for ... iteration respect the order in which properties on an object are defined?
+     And in what order are the properties of the prototype handled?
+
+     According to the spec, the order is undefined. However,
+     "All modern implementations of ECMAScript iterate through object properties in the order in which they were defined."
+     (http://ejohn.org/blog/javascript-in-chrome/, "for loop order".)
+     */
+    it('should return all properties in the order they were defined', function () {
+      // noinspection MagicNumberJS
+      const nrOfProperties = 10000
+      const o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties)
+      let count = 0
+      let previous = -1
+      for (let key in o) {
+        count++
+        const current = orderOfKeysCommon.nFromRandomName(key)
+        current.must.equal(previous + 1)
+        previous = current
+      }
+      count.must.equal(nrOfProperties)
+    })
+    it('should return all properties in the order they were defined, but those of the prototype last', function () {
+      const o = orderOfKeysCommon.prepareAnObjectWithAProto()
+      let count = 0
+      let previous = -1
+      for (const key in o) {
+        count++
+        const current = orderOfKeysCommon.nFromRandomName(key)
+        current.must.equal(previous + 1)
+        // noinspection MagicNumberJS
+        previous = current === 9 ? 99 : (current === 109 ? 199 : current)
+      }
+      // noinspection MagicNumberJS
+      count.must.equal(30)
+    })
+    it('should return all properties in the order they were defined in a literal', function () {
+      let count = 0
+      let previous = -1
+      for (const key in orderOfKeysCommon.objectLiteral) {
+        count++
+        const current = orderOfKeysCommon.nFromRandomName(key)
+        current.must.equal(previous + 1)
+        previous = current
+      }
+      count.must.equal(5)
+    })
+    it('should return all properties in the order they were defined in a JSON object', function () {
+      const json = JSON.stringify(orderOfKeysCommon.objectLiteral)
+      let count = 0
+      let previous = -1
+      for (const key in JSON.parse(json)) {
+        count++
+        const current = orderOfKeysCommon.nFromRandomName(key)
+        current.must.equal(previous + 1)
+        previous = current
+      }
+      count.must.equal(3) // undefined and function not stringified
+    })
+  })
+
+  function throwTest (toThrow) {
+    function thrower () {
+      throw toThrow
+    }
+
+    thrower.must.throw(toThrow)
   }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(describe, it, expect, testUtil, orderOfKeysCommon) {
-  "use strict";
 
-  // describe("js", function() {
-    describe("js/syntax", function() {
-      describe("#for-in", function() {
-        /*
-         Does for ... iteration respect the order in which properties on an object are defined?
-         And in what order are the properties of the prototype handled?
+  describe('#throw', function () {
+    it('can throw a truthy thing', function () {
+      throwTest('a string to throw')
+    })
+    it('can throw ""', function () {
+      throwTest('')
+    })
+    it('can throw false', function () {
+      throwTest(false)
+    })
+    it('can throw 0', function () {
+      throwTest(0)
+    })
+    it('can throw undefined', function () {
+      throwTest(undefined)
+    })
+    it('can throw null', function () {
+      throwTest(null)
+    })
+  })
 
-         According to the spec, the order is undefined. However,
-         "All modern implementations of ECMAScript iterate through object properties in the order in which they were defined."
-         (http://ejohn.org/blog/javascript-in-chrome/, "for loop order".)
-         */
-        it("should return all properties in the order they were defined", function() {
-          //noinspection MagicNumberJS
-          var nrOfProperties = 10000;
-          var o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties);
-          var count = 0;
-          var previous = -1;
-          for (var key in o) { // jshint ignore:line
-            count++;
-            var current = orderOfKeysCommon.nFromRandomName(key);
-            expect(current).to.equal(previous + 1);
-            previous = current;
-          }
-          expect(count).to.equal(nrOfProperties);
-        });
-        it("should return all properties in the order they were defined, but those of the prototype last", function() {
-          var o = orderOfKeysCommon.prepareAnObjectWithAProto();
-          var count = 0;
-          var previous = -1;
-          for (var key in o) { // jshint ignore:line
-            count++;
-            var current = orderOfKeysCommon.nFromRandomName(key);
-            expect(current).to.equal(previous + 1);
-            //noinspection MagicNumberJS
-            previous = current === 9 ? 99 : (current === 109 ? 199 : current);
-          }
-          //noinspection MagicNumberJS
-          expect(count).to.equal(30);
-        });
-        it("should return all properties in the order they were defined in a literal", function() {
-          var count = 0;
-          var previous = -1;
-          for (var key in orderOfKeysCommon.objectLiteral) { // jshint ignore:line
-            count++;
-            var current = orderOfKeysCommon.nFromRandomName(key);
-            expect(current).to.equal(previous + 1);
-            previous = current;
-          }
-          expect(count).to.equal(5);
-        });
-        it("should return all properties in the order they were defined in a JSON object", function() {
-          //noinspection NodeModulesDependencies
-          var json = JSON.stringify(orderOfKeysCommon.objectLiteral);
-          var count = 0;
-          var previous = -1;
-          //noinspection NodeModulesDependencies
-          for (var key in JSON.parse(json)) { // jshint ignore:line
-            count++;
-            var current = orderOfKeysCommon.nFromRandomName(key);
-            expect(current).to.equal(previous + 1);
-            previous = current;
-          }
-          expect(count).to.equal(3); // undefined and function not stringified
-        });
-      });
+  describe('#typeof', function () {
+    // noinspection JSPrimitiveTypeWrapperUsage
+    [
+      undefined,
+      null,
+      4,
+      -1,
+      '',
+      'A string',
+      new Date(),
+      true,
+      false,
+      {},
+      /foo/,
+      function () {},
+      () => '',
+      [],
+      new ReferenceError(),
+      Math,
+      JSON,
+      // eslint-disable-next-line
+      new Number(4),
+      // eslint-disable-next-line
+      new String('abc'),
+      // eslint-disable-next-line
+      new Boolean(false),
+      Object,
+      arguments
+    ].forEach(function (a) {
+      it('reports the typeof ' + a, function () {
+        testUtil.log(a + ': ' + typeof a)
+      })
+    })
+  })
 
-      function throwTest(toThrow) {
-        var endedNominally;
-        try {
-          //noinspection ExceptionCaughtLocallyJS
-          throw toThrow;
-          //noinspection UnreachableCodeJS,JSHint
-          endedNominally = true;
-        }
-        catch (thrown) {
-          endedNominally = false;
-          expect(thrown).to.equal(toThrow);
-        }
-        //noinspection BadExpressionStatementJS,JSHint
-        expect(endedNominally).not.to.be.ok;
+  describe('string', function () {
+    it('cannot take properties', function () {
+      const subject = 'This is a string'
+      subject.must.not.have.property('name')
+      const name = 'This is a name'
+      let thrown = false
+      try {
+        // noinspection JSPrimitiveTypeWrapperUsage,JSUndefinedPropertyAssignment
+        subject.name = name
+      } catch (err) {
+        thrown = true
+        err.must.be.an.error(TypeError)
       }
 
-      describe("#throw", function() {
-        it("can throw a truthy thing", function() {
-          throwTest("a string to throw");
-        });
-        it("can throw \"\"", function() {
-          throwTest("");
-        });
-        it("can throw false", function() {
-          throwTest(false);
-        });
-        it("can throw 0", function() {
-          throwTest(0);
-        });
-        it("can throw undefined", function() {
-          throwTest(undefined);
-        });
-        it("can throw null", function() {
-          throwTest(null);
-        });
-      });
+      thrown.must.be.true()
+    })
+  })
 
-      describe("#typeof", function() {
-        //noinspection JSPrimitiveTypeWrapperUsage,JSHint
-        [
-          undefined,
-          null,
-          4,
-          -1,
-          "",
-          "A string",
-          new Date(),
-          true,
-          false,
-          {},
-          /foo/,
-          function() {},
-          [],
-          new ReferenceError(),
-          Math,
-          JSON,
-          new Number(4),
-          new String("abc"),
-          new Boolean(false),
-          Object,
-          arguments
-        ].forEach(function(a) {
-          it("reports the typeof " + a, function() {
-            testUtil.log(a + ": " + typeof a);
-          });
-        });
-      });
+  describe('an array entry past the length of the array', function () {
+    it('is undefined', function () {
+      const array = [1, '2', {three: 3}]
+      const result = array[array.length]
+      must(result).be.undefined()
+    })
+  })
 
-      describe("string", function() {
-        it("cannot take properties", function() {
-          var subject = "This is a string";
-          expect(subject).not.to.have.property("name");
-          var name = "This is a name";
-          expect(function() {
-            //noinspection JSPrimitiveTypeWrapperUsage
-            subject.name = name;
-          }).to.throw(TypeError);
-        });
-      });
+  describe('instanceof', function () {
+    it('does not depend on the constructor property of a prototype', function () {
+      // noinspection FunctionNamingConventionJS
+      function Base () {}
+      Base.prototype.constructor = 'Second something else'
 
-      describe("an array entry past the length of the array", function() {
-        it("is undefined", function() {
-          var array = [1, "2", {three: 3}];
-          var result = array[array.length];
-          //noinspection BadExpressionStatementJS,JSHint
-          expect(result).to.be.undefined;
-        });
-      });
+      // noinspection FunctionNamingConventionJS
+      function Derived () {}
+      Derived.prototype = Object.create(Base.prototype, {constructor: {value: 'First something else'}})
 
-      describe("instanceof", function() {
-        it("does not depend on the constructor property of a prototype", function() {
-          function Base() {}
-          Base.prototype.constructor = "Second something else";
-          function Derived() {}
-          Derived.prototype = Object.create(Base.prototype, {constructor: {value: "First something else"}});
-          function Unrelated() {}
-          var instance = new Derived();
-          expect(instance instanceof Derived).to.be.true;
-          expect(instance instanceof Base).to.be.true;
-          expect(instance instanceof Unrelated).to.be.false;
-          expect(instance instanceof Object).to.be.true;
-        });
-        it("is not true for the prototype itself", function() {
-          function Base() {}
+      // noinspection FunctionNamingConventionJS
+      function Unrelated () {}
 
-          Base.prototype.constructor = "Second something else";
-          function Derived() {}
+      const instance = new Derived()
 
-          Derived.prototype = Object.create(Base.prototype, {constructor: {value: "First something else"}});
-          function Unrelated() {}
+      /* ;'s necessary with this strange syntax */
+      ; (instance instanceof Derived).must.be.true()
+      ; (instance instanceof Base).must.be.true()
+      ; (instance instanceof Unrelated).must.be.false()
+      ; (instance instanceof Object).must.be.true()
+    })
+    it('is not true for the prototype itself', function () {
+      // noinspection FunctionNamingConventionJS
+      function Base () {}
+      Base.prototype.constructor = 'Second something else'
 
-          expect(Derived.prototype instanceof Derived).to.be.false;
-          expect(Derived.prototype instanceof Base).to.be.true;
-          expect(Derived.prototype instanceof Unrelated).to.be.false;
-          expect(Derived.prototype instanceof Object).to.be.true;
-          expect(Base.prototype instanceof Derived).to.be.false;
-          expect(Base.prototype instanceof Base).to.be.false;
-          expect(Base.prototype instanceof Unrelated).to.be.false;
-          expect(Base.prototype instanceof Object).to.be.true;
-          expect(Unrelated.prototype instanceof Derived).to.be.false;
-          expect(Unrelated.prototype instanceof Base).to.be.false;
-          expect(Unrelated.prototype instanceof Unrelated).to.be.false;
-          expect(Unrelated.prototype instanceof Object).to.be.true;
-        });
-      });
-    });
-  // });
+      // noinspection FunctionNamingConventionJS
+      function Derived () {}
+      Derived.prototype = Object.create(Base.prototype, {constructor: {value: 'First something else'}})
 
-}));
+      // noinspection FunctionNamingConventionJS
+      function Unrelated () {}
+
+      (Derived.prototype instanceof Derived).must.be.false()
+      /* ;'s necessary with this strange syntax */
+      ; (Derived.prototype instanceof Base).must.be.true()
+      ; (Derived.prototype instanceof Unrelated).must.be.false()
+      ; (Derived.prototype instanceof Object).must.be.true()
+      ; (Base.prototype instanceof Derived).must.be.false()
+      ; (Base.prototype instanceof Base).must.be.false()
+      ; (Base.prototype instanceof Unrelated).must.be.false()
+      ; (Base.prototype instanceof Object).must.be.true()
+      ; (Unrelated.prototype instanceof Derived).must.be.false()
+      ; (Unrelated.prototype instanceof Base).must.be.false()
+      ; (Unrelated.prototype instanceof Unrelated).must.be.false()
+      ; (Unrelated.prototype instanceof Object).must.be.true()
+    })
+  })
+})
