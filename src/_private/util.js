@@ -70,7 +70,7 @@ function typeOf (obj) {
   return result // return String
 }
 
-const pathUp = function (path) {
+function pathUp (path) {
   if (typeOf(path) !== 'string') {
     throw new TypeError('path is not a string')
   }
@@ -172,6 +172,12 @@ const util = {
         Math.floor(value) === value
   },
 
+  /**
+   * Checks condition, and reports if it fails.
+   *
+   * Checking is done with a function, and not with a boolean, so that the report can show the condition.
+   * The condition cannot be an arrow function when there is a self.
+   */
   pre: function (/* Object? */ self, /* Function */ condition) {
     const shiftedCondition = condition || self
     const shiftedSelf = condition ? self : undefined
@@ -181,8 +187,8 @@ const util = {
   },
 
   setAndFreezeProperty: function (obj, propName, value) {
-    this.pre(function () { return !util.isPrimitive(obj) })
-    this.pre(function () { return util.typeOf(propName) === 'string' })
+    util.pre(() => !util.isPrimitive(obj))
+    util.pre(() => util.typeOf(propName) === 'string')
 
     Object.defineProperty(
       obj,
@@ -197,9 +203,9 @@ const util = {
   },
 
   defineConfigurableDerivedProperty: function (prototype, propertyName, derivation) {
-    this.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
-    this.pre(function () { return util.typeOf(propertyName) === 'string' })
-    this.pre(function () { return util.typeOf(derivation) === 'function' })
+    util.pre(() => !!prototype && !util.isPrimitive(prototype))
+    util.pre(() => util.typeOf(propertyName) === 'string')
+    util.pre(() => util.typeOf(derivation) === 'function')
 
     Object.defineProperty(
       prototype,
@@ -214,9 +220,9 @@ const util = {
   },
 
   defineFrozenDerivedProperty: function (prototype, propertyName, derivation) {
-    this.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
-    this.pre(function () { return util.typeOf(propertyName) === 'string' })
-    this.pre(function () { return util.typeOf(derivation) === 'function' })
+    util.pre(() => !!prototype && !util.isPrimitive(prototype))
+    util.pre(() => util.typeOf(propertyName) === 'string')
+    util.pre(() => util.typeOf(derivation) === 'function')
 
     Object.defineProperty(
       prototype,
@@ -231,12 +237,12 @@ const util = {
   },
 
   defineFrozenReadOnlyArrayProperty: function (prototype, propName, privatePropName) {
-    this.pre(function () { return !util.isPrimitive(prototype) })
-    this.pre(function () { return util.typeOf(propName) === 'string' })
-    this.pre(function () { return util.typeOf(privatePropName) === 'string' })
-    this.pre(function () { return propName !== privatePropName })
+    util.pre(() => !!prototype && !util.isPrimitive(prototype))
+    util.pre(() => util.typeOf(propName) === 'string')
+    util.pre(() => util.typeOf(privatePropName) === 'string')
+    util.pre(() => propName !== privatePropName)
 
-    this.defineFrozenDerivedProperty(
+    util.defineFrozenDerivedProperty(
       prototype,
       propName,
       function () { return this[privatePropName].slice() }
@@ -244,17 +250,17 @@ const util = {
   },
 
   isFrozenOwnProperty: function (obj, propName) {
-    this.pre(function () { return obj !== null && obj !== undefined })
+    util.pre(() => obj !== null && obj !== undefined)
 
     const descriptor = Object.getOwnPropertyDescriptor(obj, propName)
     return descriptor &&
            descriptor.enumerable === true &&
            descriptor.configurable === false &&
-           (descriptor.writable === false || (this.typeOf(descriptor.get) === 'function' && !descriptor.set))
+           (descriptor.writable === false || (util.typeOf(descriptor.get) === 'function' && !descriptor.set))
   },
 
   nrOfLines: function (str) {
-    return ('' + str).split(this.eol).length
+    return ('' + str).split(util.eol).length
   },
 
   /**
@@ -263,14 +269,14 @@ const util = {
    * The latter is only relevant on node. This is not an issue in browsers.
    */
   isALocationOutsideLibrary: function (location) {
-    if (this.typeOf(location) !== 'string') {
+    if (util.typeOf(location) !== 'string') {
       return false
     }
-    const lines = location.split(this.eol)
+    const lines = location.split(util.eol)
     return lines.length === 1 &&
-           this.stackLocation.test(lines[0]) &&
+           util.stackLocation.test(lines[0]) &&
            lines[0].indexOf(dirSeparator) >= 0 &&
-           lines[0].indexOf(this.contractLibPath) < 0
+           lines[0].indexOf(util.contractLibPath) < 0
   },
 
   /**
@@ -289,11 +295,11 @@ const util = {
     if (stack.indexOf(messageLines) === 0) {
       nrOfMessageLines = util.nrOfLines(messageLines) // skip these
     }
-    stack = stack.split(this.eol)
+    stack = stack.split(util.eol)
     for (let i = nrOfMessageLines; i < stack.length; i++) {
       // skip the message lines, and then look for the first line that refers to code not in this library,
       // that is not native code (i.e., the reference does contain a dirSeparator)
-      if (stack[i].indexOf(dirSeparator) >= 0 && stack[i].indexOf(this.contractLibPath) < 0) {
+      if (stack[i].indexOf(dirSeparator) >= 0 && stack[i].indexOf(util.contractLibPath) < 0) {
         return stack[i]
       }
     }
@@ -306,8 +312,8 @@ const util = {
    * taking into account that the message could be multi-line.
    */
   stackOutsideThisLibrary: function (error) {
-    this.pre(function () { return error instanceof Error })
-    this.pre(function () { return !!error.stack })
+    util.pre(() => error instanceof Error)
+    util.pre(() => !!error.stack)
 
     let nrOfMessageLines = 0
     const stack = error.stack
@@ -320,7 +326,7 @@ const util = {
       .split(util.eol)
       .splice(nrOfMessageLines) // everything after the message lines
       .reduce(
-        function (acc, line) {
+        (acc, line) => {
           if (!foundALineOutsideTheLibrary &&
               line.indexOf(util.contractLibPath) < 0 &&
               line.indexOf(dirSeparator) >= 0) {
@@ -350,7 +356,7 @@ const util = {
    * Returns a concise representation of <code>f</code> to be used in output.
    */
   conciseConditionRepresentation: function (prefix, f) {
-    this.pre(function () { return util.typeOf(prefix) === 'string' })
+    util.pre(() => util.typeOf(prefix) === 'string')
 
     let result = (f && f.displayName) || (prefix + ' ' + ((f && f.name) || f))
     result = result.replace(/\s\s+/g, ' ')
@@ -388,7 +394,7 @@ const util = {
     stack = '' + stack // make sure it is a string
     /* On node and chrome, the stack starts with thrown.toString (name and message).
        On safari and FF, it doesn't: thrown.stack it is the pure stack. We add the toString ourselves */
-    return (stack.indexOf(thrownString) === 0) ? stack : (thrownString + this.eol + stack)
+    return (stack.indexOf(thrownString) === 0) ? stack : (thrownString + util.eol + stack)
   },
 
   /**
