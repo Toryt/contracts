@@ -1,4 +1,4 @@
- /*
+/*
   Copyright 2016 - 2017 by Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,427 +12,413 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
- */
+*/
 
-(function(factory) {
-  "use strict";
+'use strict'
 
-  var dependencies = [];
+// eslint-disable-next-line
+const isNode = (new Function('try {return this === global;}catch(e){return false;}'))()
 
-  if (typeof define === "function" && define.amd) {
-    dependencies.push("module");
-    define(dependencies, factory);
+const stackSample = (new Error('Error used to determine dir separator and EOL')).stack
+
+const dirSeparator = /src(.)_private\1util/.exec(stackSample)[1]
+
+const thisDirectory = '.'
+const parentDirectory = '..'
+
+function browserModuleLocation (amdModule) {
+  // there seems to be no sensible way to test what the result actually is
+  const dirSeparator = '/' // always "//" for a browser
+  if (amdModule.uri.charAt(0) === dirSeparator) {
+    // server relative path
+    return window.location.origin + amdModule.uri
   }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
+  let location = window.location.href
+  location = location.split(dirSeparator)
+  if (location[location.length - 1].indexOf('.') >= 0) { // last entry is a file
+    location.pop()
   }
-}(function(amdModule) { // jshint ignore:line
-  "use strict";
-
-  var isNode = (new Function("try {return this === global;}catch(e){return false;}"))(); // jshint ignore:line
-
-  var stackSample = (new Error("Error used to determine dir separator and EOL")).stack;
-
-  var dirSeparator = /src(.)_private\1util/.exec(stackSample)[1];
-
-  var thisDirectory = ".";
-  var parentDirectory = "..";
-
-  function browserModuleLocation(amdModule) {
-    // there seems to be no sensible way to test what the result actually is
-    var dirSeparator = "/"; // always "//" for a browser
-    if (amdModule.uri.charAt(0) === dirSeparator) {
-      // server relative path
-      return window.location.origin + amdModule.uri;
-    }
-    var location = window.location.href;
-    location = location.split(dirSeparator);
-    if (0 <= location[location.length - 1].indexOf(".")) { // last entry is a file
-      location.pop();
-    }
-    location = location.concat(amdModule.uri.split(dirSeparator));
-    var dotLocation = location.indexOf(thisDirectory); // remove "this directory" path elements
-    while (0 <= dotLocation) {
-      location.splice(dotLocation, 1);
-      dotLocation = location.indexOf(thisDirectory);
-    }
-    dotLocation = location.indexOf(parentDirectory); // remove "parent directory" path elements
-    while (0 <= dotLocation) {
-      if (dotLocation <= 3) {
-        throw new Error("AMD module location \"" + amdModule.uri + "\" is illegal in the context of window location \""
-                        + window.location + "\". "
-                        + "It would bring us above the root of the server. There are too many \"..\" elements "
-                        + "at the start of the uri.");
-      }
-      location.splice(dotLocation - 1, 2);
-      dotLocation = location.indexOf(parentDirectory);
-    }
-    return location.join(dirSeparator);
+  location = location.concat(amdModule.uri.split(dirSeparator))
+  let dotLocation = location.indexOf(thisDirectory) // remove "this directory" path elements
+  while (dotLocation >= 0) {
+    location.splice(dotLocation, 1)
+    dotLocation = location.indexOf(thisDirectory)
   }
-
-  function typeOf(obj) {
-    if (obj === null) { // workaround for some weird implementations
-      return "null";
+  dotLocation = location.indexOf(parentDirectory) // remove "parent directory" path elements
+  while (dotLocation >= 0) {
+    if (dotLocation <= 3) {
+      throw new Error('AMD module location "' + amdModule.uri + '" is illegal in the context of window location "' +
+                      window.location + '". ' +
+                      'It would bring us above the root of the server. There are too many ".." elements ' +
+                      'at the start of the uri.')
     }
-    var result = Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
-    // on some browsers, the main window returns as "global" (WebKit) or "window" (FF), but this is an object too
-    if (result === "global" || result === "window") {
-      result = "object";
-    }
-    return result; // return String
+    location.splice(dotLocation - 1, 2)
+    dotLocation = location.indexOf(parentDirectory)
   }
+  return location.join(dirSeparator)
+}
 
-  var pathUp = function(path) {
-    if (typeOf(path) !== "string") {
-      throw new TypeError("path is not a string");
-    }
-    var result = path.split(dirSeparator);
-    result.pop();
-    return result.join(dirSeparator);
-  };
+function typeOf (obj) {
+  if (obj === null) { // workaround for some weird implementations
+    return 'null'
+  }
+  let result = Object.prototype.toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
+  // on some browsers, the main window returns as "global" (WebKit) or "window" (FF), but this is an object too
+  if (result === 'global' || result === 'window') {
+    result = 'object'
+  }
+  return result // return String
+}
 
-  /* EOL of this platform is determined by checking the existing of one of the known EOL-patterns in a string,
+const pathUp = function (path) {
+  if (typeOf(path) !== 'string') {
+    throw new TypeError('path is not a string')
+  }
+  const result = path.split(dirSeparator)
+  result.pop()
+  return result.join(dirSeparator)
+}
+
+/* EOL of this platform is determined by checking the existing of one of the known EOL-patterns in a string,
    generated by the Javascript engine, that certainly contains at least one EOL: an error stack. */
-  var windowsEol = "\r\n";
-  var unixEol = "\n";
-  var eol;
-  if (new RegExp(windowsEol).test(stackSample)) {
-    eol = windowsEol;
-  }
-  else if (new RegExp(unixEol).test(stackSample)) {
-    eol = unixEol;
-  }
-  else {
-    throw new Error("Could not determine EOL for this platform. It is not Windows \\r\\n, nor Unix \\n.");
-  }
+const windowsEol = '\r\n'
+const unixEol = '\n'
+let eol
+if (new RegExp(windowsEol).test(stackSample)) {
+  eol = windowsEol
+} else if (new RegExp(unixEol).test(stackSample)) {
+  eol = unixEol
+} else {
+  throw new Error('Could not determine EOL for this platform. It is not Windows \\r\\n, nor Unix \\n.')
+}
 
-  //noinspection MagicNumberJS
-  var util = {
+const util = {
 
-    /**
-     * Are we running on nodejs?
-     */
-    isNode: isNode,
+  /**
+   * Are we running on nodejs?
+   */
+  isNode: isNode,
 
-    /**
-     * "\" on windows node, "/" everywhere else
-     */
-    dirSeparator: dirSeparator,
+  /**
+   * "\" on windows node, "/" everywhere else
+   */
+  dirSeparator: dirSeparator,
 
-    /**
-     * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform.
-     */
-    eol: eol,
+  /**
+   * eol is always <code>\n</code> in modern browsers. On node, it depends on the platform.
+   */
+  eol: eol,
 
-    /**
-     * Pattern that matches stack lines on node and Chrome, and not on Safari or Firefox.
-     */
-    atStackLocation: /^ {4}at (.*)(:\d+:\d+\)?| \(native\)| \(<anonymous>\))$/,
-    // (<anonymous>) is used in node 8.4
+  /**
+   * Pattern that matches stack lines on node and Chrome, and not on Safari or Firefox.
+   */
+  atStackLocation: /^ {4}at (.*)(:\d+:\d+\)?| \(native\)| \(<anonymous>\))$/,
+  // (<anonymous>) is used in node 8.4
 
-    /**
-     * Pattern that matches stack lines on Safari or Firefox, and not on node and Chrome.
-     */
-    "@StackLocation": /^(.*@)?https?:\/\/[^\/]*\/([^:\/]*\/)*[^:\/]*.js:\d+:\d+|\[native code]$/,
+  /**
+   * Pattern that matches stack lines on Safari or Firefox, and not on node and Chrome.
+   */
+  '@StackLocation': /^(.*@)?https?:\/\/[^/]*\/([^:/]*\/)*[^:/]*.js:\d+:\d+|\[native code]$/,
 
-    /**
-     * Pattern that matches stack lines on the current platform.
-     */
-    stackLocation: null,
+  /**
+   * Pattern that matches stack lines on the current platform.
+   */
+  stackLocation: null,
 
-    contractLibPath: pathUp(pathUp( // 2 directories up
-      isNode ? (typeof module !== "undefined" && module.filename) || amdModule.uri // in node, commonjs or AMD
-             : browserModuleLocation(typeof module !== "undefined" || amdModule) // in browser, AMD, prefixed with location
-    )),
+  /* MUDO This depends on AMD modules still; it does not make sense now, but the node approach will probably not
+    transpile either. Further, this is for getting nice stack traces that hide the inners of this lib. In node,
+    that is simple with constructorOpt. So, we can get rid of all this code, and maybe try to hack that more
+    isolated for browsers. */
+  contractLibPath: pathUp(pathUp( // 2 directories up
+    isNode ? (typeof module !== 'undefined' && module.filename) || module.uri // in node, commonjs or AMD
+      : browserModuleLocation(typeof module !== 'undefined' || module) // in browser, AMD, prefixed with location
+  )),
 
-    /**
-     * A better type then Object.toString() or typeof.
-     * - toType(undefined); //"undefined"
-     * - toType(new); //"null"
-     * - toType({a: 4}); //"object"
-     * - toType([1, 2, 3]); //"array"
-     * - (function() {console.log(toType(arguments))})(); //arguments
-     * - toType(new ReferenceError); //"error"
-     * - toType(new Date); //"date"
-     * - toType(/a-z/); //"regexp"
-     * - toType(Math); //"math"
-     * - toType(JSON); //"json"
-     * - toType(new Number(4)); //"number"
-     * - toType(new String("abc")); //"string"
-     * - toType(new Boolean(true)); //"boolean"
-     *
-     * Based on
-     * http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
-     */
-    typeOf: typeOf,
+  /**
+   * A better type then Object.toString() or typeof.
+   * - toType(undefined); //"undefined"
+   * - toType(new); //"null"
+   * - toType({a: 4}); //"object"
+   * - toType([1, 2, 3]); //"array"
+   * - (function() {console.log(toType(arguments))})(); //arguments
+   * - toType(new ReferenceError); //"error"
+   * - toType(new Date); //"date"
+   * - toType(/a-z/); //"regexp"
+   * - toType(Math); //"math"
+   * - toType(JSON); //"json"
+   * - toType(new Number(4)); //"number"
+   * - toType(new String("abc")); //"string"
+   * - toType(new Boolean(true)); //"boolean"
+   *
+   * Based on
+   * http://javascriptweblog.wordpress.com/2011/08/08/fixing-the-javascript-typeof-operator/
+   */
+  typeOf: typeOf,
 
-    /**
-     * p is a true primitive, i.e., not null, undefined, an object (which implies, not a Date, Math or JSON, nor any
-     * Error, and not an array or arguments, and wrapped primitives), not a function. p is a true string, number or
-     * boolean.
-     */
-    isPrimitive: function(p) {
-      return (p !== null) && 0 <= ["number", "string", "boolean"].indexOf(typeof p);
-    },
+  /**
+   * p is a true primitive, i.e., not null, undefined, an object (which implies, not a Date, Math or JSON, nor any
+   * Error, and not an array or arguments, and wrapped primitives), not a function. p is a true string, number or
+   * boolean.
+   */
+  isPrimitive: function (p) {
+    return (p !== null) && ['number', 'string', 'boolean'].indexOf(typeof p) >= 0
+  },
 
-    isInteger: function(value) {
-      return Number.isInteger
-        ? Number.isInteger(value)
-        : typeof value === "number"
-          && isFinite(value)
-          && Math.floor(value) === value;
-    },
+  isInteger: function (value) {
+    return Number.isInteger
+      ? Number.isInteger(value)
+      : typeof value === 'number' &&
+        isFinite(value) &&
+        Math.floor(value) === value
+  },
 
-    pre: function(/*Object?*/ self, /*Function*/ condition) {
-      var shiftedCondition = condition || self;
-      var shiftedSelf = condition ? self : undefined;
-      if (!shiftedCondition.apply(shiftedSelf)) {
-        throw new Error("Precondition violation in Toryt Contracts: " + shiftedCondition);
+  pre: function (/* Object? */ self, /* Function */ condition) {
+    const shiftedCondition = condition || self
+    const shiftedSelf = condition ? self : undefined
+    if (!shiftedCondition.apply(shiftedSelf)) {
+      throw new Error('Precondition violation in Toryt Contracts: ' + shiftedCondition)
+    }
+  },
+
+  setAndFreezeProperty: function (obj, propName, value) {
+    this.pre(function () { return !util.isPrimitive(obj) })
+    this.pre(function () { return util.typeOf(propName) === 'string' })
+
+    Object.defineProperty(
+      obj,
+      propName,
+      {
+        configurable: false,
+        enumerable: true,
+        writable: false,
+        value: value
       }
-    },
+    )
+  },
 
-    setAndFreezeProperty: function(obj, propName, value) {
-      this.pre(function() {return !util.isPrimitive(obj);});
-      this.pre(function() {return util.typeOf(propName) === "string";});
+  defineConfigurableDerivedProperty: function (prototype, propertyName, derivation) {
+    util.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
+    util.pre(function () { return util.typeOf(propertyName) === 'string' })
+    util.pre(function () { return util.typeOf(derivation) === 'function' })
 
-      Object.defineProperty(
-        obj,
-        propName,
-        {
-          configurable: false,
-          enumerable: true,
-          writable: false,
-          value: value
-        }
-      );
-    },
-
-    defineConfigurableDerivedProperty: function(prototype, propertyName, derivation) {
-      util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
-      util.pre(function() {return util.typeOf(propertyName) === "string";});
-      util.pre(function() {return util.typeOf(derivation) === "function";});
-
-      Object.defineProperty(
-        prototype,
-        propertyName,
-        {
-          configurable: true,
-          enumerable: true,
-          get: derivation,
-          set: undefined
-        }
-      );
-    },
-
-    defineFrozenDerivedProperty: function(prototype, propertyName, derivation) {
-      util.pre(function() {return !!prototype && !util.isPrimitive(prototype);});
-      util.pre(function() {return util.typeOf(propertyName) === "string";});
-      util.pre(function() {return util.typeOf(derivation) === "function";});
-
-      Object.defineProperty(
-        prototype,
-        propertyName,
-        {
-          configurable: false,
-          enumerable: true,
-          get: derivation,
-          set: undefined
-        }
-      );
-    },
-
-    defineFrozenReadOnlyArrayProperty: function(prototype, propName, privatePropName) {
-      this.pre(function() {return !util.isPrimitive(prototype);});
-      this.pre(function() {return util.typeOf(propName) === "string";});
-      this.pre(function() {return util.typeOf(privatePropName) === "string";});
-      this.pre(function() {return propName !== privatePropName;});
-
-      this.defineFrozenDerivedProperty(
-        prototype,
-        propName,
-        function() {return this[privatePropName].slice();}
-      );
-    },
-
-    isFrozenOwnProperty: function(obj, propName) {
-      this.pre(function() {return obj !== null && obj !== undefined;});
-
-      var descriptor = Object.getOwnPropertyDescriptor(obj, propName);
-      return descriptor
-             && descriptor.enumerable === true
-             && descriptor.configurable === false
-             && (descriptor.writable === false || (this.typeOf(descriptor.get) === "function" && !descriptor.set));
-    },
-
-    nrOfLines: function(str) {
-      return ("" + str).split(this.eol).length;
-    },
-
-    /**
-     * <code>location</code> is a stack line location, that refers to code that is not inside this library,
-     * and does not refer to native code. Native code is defined as a location that does not contain a &quot;/&quot;.
-     * The latter is only relevant on node. This is not an issue in browsers.
-     */
-    isALocationOutsideLibrary: function(location) {
-      if (this.typeOf(location) !== "string") {
-        return false;
+    Object.defineProperty(
+      prototype,
+      propertyName,
+      {
+        configurable: true,
+        enumerable: true,
+        get: derivation,
+        set: undefined
       }
-      var lines = location.split(this.eol);
-      return lines.length === 1
-             && this.stackLocation.test(lines[0])
-             && 0 <= lines[0].indexOf(dirSeparator)
-             && lines[0].indexOf(this.contractLibPath) < 0;
-    },
+    )
+  },
 
-    /**
-     * The first line from a stack trace created here that refers to code that is not inside this library,
-     * and does not refer to native code. Returns the empty string if no such line is found.
-     *
-     * When this result is used as a line on its own, it is clickable to navigate to the referred source code
-     * in most consoles.
-     */
-    firstLocationOutsideLibrary: function() {
-      var stackSource = new Error();
+  defineFrozenDerivedProperty: function (prototype, propertyName, derivation) {
+    util.pre(function () { return !!prototype && !util.isPrimitive(prototype) })
+    util.pre(function () { return util.typeOf(propertyName) === 'string' })
+    util.pre(function () { return util.typeOf(derivation) === 'function' })
 
-      var nrOfMessageLines = 0;
-      var stack = stackSource.stack;
-      var messageLines = stackSource.toString();
-      if (stack.indexOf(messageLines) === 0) {
-        nrOfMessageLines = util.nrOfLines(messageLines); // skip these
+    Object.defineProperty(
+      prototype,
+      propertyName,
+      {
+        configurable: false,
+        enumerable: true,
+        get: derivation,
+        set: undefined
       }
-      stack = stack.split(this.eol);
-      for (var i = nrOfMessageLines; i < stack.length; i++) {
-        // skip the message lines, and then look for the first line that refers to code not in this library,
-        // that is not native code (i.e., the reference does contain a dirSeparator)
-        if (0 <= stack[i].indexOf(dirSeparator) && stack[i].indexOf(this.contractLibPath) < 0) {
-          return stack[i];
-        }
+    )
+  },
+
+  defineFrozenReadOnlyArrayProperty: function (prototype, propName, privatePropName) {
+    this.pre(function () { return !util.isPrimitive(prototype) })
+    this.pre(function () { return util.typeOf(propName) === 'string' })
+    this.pre(function () { return util.typeOf(privatePropName) === 'string' })
+    this.pre(function () { return propName !== privatePropName })
+
+    this.defineFrozenDerivedProperty(
+      prototype,
+      propName,
+      function () { return this[privatePropName].slice() }
+    )
+  },
+
+  isFrozenOwnProperty: function (obj, propName) {
+    this.pre(function () { return obj !== null && obj !== undefined })
+
+    const descriptor = Object.getOwnPropertyDescriptor(obj, propName)
+    return descriptor &&
+           descriptor.enumerable === true &&
+           descriptor.configurable === false &&
+           (descriptor.writable === false || (this.typeOf(descriptor.get) === 'function' && !descriptor.set))
+  },
+
+  nrOfLines: function (str) {
+    return ('' + str).split(this.eol).length
+  },
+
+  /**
+   * <code>location</code> is a stack line location, that refers to code that is not inside this library,
+   * and does not refer to native code. Native code is defined as a location that does not contain a &quot;/&quot;.
+   * The latter is only relevant on node. This is not an issue in browsers.
+   */
+  isALocationOutsideLibrary: function (location) {
+    if (this.typeOf(location) !== 'string') {
+      return false
+    }
+    const lines = location.split(this.eol)
+    return lines.length === 1 &&
+           this.stackLocation.test(lines[0]) &&
+           lines[0].indexOf(dirSeparator) >= 0 &&
+           lines[0].indexOf(this.contractLibPath) < 0
+  },
+
+  /**
+   * The first line from a stack trace created here that refers to code that is not inside this library,
+   * and does not refer to native code. Returns the empty string if no such line is found.
+   *
+   * When this result is used as a line on its own, it is clickable to navigate to the referred source code
+   * in most consoles.
+   */
+  firstLocationOutsideLibrary: function () {
+    const stackSource = new Error()
+
+    let nrOfMessageLines = 0
+    let stack = stackSource.stack
+    const messageLines = stackSource.toString()
+    if (stack.indexOf(messageLines) === 0) {
+      nrOfMessageLines = util.nrOfLines(messageLines) // skip these
+    }
+    stack = stack.split(this.eol)
+    for (let i = nrOfMessageLines; i < stack.length; i++) {
+      // skip the message lines, and then look for the first line that refers to code not in this library,
+      // that is not native code (i.e., the reference does contain a dirSeparator)
+      if (stack[i].indexOf(dirSeparator) >= 0 && stack[i].indexOf(this.contractLibPath) < 0) {
+        return stack[i]
       }
-      return ""; // could not find a line outside this library
-    },
+    }
+    return '' // could not find a line outside this library
+  },
 
-    /**
-     * Input an error, and transform its stack so it only contains lines that refer to
-     * code outside this library, and not to native code. The initial name and message is removed,
-     * taking into account that the message could be multi-line.
-     */
-    stackOutsideThisLibrary: function(error) {
-      util.pre(function() {return error instanceof Error;});
-      util.pre(function() {return !!error.stack;});
+  /**
+   * Input an error, and transform its stack so it only contains lines that refer to
+   * code outside this library, and not to native code. The initial name and message is removed,
+   * taking into account that the message could be multi-line.
+   */
+  stackOutsideThisLibrary: function (error) {
+    util.pre(function () { return error instanceof Error })
+    util.pre(function () { return !!error.stack })
 
-      var nrOfMessageLines = 0;
-      var stack = error.stack;
-      var messageLines = error.toString();
-      if (stack.indexOf(messageLines) === 0) {
-        nrOfMessageLines = util.nrOfLines(messageLines); // skip these
-      }
-      var foundALineOutsideTheLibrary = false;
-      var result = error.stack
-        .split(util.eol)
-        .splice(nrOfMessageLines) // everything after the message lines
-        .reduce(
-          function(acc, line) {
-            if (!foundALineOutsideTheLibrary &&
-                line.indexOf(util.contractLibPath) < 0 &&
-                0 <= line.indexOf(dirSeparator)) {
-              // we found the first line of code not in this library and not native code
-              foundALineOutsideTheLibrary = true;
-            }
-            if (line &&
-                line.indexOf(util.contractLibPath) < 0 &&
-                 (0 <= line.indexOf(dirSeparator) || foundALineOutsideTheLibrary)) {
-              // copy the lines not referring to this library that are not referring to
-              // native code, and the lines that are referring to native code once we encountered the first line
-              // of non-native code that refers to code outside this library, if the are not empty
-              acc.push(line);
-            }
-            return acc;
-          },
-          []
-        );
-      return result.join(util.eol);
-    },
+    let nrOfMessageLines = 0
+    const stack = error.stack
+    const messageLines = error.toString()
+    if (stack.indexOf(messageLines) === 0) {
+      nrOfMessageLines = util.nrOfLines(messageLines) // skip these
+    }
+    let foundALineOutsideTheLibrary = false
+    const result = error.stack
+      .split(util.eol)
+      .splice(nrOfMessageLines) // everything after the message lines
+      .reduce(
+        function (acc, line) {
+          if (!foundALineOutsideTheLibrary &&
+              line.indexOf(util.contractLibPath) < 0 &&
+              line.indexOf(dirSeparator) >= 0) {
+            // we found the first line of code not in this library and not native code
+            foundALineOutsideTheLibrary = true
+          }
+          if (line &&
+              line.indexOf(util.contractLibPath) < 0 &&
+               (line.indexOf(dirSeparator) >= 0 || foundALineOutsideTheLibrary)) {
+            // copy the lines not referring to this library that are not referring to
+            // native code, and the lines that are referring to native code once we encountered the first line
+            // of non-native code that refers to code outside this library, if the are not empty
+            acc.push(line)
+          }
+          return acc
+        },
+        []
+      )
+    return result.join(util.eol)
+  },
 
-    maxLengthOfConciseRepresentation: 80,
-    lengthOfEndConciseRepresentation: 15,
-    conciseSeparator: " … ",
+  maxLengthOfConciseRepresentation: 80,
+  lengthOfEndConciseRepresentation: 15,
+  conciseSeparator: ' … ',
 
-    /**
-     * Returns a concise representation of <code>f</code> to be used in output.
-     */
-    conciseConditionRepresentation: function(prefix, f) {
-      util.pre(function() {return util.typeOf(prefix) === "string";});
+  /**
+   * Returns a concise representation of <code>f</code> to be used in output.
+   */
+  conciseConditionRepresentation: function (prefix, f) {
+    util.pre(function () { return util.typeOf(prefix) === 'string' })
 
-      var result = (f && f.displayName) || (prefix + " " + ((f && f.name) || f));
-      result = result.replace(/\s\s+/g, " ");
-      if (util.maxLengthOfConciseRepresentation < result.length) {
-        var startLength = util.maxLengthOfConciseRepresentation
-                          - util.lengthOfEndConciseRepresentation
-                          - util.conciseSeparator.length;
-        var start = result.slice(0, startLength);
-        var end = result.slice(-util.lengthOfEndConciseRepresentation);
-        result = start + util.conciseSeparator + end;
-      }
-      return result;
-    },
+    let result = (f && f.displayName) || (prefix + ' ' + ((f && f.name) || f))
+    result = result.replace(/\s\s+/g, ' ')
+    if (util.maxLengthOfConciseRepresentation < result.length) {
+      const startLength = util.maxLengthOfConciseRepresentation -
+                        util.lengthOfEndConciseRepresentation -
+                        util.conciseSeparator.length
+      const start = result.slice(0, startLength)
+      const end = result.slice(-util.lengthOfEndConciseRepresentation)
+      result = start + util.conciseSeparator + end
+    }
+    return result
+  },
 
-    /**
-     * <p>Returns a moderately normalized extensive, multiline representation of a <em>thrown</em>.
-     * <p>Anything can be thrown, not only Error instances.</p>
-     * <p>The stack of an Error is different in different environments. In node and Chrome, the first line of the
-     *   stack is actually the toString of the Error, followed by the true stack, one call per line, that starts
-     *   with <code>/^    at/</code>, followed by the path of the file where the call was made.
-     *   In Firefox and Safari, the stack only contains the true stack, and the lines
-     *   are the name of the called function (or the empty string for anonymous functions), followed by <code>@</code>,
-     *   followed by the path of the file where the call was made.</p>
-     * <p>If the <em>thrown</em> does not have a stack property, its standard string representation is returned.</p>
-     * <p>If the <em>thrown</em> does have a stack property, its stack is returned. If the stack starts with
-     *   the string representation of the <em>thrown</em>, that's it. Otherwise, the string representation of the
-     *   <em>thrown</em> is added in the front on a separate line.
-     */
-    extensiveThrownRepresentation: function(thrown) {
-      var thrownString = "" + thrown;
-      var stack = thrown && thrown.stack;
-      if (!stack) {
-        return thrownString;
-      }
-      stack = "" + stack; // make sure it is a string
-      /* On node and chrome, the stack starts with thrown.toString (name and message).
-         On safari and FF, it doesn't: thrown.stack it is the pure stack. We add the toString ourselves */
-      return (stack.indexOf(thrownString) === 0) ? stack : (thrownString + this.eol + stack);
-    },
+  /**
+   * <p>Returns a moderately normalized extensive, multi-line representation of a <em>thrown</em>.</p>
+   * <p>Anything can be thrown, not only Error instances.</p>
+   * <p>The stack of an Error is different in different environments. In node and Chrome, the first line of the
+   *   stack is actually the toString of the Error, followed by the true stack, one call per line, that starts
+   *   with <code>/^    at/</code>, followed by the path of the file where the call was made.
+   *   In Firefox and Safari, the stack only contains the true stack, and the lines
+   *   are the name of the called function (or the empty string for anonymous functions), followed by <code>@</code>,
+   *   followed by the path of the file where the call was made.</p>
+   * <p>If the <em>thrown</em> does not have a stack property, its standard string representation is returned.</p>
+   * <p>If the <em>thrown</em> does have a stack property, its stack is returned. If the stack starts with
+   *   the string representation of the <em>thrown</em>, that's it. Otherwise, the string representation of the
+   *   <em>thrown</em> is added in the front on a separate line.</p>
+   */
+  extensiveThrownRepresentation: function (thrown) {
+    const thrownString = '' + thrown
+    let stack = thrown && thrown.stack
+    if (!stack) {
+      return thrownString
+    }
+    stack = '' + stack // make sure it is a string
+    /* On node and chrome, the stack starts with thrown.toString (name and message).
+       On safari and FF, it doesn't: thrown.stack it is the pure stack. We add the toString ourselves */
+    return (stack.indexOf(thrownString) === 0) ? stack : (thrownString + this.eol + stack)
+  },
 
-    /**
-     * <p>Returns the directory name of a path, similar to the Unix dirname command.
-     * For example:</p>
-     * <pre>
-     * util.pathUp('/foo/bar/baz/asdf/quux');
-     * // Returns: '/foo/bar/baz/asdf'
-     * </pre>
-     * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
-     * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
-     * directly.
-     */
-    pathUp: pathUp,
+  /**
+   * <p>Returns the directory name of a path, similar to the Unix dirname command.
+   * For example:</p>
+   * <pre>
+   * util.pathUp('/foo/bar/baz/asdf/quux');
+   * // Returns: '/foo/bar/baz/asdf'
+   * </pre>
+   * <p>A <code>TypeError</code> is thrown if path is not a string.</p>
+   * <p>This method is a wrapper around node's <code>path.dirname</code>, which is not available on the browser
+   * directly.
+   */
+  pathUp: pathUp,
 
-    /**
-     * Return the URL at which the given AMD module is loaded.
-     * This function only works in a browser.
-     */
-    browserModuleLocation: browserModuleLocation
-  };
+  /**
+   * Return the URL at which the given AMD module is loaded.
+   * This function only works in a browser.
+   */
+  browserModuleLocation: browserModuleLocation
+}
 
-  // not the first line, because on some platforms, that is the toString
-  var stackLine = (new Error("Error for setup")).stack.split(util.eol)[2];
-  if (util.atStackLocation.test(stackLine)) {
-    util.stackLocation = util.atStackLocation;
-  }
-  else if (util["@StackLocation"].test(stackLine)) {
-    util.stackLocation = util["@StackLocation"];
-  }
-  else {
-    throw new Error("Determined from an Error stack line that the current platform is not supported.");
-  }
+// not the first line, because on some platforms, that is the toString
+const stackLine = (new Error('Error for setup')).stack.split(util.eol)[2]
+if (util.atStackLocation.test(stackLine)) {
+  util.stackLocation = util.atStackLocation
+} else if (util['@StackLocation'].test(stackLine)) {
+  util.stackLocation = util['@StackLocation']
+} else {
+  throw new Error('Determined from an Error stack line that the current platform is not supported.')
+}
 
-  return util;
-}));
+module.exports = util
