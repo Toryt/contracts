@@ -40,6 +40,7 @@ function generateMutableStuff () {
     {subject: {a: 4}, expected: 'object'},
     {subject: [1, 2, 3], expected: 'array'},
     {subject: function () {}, expected: 'function'},
+    {subject: () => 0, expected: 'function'},
     {subject: new ReferenceError(), expected: 'error'},
     {subject: new Date(), expected: 'date'},
     {subject: /a-z/, expected: 'regexp'},
@@ -75,7 +76,7 @@ function describeLocationTest (propertyName, environments) {
     it('is a RegExp', function () {
       util[propertyName].must.be.instanceof(RegExp)
     })
-    Object.keys(stacks).forEach(function (env) {
+    Object.keys(stacks).forEach(env => {
       stacks[env]
         .split(util.eol)
         .filter(l => !!l) // some environments add an empty line at the end of the stack
@@ -125,8 +126,8 @@ describe('_private/util', function () {
     })
     stacks['current environment']
       .split(util.eol)
-      .filter(function (l) { return l }) // some environments add an empty line at the end of the stack
-      .forEach(function (l) {
+      .filter(l => !!l) // some environments add an empty line at the end of the stack
+      .forEach(l => {
         it('matches the current environment stack line "' + l + '"', function () {
           l.must.match(util.stackLocation)
         })
@@ -142,7 +143,7 @@ describe('_private/util', function () {
   })
 
   describe('#typeof()', function () {
-    stuff.forEach(function (record) {
+    stuff.forEach(record => {
       it('should return "' + record.expected + '" for ' + record.subject, function () {
         const result = util.typeOf(record.subject)
         result.must.be.a.string()
@@ -152,7 +153,7 @@ describe('_private/util', function () {
   })
 
   describe('#isPrimitive()', function () {
-    stuff.forEach(function (record) {
+    stuff.forEach(record => {
       it('correctly decides whether the argument is a primitive for ' + record.subject, function () {
         const result = util.isPrimitive(record.subject)
         result.must.be.a.boolean()
@@ -163,25 +164,25 @@ describe('_private/util', function () {
 
   describe('#isInteger()', function () {
     stuff
-      .map(function (record) { return record.subject })
-      .filter(function (thing) { return util.typeOf(thing) !== 'number' })
-      .forEach(function (thing) {
+      .map(record => record.subject)
+      .filter(thing => util.typeOf(thing) !== 'number')
+      .forEach(thing => {
         it('should return false for ' + thing, function () {
           const result = util.isInteger(thing)
           result.must.be.false()
         })
-      });
+      })
     // noinspection MagicNumberJS
-    [Number.MIN_SAFE_INTEGER, -4, -2.0, -1, 0, 1, 2.0, 6, Number.MAX_SAFE_INTEGER, Number.MAX_VALUE]
-      .forEach(function (int) {
-        it('should return true for ' + int, function () {
-          const result = util.isInteger(int)
-          result.must.be.true()
-        })
-      });
+    const cases1 = [Number.MIN_SAFE_INTEGER, -4, -2.0, -1, 0, 1, 2.0, 6, Number.MAX_SAFE_INTEGER, Number.MAX_VALUE]
+    cases1.forEach(int => {
+      it('should return true for ' + int, function () {
+        const result = util.isInteger(int)
+        result.must.be.true()
+      })
+    })
     // It is surprising that this give true for Number.MAX_VALUE, and not for Number.MIN_VALUE!
     // noinspection MagicNumberJS
-    [
+    const cases2 = [
       Number.NEGATIVE_INFINITY,
       Number.MIN_VALUE,
       -4.2,
@@ -192,7 +193,8 @@ describe('_private/util', function () {
       Math.PI,
       Number.POSITIVE_INFINITY,
       Number.NaN
-    ].forEach(function (nr) {
+    ]
+    cases2.forEach(nr => {
       it('should return false for ' + nr, function () {
         const result = util.isInteger(nr)
         result.must.be.false()
@@ -220,7 +222,7 @@ describe('_private/util', function () {
     it('ends nominally with a condition that returns true without self', function () {
       util.pre.bind(null, truthy).must.not.throw()
     });
-    [undefined, null, {a: 4}].forEach(function (self) {
+    [undefined, null, {a: 4}].forEach(self => {
       it('ends nominally with a condition that returns true with self === ' + self, function () {
         util.pre.bind(null, self, truthy).must.not.throw()
       })
@@ -231,7 +233,7 @@ describe('_private/util', function () {
         new RegExp('^Precondition violation in Toryt Contracts: ' + escape('' + falsy) + '$')
       )
     });
-    [undefined, null, {a: 4}].forEach(function (self) {
+    [undefined, null, {a: 4}].forEach(self => {
       it('throws with a condition that returns false with self === ' + self, function () {
         util.pre.bind(null, self, falsy).must.throw(
           Error,
@@ -268,10 +270,6 @@ describe('_private/util', function () {
     })
   })
 
-  function expectOwnPropertyDescriptor (subject, propertyName) {
-    subject.getPropertyDescriptor(propertyName).must.be.an.object()
-  }
-
   describe('#defineConfigurableDerivedProperty', function () {
     it('sets a read-only property, with a getter', function () {
       const subject = {
@@ -280,7 +278,9 @@ describe('_private/util', function () {
       }
       Object.setPrototypeOf(subject, {})
       const propertyName = 'a new property'
-      const getter = function () { return this.expectedOfGetter }
+
+      function getter () { return this.expectedOfGetter }
+
       util.defineConfigurableDerivedProperty(Object.getPrototypeOf(subject), propertyName, getter)
       Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
       must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
@@ -297,7 +297,9 @@ describe('_private/util', function () {
       }
       Object.setPrototypeOf(subject, {})
       const propertyName = 'a new property'
-      const getter = function () { return this.expectedOfGetter }
+
+      function getter () { return this.expectedOfGetter }
+
       util.defineFrozenDerivedProperty(Object.getPrototypeOf(subject), propertyName, getter)
       Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
       must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
@@ -325,7 +327,7 @@ describe('_private/util', function () {
     const propName = 'test prop name'
     const propValue = 'dummy value'
     const truths = [true, false]
-    testUtil.x(truths, truths, truths).forEach(function (values) {
+    testUtil.x(truths, truths, truths).forEach(values => {
       const subject = {}
       Object.defineProperty(
         subject,
@@ -367,7 +369,7 @@ describe('_private/util', function () {
       })
     })
     const notObjects = [0, false, '', 'lala']
-    notObjects.forEach(function (notAnObject) {
+    notObjects.forEach(notAnObject => {
       // cannot set a property on primitives
       it('reports false if the first parameter is a primitive (' + util.typeOf(notAnObject) + ')', function () {
         const result = util.isFrozenOwnProperty(notAnObject, propName)
@@ -375,7 +377,7 @@ describe('_private/util', function () {
       })
     })
     const fCandidates = [undefined, function () {}]
-    testUtil.x(truths, truths, fCandidates, fCandidates).forEach(function (values) {
+    testUtil.x(truths, truths, fCandidates, fCandidates).forEach(values => {
       const subject = {}
       Object.defineProperty(
         subject,
@@ -413,7 +415,7 @@ describe('_private/util', function () {
     const regExp = new RegExp(util.eol, 'gi')
 
     stuff
-      .map(function (s) { return s.subject })
+      .map(s => s.subject)
       .concat([
         'This is a' + util.eol + 'multi-line-string' + util.eol + 'of 3 lines',
         new Error().stack,
@@ -424,7 +426,7 @@ describe('_private/util', function () {
           }
         )
       ])
-      .forEach(function (str) {
+      .forEach(str => {
         const nrOfEols = (('' + str).match(regExp) || []).length + 1
         it('the number of lines in the string representation of ' + str + ' should be ' + nrOfEols, function () {
           util.nrOfLines(str).must.equal(nrOfEols)
@@ -434,9 +436,9 @@ describe('_private/util', function () {
 
   describe('#isALocationOutsideLibrary', function () {
     stuff
-      .map(function (s) { return s.subject })
-      .filter(function (s) { return util.typeOf(s) !== 'string' })
-      .forEach(function (value) {
+      .map(s => s.subject)
+      .filter(s => util.typeOf(s) !== 'string')
+      .forEach(value => {
         it('reports false on a location that is not a string: ' + value, function () {
           const result = util.isALocationOutsideLibrary(value)
           must(result).be.falsy()
@@ -454,7 +456,7 @@ describe('_private/util', function () {
         .join(util.eol)
       const result = util.isALocationOutsideLibrary(stack)
       must(result).be.falsy()
-      stack.split(util.eol).forEach(function (l) {
+      stack.split(util.eol).forEach(l => {
         const result = util.isALocationOutsideLibrary(l)
         result.must.be.truthy()
       })
@@ -463,8 +465,8 @@ describe('_private/util', function () {
       .stack
       .split(util.eol)
       .splice(1)
-      .filter(function (l) { return l.indexOf(util.dirSeparator) < 0 })
-      .forEach(function (l) {
+      .filter(l => l.indexOf(util.dirSeparator) < 0)
+      .forEach(l => {
         it('reports false on the string "' + l + "\" that is a stack line, but doesn't contain a slash", function () {
           // This doesn't seem to occur in browsers.
           const result = util.isALocationOutsideLibrary(l)
@@ -475,8 +477,8 @@ describe('_private/util', function () {
       .stack
       .split(util.eol)
       .splice(1)
-      .filter(function (l) { return l.indexOf(util.dirSeparator) >= 0 })
-      .forEach(function (l) {
+      .filter(l => l.indexOf(util.dirSeparator) >= 0)
+      .forEach(l => {
         it('reports true on the valid location outside the library "' + l + '"', function () {
           const result = util.isALocationOutsideLibrary(l)
           result.must.be.truthy()
@@ -519,7 +521,7 @@ describe('_private/util', function () {
     [
       {error: defineErrorRecursively(), description: 'local error'},
       {error: defineErrorRecursively(18), description: 'recursive generated error'}
-    ].forEach(function (testCase) {
+    ].forEach(testCase => {
       it('only has stack lines outside the library, and the first line refers to this code, ' +
          'for a ' + testCase.description, function () {
         const result = util.stackOutsideThisLibrary(testCase.error)
@@ -528,7 +530,7 @@ describe('_private/util', function () {
         const stackLines = result.split(util.eol)
         stackLines.length.must.be.least(1)
         stackLines[0].indexOf(fileName).must.be.at.least(0)
-        stackLines.forEach(function (line) {
+        stackLines.forEach(line => {
           line.must.be.a.string()
           line.must.match(util.stackLocation)
           /* .../src/... contains the library code. This should never be mentioned in the stack trace.
@@ -589,11 +591,11 @@ describe('_private/util', function () {
     const alternativeName = 'This is an alternative name'
     const namedStuff = generateMutableStuff()
     namedStuff
-      .filter(function (ms) { return testUtil.propertyIsWritable(ms.subject, 'name') })
-      .forEach(function (ms) { ms.subject.name = alternativeName })
+      .filter(ms => testUtil.propertyIsWritable(ms.subject, 'name'))
+      .forEach(ms => { ms.subject.name = alternativeName })
     const displayNamedStuff = generateMutableStuff()
     displayNamedStuff
-      .forEach(function (ms) { ms.subject.displayName = alternativeName })
+      .forEach(ms => { ms.subject.displayName = alternativeName })
 
     // noinspection FunctionNamingConventionJS
     function generateMultiLineAnonymousFunction () {
@@ -613,7 +615,7 @@ describe('_private/util', function () {
     const stuffToo = stuff
       .concat(namedStuff)
       .concat(displayNamedStuff)
-      .map(function (s) { return s.subject })
+      .map(s => s.subject)
     stuffToo.push(generateMultiLineAnonymousFunction())
     const other = generateMultiLineAnonymousFunction()
     other.displayName = 'This is a multi-line display name'
@@ -625,7 +627,7 @@ describe('_private/util', function () {
     other.displayName += 'this function should have a display name'
     stuffToo.push(other)
 
-    stuffToo.forEach(function (f) {
+    stuffToo.forEach(f => {
       const result = util.conciseConditionRepresentation(prefix, f)
       if (!f || (!f.displayName && !f.name)) {
         it('returns the string representation with the prefix, ' +
@@ -666,15 +668,18 @@ describe('_private/util', function () {
 
     caseGenerators.push(stackDoesNotContainToString)
     caseGenerators.push(stackDoesContainToString)
-    caseGenerators = caseGenerators.concat(testUtil.anyCasesGenerators('throw stack').map(function (ac) {
-      return function () {
-        return {
-          stack: ac(),
-          toString: function () { return toStringString }
-        }
-      }
-    }))
-    caseGenerators.forEach(function (thrownGenerator) {
+    caseGenerators = caseGenerators
+      .concat(
+        testUtil
+          .anyCasesGenerators('throw stack')
+          .map(ac =>
+            () => ({
+              stack: ac(),
+              toString: function () { return toStringString }
+            })
+          )
+      )
+    caseGenerators.forEach(thrownGenerator => {
       const thrown = thrownGenerator()
       it('returns the expected, normalized string representation for ' + thrown, function () {
         const result = util.extensiveThrownRepresentation(thrown)
@@ -715,7 +720,7 @@ describe('_private/util', function () {
       {uri: '../down/other.js', expectedEnd: 'other.js'},
       {uri: './.././down/down/../../down/down/./complex.js', expectedEnd: '/down/complex.js'},
       {uri: '/dir/dir/deep.js', expectedEnd: '/dir/dir/deep.js'}
-    ].forEach(function (testCase) {
+    ].forEach(testCase => {
       it('returns a sensible result with AMD module URI "' + testCase.uri + '"', function () {
         const origin = typeof window === 'undefined' ? 'http://localhost:23494' : window.location.origin
         if (isNode) {
