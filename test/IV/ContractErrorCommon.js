@@ -14,69 +14,56 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "𝕋合同/III/ContractError"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, ContractError) {
-  "use strict";
+const ContractError = require('../../src/IV/ContractError')
+const testUtil = require('../_util/testUtil')
+const util = require('../../src/_private/util')
 
-  function expectStackInvariants(subject) {
-    expect(subject).to.have.property("stack").to.be.a("string");
-    var stack = subject.stack;
-    var startOfStack = subject.name + ": " + subject.message + util.eol;
-    expect(stack).to.match(new RegExp("^" + testUtil.regExpEscape(startOfStack)));
-    expect(stack).to.match(new RegExp(
-      testUtil.regExpEscape(util.eol + util.stackOutsideThisLibrary(subject._stackSource)) + "$")
-    );
-  }
+function expectStackInvariants (subject) {
+  subject.stack.must.be.a.string()
+  const stack = subject.stack
+  const startOfStack = subject.name + ': ' + subject.message + util.eol
+  stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
+  // noinspection JSUnresolvedVariable
+  stack.must.match(new RegExp(
+    testUtil.regExpEscape(util.eol + util.stackOutsideThisLibrary(subject._stackSource)) + '$')
+  )
+}
 
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(ContractError);
-    testUtil.expectOwnFrozenProperty(subject, "_stackSource");
-    //noinspection BadExpressionStatementJS,JSHint
-    expect(subject).to.have.property("_stackSource").that.is.frozen;
-    expect(subject).to.have.property("_stackSource").that.is.instanceOf(Error);
-    expect(subject).to.have.deep.property("_stackSource.name").that.equals(ContractError.stackSourceName);
-    expect(subject)
-      .to.have.deep.property("_stackSource.message")
-      .that.is.a("string")
-      .that.equals(ContractError.stackSourceMessage);
-    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "name");
-    expect(subject).to.have.property("name").that.is.a("string");
-    testUtil.expectOwnFrozenProperty(ContractError.prototype, "message");
-    expect(subject).to.have.property("message").that.is.a("string");
-    expectStackInvariants(subject);
-  }
+function expectInvariants (subject) {
+  subject.must.be.an.instanceof(ContractError)
+  testUtil.expectOwnFrozenProperty(subject, '_stackSource')
+  // noinspection JSUnresolvedVariable
+  const stackSource = subject._stackSource
+  Object.isFrozen(stackSource).must.be.true()
+  stackSource.must.be.instanceof(Error)
+  stackSource.name.must.equal(ContractError.stackSourceName)
+  stackSource.message.must.be.a.string()
+  stackSource.message.must.equal(ContractError.stackSourceMessage)
+  testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
+  subject.name.must.be.a.string()
+  testUtil.expectOwnFrozenProperty(ContractError.prototype, 'message')
+  subject.message.must.be.a.string()
+  expectStackInvariants(subject)
+}
 
-  function expectConstructorPost(result, message) {
-    //noinspection BadExpressionStatementJS,JSHint
-    expect(result).to.be.extensible;
-    expect(result).to.have.property("name").that.equals(result.constructor.name);
-    expect(result).to.have.property("message").that.equals(message);
-  }
+function expectConstructorPost (result, message) {
+  Object.isExtensible(result).must.be.true()
+  result.name.must.equal(result.constructor.name)
+  result.message.must.equal(message)
+}
 
-  //noinspection FunctionNamingConventionJS
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+// noinspection FunctionNamingConventionJS
+function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+  // NOP: no methods here
+}
 
-    // NOP: no methods here
-
-  }
-
-  return {
-    expectConstructorPost: expectConstructorPost,
-    expectStackInvariants: expectStackInvariants,
-    expectInvariants: expectInvariants,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
-  };
-
-}));
+module.exports = {
+  expectConstructorPost: expectConstructorPost,
+  expectStackInvariants: expectStackInvariants,
+  expectInvariants: expectInvariants,
+  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+}

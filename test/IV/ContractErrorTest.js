@@ -14,54 +14,41 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./ContractErrorCommon", "𝕋合同/III/ContractError"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, ContractError) {
-  "use strict";
+const ContractError = require('../../src/IV/ContractError')
+const testUtil = require('../_util/testUtil')
+const util = require('../../src/_private/util')
+const common = require('./ContractErrorCommon')
 
-  // describe("I", function() {
-    describe("III/ContractError", function() {
+describe('III/ContractError', function () {
+  describe('#ContractError()', function () {
+    it('creates an instance with all toppings', function () {
+      const result = new ContractError()
+      common.expectConstructorPost(result, ContractError.message)
+      common.expectInvariants(result)
+      result.must.not.have.ownProperty('message')
+      testUtil.log('result.stack:\n%s', result.stack)
+    })
+    it('can get a message set', function () {
+      const result = new ContractError()
+      const message = 'another message'
+      util.defineFrozenDerivedProperty(result, 'message', function () { return message })
+      result.must.have.ownProperty('message')
+      result.message.must.equal(message)
+      common.expectInvariants(result)
+    })
+  })
 
-      describe("#ContractError()", function() {
-        it("creates an instance with all toppings", function() {
-          var result = new ContractError();
-          common.expectConstructorPost(result, ContractError.message);
-          common.expectInvariants(result);
-          expect(result).not.to.haveOwnProperty("message");
-          testUtil.log("result.stack:\n%s", result.stack);
-        });
-        it("can get a message set", function() {
-          var result = new ContractError();
-          var message = "another message";
-          util.defineFrozenDerivedProperty(result, "message", function() {return message;});
-          expect(result).to.haveOwnProperty("message");
-          expect(result).to.have.property("message").that.equals(message);
-          common.expectInvariants(result);
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function () {
-          return new ContractError();
-        },
-        [{
-          subject: new ContractError(),
-          description: "a contract error"
-        }]
-      );
-
-    });
-  // });
-
-}));
+  common.generatePrototypeMethodsDescriptions(
+    function () {
+      return new ContractError()
+    },
+    [{
+      subject: new ContractError(),
+      description: 'a contract error'
+    }]
+  )
+})
