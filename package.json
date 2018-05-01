@@ -13,7 +13,8 @@
     "preintern": "node test/commonjsLoadTest.js",
     "intern": "node_modules/.bin/intern-client config=test/intern",
     "pretest": "node test/commonjsLoadTest.js && bower install",
-    "test": "node_modules/.bin/intern-client config=test/intern"
+    "test": "node_modules/.bin/intern-client config=test/intern",
+    "build": "babel **/*.mjs --out-dir ."
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,10 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "bower": "^1.8.0",
     "chai": "^3.5.0",
     "intern": "^3.4.2",
