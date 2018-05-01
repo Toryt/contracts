@@ -14,58 +14,45 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./ContractErrorCommon", "𝕋合同/III/AbstractContract"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, AbstractContract) {
-  "use strict";
+const AbstractError = require('../../src/IV/AbstractContract').AbstractError
+const testUtil = require('../_util/testUtil')
+const common = require('./ContractErrorCommon')
 
-  //noinspection LocalVariableNamingConventionJS
-  var AbstractError = AbstractContract.AbstractError;
+function expectInvariants (subject) {
+  subject.must.be.an.instanceof(AbstractError)
+  common.expectInvariants(subject)
+  testUtil.expectOwnFrozenProperty(subject, 'name')
+  subject.name.must.equal(AbstractError.name)
+  testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
+  Object.getPrototypeOf(subject).name.must.equal(AbstractError.name)
+  testUtil.expectOwnFrozenProperty(subject, 'message')
+  subject.message.must.equal(AbstractError.message)
+  testUtil.expectOwnFrozenProperty(AbstractError.prototype, 'message')
+  Object.getPrototypeOf(subject).message.must.equal(AbstractError.message)
+}
 
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(AbstractError);
-    common.expectInvariants(subject);
-    testUtil.expectOwnFrozenProperty(subject, "name");
-    expect(subject).to.have.property("name").that.equals(AbstractError.name);
-    testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "name");
-    expect(Object.getPrototypeOf(subject)).to.have.property("name").that.equals(AbstractError.name);
-    testUtil.expectOwnFrozenProperty(subject, "message");
-    expect(subject).to.have.property("message").that.equals(AbstractError.message);
-    testUtil.expectOwnFrozenProperty(AbstractError.prototype, "message");
-    expect(Object.getPrototypeOf(subject)).to.have.property("message").that.equals(AbstractError.message);
-  }
+function expectConstructorPost (result, message, contract) {
+  common.expectConstructorPost(result, message)
+  result.contract.must.equal(contract)
+}
 
-  function expectConstructorPost(result, message, contract) {
-    common.expectConstructorPost(result, message);
-    expect(result).to.have.property("contract").that.equals(contract);
-  }
+// noinspection FunctionNamingConventionJS
+function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+  common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
-  //noinspection FunctionNamingConventionJS
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+  // NOP: no methods here
+}
 
-    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+const test = {
+  expectConstructorPost: expectConstructorPost,
+  expectInvariants: expectInvariants,
+  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+}
 
-    // NOP: no methods here
+Object.setPrototypeOf(test, common)
 
-  }
-
-  var test = {
-    expectConstructorPost: expectConstructorPost,
-    expectInvariants: expectInvariants,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
-  };
-  Object.setPrototypeOf(test, common);
-  return test;
-
-}));
+module.exports = test

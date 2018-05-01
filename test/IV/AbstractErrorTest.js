@@ -12,50 +12,32 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
- */
+*/
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./AbstractErrorCommon", "𝕋合同/III/AbstractContract"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, AbstractContract) {
-  "use strict";
+const AbstractContract = require('../../src/IV/AbstractContract')
+const AbstractError = AbstractContract.AbstractError
+const testUtil = require('../_util/testUtil')
+const common = require('./AbstractErrorCommon')
 
-  //noinspection LocalVariableNamingConventionJS
-  var AbstractError = AbstractContract.AbstractError;
+describe('III/AbstractError', function () {
+  describe('#AbstractError()', function () {
+    it('creates an instance with all toppings for AbstractContract.root', function () {
+      const result = new AbstractError(AbstractContract.root)
+      common.expectConstructorPost(result, AbstractError.message, AbstractContract.root)
+      common.expectInvariants(result)
+      testUtil.log('result.stack:\n%s', result.stack)
+    })
+  })
 
-  // describe("I", function() {
-    describe("III/AbstractError", function() {
-
-      describe("#AbstractError()", function() {
-        it("creates an instance with all toppings for AbstractContract.root", function() {
-          var result = new AbstractError(AbstractContract.root);
-          common.expectConstructorPost(result, AbstractError.message, AbstractContract.root);
-          common.expectInvariants(result);
-          testUtil.log("result.stack:\n%s", result.stack);
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function () {
-          return new AbstractError(AbstractContract.root);
-        },
-        [{
-          subject: new AbstractError(AbstractContract.root),
-          description: "AbstractContract.root"
-        }]
-      );
-
-    });
-  // });
-
-}));
+  common.generatePrototypeMethodsDescriptions(
+    function () { return new AbstractError(AbstractContract.root) },
+    [{
+      subject: new AbstractError(AbstractContract.root),
+      description: 'AbstractContract.root'
+    }]
+  )
+})
