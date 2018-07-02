@@ -14,151 +14,144 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./ContractErrorCommon", "𝕋合同/III/ConditionError",
-                      "𝕋合同/III/AbstractContract", "./AbstractContractCommon"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
+const testUtil = require('../_util/testUtil')
+const util = require('../../src/_private/util')
+const common = require('./ContractErrorCommon')
+const ConditionError = require('../../src/IV/ConditionError')
+const AbstractContract = require('../../src/IV/AbstractContract')
+const abstractContractCommon = require('./AbstractContractCommon')
+
+const conditionCase = function () { return 'This simulates a condition' }
+
+function generateMultiLineAnonFunction () {
+  return function () {
+    let x = 'This is a multi-line function'
+    x += 'The intention of this test'
+    x += 'is to verify'
+    x += 'whether we get an acceptable'
+    x += 'is to shortened version of this'
+    x += 'as a concise representation'
+    x += 'this function should have no name'
+    x += 'and no display name'
+    return x
   }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, ConditionError, AbstractContract, abstractContractCommon) {
-  "use strict";
+}
 
-  var conditionCase = function() {return "This simulates a condition";};
+const conditionCases = [conditionCase, generateMultiLineAnonFunction()]
 
-  //noinspection FunctionNamingConventionJS
-  function generateMultiLineAnonymousFunction() {
-    return function() {
-      var x = "This is a multi-line function";
-      x += "The intention of this test";
-      x += "is to verify";
-      x += "whether we get an acceptable";
-      x += "is to shortened version of this";
-      x += "as a concise representation";
-      x += "this function should have no name";
-      x += "and no display name";
-      return x;
-    };
-  }
+function functionWithADisplayName () {}
 
-  var conditionCases = [conditionCase, generateMultiLineAnonymousFunction()];
+functionWithADisplayName.displayName = 'This is a display name'
+conditionCases.push(functionWithADisplayName)
+const other = generateMultiLineAnonFunction()
+other.displayName = 'This is a multi-line display name'
+other.displayName += 'The intention of this test'
+other.displayName += 'is to verify'
+other.displayName += 'whether we get an acceptable'
+other.displayName += 'is to shortened version of this'
+other.displayName += 'as a concise representation'
+other.displayName += 'this function should have a display name'
+conditionCases.push(other)
 
-  function functionWithADisplayName() {}
+const selfCaseGenerators = testUtil.anyCasesGenerators('self')
 
-  functionWithADisplayName.displayName = "This is a display name";
-  conditionCases.push(functionWithADisplayName);
-  var other = generateMultiLineAnonymousFunction();
-  other.displayName = "This is a multi-line display name";
-  other.displayName += "The intention of this test";
-  other.displayName += "is to verify";
-  other.displayName += "whether we get an acceptable";
-  other.displayName += "is to shortened version of this";
-  other.displayName += "as a concise representation";
-  other.displayName += "this function should have a display name";
-  conditionCases.push(other);
-
-  var selfCaseGenerators = testUtil.anyCasesGenerators("self");
-
-  var argsCases = [
-    [],
-    testUtil.anyCasesGenerators("arguments element").map(function(g) {return g();})
-  ];
-  argsCases = argsCases.concat(argsCases.map(function(c) {
-    function asArgs(args) {
-      return arguments;
-    }
-
-    return asArgs.apply(undefined, c);
-  }));
-
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(ConditionError);
-    common.expectInvariants(subject);
-    testUtil.expectOwnFrozenProperty(subject, "contractFunction");
-    expect(subject).to.have.property("contractFunction").that.satisfies(function(cf) {
-      return AbstractContract.isAGeneralContractFunction(cf);
-    });
-    expect(subject).to.have.property("condition").that.is.a("function");
-    testUtil.expectOwnFrozenProperty(subject, "condition");
-    testUtil.expectOwnFrozenProperty(subject, "self");
-    testUtil.expectOwnFrozenProperty(subject, "_args");
-    testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, "args", "_args");
-    testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, "message");
-    testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, "stack");
-    expect(subject).to.have.property("message").that.contains(subject.contractFunction.displayName);
-    expect(subject).to.have.property("message")
-      .that.contains(util.conciseConditionRepresentation("condition", subject.condition));
+let argsCases = [
+  [],
+  testUtil.anyCasesGenerators('arguments element').map(g => g())
+]
+argsCases = argsCases.concat(argsCases.map(c => {
+  function asArgs (args) {
+    return arguments
   }
 
-  //noinspection ParameterNamingConventionJS
-  function expectProperties(exception, Type, contractFunction, condition, self, args) {
-    //noinspection BadExpressionStatementJS,JSHint
-    expect(exception).to.be.ok;
-    expect(exception).to.be.instanceOf(Type);
-    expect(exception).to.have.property("contractFunction").that.equals(contractFunction);
-    expect(exception).to.have.property("condition").that.equals(condition);
-    expect(exception).to.have.property("self").that.equals(self);
-    expect(exception).to.have.property("args").that.eql(Array.prototype.slice.call(args));
-  }
+  return asArgs.apply(undefined, c)
+}))
 
-  function expectConstructorPost(result, contractFunction, condition, self, args) {
-    common.expectConstructorPost(result, result.message);
-    expectProperties(result, ConditionError, contractFunction, condition, self, args);
-    //noinspection BadExpressionStatementJS,JSHint
-    expect(result).to.be.extensible;
-  }
+function expectInvariants (subject) {
+  subject.must.be.an.instanceof(ConditionError)
+  common.expectInvariants(subject)
+  testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
+  subject.must.have.property('contractFunction')
+  AbstractContract.isAGeneralContractFunction(subject).must.be.true()
+  // noinspection JSUnresolvedVariable
+  subject.condition.must.be.a.function()
+  testUtil.expectOwnFrozenProperty(subject, 'condition')
+  testUtil.expectOwnFrozenProperty(subject, 'self')
+  testUtil.expectOwnFrozenProperty(subject, '_args')
+  testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'args', '_args')
+  testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'message')
+  testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'stack')
+  // noinspection JSUnresolvedVariable
+  subject.message.must.match(subject.contractFunction.displayName)
+  // noinspection JSUnresolvedVariable
+  subject.message.must.match(util.conciseConditionRepresentation('condition', subject.condition))
+}
 
-  function expectDetailsPost(subject, result) {
-    expect(result).to.be.a("string");
-    expect(result).to.contain("" + subject.condition);
-    expect(result).to.contain("" + util.eol + subject.contractFunction.contract.location);
-    expect(result).to.contain("" + subject.self);
-    Array.prototype.forEach.call(
-      subject.args,
-      function(arg) {expect(result).to.contain("" + arg);}
-    );
-  }
+// noinspection ParameterNamingConventionJS
+function expectProperties (exception, Type, contractFunction, condition, self, args) {
+  exception.must.be.an.error(Type)
+  // noinspection JSUnresolvedVariable
+  exception.contractFunction.must.equal(contractFunction)
+  // noinspection JSUnresolvedVariable
+  exception.condition.must.equal(condition)
+  exception.self.must.equal(self)
+  exception.args.must.eql(Array.prototype.slice.call(args))
+}
 
-  //noinspection FunctionNamingConventionJS
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
+function expectConstructorPost (result, contractFunction, condition, self, args) {
+  common.expectConstructorPost(result, result.message)
+  expectProperties(result, ConditionError, contractFunction, condition, self, args)
+  Object.isExtensible(result).must.be.true()
+}
 
-    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+function expectDetailsPost (subject, result) {
+  result.must.be.a.string()
+  // noinspection JSUnresolvedVariable
+  result.must.match('' + subject.condition)
+  // noinspection JSUnresolvedVariable
+  result.must.match('' + util.eol + subject.contractFunction.contract.location)
+  result.must.match('' + subject.self)
+  Array.prototype.forEach.call(
+    subject.args,
+    arg => { result.must.match('' + arg) }
+  )
+}
 
-    var self = this; // jshint ignore:line
+// noinspection FunctionNamingConventionJS
+function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+  common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
-    describe("#getDetails()", function() {
-      allSubjectGenerators.forEach(function(generator) {
-        var testCase = generator();
-        it("returns the details as expected for " + testCase.description, function() {
-          var result = testCase.subject.getDetails();
-          self.expectDetailsPost(testCase.subject, result);
-          self.expectInvariants(testCase.subject);
-        });
-      });
-    });
+  const self = this
 
-  }
+  describe('#getDetails()', function () {
+    allSubjectGenerators.forEach(generator => {
+      const testCase = generator()
+      it('returns the details as expected for ' + testCase.description, function () {
+        // noinspection JSUnresolvedFunction
+        const result = testCase.subject.getDetails()
+        self.expectDetailsPost(testCase.subject, result)
+        self.expectInvariants(testCase.subject)
+      })
+    })
+  })
+}
 
-  var test = {
-    selfCaseGenerators: selfCaseGenerators,
-    argsCases: argsCases,
-    conditionCase: conditionCase,
-    conditionCases: conditionCases,
-    expectProperties: expectProperties,
-    expectConstructorPost: expectConstructorPost,
-    expectDetailsPost: expectDetailsPost,
-    expectInvariants: expectInvariants,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
-    createCandidateContractFunction: abstractContractCommon.createCandidateContractFunction
-  };
-  Object.setPrototypeOf(test, common);
-  return test;
+const test = {
+  selfCaseGenerators: selfCaseGenerators,
+  argsCases: argsCases,
+  conditionCase: conditionCase,
+  conditionCases: conditionCases,
+  expectProperties: expectProperties,
+  expectConstructorPost: expectConstructorPost,
+  expectDetailsPost: expectDetailsPost,
+  expectInvariants: expectInvariants,
+  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
+  createCandidateContractFunction: abstractContractCommon.createCandidateContractFunction
+}
+Object.setPrototypeOf(test, common)
 
-}));
+module.exports = test
