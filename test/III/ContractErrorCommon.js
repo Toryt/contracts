@@ -46,9 +46,12 @@
     //noinspection BadExpressionStatementJS,JSHint
     expect(subject).to.have.property("_stackSource").that.is.frozen;
     expect(subject).to.have.property("_stackSource").that.is.instanceOf(Error);
-    expect(subject).to.have.deep.property("_stackSource.name").that.equals(ContractError.stackSourceName);
-    expect(subject)
-      .to.have.deep.property("_stackSource.message")
+    expect(subject._stackSource)
+      .to.have.property("name")
+      .that.is.a("string")
+      .that.equals(ContractError.stackSourceName);
+    expect(subject._stackSource)
+      .to.have.property("message")
       .that.is.a("string")
       .that.equals(ContractError.stackSourceMessage);
     testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), "name");
