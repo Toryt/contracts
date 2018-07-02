@@ -558,7 +558,7 @@
                        0 <= l.indexOf(util.dirSeparator + "intern" + util.dirSeparator) ||
                        0 <= l.indexOf(util.dirSeparator + "__intern" + util.dirSeparator) || // intern test runner
                        l.indexOf(util.dirSeparator) < 0 ||
-                       0 <= l.indexOf("require (internal\" + util.dirSeparator + \"module.js") ||
+                       0 <= l.indexOf("require (internal" + util.dirSeparator + "module.js") ||
                        0 <= l.indexOf(util.dirSeparator + "requirejs" + util.dirSeparator + "require.js");
               });
             });
