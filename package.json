@@ -7,13 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "commonjsLoadTest": "node test/commonjsLoadTest.js",
-    "premocha": "node test/commonjsLoadTest.js",
-    "mocha": "mocha --reporter min test/commonjsLoadTest test/**/*Test.js",
-    "preintern": "node test/commonjsLoadTest.js",
-    "intern": "node_modules/.bin/intern-client config=test/intern",
     "pretest": "node test/commonjsLoadTest.js",
-    "test": "node_modules/.bin/intern-client config=test/intern"
+    "test": "mocha --reporter min test/commonjsLoadTest test/**/*Test.js"
   },
   "repository": {
     "type": "git",
@@ -48,7 +43,6 @@
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
-    "intern": "^3.4.2",
     "just.randomstring": "^0.1.1",
     "mocha": "^5.1.1",
     "mocha-reporter": "^0.1.1",
