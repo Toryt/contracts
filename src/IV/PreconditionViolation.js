@@ -13,22 +13,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+'use strict'
 
-(function(factory) {
-  "use strict";
+const util = require('../_private/util')
+const ConditionViolation = require('./ConditionViolation')
+const AbstractContract = require('./AbstractContract')
 
-  var dependencies = ["./../_private/util", "./ConditionViolation", "./AbstractContract"];
-
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(util, ConditionViolation, AbstractContract) {
-  "use strict";
-
-  /**
+/**
    * A PreconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
    * precondition was violated when a contract function was called. The implementation of the contract function
    * that was called, was not executed.
@@ -50,22 +41,22 @@
    * @param {Array} args
    *                The arguments with which the contract function that failed, was called
    */
-  function PreconditionViolation(contractFunction, condition, self, args) {
-    util.pre(this, function() {return AbstractContract.isAGeneralContractFunction(contractFunction);});
-    util.pre(this, function() {return util.typeOf(condition) === "function";});
-    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+function PreconditionViolation (contractFunction, condition, self, args) {
+  util.pre(this, function () { return AbstractContract.isAGeneralContractFunction(contractFunction) })
+  util.pre(this, function () { return util.typeOf(condition) === 'function' })
+  util.pre(this, function () { return util.typeOf(args) === 'arguments' || util.typeOf(args) === 'array' })
 
-    ConditionViolation.apply(this, arguments);
-  }
+  ConditionViolation.apply(this, arguments)
+}
 
-  PreconditionViolation.prototype = new ConditionViolation(
-    AbstractContract.root.abstract,
-    function() {return "This is a dummy condition in the PreconditionViolation prototype.";},
-    undefined,
-    []
-  );
-  PreconditionViolation.prototype.constructor = PreconditionViolation;
-  util.setAndFreezeProperty(PreconditionViolation.prototype, "name", PreconditionViolation.name);
+// noinspection JSUnresolvedVariable
+PreconditionViolation.prototype = new ConditionViolation(
+  AbstractContract.root.abstract,
+  function () { return 'This is a dummy condition in the PreconditionViolation prototype.' },
+  undefined,
+  []
+)
+PreconditionViolation.prototype.constructor = PreconditionViolation
+util.setAndFreezeProperty(PreconditionViolation.prototype, 'name', PreconditionViolation.name)
 
-  return PreconditionViolation;
-}));
+module.exports = PreconditionViolation
