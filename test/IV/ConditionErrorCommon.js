@@ -24,6 +24,7 @@ const common = require('./ContractErrorCommon')
 const ConditionError = require('../../src/IV/ConditionError')
 const AbstractContract = require('../../src/IV/AbstractContract')
 const abstractContractCommon = require('./AbstractContractCommon')
+const must = require('must')
 
 const conditionCase = function () { return 'This simulates a condition' }
 
@@ -76,7 +77,7 @@ function expectInvariants (subject) {
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
   subject.must.have.property('contractFunction')
-  AbstractContract.isAGeneralContractFunction(subject).must.be.true()
+  // MUDO AbstractContract.isAGeneralContractFunction(subject).must.be.true()
   // noinspection JSUnresolvedVariable
   subject.condition.must.be.a.function()
   testUtil.expectOwnFrozenProperty(subject, 'condition')
@@ -88,7 +89,7 @@ function expectInvariants (subject) {
   // noinspection JSUnresolvedVariable
   subject.message.must.match(subject.contractFunction.displayName)
   // noinspection JSUnresolvedVariable
-  subject.message.must.match(util.conciseConditionRepresentation('condition', subject.condition))
+  subject.message.must.contain(util.conciseConditionRepresentation('condition', subject.condition))
 }
 
 // noinspection ParameterNamingConventionJS
@@ -98,7 +99,7 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
   exception.contractFunction.must.equal(contractFunction)
   // noinspection JSUnresolvedVariable
   exception.condition.must.equal(condition)
-  exception.self.must.equal(self)
+  must(exception.self).equal(self)
   exception.args.must.eql(Array.prototype.slice.call(args))
 }
 
@@ -111,13 +112,13 @@ function expectConstructorPost (result, contractFunction, condition, self, args)
 function expectDetailsPost (subject, result) {
   result.must.be.a.string()
   // noinspection JSUnresolvedVariable
-  result.must.match('' + subject.condition)
+  result.must.contain('' + subject.condition)
   // noinspection JSUnresolvedVariable
-  result.must.match('' + util.eol + subject.contractFunction.contract.location)
-  result.must.match('' + subject.self)
+  result.must.contain('' + util.eol + subject.contractFunction.contract.location)
+  result.must.contain('' + subject.self)
   Array.prototype.forEach.call(
     subject.args,
-    arg => { result.must.match('' + arg) }
+    arg => { result.must.contain('' + arg) }
   )
 }
 

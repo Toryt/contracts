@@ -14,65 +14,49 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./ConditionErrorCommon", "𝕋合同/III/ConditionError"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, ConditionError) {
-  "use strict";
+const testUtil = require('../_util/testUtil')
+const common = require('./ConditionErrorCommon')
+const ConditionError = require('../../src/IV/ConditionError')
 
-  // describe("I", function() {
-    describe("III/ConditionError", function() {
+describe('III/ConditionError', function () {
+  describe('#ConditionError()', function () {
+    common.selfCaseGenerators.forEach(selfCaseGenerator => {
+      common.argsCases.forEach(args => {
+        const self = selfCaseGenerator()
+        it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
+          const contractFunction = common.createCandidateContractFunction()
+          const result = new ConditionError(contractFunction, common.conditionCase, self, args)
+          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
+          common.expectInvariants(result)
+          result.must.not.have.ownProperty('message')
+          result.must.not.have.ownProperty('stack')
+          testUtil.log('result.stack:\n%s', result.stack)
+        })
+      })
+    })
+  })
 
-      describe("#ConditionError()", function() {
-        common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
-          common.argsCases.forEach(function(args) {
-            var self = selfCaseGenerator();
-            it("creates an instance with all toppings for " + self + " - " + args, function() {
-              var contractFunction = common.createCandidateContractFunction();
-              var result = new ConditionError(contractFunction, common.conditionCase, self, args);
-              common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args);
-              common.expectInvariants(result);
-              expect(result).not.to.haveOwnProperty("message");
-              expect(result).not.to.haveOwnProperty("stack");
-              testUtil.log("result.stack:\n%s", result.stack);
-            });
-          });
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function () {
-          return new ConditionError(common.conditionCase, null, common.argsCases[0]);
-        },
-        testUtil
-          .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
-          .map(function(parameters) {
-            return function() {
-              var self = parameters[1]();
-              return {
-                subject: new ConditionError(
-                  common.createCandidateContractFunction(),
-                  parameters[0],
-                  self,
-                  parameters[2]
-                ),
-                description: parameters[0] + " — " + self + " – " + parameters[2]
-              };
-            };
-          })
-      );
-
-    });
-  // });
-
-}));
+  common.generatePrototypeMethodsDescriptions(
+    function () {
+      return new ConditionError(common.conditionCase, null, common.argsCases[0])
+    },
+    testUtil
+      .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
+      .map(parameters => () => {
+        const self = parameters[1]()
+        return {
+          subject: new ConditionError(
+            common.createCandidateContractFunction(),
+            parameters[0],
+            self,
+            parameters[2]
+          ),
+          description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
+        }
+      })
+  )
+})
