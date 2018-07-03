@@ -24,7 +24,7 @@ const util = require('../../src/_private/util')
 const common = require('./AbstractContractCommon')
 const must = require('must')
 
-describe('III/AbstractContract', function () {
+describe('IV/AbstractContract', function () {
   describe('AbstractContract', function () {
     // noinspection FunctionTooLongJS
     it('has the expected properties', function () {

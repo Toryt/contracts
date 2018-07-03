@@ -22,7 +22,7 @@ const testUtil = require('../_util/testUtil')
 const common = require('./ConditionErrorCommon')
 const ConditionError = require('../../src/IV/ConditionError')
 
-describe('III/ConditionError', function () {
+describe('IV/ConditionError', function () {
   describe('#ConditionError()', function () {
     common.selfCaseGenerators.forEach(selfCaseGenerator => {
       common.argsCases.forEach(args => {

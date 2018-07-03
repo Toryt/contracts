@@ -22,7 +22,7 @@ const testUtil = require('../_util/testUtil')
 const common = require('./ConditionMetaErrorCommon')
 const ConditionMetaError = require('../../src/IV/ConditionMetaError')
 
-describe('III/ConditionMetaError', function () {
+describe('IV/ConditionMetaError', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
