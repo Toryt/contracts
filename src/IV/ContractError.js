@@ -58,8 +58,6 @@ const util = require('../_private/util')
    than where we create the custom error.
  */
 
-'use strict'
-
 const stackSourceName = 'Stack source'
 const stackSourceMessage = 'internal error used to get a sensible stack'
 const message = 'abstract type'
