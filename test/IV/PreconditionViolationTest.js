@@ -14,76 +14,70 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./PreconditionViolationCommon", "𝕋合同/III/PreconditionViolation"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, PreconditionViolation) {
-  "use strict";
+const testUtil = require('../_util/testUtil')
+const common = require('./PreconditionViolationCommon')
+const PreconditionViolation = require('../../src/IV/PreconditionViolation')
+describe('IV/PreconditionViolation', function () {
+  describe('#prototype', function () {
+    it('has a condition', function () {
+      // noinspection JSUnresolvedVariable
+      PreconditionViolation.prototype.condition.must.be.a.function()
+      // noinspection JSUnresolvedVariable
+      PreconditionViolation.prototype.condition.must.not.throw()
+    })
+  })
 
-  // describe("I", function() {
-    describe("III/PreconditionViolation", function() {
+  describe('#PreconditionViolation()', function () {
+    // noinspection JSUnresolvedVariable
+    common.selfCaseGenerators.forEach(selfCaseGenerator => {
+      // noinspection JSUnresolvedVariable
+      common.argsCases.forEach(args => {
+        const self = selfCaseGenerator()
+        it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
+          // noinspection JSUnresolvedFunction
+          const contractFunction = common.createCandidateContractFunction()
+          // noinspection JSUnresolvedVariable
+          const result = new PreconditionViolation(contractFunction, common.conditionCase, self, args)
+          // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
+          common.expectInvariants(result)
+          testUtil.log('result.stack:\n%s', result.stack)
+        })
+      })
+    })
+  })
 
-      describe("#prototype", function() {
-        it("has a condition", function() {
-          expect(PreconditionViolation.prototype).to.have.property("condition").that.is.a("function");
-          // mark the stereotype condition as covered
-          expect(PreconditionViolation.prototype).to.have.property("condition").to.not.throw();
-        });
-      });
-
-      describe("#PreconditionViolation()", function() {
-        common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
-          common.argsCases.forEach(function(args) {
-            var self = selfCaseGenerator();
-            it("creates an instance with all toppings for " + self + " - " + args, function() {
-              var contractFunction = common.createCandidateContractFunction();
-              var result = new PreconditionViolation(contractFunction, common.conditionCase, self, args);
-              common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args);
-              common.expectInvariants(result);
-              testUtil.log("result.stack:\n%s", result.stack);
-            });
-          });
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function() {
-          return new PreconditionViolation(
-            common.createCandidateContractFunction(),
-            common.conditionCase,
-            null,
-            common.argsCases[0]
-          );
-        },
-        testUtil
-          .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
-          .map(function(parameters) {
-            return function() {
-              var self = parameters[1]();
-              return {
-                subject: new PreconditionViolation(
-                  common.createCandidateContractFunction(),
-                  parameters[0],
-                  self,
-                  parameters[2]
-                ),
-                description: parameters[0] + " — " + self + " – " + parameters[2]
-              };
-            };
-          })
-      );
-
-    });
-  // });
-
-}));
+  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
+  common.generatePrototypeMethodsDescriptions(
+    function () {
+      // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+      return new PreconditionViolation(
+        common.createCandidateContractFunction(),
+        common.conditionCase,
+        null,
+        common.argsCases[0]
+      )
+    },
+    testUtil
+      .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
+      .map(function (parameters) {
+        return function () {
+          const self = parameters[1]()
+          // noinspection JSUnresolvedFunction
+          return {
+            subject: new PreconditionViolation(
+              common.createCandidateContractFunction(),
+              parameters[0],
+              self,
+              parameters[2]
+            ),
+            description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
+          }
+        }
+      })
+  )
+})
