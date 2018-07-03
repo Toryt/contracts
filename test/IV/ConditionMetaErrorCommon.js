@@ -14,80 +14,73 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./ConditionErrorCommon", "𝕋合同/III/ConditionMetaError"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
+const testUtil = require('../_util/testUtil')
+const util = require('../../src/_private/util')
+const common = require('./ConditionErrorCommon')
+const ConditionMetaError = require('../../src/IV/ConditionMetaError')
+
+function expectInvariants (subject) {
+  subject.must.be.an.instanceof(ConditionMetaError)
+  if (subject.error) {
+    subject.error.must.be.frozen()
   }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
+  common.expectInvariants(subject)
+  testUtil.expectOwnFrozenProperty(subject, 'error')
+  subject.stack.must.contain('' + subject.error)
+  if (subject.error && subject.error.stack) {
+    subject.stack.must.contain(subject.error.stack)
   }
-}(function(describe, it, expect, testUtil, util, common, ConditionMetaError) {
-  "use strict";
+  subject.message.must.contain('(' + subject.error + ')')
+}
 
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(ConditionMetaError);
-    if (subject.error) {
-      //noinspection BadExpressionStatementJS,JSHint
-      expect(subject.error).to.be.frozen;
-    }
-    common.expectInvariants(subject);
-    testUtil.expectOwnFrozenProperty(subject, "error");
-    expect(subject).to.have.property("stack").that.contains("" + subject.error);
-    if (subject.error && subject.error.stack) {
-      expect(subject).to.have.property("stack").that.contains(subject.error.stack);
-    }
-    expect(subject).to.have.property("message").that.contains("(" + subject.error + ")");
+function expectConstructorPost (result, contractFunction, condition, self, args, error) {
+  common.expectConstructorPost.apply(undefined, arguments)
+  result.error.must.equal(error)
+}
+
+// noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint
+const errorCases = [
+  new Error('This is an error case'),
+  undefined,
+  null,
+  1,
+  0,
+  'a string that is used as an error',
+  '',
+  true,
+  false,
+  new Date(),
+  /foo/,
+  function () {},
+  // eslint-disable-next-line no-new-wrappers
+  new Number(42),
+  // eslint-disable-next-line no-new-wrappers
+  new Boolean(false),
+  // eslint-disable-next-line no-new-wrappers
+  new String('lalala'),
+  (() => arguments)(),
+  {},
+  {a: 1, b: 'b', c: {}, d: {d1: undefined, d2: 'd2', d3: {d31: 31}}}
+]
+
+function expectDetailsPost (subject, result) {
+  common.expectDetailsPost(subject, result)
+  result.must.contain('' + subject.error)
+  if (subject.error && subject.error.stack) {
+    result.must.contain(util.eol + subject.error.stack)
   }
+}
 
-  function expectConstructorPost(result, contractFunction, condition, self, args, error) {
-    common.expectConstructorPost.apply(undefined, arguments);
-    expect(result).to.have.property("error").that.equals(error);
-  }
+const test = {
+  errorCases: errorCases,
+  expectInvariants: expectInvariants,
+  expectConstructorPost: expectConstructorPost,
+  expectDetailsPost: expectDetailsPost
+}
+Object.setPrototypeOf(test, common)
 
-  //noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint
-  var errorCases = [
-    new Error("This is an error case"),
-    undefined,
-    null,
-    1,
-    0,
-    "a string that is used as an error",
-    "",
-    true,
-    false,
-    new Date(),
-    /foo/,
-    function() {},
-    new Number(42),
-    new Boolean(false),
-    new String("lalala"),
-    arguments,
-    {},
-    {a: 1, b: "b", c: {}, d: {d1: undefined, d2: "d2", d3: {d31: 31}}}
-  ];
-
-  function expectDetailsPost(subject, result) {
-    common.expectDetailsPost(subject, result);
-    expect(result)
-      .to.contain("" + subject.error);
-    if (subject.error && subject.error.stack) {
-      expect(result).to.contain(util.eol + subject.error.stack);
-    }
-  }
-
-  var test = {
-    errorCases: errorCases,
-    expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost,
-    expectDetailsPost: expectDetailsPost
-  };
-  Object.setPrototypeOf(test, common);
-  return test;
-
-}));
+module.exports = test
