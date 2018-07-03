@@ -23,6 +23,7 @@ const common = require('./ConditionErrorCommon')
 const ConditionMetaError = require('../../src/IV/ConditionMetaError')
 const ConditionViolation = require('../../src/IV/ConditionViolation')
 const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon')
+const must = require('must')
 
 function isArguments (o) {
   const str = '' + o
@@ -84,7 +85,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
         return
       }
       it('should have called the condition with the given this', function () {
-        appliedSelf.must.equal(self)
+        must(appliedSelf).equal(self)
       })
       it('should have called the condition with the given arguments', function () {
         appliedArgs.must.be.truthy()
@@ -111,7 +112,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
         )
       } else {
         it('should not throw an exception, because the condition evaluated to true nominally', function () {
-          exception.must.be.falsy()
+          must(exception).be.falsy()
         })
       }
       it('adheres to the invariants', function () {
@@ -177,7 +178,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
     function expectPost (subject, contractFunction, conditions, self, args, doctoredArgs, exception) {
       if (conditions.length <= 0) {
         it("doesn't throw an exception if there are no conditions", function () {
-          exception.must.be.falsy()
+          must(exception).be.falsy()
         })
         return
       }
@@ -217,12 +218,12 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
         })
       } else {
         it('ends nominally if all conditions evaluate nominally to true', function () {
-          exception.must.be.falsy()
+          must(exception).be.falsy()
         })
       }
       it('evaluates all conditions up until the first failure with the given self and arguments', function () {
         for (let j = 0; j <= firstFailureIndex; j++) {
-          selfAndArgs[j].self.must.equal(self)
+          must(selfAndArgs[j].self).equal(self)
           const appliedArgs = selfAndArgs[j].args
           appliedArgs.must.be.truthy()
           isArguments(appliedArgs)
@@ -236,8 +237,8 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       })
       it('does not evaluate conditions after the first failure', function () {
         for (let j = firstFailureIndex + 1; j < conditions.length; j++) {
-          selfAndArgs[j].self.must.be.falsy()
-          selfAndArgs[j].args.must.be.falsy()
+          must(selfAndArgs[j].self).be.falsy()
+          must(selfAndArgs[j].args).be.falsy()
         }
       })
       it('adheres to the invariants', function () {
