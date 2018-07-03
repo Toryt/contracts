@@ -14,66 +14,57 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./ConditionViolationCommon", "𝕋合同/III/ExceptionConditionViolation"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, common, ExceptionConditionViolation) {
-  "use strict";
+const testUtil = require('../_util/testUtil')
+const common = require('./ConditionViolationCommon')
+const ExceptionConditionViolation = require('../../src/IV/ExceptionConditionViolation')
 
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(ExceptionConditionViolation);
-    common.expectInvariants(subject);
-    testUtil.expectOwnFrozenProperty(subject, "exception");
-    expect(subject).to.have.property("stack").that.contains("" + subject.exception);
-  }
+function expectInvariants (subject) {
+  subject.must.be.an.instanceof(ExceptionConditionViolation)
+  common.expectInvariants(subject)
+  testUtil.expectOwnFrozenProperty(subject, 'exception')
+  subject.stack.must.contain('' + subject.exception)
+}
 
-  function expectConstructorPost(executionResult, contractFunction, condition, self, args, exception) {
-    common.expectConstructorPost.apply(undefined, arguments);
-    expect(executionResult).to.have.property("exception").that.equals(exception);
-  }
+function expectConstructorPost (executionResult, contractFunction, condition, self, args, exception) {
+  // noinspection JSUnresolvedVariable
+  common.expectConstructorPost.apply(undefined, arguments)
+  executionResult.exception.must.equal(exception)
+}
 
+// noinspection ParameterNamingConventionJS
+function expectProperties (exception, Type, contractFunction, condition, self, args, thrownException) {
+  common.expectProperties.apply(undefined, arguments)
+  exception.exception.must.equal(thrownException)
+}
 
-  //noinspection ParameterNamingConventionJS
-  function expectProperties(exception, Type, contractFunction, condition, self, args, thrownException) {
-    common.expectProperties.apply(undefined, arguments);
-    expect(exception).to.have.property("exception").that.equals(thrownException);
-  }
+function expectDetailsPost (subject, result) {
+  // noinspection JSUnresolvedFunction
+  common.expectDetailsPost(subject, result)
+  result.must.contain(subject.exception)
+}
 
-  function expectDetailsPost(subject, result) {
-    common.expectDetailsPost(subject, result);
-    expect(result).to.contain(subject.exception);
-  }
+const exceptionCaseGenerators = testUtil.anyCasesGenerators('exception')
 
-  var exceptionCaseGenerators = testUtil.anyCasesGenerators("exception");
+function doctorArgs (args, boundContractFunction, exception) {
+  const doctored = Array.prototype.slice.call(args)
+  const e = arguments.length >= 3 ? exception : new Error('Dummy exception for ExceptionConditionViolation')
+  doctored.push(e) // an exception
+  doctored.push(boundContractFunction)
+  return doctored
+}
 
-  function doctorArgs(args, boundContractFunction, exception) {
-    var doctored = Array.prototype.slice.call(args);
-    //noinspection MagicNumberJS
-    var e = arguments.length >= 3 ? exception : new Error("Dummy exception for ExceptionConditionViolation");
-    doctored.push(e); // an exception
-    doctored.push(boundContractFunction);
-    return doctored;
-  }
+const test = {
+  exceptionCaseGenerators: exceptionCaseGenerators,
+  expectInvariants: expectInvariants,
+  expectConstructorPost: expectConstructorPost,
+  expectProperties: expectProperties,
+  expectDetailsPost: expectDetailsPost,
+  doctorArgs: doctorArgs
+}
+Object.setPrototypeOf(test, common)
 
-  var test = {
-    exceptionCaseGenerators: exceptionCaseGenerators,
-    expectInvariants: expectInvariants,
-    expectConstructorPost: expectConstructorPost,
-    expectProperties: expectProperties,
-    expectDetailsPost: expectDetailsPost,
-    doctorArgs: doctorArgs
-  };
-  Object.setPrototypeOf(test, common);
-  return test;
-
-}));
+module.exports = test
