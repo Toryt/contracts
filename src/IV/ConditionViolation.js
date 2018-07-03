@@ -14,118 +14,109 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+'use strict'
 
-  var dependencies = ["./../_private/util", "./ConditionError", "./AbstractContract", "./ConditionMetaError"];
+const util = require('../_private/util')
+const ConditionError = require('./ConditionError')
+const AbstractContract = require('./AbstractContract')
+const ConditionMetaError = require('./ConditionMetaError')
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
+/**
+ * Super type for objects that are thrown to signal a condition violation.
+ * This is intended to be abstract.
+ *
+ * @constructor
+ * @param {Function} contractFunction - The contract function that reports this violation
+ * @param {Function} condition        - The condition that was violated
+ * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
+ * @param {Array} args
+ *                The arguments with which the contract function that failed, was called.
+ */
+function ConditionViolation (contractFunction, condition, self, args) {
+  util.pre(this, function () { return AbstractContract.isAGeneralContractFunction(contractFunction) })
+  util.pre(this, function () { return util.typeOf(condition) === 'function' })
+  util.pre(this, function () { return util.typeOf(args) === 'arguments' || util.typeOf(args) === 'array' })
+
+  ConditionError.apply(this, arguments)
+}
+
+ConditionViolation.prototype = new ConditionError(
+  AbstractContract.root.abstract,
+  function () { return 'This is a dummy condition in the ConditionViolation prototype.' },
+  undefined,
+  []
+)
+ConditionViolation.prototype.constructor = ConditionViolation
+util.setAndFreezeProperty(ConditionViolation.prototype, 'name', ConditionViolation.name)
+
+/**
+ * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
+ *
+ * <pre>
+ *   <var>SpecificConditionViolationConstructor</var>.prototype.verifyAll(<var>...</var>, <var>conditions</var>, <var>self</var>, <var>args</var>)
+ * </pre>
+ *
+ * Such a call will throw a ConditionViolation of type <var>SpecificConditionViolationConstructor</var>, with its
+ * properties filled out appropriately if any of the supplied <var>conditions</var> returns <code>false</code> when
+ * applied to <var>self</var> and <var>args</var>.
+ *
+ * When any of the supplied <var>conditions</var> fails to execute, a ConditionMetaError is thrown, with its
+ * properties filled out appropriately.
+ */
+util.setAndFreezeProperty(
+  ConditionViolation.prototype,
+  'verifyAll',
+  function (contractFunction, conditions, self, args) {
+    util.pre(this, function () { return AbstractContract.isAContractFunction(contractFunction) })
+    util.pre(this, function () {
+      return conditions &&
+               util.typeOf(conditions) === 'array' &&
+               conditions.every(function (c) { return util.typeOf(c) === 'function' })
+    })
+    util.pre(this, function () { return args && (util.typeOf(args) === 'arguments' || util.typeOf(args) === 'array') })
+
+    conditions.forEach(function (condition) { this.verify(contractFunction, condition, self, args) }, this)
   }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(util, ConditionError, AbstractContract, ConditionMetaError) {
-  "use strict";
+)
 
-  /**
-   * Super type for objects that are thrown to signal a condition violation.
-   * This is intended to be abstract.
-   *
-   * @constructor
-   * @param {Function} contractFunction - The contract function that reports this violation
-   * @param {Function} condition        - The condition that was violated
-   * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
-   * @param {Array} args
-   *                The arguments with which the contract function that failed, was called.
-   */
-  function ConditionViolation(contractFunction, condition, self, args) {
-    util.pre(this, function() {return AbstractContract.isAGeneralContractFunction(contractFunction);});
-    util.pre(this, function() {return util.typeOf(condition) === "function";});
-    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+/**
+ * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
+ *
+ * <pre>
+ *   <var>SpecificConditionViolationConstructor</var>.prototype.verify(<var>...</var>, <var>condition</var>, <var>self</var>, <var>args</var>)
+ * </pre>
+ *
+ * Such a call will throw a ConditionViolation of type <var>SpecificConditionViolationConstructor</var>, with its
+ * properties filled out appropriately, if the supplied <var>condition</var> returns <code>false</code> when applied
+ * to <var>self</var> and <var>args</var>.
+ *
+ * When the supplied <var>condition</var> fails to execute, a ConditionMetaError is thrown, with its
+ * properties filled out appropriately.
+ *
+ * Mostly, this method is not used directly, but called via <code>verifyAll</code>.
+ */
+util.setAndFreezeProperty(
+  ConditionViolation.prototype,
+  'verify',
+  function (contractFunction, condition, self, args) {
+    util.pre(this, function () { return AbstractContract.isAContractFunction(contractFunction) })
+    util.pre(this, function () { return util.typeOf(condition) === 'function' })
+    util.pre(this, function () { return util.typeOf(args) === 'arguments' || util.typeOf(args) === 'array' })
 
-    ConditionError.apply(this, arguments);
-  }
-
-  ConditionViolation.prototype = new ConditionError(
-    AbstractContract.root.abstract,
-    function() {return "This is a dummy condition in the ConditionViolation prototype.";},
-    undefined,
-    []
-  );
-  ConditionViolation.prototype.constructor = ConditionViolation;
-  util.setAndFreezeProperty(ConditionViolation.prototype, "name", ConditionViolation.name);
-
-  /**
-   * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
-   *
-   * <pre>
-   *   <var>SpecificConditionViolationConstructor</var>.prototype.verifyAll(<var>...</var>, <var>conditions</var>, <var>self</var>, <var>args</var>)
-   * </pre>
-   *
-   * Such a call will throw a ConditionViolation of type <var>SpecificConditionViolationConstructor</var>, with its
-   * properties filled out appropriately if any of the supplied <var>conditions</var> returns <code>false</code> when
-   * applied to <var>self</var> and <var>args</var>.
-   *
-   * When any of the supplied <var>conditions</var> fails to execute, a ConditionMetaError is thrown, with its
-   * properties filled out appropriately.
-   */
-  util.setAndFreezeProperty(
-    ConditionViolation.prototype,
-    "verifyAll",
-    function(contractFunction, conditions, self, args) {
-      util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
-      util.pre(this, function() {
-        return conditions
-               && util.typeOf(conditions) === "array"
-               && conditions.every(function(c) {return util.typeOf(c) === "function";});
-      });
-      util.pre(this, function() {return args && (util.typeOf(args) === "arguments" || util.typeOf(args) === "array");});
-
-      conditions.forEach(function(condition) {this.verify(contractFunction, condition, self, args);}, this);
+    let conditionResult
+    try {
+      conditionResult = condition.apply(self, args)
+    } catch (err) {
+      const cme = new ConditionMetaError(contractFunction, condition, self, args, err)
+      Object.freeze(cme)
+      throw cme
     }
-  );
-
-  /**
-   * Dynamic conditional constructor and thrower of instances of this type. The intended usage is:
-   *
-   * <pre>
-   *   <var>SpecificConditionViolationConstructor</var>.prototype.verify(<var>...</var>, <var>condition</var>, <var>self</var>, <var>args</var>)
-   * </pre>
-   *
-   * Such a call will throw a ConditionViolation of type <var>SpecificConditionViolationConstructor</var>, with its
-   * properties filled out appropriately, if the supplied <var>condition</var> returns <code>false</code> when applied
-   * to <var>self</var> and <var>args</var>.
-   *
-   * When the supplied <var>condition</var> fails to execute, a ConditionMetaError is thrown, with its
-   * properties filled out appropriately.
-   *
-   * Mostly, this method is not used directly, but called via <code>verifyAll</code>.
-   */
-  util.setAndFreezeProperty(
-    ConditionViolation.prototype,
-    "verify",
-    function(contractFunction, condition, self, args) {
-      util.pre(this, function() {return AbstractContract.isAContractFunction(contractFunction);});
-      util.pre(this, function() {return util.typeOf(condition) === "function";});
-      util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
-
-      var conditionResult;
-      try {
-        conditionResult = condition.apply(self, args);
-      }
-      catch (err) {
-        var cme = new ConditionMetaError(contractFunction, condition, self, args, err);
-        Object.freeze(cme);
-        throw cme;
-      }
-      if (!conditionResult) {
-        var cv = new this.constructor(contractFunction, condition, self, args);
-        Object.freeze(cv);
-        throw cv;
-      }
+    if (!conditionResult) {
+      const cv = new this.constructor(contractFunction, condition, self, args)
+      Object.freeze(cv)
+      throw cv
     }
-  );
+  }
+)
 
-  return ConditionViolation;
-}));
+module.exports = ConditionViolation
