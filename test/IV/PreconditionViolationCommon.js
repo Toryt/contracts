@@ -14,31 +14,21 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./ConditionViolationCommon", "𝕋合同/III/PreconditionViolation"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, common, PreconditionViolation) {
-  "use strict";
+const common = require('./ConditionViolationCommon')
+const PreconditionViolation = require('../../src/IV/PreconditionViolation')
 
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(PreconditionViolation);
-    common.expectInvariants(subject);
-  }
+function expectInvariants (subject) {
+  subject.must.be.an.instanceof(PreconditionViolation)
+  common.expectInvariants(subject)
+}
 
-  var test = {
-    expectInvariants: expectInvariants
-  };
-  Object.setPrototypeOf(test, common);
-  return test;
+const test = {
+  expectInvariants: expectInvariants
+}
+Object.setPrototypeOf(test, common)
 
-}));
+module.exports = test
