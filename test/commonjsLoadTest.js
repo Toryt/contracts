@@ -27,22 +27,22 @@
  * This should be run as a direct command
  * | > node test/commonjsLoadTest.js
  */
-var modules = {
-  testUtil: require("./_util/testUtil"),
+const modules = {
+  testUtil: require('./_util/testUtil'),
   _private: {
-    util: require("../src/_private/util")
+    util: require('../src/_private/util')
   },
-  I : {
-    AbstractContract: require("../src/IV/AbstractContract"),
-    ConditionError: require("../src/IV/ConditionError"),
-    ConditionMetaError: require("../src/IV/ConditionMetaError"),
-    ConditionViolation: require("../src/IV/ConditionViolation"),
-    Contract: require("../src/IV/Contract"),
-    ContractError: require("../src/IV/ContractError"),
-    ExceptionConditionViolation: require("../src/IV/ExceptionConditionViolation"),
-    PostconditionViolation: require("../src/IV/PostconditionViolation"),
-    PreconditionViolation: require("../src/IV/PreconditionViolation")
+  IV: {
+    AbstractContract: require('../src/IV/AbstractContract'),
+    ConditionError: require('../src/IV/ConditionError'),
+    ConditionMetaError: require('../src/IV/ConditionMetaError'),
+    ConditionViolation: require('../src/IV/ConditionViolation'),
+    Contract: require('../src/IV/Contract'),
+    ContractError: require('../src/IV/ContractError'),
+    ExceptionConditionViolation: require('../src/IV/ExceptionConditionViolation'),
+    PostconditionViolation: require('../src/IV/PostconditionViolation'),
+    PreconditionViolation: require('../src/IV/PreconditionViolation')
   }
-};
+}
 
-modules.testUtil.log(modules.I.AbstractContract.root.location.toString());
+modules.testUtil.log(modules.IV.AbstractContract.root.location.toString())
