@@ -14,81 +14,77 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./ConditionMetaErrorCommon", "𝕋合同/III/ConditionMetaError"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, ConditionMetaError) {
-  "use strict";
+const testUtil = require('../_util/testUtil')
+const common = require('./ConditionMetaErrorCommon')
+const ConditionMetaError = require('../../src/IV/ConditionMetaError')
 
-  // describe("I", function() {
-    describe("III/ConditionMetaError", function() {
+describe('III/ConditionMetaError', function () {
+  describe('#prototype', function () {
+    it('has a condition', function () {
+      // noinspection JSUnresolvedVariable
+      ConditionMetaError.prototype.condition.must.be.a.function()
+      // noinspection JSUnresolvedVariable
+      ConditionMetaError.prototype.condition.must.not.throw()
+    })
+  })
 
-      describe("#prototype", function() {
-        it("has a condition", function() {
-          expect(ConditionMetaError.prototype).to.have.property("condition").that.is.a("function");
-          // mark the stereotype condition as covered
-          expect(ConditionMetaError.prototype).to.have.property("condition").to.not.throw();
-        });
-      });
-
-      describe("#ConditionMetaError()", function() {
-        common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
-          common.argsCases.forEach(function(args) {
-            common.errorCases.forEach(function(error) {
-              var self = selfCaseGenerator();
-              it("creates an instance with all toppings for " + self + " - " + args + " - " + error, function() {
-                var contractFunction = common.createCandidateContractFunction();
-                var result = new ConditionMetaError(contractFunction, common.conditionCase, self, args, error);
-                common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, error);
-                common.expectInvariants(result);
-                expect(result).not.to.haveOwnProperty("message");
-                expect(result).not.to.haveOwnProperty("stack");
-                testUtil.log("result.stack:\n%s", result.stack);
-              });
-            });
-          });
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function() {
-          return new ConditionMetaError(
-            common.conditionCase,
-            null,
-            common.argsCases[0],
-            common.errorCases[0]
-          );
-        },
-        testUtil
-          .x(common.conditionCases, common.selfCaseGenerators, common.argsCases, common.errorCases)
-          .map(function(parameters) {
-            return function() {
-              var self = parameters[1]();
-              return {
-                subject: new ConditionMetaError(
-                  common.createCandidateContractFunction(),
-                  parameters[0],
-                  self,
-                  parameters[2],
-                  parameters[3]
-                ),
-                description: parameters[0] + " — " + self + " – " + parameters[2] + " – " + parameters[3]
-              };
-            };
+  describe('#ConditionMetaError()', function () {
+    // noinspection JSUnresolvedVariable
+    common.selfCaseGenerators.forEach(selfCaseGenerator => {
+      // noinspection JSUnresolvedVariable
+      common.argsCases.forEach(args => {
+        common.errorCases.forEach(error => {
+          const self = selfCaseGenerator()
+          it('creates an instance with all toppings for ' + self + ' - ' + args + ' - ' + error, function () {
+            // noinspection JSUnresolvedFunction
+            const contractFunction = common.createCandidateContractFunction()
+            // noinspection JSUnresolvedVariable
+            const result = new ConditionMetaError(contractFunction, common.conditionCase, self, args, error)
+            // noinspection JSUnresolvedVariable
+            common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, error)
+            common.expectInvariants(result)
+            result.must.not.have.ownProperty('message')
+            result.must.not.have.ownProperty('stack')
+            // noinspection JSUnresolvedVariable
+            testUtil.log('result.stack:\n%s', result.stack)
           })
-      );
+        })
+      })
+    })
+  })
 
-    });
-  // });
-
-}));
+  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
+  common.generatePrototypeMethodsDescriptions(
+    function () {
+      // noinspection JSUnresolvedVariable
+      return new ConditionMetaError(
+        common.conditionCase,
+        null,
+        common.argsCases[0],
+        common.errorCases[0]
+      )
+    },
+    testUtil
+      .x(common.conditionCases, common.selfCaseGenerators, common.argsCases, common.errorCases)
+      .map(function (parameters) {
+        return function () {
+          const self = parameters[1]()
+          // noinspection JSUnresolvedFunction
+          return {
+            subject: new ConditionMetaError(
+              common.createCandidateContractFunction(),
+              parameters[0],
+              self,
+              parameters[2],
+              parameters[3]
+            ),
+            description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
+          }
+        }
+      })
+  )
+})
