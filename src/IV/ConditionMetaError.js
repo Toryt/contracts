@@ -14,21 +14,13 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+'use strict'
 
-  var dependencies = ["./../_private/util", "./ConditionError", "./AbstractContract"];
+const util = require('../_private/util')
+const ConditionError = require('./ConditionError')
+const AbstractContract = require('./AbstractContract')
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(util, ConditionError, AbstractContract) {
-  "use strict";
-
-  /**
+/**
    * The condition could not be evaluated. There is probably a programming error in the condition itself.
    *
    * error must be optional
@@ -38,45 +30,47 @@
    *
    * @constructor
    */
-  function ConditionMetaError(contractFunction, condition, self, args, error) {
-    util.pre(this, function() {return AbstractContract.isAGeneralContractFunction(contractFunction);});
-    util.pre(this, function() {return util.typeOf(condition) === "function";});
-    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
+function ConditionMetaError (contractFunction, condition, self, args, error) {
+  util.pre(this, function () { return AbstractContract.isAGeneralContractFunction(contractFunction) })
+  util.pre(this, function () { return util.typeOf(condition) === 'function' })
+  util.pre(this, function () { return util.typeOf(args) === 'arguments' || util.typeOf(args) === 'array' })
 
-    ConditionError.apply(this, arguments);
-    if (error) {
-      Object.freeze(error);
-    }
-    util.setAndFreezeProperty(this, "error", error);
+  ConditionError.apply(this, arguments)
+  if (error) {
+    Object.freeze(error)
   }
+  util.setAndFreezeProperty(this, 'error', error)
+}
 
-  ConditionMetaError.prototype = new ConditionError(
-    AbstractContract.root.abstract,
-    function() {return "This is a dummy condition in the ConditionMetaError prototype.";},
-    undefined,
-    []
-  );
-  ConditionMetaError.prototype.constructor = ConditionMetaError;
-  util.setAndFreezeProperty(ConditionMetaError.prototype, "name", ConditionMetaError.name);
-  util.setAndFreezeProperty(ConditionMetaError.prototype, "error", null);
-  util.defineFrozenDerivedProperty(
-    ConditionMetaError.prototype,
-    "message",
-    function() {
-      return "error occurred while evaluating " + util.conciseConditionRepresentation("condition", this.condition) +
-             " while contract function " + this.contractFunction.displayName +
-             " was called (" + this.error + ")";
-    }
-  );
-  util.setAndFreezeProperty(
-    ConditionMetaError.prototype,
-    "getDetails",
-    function() {
-      return ConditionError.prototype.getDetails.call(this) + util.eol +
-             "caused by:" + util.eol +
-             util.extensiveThrownRepresentation(this.error);
-    }
-  );
+// noinspection JSUnresolvedVariable
+ConditionMetaError.prototype = new ConditionError(
+  AbstractContract.root.abstract,
+  function () { return 'This is a dummy condition in the ConditionMetaError prototype.' },
+  undefined,
+  []
+)
+ConditionMetaError.prototype.constructor = ConditionMetaError
+util.setAndFreezeProperty(ConditionMetaError.prototype, 'name', ConditionMetaError.name)
+util.setAndFreezeProperty(ConditionMetaError.prototype, 'error', null)
+util.defineFrozenDerivedProperty(
+  ConditionMetaError.prototype,
+  'message',
+  function () {
+    // noinspection JSUnresolvedVariable
+    return 'error occurred while evaluating ' + util.conciseConditionRepresentation('condition', this.condition) +
+             ' while contract function ' + this.contractFunction.displayName +
+             ' was called (' + this.error + ')'
+  }
+)
+util.setAndFreezeProperty(
+  ConditionMetaError.prototype,
+  'getDetails',
+  function () {
+    // noinspection JSUnresolvedVariable
+    return ConditionError.prototype.getDetails.call(this) + util.eol +
+             'caused by:' + util.eol +
+             util.extensiveThrownRepresentation(this.error)
+  }
+)
 
-  return ConditionMetaError;
-}));
+module.exports = ConditionMetaError
