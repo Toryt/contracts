@@ -23,7 +23,7 @@ const AbstractError = AbstractContract.AbstractError
 const testUtil = require('../_util/testUtil')
 const common = require('./AbstractErrorCommon')
 
-describe('III/AbstractError', function () {
+describe('IV/AbstractError', function () {
   describe('#AbstractError()', function () {
     it('creates an instance with all toppings for AbstractContract.root', function () {
       const result = new AbstractError(AbstractContract.root)
