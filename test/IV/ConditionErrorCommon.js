@@ -22,7 +22,6 @@ const testUtil = require('../_util/testUtil')
 const util = require('../../src/_private/util')
 const common = require('./ContractErrorCommon')
 const ConditionError = require('../../src/IV/ConditionError')
-const AbstractContract = require('../../src/IV/AbstractContract')
 const abstractContractCommon = require('./AbstractContractCommon')
 const must = require('must')
 
