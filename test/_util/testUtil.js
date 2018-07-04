@@ -17,7 +17,7 @@ limitations under the License.
 'use strict'
 
 const util = require('../../lib/_private/util')
-const expect = require('chai').expect
+const must = require('must')
 
 // noinspection FunctionNamingConventionJS
 function x () {
@@ -36,14 +36,16 @@ function x () {
 }
 
 function expectOwnFrozenProperty (subject, propertyName) {
-  expect(subject).to.have.ownPropertyDescriptor(propertyName)
-  expect(subject).ownPropertyDescriptor(propertyName).to.have.property('enumerable', true)
-  expect(subject).ownPropertyDescriptor(propertyName).to.have.property('configurable', false)
-  expect(subject).ownPropertyDescriptor(propertyName).to.have.property('writable', false)
-  expect(function () {
+  const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
+  propertyDescriptor.must.be.truthy()
+  propertyDescriptor.enumerable.must.be.true()
+  propertyDescriptor.configurable.must.be.false()
+  propertyDescriptor.writable.must.be.false()
+  const failFunction = function () {
     // noinspection MagicNumberJS
     subject[propertyName] = 42 + ' some outlandish other value'
-  }).to.throw(TypeError)
+  }
+  failFunction.must.throw(TypeError)
 }
 
 // noinspection FunctionNamingConventionJS
@@ -60,13 +62,13 @@ function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
 // noinspection FunctionNamingConventionJS
 function expectDerivedPropertyOnAPrototype (subject, propertyName, configurable) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
-  expect(prototype).to.have.ownPropertyDescriptor(propertyName)
-  expect(prototype).ownPropertyDescriptor(propertyName).to.have.property('enumerable', true)
-  expect(prototype).ownPropertyDescriptor(propertyName).to.have.property('configurable', configurable)
-  expect(prototype).ownPropertyDescriptor(propertyName).not.to.have.property('writable')
-  expect(prototype).ownPropertyDescriptor(propertyName).to.have.property('get').that.is.a('function')
-  // eslint-disable-next-line
-  expect(prototype).ownPropertyDescriptor(propertyName).to.have.property('set').that.is.not.ok
+  const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, propertyName)
+  propertyDescriptor.must.be.truthy()
+  propertyDescriptor.enumerable.must.be.true()
+  propertyDescriptor.configurable.must.equal(configurable)
+  propertyDescriptor.must.not.have.property('writable')
+  propertyDescriptor.get.must.be.a.function()
+  must(propertyDescriptor.set).be.falsy()
 }
 
 // noinspection FunctionNamingConventionJS
@@ -86,20 +88,21 @@ function expectFrozenPropertyOnAPrototype (subject, propertyName) {
 
 // noinspection FunctionNamingConventionJS
 function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (subject, propName, privatePropName) {
-  expect(subject).to.have.ownProperty(privatePropName) // array not shared
-  expect(subject).to.have.property(privatePropName).that.is.an('array')
+  subject.must.have.ownProperty(privatePropName) // array not shared
+  subject[privatePropName].must.be.an.array()
   this.expectOwnFrozenProperty(subject, privatePropName)
-  expect(subject).to.have.property(propName).that.is.an('array')
+  subject[propName].must.be.an.array()
   this.expectFrozenDerivedPropertyOnAPrototype(subject, propName)
-  expect(function () {
+  const failFunction = function () {
     // noinspection MagicNumberJS
     subject[propName] = 42 + ' some outlandish other value'
-  }).to.throw(TypeError)
+  }
+  failFunction.must.throw(TypeError)
 }
 
 function expectToBeArrayOfFunctions (a) {
-  expect(a).to.be.an('array')
-  a.forEach(element => { expect(element).to.be.a('function') })
+  a.must.be.an.array()
+  a.forEach(element => { element.must.be.a.function() })
 }
 
 const doLog = false
