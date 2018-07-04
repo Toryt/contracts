@@ -1,3 +1,6 @@
 .idea
 bower_components
 How_to_publish.md
+
+coverage
+.nyc_output

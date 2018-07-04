@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "pretest": "node test/commonjsLoadTest.js",
-    "test": "mocha --reporter min test/commonjsLoadTest test/**/*Test.js"
+    "pretest": "npm-check -i standard -i mocha-reporter -i legally -i tldrlegal; npm outdated || exit 0",
+    "test": "standard && nyc mocha 'test/**/*Test.js'",
+    "legalReport": "legally -l -r && tldrlegal"
   },
   "repository": {
     "type": "git",
@@ -44,9 +45,25 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "just.randomstring": "^0.1.1",
-    "mocha": "^5.1.1",
+    "legally": "^2.10.0",
+    "mocha": "^5.2.0",
     "mocha-reporter": "^0.1.1",
     "must": "^0.13.4",
-    "standard": "^11.0.1"
+    "npm-check": "^5.7.1",
+    "nyc": "^12.0.2",
+    "standard": "^11.0.1",
+    "tldrlegal": "^1.0.6"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "per-file": true,
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 100,
+    "reporter": [
+      "html",
+      "text"
+    ]
   }
 }
