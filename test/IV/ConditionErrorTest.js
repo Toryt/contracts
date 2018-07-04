@@ -20,7 +20,7 @@
 
 const testUtil = require('../_util/testUtil')
 const common = require('./ConditionErrorCommon')
-const ConditionError = require('../../src/IV/ConditionError')
+const ConditionError = require('../../lib/IV/ConditionError')
 
 describe('IV/ConditionError', function () {
   describe('#ConditionError()', function () {

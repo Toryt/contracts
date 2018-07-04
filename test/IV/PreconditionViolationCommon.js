@@ -19,7 +19,7 @@
 'use strict'
 
 const common = require('./ConditionViolationCommon')
-const PreconditionViolation = require('../../src/IV/PreconditionViolation')
+const PreconditionViolation = require('../../lib/IV/PreconditionViolation')
 
 function expectInvariants (subject) {
   subject.must.be.an.instanceof(PreconditionViolation)

@@ -18,9 +18,9 @@
 
 'use strict'
 
-const AbstractContract = require('../../src/IV/AbstractContract')
+const AbstractContract = require('../../lib/IV/AbstractContract')
 const testUtil = require('../_util/testUtil')
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 const common = require('./AbstractContractCommon')
 const must = require('must')
 

@@ -19,9 +19,9 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 const common = require('./ExceptionConditionViolationCommon')
-const ExceptionConditionViolation = require('../../src/IV/ExceptionConditionViolation')
+const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViolation')
 
 // noinspection JSUnresolvedVariable
 const argsCases = common.argsCases.filter(a => util.typeOf(a) === 'array')

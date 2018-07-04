@@ -30,18 +30,18 @@
 const modules = {
   testUtil: require('./_util/testUtil'),
   _private: {
-    util: require('../src/_private/util')
+    util: require('../lib/_private/util')
   },
   IV: {
-    AbstractContract: require('../src/IV/AbstractContract'),
-    ConditionError: require('../src/IV/ConditionError'),
-    ConditionMetaError: require('../src/IV/ConditionMetaError'),
-    ConditionViolation: require('../src/IV/ConditionViolation'),
-    Contract: require('../src/IV/Contract'),
-    ContractError: require('../src/IV/ContractError'),
-    ExceptionConditionViolation: require('../src/IV/ExceptionConditionViolation'),
-    PostconditionViolation: require('../src/IV/PostconditionViolation'),
-    PreconditionViolation: require('../src/IV/PreconditionViolation')
+    AbstractContract: require('../lib/IV/AbstractContract'),
+    ConditionError: require('../lib/IV/ConditionError'),
+    ConditionMetaError: require('../lib/IV/ConditionMetaError'),
+    ConditionViolation: require('../lib/IV/ConditionViolation'),
+    Contract: require('../lib/IV/Contract'),
+    ContractError: require('../lib/IV/ContractError'),
+    ExceptionConditionViolation: require('../lib/IV/ExceptionConditionViolation'),
+    PostconditionViolation: require('../lib/IV/PostconditionViolation'),
+    PreconditionViolation: require('../lib/IV/PreconditionViolation')
   }
 }
 

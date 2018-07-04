@@ -18,9 +18,9 @@
 
 'use strict'
 
-const ContractError = require('../../src/IV/ContractError')
+const ContractError = require('../../lib/IV/ContractError')
 const testUtil = require('../_util/testUtil')
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 const common = require('./ContractErrorCommon')
 
 describe('III/ContractError', function () {

@@ -20,7 +20,7 @@
 
 const testUtil = require('../_util/testUtil')
 const common = require('./ConditionViolationCommon')
-const PostconditionViolation = require('../../src/IV/PostconditionViolation')
+const PostconditionViolation = require('../../lib/IV/PostconditionViolation')
 const must = require('must')
 
 function expectInvariants (subject) {

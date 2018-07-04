@@ -19,9 +19,9 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 const common = require('./ConditionErrorCommon')
-const ConditionMetaError = require('../../src/IV/ConditionMetaError')
+const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
 const must = require('must')
 
 function expectInvariants (subject) {

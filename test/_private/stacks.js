@@ -16,7 +16,7 @@
 
 'use strict'
 
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 
 const stacks = {
   node: '    at defineErrorRecursively (/Users/username/DevDirectory/contracts/test/_private/utilTest.js:448:20)' + util.eol +

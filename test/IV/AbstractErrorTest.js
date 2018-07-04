@@ -18,7 +18,7 @@
 
 'use strict'
 
-const AbstractContract = require('../../src/IV/AbstractContract')
+const AbstractContract = require('../../lib/IV/AbstractContract')
 const AbstractError = AbstractContract.AbstractError
 const testUtil = require('../_util/testUtil')
 const common = require('./AbstractErrorCommon')
