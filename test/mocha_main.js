@@ -24,7 +24,6 @@ require.config({
   ],
   paths: {
     mocha: 'bower_components/mocha/mocha',
-    chai: 'bower_components/chai/chai',
     'just.randomstring': 'bower_components/just.randomstring/just.randomstring'
   },
   shim: {
