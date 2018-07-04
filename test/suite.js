@@ -14,4 +14,7 @@
  limitations under the License.
  */
 
-define(["test/IV/suite"], function() {}); // jshint ignore:line
+/* eslint-env mocha */
+
+// eslint-disable-next-line no-undef
+define(['test/IV/suite'], function () {})

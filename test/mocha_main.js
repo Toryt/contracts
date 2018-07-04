@@ -15,43 +15,43 @@
  */
 
 /* This file sets up Mocha browser testing. It is used in mocha.html */
-//noinspection JSFileReferences,JSUnusedGlobalSymbols
+// noinspection JSFileReferences,JSUnusedGlobalSymbols
 require.config({
-  baseUrl: "../",
+  baseUrl: '../',
   packages: [
-    {name: "𝕋合同", location: "src"},
-    {name: "test", location: "test"}
+    {name: '𝕋合同', location: 'src'},
+    {name: 'test', location: 'test'}
   ],
   paths: {
-    mocha: "bower_components/mocha/mocha",
-    chai: "bower_components/chai/chai",
-    "just.randomstring": "bower_components/just.randomstring/just.randomstring"
+    mocha: 'bower_components/mocha/mocha',
+    chai: 'bower_components/chai/chai',
+    'just.randomstring': 'bower_components/just.randomstring/just.randomstring'
   },
   shim: {
-    "mocha": {
-      exports: "mocha",
-      init: function() {
-        this.mocha.setup("bdd"); // jshint ignore:line
-        this.mocha.checkLeaks();
-        this.mocha.globals([]);
-        return this.mocha;
+    'mocha': {
+      exports: 'mocha',
+      init: function () {
+        this.mocha.setup('bdd') // jshint ignore:line
+        this.mocha.checkLeaks()
+        this.mocha.globals([])
+        return this.mocha
       }
     },
-    "just.randomstring": {
-      exports: "just.randomstring"
+    'just.randomstring': {
+      exports: 'just.randomstring'
     }
   },
   map: {
     test: {
-      "test/_util/describe": "test/_util/mocha-amd/describe",
-      "test/_util/it": "test/_util/mocha-amd/it",
-      "test/_util/expect": "test/_util/mocha-amd/expect"
+      'test/_util/describe': 'test/_util/mocha-amd/describe',
+      'test/_util/it': 'test/_util/mocha-amd/it',
+      'test/_util/expect': 'test/_util/mocha-amd/expect'
     }
   }
-});
+})
 
-require(["mocha"], function(mocha) {
-  require(["test/suite"], function() { // jshint ignore:line
-    mocha.run();
-  });
-});
+require(['mocha'], function (mocha) {
+  require(['test/suite'], function () { // jshint ignore:line
+    mocha.run()
+  })
+})
