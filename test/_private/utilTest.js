@@ -546,7 +546,6 @@ describe('_private/util', function () {
                  line.indexOf(util.dirSeparator) < 0 ||
                  line.indexOf('require (internal' + util.dirSeparator + 'module.js') >= 0 ||
                  line.indexOf(util.dirSeparator + 'requirejs' + util.dirSeparator + 'require.js') >= 0
-          console.log(`${lineOk}: "${line}"`)
           lineOk.must.be.true()
         })
         // all the lines, after the message, that are outside the library, are in the result,
