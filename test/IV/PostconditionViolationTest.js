@@ -14,91 +14,89 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./PostconditionViolationCommon", "𝕋合同/III/PostconditionViolation"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, PostconditionViolation) {
-  "use strict";
+const testUtil = require('../_util/testUtil')
+const util = require('../../src/_private/util')
+const common = require('./PostconditionViolationCommon')
+const PostconditionViolation = require('../../src/IV/PostconditionViolation')
 
-  var argsCases = common.argsCases.filter(function(a) {return util.typeOf(a) === "array";});
+// noinspection JSUnresolvedVariable
+const argsCases = common.argsCases.filter(a => util.typeOf(a) === 'array')
 
-  // describe("I", function() {
-    describe("III/PostconditionViolation", function() {
+describe('IV/PostconditionViolation', function () {
+  describe('#prototype', function () {
+    it('has a condition', function () {
+      // noinspection JSUnresolvedVariable
+      PostconditionViolation.prototype.condition.must.be.a.function()
+      // noinspection JSUnresolvedVariable
+      PostconditionViolation.prototype.condition.must.not.throw()
+    })
+  })
 
-      describe("#prototype", function() {
-        it("has a condition", function() {
-          expect(PostconditionViolation.prototype).to.have.property("condition").that.is.a("function");
-          // mark the stereotype condition as covered
-          expect(PostconditionViolation.prototype).to.have.property("condition").to.not.throw();
-        });
-      });
-
-      describe("#PostconditionViolation()", function() {
-        common.selfCaseGenerators.forEach(function(selfCaseGenerator) {
-          argsCases.forEach(function(args) {
-            common.resultCaseGenerators.forEach(function(resultCaseGenerator) {
-              var self = selfCaseGenerator();
-              var result = resultCaseGenerator();
-              it("creates an instance with all toppings for " + self + " - " + args + " - " + result, function() {
-                var contractFunction = common.createCandidateContractFunction();
-                var doctoredArgs = args.slice();
-                doctoredArgs.push(result);
-                doctoredArgs.push(contractFunction.bind(self));
-                var creationResult = new PostconditionViolation(
-                  contractFunction,
-                  common.conditionCase,
-                  self,
-                  doctoredArgs
-                );
-                common.expectConstructorPost(
-                  creationResult,
-                  contractFunction,
-                  common.conditionCase,
-                  self,
-                  args,
-                  result
-                );
-                common.expectInvariants(creationResult);
-                testUtil.log("result.stack:\n%s", creationResult.stack);
-              });
-            });
-          });
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function() {
-          var contractFunction = common.createCandidateContractFunction();
-          var self = null;
-          var doctoredArgs = common.doctorArgs(common.argsCases[0], contractFunction.bind(self));
-          return new PostconditionViolation(contractFunction, common.conditionCase, self, doctoredArgs);
-        },
-        testUtil
-          .x(common.conditionCases, common.selfCaseGenerators, argsCases, common.resultCaseGenerators)
-          .map(function(parameters) {
-            return function() {
-              var contractFunction = common.createCandidateContractFunction();
-              var self = parameters[1]();
-              var doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]());
-              return {
-                subject: new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs),
-                description: parameters[0] + " — " + self + " – " + parameters[2] + " – " + parameters[3]
-              };
-            };
+  describe('#PostconditionViolation()', function () {
+    // noinspection JSUnresolvedVariable
+    common.selfCaseGenerators.forEach(selfCaseGenerator => {
+      argsCases.forEach(args => {
+        common.resultCaseGenerators.forEach(resultCaseGenerator => {
+          const self = selfCaseGenerator()
+          const result = resultCaseGenerator()
+          it('creates an instance with all toppings for ' + self + ' - ' + args + ' - ' + result, function () {
+            // noinspection JSUnresolvedFunction
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = args.slice()
+            doctoredArgs.push(result)
+            doctoredArgs.push(contractFunction.bind(self))
+            // noinspection JSUnresolvedVariable
+            const creationResult = new PostconditionViolation(
+              contractFunction,
+              common.conditionCase,
+              self,
+              doctoredArgs
+            )
+            // noinspection JSUnresolvedVariable
+            common.expectConstructorPost(
+              creationResult,
+              contractFunction,
+              common.conditionCase,
+              self,
+              args,
+              result
+            )
+            common.expectInvariants(creationResult)
+            // noinspection JSUnresolvedVariable
+            testUtil.log('result.stack:\n%s', creationResult.stack)
           })
-      );
+        })
+      })
+    })
+  })
 
-    });
-  // });
-
-}));
+  // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+  common.generatePrototypeMethodsDescriptions(
+    function () {
+      // noinspection JSUnresolvedFunction
+      const contractFunction = common.createCandidateContractFunction()
+      const self = null
+      // noinspection JSUnresolvedVariable
+      const doctoredArgs = common.doctorArgs(common.argsCases[0], contractFunction.bind(self))
+      // noinspection JSUnresolvedVariable
+      return new PostconditionViolation(contractFunction, common.conditionCase, self, doctoredArgs)
+    },
+    testUtil
+      .x(common.conditionCases, common.selfCaseGenerators, argsCases, common.resultCaseGenerators)
+      .map(parameters => () => {
+        // noinspection JSUnresolvedFunction
+        const contractFunction = common.createCandidateContractFunction()
+        const self = parameters[1]()
+        const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
+        return {
+          subject: new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs),
+          description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
+        }
+      }
+      )
+  )
+})
