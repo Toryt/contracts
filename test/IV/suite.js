@@ -14,9 +14,12 @@
  limitations under the License.
  */
 
-define(["./AbstractContractTest", "./AbstractErrorTest", "./ConditionErrorTest",
-        "./ConditionMetaErrorTest", "./ConditionViolationTest", "./ContractTest",
-        "./ContractErrorTest", "./ContractFunctionTest", "./ExceptionConditionViolationTest",
-        "./PostconditionViolationTest", "./PreconditionViolationTest"],
-        function() {}
-);
+/* eslint-env mocha */
+
+// eslint-disable-next-line no-undef
+define(['./AbstractContractTest', './AbstractErrorTest', './ConditionErrorTest',
+  './ConditionMetaErrorTest', './ConditionViolationTest', './ContractTest',
+  './ContractErrorTest', './ContractFunctionTest', './ExceptionConditionViolationTest',
+  './PostconditionViolationTest', './PreconditionViolationTest'],
+function () {}
+)
