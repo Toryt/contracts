@@ -18,10 +18,16 @@
   -->
   <meta charset="utf-8">
   <title>Mocha Tests</title>
-  <link href="../bower_components/mocha/mocha.css" rel="stylesheet" />
-  <script data-main="mocha_main" src="../bower_components/requirejs/require.js" async="async"></script>
+  <link href="../node_modules/mocha/mocha.css" rel="stylesheet">
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script>mocha.setup('bdd')</script>
+  <script src="../testBundle.js"></script>
 </head>
 <body>
   <div id="mocha"></div>
+  <script>
+    mocha.checkLeaks();
+    mocha.run();
+  </script>
 </body>
 </html>

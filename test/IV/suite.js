@@ -16,10 +16,14 @@
 
 /* eslint-env mocha */
 
-// eslint-disable-next-line no-undef
-define(['./AbstractContractTest', './AbstractErrorTest', './ConditionErrorTest',
-  './ConditionMetaErrorTest', './ConditionViolationTest', './ContractTest',
-  './ContractErrorTest', './ContractFunctionTest', './ExceptionConditionViolationTest',
-  './PostconditionViolationTest', './PreconditionViolationTest'],
-function () {}
-)
+require('./ContractErrorTest')
+require('./AbstractErrorTest')
+require('./AbstractContractTest')
+require('./ConditionErrorTest')
+require('./ConditionMetaErrorTest')
+require('./ConditionViolationTest')
+require('./PreconditionViolationTest')
+require('./PostconditionViolationTest')
+require('./ExceptionConditionViolationTest')
+require('./ContractTest')
+require('./ContractFunctionTest')
