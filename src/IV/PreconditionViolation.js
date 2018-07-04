@@ -13,6 +13,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  */
+
 'use strict'
 
 const util = require('../_private/util')
@@ -20,27 +21,27 @@ const ConditionViolation = require('./ConditionViolation')
 const AbstractContract = require('./AbstractContract')
 
 /**
-   * A PreconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
-   * precondition was violated when a contract function was called. The implementation of the contract function
-   * that was called, was not executed.
-   *
-   * If the precondition itself is correct, this is a programming error on the part of the calling function.
-   * One should assume the system is now in an undefined state.
-   *
-   * The developer wants to know
-   * <ul>
-   *   <li>where the contract function was called in source code,</li>
-   *   <li>what the arguments were of the instance of the call, and</li>
-   *   <li>which precondition was violated in source code (which implies knowing which contract it is a part of).</li>
-   * </ul>
-   *
-   * @constructor
-   * @param {Function} contractFunction - The contract function that reports this violation
-   * @param {Function} condition        - The condition that was violated
-   * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
-   * @param {Array} args
-   *                The arguments with which the contract function that failed, was called
-   */
+ * A PreconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
+ * precondition was violated when a contract function was called. The implementation of the contract function
+ * that was called, was not executed.
+ *
+ * If the precondition itself is correct, this is a programming error on the part of the calling function.
+ * One should assume the system is now in an undefined state.
+ *
+ * The developer wants to know
+ * <ul>
+ *   <li>where the contract function was called in source code,</li>
+ *   <li>what the arguments were of the instance of the call, and</li>
+ *   <li>which precondition was violated in source code (which implies knowing which contract it is a part of).</li>
+ * </ul>
+ *
+ * @constructor
+ * @param {Function} contractFunction - The contract function that reports this violation
+ * @param {Function} condition        - The condition that was violated
+ * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
+ * @param {Array} args
+ *                The arguments with which the contract function that failed, was called
+ */
 function PreconditionViolation (contractFunction, condition, self, args) {
   util.pre(this, function () { return AbstractContract.isAGeneralContractFunction(contractFunction) })
   util.pre(this, function () { return util.typeOf(condition) === 'function' })
