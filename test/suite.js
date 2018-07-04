@@ -16,5 +16,4 @@
 
 /* eslint-env mocha */
 
-// eslint-disable-next-line no-undef
-define(['test/IV/suite'], function () {})
+require('./IV/suite')

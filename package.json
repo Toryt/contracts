@@ -9,7 +9,8 @@
   "scripts": {
     "pretest": "npm-check -i standard -i mocha-reporter -i legally -i tldrlegal; npm outdated || exit 0",
     "test": "standard && nyc mocha 'test/**/*Test.js'",
-    "legalReport": "legally -l -r && tldrlegal"
+    "legalReport": "legally -l -r && tldrlegal",
+    "browserify": "browserify -r must --outfile testBundle.js test/**/*Test.js"
   },
   "repository": {
     "type": "git",
@@ -43,6 +44,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "browserify": "^16.2.2",
     "just.randomstring": "^0.1.1",
     "legally": "^2.10.0",
     "mocha": "^5.2.0",

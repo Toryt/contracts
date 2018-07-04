@@ -27,8 +27,7 @@ const must = require('must')
   transpile either. Further, this is for getting nice stack traces that hide the inners of this lib. In node,
   that is simple with constructorOpt. So, we can get rid of all this code, and maybe try to hack that more
   isolated for browsers. */
-const fileName = (testUtil.environment === 'node') ? (typeof module !== 'undefined' && module.filename) || module.uri // in node, commonjs or AMD
-  : util.browserModuleLocation(module) // in browser, AMD, prefixed with location
+const fileName = __filename || module.uri || window.location.origin
 
 const contractLibTestPath = util.pathUp(util.pathUp(fileName))
 // eslint-disable-next-line
