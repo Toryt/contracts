@@ -98,11 +98,7 @@ xcuserdata
 ### node
 node_modules
 
-### Bower
-bower_components
 
 ### Project specific
-testreport.txt
-intern-output.txt
 .nyc_output
 coverage
