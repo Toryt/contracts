@@ -14,86 +14,72 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "𝕋合同/_private/util", "./AbstractContractCommon", "𝕋合同/III/Contract"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, util, common, Contract) {
-  "use strict";
+const util = require('../../src/_private/util')
+const common = require('./AbstractContractCommon')
+const Contract = require('../../src/IV/Contract')
 
-  function expectInvariants(subject) {
-    expect(subject).to.be.an.instanceOf(Contract);
-    common.expectInvariants(subject);
-    expect(subject.location).to.satisfy(function(location) {return util.isALocationOutsideLibrary(location);});
-    // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
-    expect(subject.abstract).to.satisfy(function(cf) {return Contract.isAContractFunction(cf);});
-    expect(subject).to.have.property("implementation").that.is.a("function");
-  }
+function expectInvariants (subject) {
+  subject.must.be.an.instanceof(Contract)
+  common.expectInvariants(subject)
+  util.isALocationOutsideLibrary(subject.location).must.be.true()
+  // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
+  // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+  Contract.isAContractFunction(subject.abstract)
+  subject.implementation.must.be.a.function()
+}
 
-  //noinspection FunctionNamingConventionJS
-  function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
-    common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
-    var self = this; // jshint ignore:line
+// noinspection FunctionNamingConventionJS
+function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+  common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
+  const self = this // jshint ignore:line
 
-    //noinspection FunctionTooLongJS
-    describe("#implementation", function() {
-      function expectPost(contract, implFunction , result) {
-        //noinspection BadExpressionStatementJS,JSHint
-        expect(contract.isImplementedBy(result)).to.be.ok;
-        expect(result).to.satisfy(Contract.isAContractFunction);
-        expect(result).to.have.property("contract").that.equals(contract);
-        expect(result).to.have.property("implementation").that.equals(implFunction);
-        self.expectInvariants(contract);
-      }
+  describe('#implementation', function () {
+    function expectPost (contract, implFunction, result) {
+      contract.isImplementedBy(result).must.be.true()
+      // noinspection JSUnresolvedFunction
+      Contract.isAContractFunction(result).must.be.true()
+      result.contract.must.equal(contract)
+      result.implementation.must.equal(implFunction)
+      self.expectInvariants(contract)
+    }
 
-      it("returns an Contract function that is configured as expected", function() {
-        var subject = oneSubjectGenerator();
-        var impl = function() {};
-        var result = subject.implementation(impl);
-        expectPost(subject, impl, result);
-      });
+    it('returns an Contract function that is configured as expected', function () {
+      const subject = oneSubjectGenerator()
+      const impl = function () {}
+      const result = subject.implementation(impl)
+      expectPost(subject, impl, result)
+    })
 
-      it("returns a different Contract function when called with the same implementation", function() {
-        var subject = oneSubjectGenerator();
-        var impl = function() {};
-        var result = subject.implementation(impl);
-        //noinspection LocalVariableNamingConventionJS
-        var result2 = subject.implementation(impl);
-        expectPost(subject, impl, result2);
-        expect(result2).to.not.equal(result);
-      });
+    it('returns a different Contract function when called with the same implementation', function () {
+      const subject = oneSubjectGenerator()
+      const impl = function () {}
+      const result = subject.implementation(impl)
+      const result2 = subject.implementation(impl)
+      expectPost(subject, impl, result2)
+      result2.must.not.equal(result)
+    })
 
-      it("returns a different Contract function with a different implementation", function() {
-        var subject = oneSubjectGenerator();
-        var impl = function() {};
-        //noinspection LocalVariableNamingConventionJS
-        var impl2 = function() {};
-        var result = subject.implementation(impl);
-        //noinspection LocalVariableNamingConventionJS
-        var result2 = subject.implementation(impl2);
-        expectPost(subject, impl2, result2);
-        expect(result2).to.not.equal(result);
-        expect(result2).to.have.property("implementation").that.not.equals(result.implementation);
-      });
+    it('returns a different Contract function with a different implementation', function () {
+      const subject = oneSubjectGenerator()
+      const impl = function () {}
+      const impl2 = function () {}
+      const result = subject.implementation(impl)
+      const result2 = subject.implementation(impl2)
+      expectPost(subject, impl2, result2)
+      result2.must.not.equal(result)
+      result2.implementation.must.not.equal(result.implementation)
+    })
+  })
+}
 
-    });
+const test = {
+  expectInvariants: expectInvariants,
+  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+}
+Object.setPrototypeOf(test, common)
 
-  }
-
-  var test = {
-    expectInvariants: expectInvariants,
-    generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
-  };
-  Object.setPrototypeOf(test, common);
-  return test;
-
-}));
+module.exports = test
