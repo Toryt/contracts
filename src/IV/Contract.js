@@ -53,6 +53,7 @@ Contract.prototype.implementation = function (implFunction) {
     // cfThis: the this of the contract function call
     const cfThis = this // jshint ignore:line
     const extendedArgs = Array.prototype.slice.call(arguments)
+    // noinspection JSUnresolvedFunction
     PreconditionViolation.prototype.verifyAll(contractFunction, contract.pre, cfThis, arguments)
     let result
     let exception
@@ -67,9 +68,11 @@ Contract.prototype.implementation = function (implFunction) {
     extendedArgs.push(exception || result)
     extendedArgs.push(contractFunction.bind(cfThis))
     if (exception) {
+      // noinspection JSUnresolvedFunction
       ExceptionConditionViolation.prototype.verifyAll(contractFunction, contract.exception, cfThis, extendedArgs)
       throw exception
     }
+    // noinspection JSUnresolvedFunction
     PostconditionViolation.prototype.verifyAll(contractFunction, contract.post, cfThis, extendedArgs)
     return result
   }
