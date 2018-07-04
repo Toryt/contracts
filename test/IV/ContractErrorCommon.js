@@ -18,9 +18,9 @@
 
 'use strict'
 
-const ContractError = require('../../src/IV/ContractError')
+const ContractError = require('../../lib/IV/ContractError')
 const testUtil = require('../_util/testUtil')
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 
 function expectStackInvariants (subject) {
   subject.stack.must.be.a.string()

@@ -16,7 +16,7 @@ limitations under the License.
 
 'use strict'
 
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 const expect = require('chai').expect
 
 // noinspection FunctionNamingConventionJS

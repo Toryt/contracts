@@ -19,9 +19,9 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../src/_private/util')
+const util = require('../../lib/_private/util')
 const common = require('./ContractErrorCommon')
-const ConditionError = require('../../src/IV/ConditionError')
+const ConditionError = require('../../lib/IV/ConditionError')
 const abstractContractCommon = require('./AbstractContractCommon')
 const must = require('must')
 

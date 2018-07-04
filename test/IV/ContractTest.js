@@ -20,9 +20,9 @@
 
 const testUtil = require('../_util/testUtil')
 const common = require('./ContractCommon')
-const Contract = require('../../src/IV/Contract')
+const Contract = require('../../lib/IV/Contract')
 const abstractContractCommon = require('./AbstractContractCommon')
-const AbstractContract = require('../../src/IV/AbstractContract')
+const AbstractContract = require('../../lib/IV/AbstractContract')
 
 describe('IV/Contract', function () {
   describe('Contract', function () {

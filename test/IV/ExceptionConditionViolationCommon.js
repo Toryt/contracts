@@ -20,7 +20,7 @@
 
 const testUtil = require('../_util/testUtil')
 const common = require('./ConditionViolationCommon')
-const ExceptionConditionViolation = require('../../src/IV/ExceptionConditionViolation')
+const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViolation')
 const must = require('must')
 
 function expectInvariants (subject) {
