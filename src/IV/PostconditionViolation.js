@@ -14,79 +14,72 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+'use strict'
 
-  var dependencies = ["./../_private/util", "./ConditionViolation", "./AbstractContract"];
+const util = require('../_private/util')
+const ConditionViolation = require('./ConditionViolation')
+const AbstractContract = require('./AbstractContract')
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
+/**
+ * <p>A PostconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
+ *   postcondition was violated when a contract function was called. The implementation of the contract function
+ *   that was called, was executed and ended nominally, but the result or the resulting state did not conform.</p>
+ *
+ * <p>If the postcondition itself is correct, this is a programming error on the part of the implementation.
+ *   One should assume the system is now in an undefined state.</p>
+ *
+ * <p>The developer wants to know</p>
+ * <ul>
+ *   <li>where the contract function was called in source code,</li>
+ *   <li>what the arguments were of the instance of the call, at the time of the call (old),</li>
+ *   <li>what the result of the call is, and what the state is of all relevant objects is, after the call, and</li>
+ *   <li>which postcondition was violated in source code (which implies knowing which contract it is a part of).</li>
+ * </ul>
+ *
+ * <p>The state of the relevant objects after the call is a difficult subject, since we should assume the system
+ *   is in an undefined state. Retrieving the state might not be possible, because invariants and preconditions
+ *   will no longer be guaranteed.</p>
+ *
+ * @constructor
+ * @param {Function} contractFunction - The contract function that reports this violation
+ * @param {Function} condition        - The condition that was violated
+ * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
+ * @param {Array} args
+ *                The arguments with which the contract function that failed, was called, extended with the
+ *                result of the implementation, and the contract function, bound to the <code>this</code>
+ *                it was called on. The bound contract function is always the last entry. The result of the
+ *                implementation execution is always the second-to-last entry.
+ */
+function PostconditionViolation (contractFunction, condition, self, args) {
+  util.pre(this, function () { return AbstractContract.isAGeneralContractFunction(contractFunction) })
+  util.pre(this, function () { return util.typeOf(condition) === 'function' })
+  util.pre(this, function () { return util.typeOf(args) === 'arguments' || util.typeOf(args) === 'array' })
+
+  const actualArgs = Array.prototype.slice.call(args)
+  actualArgs.pop() // the bound contract function
+  const result = actualArgs.pop()
+  ConditionViolation.call(this, contractFunction, condition, self, actualArgs)
+  util.setAndFreezeProperty(this, 'result', result)
+}
+
+// noinspection JSUnresolvedVariable
+PostconditionViolation.prototype = new ConditionViolation(
+  AbstractContract.root.abstract,
+  function () { return 'This is a dummy condition in the PostconditionViolation prototype.' },
+  undefined,
+  []
+)
+PostconditionViolation.prototype.constructor = PostconditionViolation
+util.setAndFreezeProperty(PostconditionViolation.prototype, 'name', PostconditionViolation.name)
+util.setAndFreezeProperty(PostconditionViolation.prototype, 'result', undefined)
+util.setAndFreezeProperty(
+  PostconditionViolation.prototype,
+  'getDetails',
+  function () {
+    // noinspection JSUnresolvedVariable
+    return ConditionViolation.prototype.getDetails.call(this) + util.eol +
+           'result (' + util.typeOf(this.result) + '): ' + this.result
   }
-  else if (typeof exports === "object") {
-    module.exports = factory.apply(undefined, dependencies.map(function(d) {return require(d);}));
-  }
-}(function(util, ConditionViolation, AbstractContract) {
-  "use strict";
+)
 
-  /**
-   * <p>A PostconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
-   *   postcondition was violated when a contract function was called. The implementation of the contract function
-   *   that was called, was executed and ended nominally, but the result or the resulting state did not conform.</p>
-   *
-   * <p>If the postcondition itself is correct, this is a programming error on the part of the implementation.
-   *   One should assume the system is now in an undefined state.</p>
-   *
-   * <p>The developer wants to know</p>
-   * <ul>
-   *   <li>where the contract function was called in source code,</li>
-   *   <li>what the arguments were of the instance of the call, at the time of the call (old),</li>
-   *   <li>what the result of the call is, and what the state is of all relevant objects is, after the call, and</li>
-   *   <li>which postcondition was violated in source code (which implies knowing which contract it is a part of).</li>
-   * </ul>
-   *
-   * <p>The state of the relevant objects after the call is a difficult subject, since we should assume the system
-   *   is in an undefined state. Retrieving the state might not be possible, because invariants and preconditions
-   *   will no longer be guaranteed.</p>
-   *
-   * @constructor
-   * @param {Function} contractFunction - The contract function that reports this violation
-   * @param {Function} condition        - The condition that was violated
-   * @param {any}      self             - The <code>this</code> that <code>contractFunction</code> was called on
-   * @param {Array} args
-   *                The arguments with which the contract function that failed, was called, extended with the
-   *                result of the implementation, and the contract function, bound to the <code>this</code>
-   *                it was called on. The bound contract function is always the last entry. The result of the
-   *                implementation execution is always the second-to-last entry.
-   */
-  function PostconditionViolation(contractFunction, condition, self, args) {
-    util.pre(this, function() {return AbstractContract.isAGeneralContractFunction(contractFunction);});
-    util.pre(this, function() {return util.typeOf(condition) === "function";});
-    util.pre(this, function() {return util.typeOf(args) === "arguments" || util.typeOf(args) === "array";});
-
-    var actualArgs = Array.prototype.slice.call(args);
-    actualArgs.pop(); // the bound contract function
-    var result = actualArgs.pop();
-    ConditionViolation.call(this, contractFunction, condition, self, actualArgs);
-    util.setAndFreezeProperty(this, "result", result);
-  }
-
-  PostconditionViolation.prototype = new ConditionViolation(
-    AbstractContract.root.abstract,
-    function() {return "This is a dummy condition in the PostconditionViolation prototype.";},
-    undefined,
-    []
-  );
-  PostconditionViolation.prototype.constructor = PostconditionViolation;
-  util.setAndFreezeProperty(PostconditionViolation.prototype, "name", PostconditionViolation.name);
-  util.setAndFreezeProperty(PostconditionViolation.prototype, "result", undefined);
-  util.setAndFreezeProperty(
-    PostconditionViolation.prototype,
-    "getDetails",
-    function() {
-      return ConditionViolation.prototype.getDetails.call(this) + util.eol +
-             "result (" + util.typeOf(this.result) + "): " + this.result;
-    }
-  );
-
-  return PostconditionViolation;
-}));
+module.exports = PostconditionViolation
