@@ -543,6 +543,8 @@ describe('_private/util', function () {
              The first line should be our own code. */
           const lineOk = line.indexOf(contractLibTestPath) >= 0 ||
                  line.indexOf(util.dirSeparator + 'mocha' + util.dirSeparator) >= 0 ||
+                 line.indexOf(util.dirSeparator + 'nyc' + util.dirSeparator) >= 0 ||
+                 line.indexOf(util.dirSeparator + '.node-spawn-wrap-') >= 0 ||
                  line.indexOf(util.dirSeparator) < 0 ||
                  line.indexOf('require (internal' + util.dirSeparator + 'module.js') >= 0 ||
                  line.indexOf(util.dirSeparator + 'requirejs' + util.dirSeparator + 'require.js') >= 0
