@@ -14,79 +14,75 @@
  limitations under the License.
  */
 
-(function(factory) {
-  "use strict";
+/* eslint-env mocha */
 
-  var dependencies = ["../_util/describe", "../_util/it", "../_util/expect", "../_util/testUtil",
-                      "./ContractCommon", "𝕋合同/III/Contract", "./AbstractContractCommon", "𝕋合同/III/AbstractContract"];
+'use strict'
 
-  if (typeof define === "function" && define.amd) {
-    define(dependencies, factory);
-  }
-  else if (typeof exports === "object") {
-    module.exports =
-      factory.apply(undefined, dependencies.map(function(d) {return require(d.replace("𝕋合同", "../../src"));}));
-  }
-}(function(describe, it, expect, testUtil, common, Contract, AbstractContractCommon, AbstractContract) {
-  "use strict";
+const testUtil = require('../_util/testUtil')
+const common = require('./ContractCommon')
+const Contract = require('../../src/IV/Contract')
+const abstractContractCommon = require('./AbstractContractCommon')
+const AbstractContract = require('../../src/IV/AbstractContract')
 
-  // describe("I", function() {
-    describe("III/Contract", function() {
+describe('IV/Contract', function () {
+  describe('Contract', function () {
+    it('has the expected properties', function () {
+      Contract.must.have.ownProperty('prototype')
+      // noinspection JSUnresolvedVariable
+      abstractContractCommon.expectInvariants(Contract.prototype)
+      // noinspection JSUnresolvedVariable
+      Contract.prototype.implementation.must.be.a.function()
+      Contract.must.have.ownProperty('root')
+      // noinspection JSUnresolvedVariable
+      Contract.root.must.equal(AbstractContract.root)
+      Contract.must.have.ownProperty('isAContractFunction')
+      // noinspection JSUnresolvedVariable
+      Contract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
+    })
+  })
 
-      describe("Contract", function() {
-        it("has the expected properties", function() {
-          expect(Contract).to.haveOwnProperty("prototype");
-          AbstractContractCommon.expectInvariants(Contract.prototype);
-          expect(Contract.prototype).to.have.property("implementation").that.is.a("function");
-          expect(Contract).to.haveOwnProperty("root");
-          expect(Contract).to.have.property("root").that.equals(AbstractContract.root);
-          expect(Contract).to.haveOwnProperty("isAContractFunction");
-          expect(Contract).to.have.property("isAContractFunction").that.equals(AbstractContract.isAContractFunction);
-        });
-      });
-
-      describe("#Contract()", function() {
-        common.constructorPreCases.forEach(function(pre) {
-          common.constructorPostCases.forEach(function(post) {
-            common.constructorExceptionCases.forEach(function(exception) {
-              describe("works for pre: " + pre + ", post: " + post + ", exception: " + exception, function() {
-                var preConditions = pre();
-                var postConditions = post();
-                var exceptionConditions = exception();
-                var result = new Contract({
-                  pre: preConditions,
-                  post: postConditions,
-                  exception: exceptionConditions
-                });
-                common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result);
-              });
-            });
-          });
-        });
-      });
-
-      common.generatePrototypeMethodsDescriptions(
-        function() {return new Contract({});},
-        testUtil
-          .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
-          .map(function(parameters) {
-            return function() {
-              var preConditions = parameters[0]();
-              var postConditions = parameters[1]();
-              var exceptionConditions = parameters[2]();
-              return {
-                subject: new Contract({
-                  pre: preConditions,
-                  post: postConditions,
-                  exception: exceptionConditions
-                }),
-                description: parameters.join(" - ")
-              };
-            };
+  describe('#Contract()', function () {
+    // noinspection JSUnresolvedVariable
+    common.constructorPreCases.forEach(pre => {
+      // noinspection JSUnresolvedVariable
+      common.constructorPostCases.forEach(post => {
+        // noinspection JSUnresolvedVariable
+        common.constructorExceptionCases.forEach(exception => {
+          describe('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
+            const preConditions = pre()
+            const postConditions = post()
+            const exceptionConditions = exception()
+            const result = new Contract({
+              pre: preConditions,
+              post: postConditions,
+              exception: exceptionConditions
+            })
+            // noinspection JSUnresolvedFunction
+            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result)
           })
-      );
+        })
+      })
+    })
+  })
 
-    });
-  // });
-
-}));
+  // noinspection JSUnresolvedVariable
+  common.generatePrototypeMethodsDescriptions(
+    function () { return new Contract({}) },
+    testUtil
+      .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
+      .map(parameters => () => {
+        const preConditions = parameters[0]()
+        const postConditions = parameters[1]()
+        const exceptionConditions = parameters[2]()
+        return {
+          subject: new Contract({
+            pre: preConditions,
+            post: postConditions,
+            exception: exceptionConditions
+          }),
+          description: parameters.join(' - ')
+        }
+      }
+      )
+  )
+})
