@@ -453,10 +453,14 @@ string`
     it(`says yes to all lines of a stack trace`, function () {
       // sadly, also to the message
       const error = new Error('This is an error to get a platform dependent stack')
-      error.stack.split(os.EOL).forEach(line => {
-        const result = util.isAStackLocation(line)
-        result.must.be.true()
-      })
+      const lines = error.stack.split(os.EOL)
+      lines
+        .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line
+        .forEach(line => {
+          const result = util.isAStackLocation(line)
+          console.log(`${result}: ${line}`)
+          result.must.be.true()
+        })
     })
   })
 
