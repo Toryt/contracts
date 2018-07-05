@@ -19,7 +19,6 @@
 'use strict'
 
 const util = require('../../lib/_private/util')
-const stacks = require('./stacks')
 const testUtil = require('../_util/testUtil')
 const must = require('must')
 const os = require('os')
