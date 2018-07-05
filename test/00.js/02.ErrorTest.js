@@ -92,12 +92,16 @@ describe('js/Error', function () {
       }
     )
     it('has a stack, that reports where the error is created', function () {
-      function createAnError () {
+      function createAnErrorOne () {
         return new Error(message)
       }
 
+      function createAnErrorTwo () {
+        return createAnErrorOne()
+      }
+
       function throwAnError () {
-        throw createAnError()
+        throw createAnErrorTwo()
       }
 
       try {
@@ -113,7 +117,14 @@ describe('js/Error', function () {
           lines.shift()
         }
         lines.forEach((l, i) => {
-          l.must[i === 0 ? 'to' : 'not'].contain('createAnError')
+          l.must[i === 0 ? 'to' : 'not'].contain('createAnErrorOne')
+          if (testUtil.environment !== 'safari') {
+            // Safari EATS stack frames
+            l.must[i === 1 ? 'to' : 'not'].contain('createAnErrorTwo')
+            l.must[i === 2 ? 'to' : 'not'].contain('throwAnError')
+          } else {
+            l.must[i === 1 ? 'to' : 'not'].contain('throwAnError')
+          }
         })
       }
     })
