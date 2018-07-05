@@ -177,6 +177,7 @@ function environment () {
     return 'firefox'
   }
   // noinspection JSUnresolvedVariable
+  // this no longer detects safari in v11
   if (/constructor/i.test(window.HTMLElement) ||
       (function (p) {
         return p.toString() === '[object SafariRemoteNotification]'
@@ -200,7 +201,11 @@ function environment () {
   }
   // noinspection JSUnresolvedVariable
   if (window.CSS) {
-    return 'blink'
+    if (navigator.userAgent.indexOf('Safari') >= 0) {
+      return 'safari'
+    } else {
+      return 'blink'
+    }
   }
   // eslint-disable-next-line
   if ((new Function('try {return this === window;}catch(e){ return false;}'))()) {
