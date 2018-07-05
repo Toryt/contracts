@@ -116,7 +116,7 @@ describe('_private/util', function () {
     })
   })
 
-  describe.only('#callerLocation', function () {
+  describe('#callerLocation', function () {
     it('returns the expected line without arguments', function () {
       function aFirstFunction () {
         function aSecondFunction () {
