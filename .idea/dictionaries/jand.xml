@@ -3,6 +3,7 @@
     <words>
       <w>aspx</w>
       <w>booleany</w>
+      <w>clickable</w>
       <w>dirname</w>
       <w>dockx</w>
       <w>falsy</w>
@@ -15,6 +16,7 @@
       <w>requirejs</w>
       <w>stringified</w>
       <w>toryt</w>
+      <w>truthy</w>
     </words>
   </dictionary>
 </component>
