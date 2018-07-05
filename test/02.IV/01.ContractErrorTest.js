@@ -23,7 +23,7 @@ const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
 const common = require('./ContractErrorCommon')
 
-describe('III/ContractError', function () {
+describe('IV/ContractError', function () {
   describe('#ContractError()', function () {
     it('creates an instance with all toppings', function () {
       const result = new ContractError()
