@@ -525,16 +525,6 @@ describe('_private/util', function () {
       })
   })
 
-  describe('#firstLocationOutsideLibrary', function () {
-    it('reports a location for this test', function () {
-      const result = util.firstLocationOutsideLibrary()
-      util.isALocationOutsideLibrary(result).must.be.true()
-      testUtil.log('firstLocationOutsideLibrary:' + result)
-    })
-
-    // cannot test the result where no reference is found
-  })
-
   describe('#stackOutsideThisLibrary', function () {
     function defineErrorRecursively (togo) {
       /* It would be better here to be able to go in and out the library code, to see these calls are filtered.
