@@ -91,7 +91,7 @@ describe('js/Error', function () {
         }
       }
     )
-    it('has a stack, that reports where the error is created', function () {
+    it('has a stack, that reports where the error is created, and the entire stack, except for Safari', function () {
       function createAnErrorOne () {
         return new Error(message)
       }
@@ -125,6 +125,43 @@ describe('js/Error', function () {
           } else {
             l.must[i === 1 ? 'to' : 'not'].contain('throwAnError')
           }
+        })
+      }
+    })
+    it('has a stack, that reports where the error is created, and the entire stack, when immediately thrown', function () {
+      function createAnErrorOne () {
+        try {
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error(message)
+        } catch (result) {
+          return result
+        }
+      }
+
+      function createAnErrorTwo () {
+        throw createAnErrorOne()
+      }
+
+      function throwAnError () {
+        createAnErrorTwo()
+      }
+
+      try {
+        throwAnError()
+      } catch (err) {
+        testUtil.log('err.stack: %s', err.stack)
+        err.stack.must.be.truthy()
+        err.stack.must.contain('createAnError')
+        // and be on the first line
+        const lines = err.stack.split('\n')
+        if (lines[0] === err.toString()) {
+          // some environments add the toString of the error on the first line
+          lines.shift()
+        }
+        lines.forEach((l, i) => {
+          l.must[i === 0 ? 'to' : 'not'].contain('createAnErrorOne')
+          l.must[i === 1 ? 'to' : 'not'].contain('createAnErrorTwo')
+          l.must[i === 2 ? 'to' : 'not'].contain('throwAnError')
         })
       }
     })
