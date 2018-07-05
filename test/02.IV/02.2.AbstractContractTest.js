@@ -23,6 +23,7 @@ const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
 const common = require('./AbstractContractCommon')
 const must = require('must')
+const os = require('os')
 
 describe('IV/AbstractContract', function () {
   describe('AbstractContract', function () {
@@ -268,8 +269,10 @@ describe('IV/AbstractContract', function () {
 
   describe('AbstractContract.isAContractFunction', function () {
     generateIAGCFTests(AbstractContract.isAContractFunction)
-    common.thingsThatAreNotAFunctionNorAContract
-      .concat(['    at', 'at /', {}, AbstractContract.internalLocation])
+    common
+      .thingsThatAreNotAFunctionNorAContract
+      .filter(t => !t || typeof t !== 'string' || t.indexOf(os.EOL) >= 0)
+      .concat([{}, AbstractContract.internalLocation])
       .forEach(v => {
         it('says no if the location is not a location outside this library but ' + v, function () {
           const candidate = common.createCandidateContractFunction(null, 'location', v)
