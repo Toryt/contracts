@@ -116,6 +116,46 @@ describe('_private/util', function () {
     })
   })
 
+  describe.only('#callerLocation', function () {
+    it('returns the expected line without arguments', function () {
+      function aFirstFunction () {
+        function aSecondFunction () {
+          return util.callerLocation()
+        }
+
+        return aSecondFunction()
+      }
+
+      const result = aFirstFunction()
+      console.log(result)
+      result.must.be.a.string()
+      result.must.contain('aSecondFunction')
+      result.split(util.eol).length.must.equal(1)
+    })
+    it('returns the expected line 2 deep', function () {
+      function aFirstFunction () {
+        function aSecondFunction () {
+          function aThirdFunction () {
+            function aFourthFunction () {
+              return util.callerLocation(2)
+            }
+
+            return aFourthFunction()
+          }
+
+          return aThirdFunction()
+        }
+
+        return aSecondFunction()
+      }
+
+      const result = aFirstFunction()
+      console.log(result)
+      result.must.be.a.string()
+      result.must.contain('aSecondFunction')
+      result.split(util.eol).length.must.equal(1)
+    })
+  })
   describeLocationTest('atStackLocation', atLocationEnvironments)
   describeLocationTest('@StackLocation', ATLocationEnvironments)
 
