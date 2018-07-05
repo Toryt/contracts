@@ -22,6 +22,7 @@ const util = require('../../lib/_private/util')
 const stacks = require('./stacks')
 const testUtil = require('../_util/testUtil')
 const must = require('must')
+const os = require('os')
 
 /* MUDO This depends on AMD modules still; it does not make sense now, but the node approach will probably not
   transpile either. Further, this is for getting nice stack traces that hide the inners of this lib. In node,
@@ -69,36 +70,6 @@ const stuff = [
   {subject: false, expected: 'boolean', isPrimitive: true},
   {subject: getGlobal(), expected: 'object', isPrimitive: false}
 ].concat(generateMutableStuff())
-
-function describeLocationTest (propertyName, environments) {
-  describe('#' + propertyName, function () {
-    it('is a RegExp', function () {
-      util[propertyName].must.be.instanceof(RegExp)
-    })
-    Object.keys(stacks).forEach(env => {
-      stacks[env]
-        .split(util.eol)
-        .filter(l => !!l) // some environments add an empty line at the end of the stack
-        .forEach(l => {
-          if (environments.indexOf(env) >= 0) {
-            it('matches the ' + env + ' stack line "' + l + '"', function () {
-              l.must.match(util[propertyName])
-            })
-          } else {
-            it('does not match the ' + env + ' stack line "' + l + '"', function () {
-              l.must.not.match(util[propertyName])
-            })
-          }
-        })
-    })
-  })
-}
-
-const atLocationEnvironments = ['node', 'chrome']
-
-const ATLocationEnvironments = ['firefox', 'safari'];
-(atLocationEnvironments.indexOf(testUtil.environment) >= 0 ? atLocationEnvironments : ATLocationEnvironments)
-  .push('current environment')
 
 describe('_private/util', function () {
   describe('#isNode', function () {
@@ -155,22 +126,6 @@ describe('_private/util', function () {
       result.must.contain('aSecondFunction')
       result.split(util.eol).length.must.equal(1)
     })
-  })
-  describeLocationTest('atStackLocation', atLocationEnvironments)
-  describeLocationTest('@StackLocation', ATLocationEnvironments)
-
-  describe('#stackLocation', function () {
-    it('is a RegExp', function () {
-      util.stackLocation.must.be.an.instanceof(RegExp)
-    })
-    stacks['current environment']
-      .split(util.eol)
-      .filter(l => !!l) // some environments add an empty line at the end of the stack
-      .forEach(l => {
-        it('matches the current environment stack line "' + l + '"', function () {
-          l.must.match(util.stackLocation)
-        })
-      })
   })
 
   describe('#contractLibPath', function () {
@@ -473,56 +428,36 @@ describe('_private/util', function () {
       })
   })
 
-  describe('#isALocationOutsideLibrary', function () {
-    stuff
-      .map(s => s.subject)
-      .filter(s => util.typeOf(s) !== 'string')
-      .forEach(value => {
-        it('reports false on a location that is not a string: ' + value, function () {
-          const result = util.isALocationOutsideLibrary(value)
-          must(result).be.falsy()
-        })
+  describe('#isAStackLocation', function () {
+    stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
+      it(`says no to ${s}`, function () {
+        const result = util.isAStackLocation(s)
+        result.must.be.false()
       })
-    it('reports false on an empty string', function () {
-      const result = util.isALocationOutsideLibrary('')
-      must(result).be.falsy()
     })
-    it('reports false on a string that is 2 lines long, where both are stack lines', function () {
-      const stack = (new Error('This is an error as a test case for a stack'))
-        .stack
-        .split(util.eol)
-        .splice(1, 2)
-        .join(util.eol)
-      const result = util.isALocationOutsideLibrary(stack)
-      must(result).be.falsy()
-      stack.split(util.eol).forEach(l => {
-        const result = util.isALocationOutsideLibrary(l)
-        result.must.be.truthy()
+    it(`says no to ''`, function () {
+      const result = util.isAStackLocation('')
+      result.must.be.false()
+    })
+    it(`says yes to 'abc'`, function () {
+      const result = util.isAStackLocation('abc')
+      result.must.be.true()
+    })
+    it(`says no to a multi-line string`, function () {
+      const result = util.isAStackLocation(`this is a 
+multi-line
+string`
+      )
+      result.must.be.false()
+    })
+    it(`says yes to all lines of a stack trace`, function () {
+      // sadly, also to the message
+      const error = new Error('This is an error to get a platform dependent stack')
+      error.stack.split(os.EOL).forEach(line => {
+        const result = util.isAStackLocation(line)
+        result.must.be.true()
       })
-    });
-    (new Error('This is an error as a test case for a stack'))
-      .stack
-      .split(util.eol)
-      .splice(1)
-      .filter(l => l.indexOf(util.dirSeparator) < 0)
-      .forEach(l => {
-        it('reports false on the string "' + l + "\" that is a stack line, but doesn't contain a slash", function () {
-          // This doesn't seem to occur in browsers.
-          const result = util.isALocationOutsideLibrary(l)
-          must(result).be.falsy()
-        })
-      });
-    (new Error('This is an error as a test case for a stack'))
-      .stack
-      .split(util.eol)
-      .splice(1)
-      .filter(l => l.indexOf(util.dirSeparator) >= 0)
-      .forEach(l => {
-        it('reports true on the valid location outside the library "' + l + '"', function () {
-          const result = util.isALocationOutsideLibrary(l)
-          result.must.be.truthy()
-        })
-      })
+    })
   })
 
   describe('#stackOutsideThisLibrary', function () {
