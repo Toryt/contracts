@@ -699,7 +699,7 @@ describe('_private/util', function () {
   describe('#pathUp', function () {
     it('returns the directory of a file path in a browser', function () {
       const dirPath = 'http://localhost:63342/contracts/test/_private'
-      const fileName = 'utilTest.js'
+      const fileName = '01.utilTest.js'
       const testCase = dirPath + util.dirSeparator + fileName
       const result = util.pathUp(testCase)
       result.must.be.a.string()
