@@ -10,8 +10,8 @@
     "pretest": "npm-check -i standard -i mocha-reporter -i legally -i tldrlegal; npm outdated || exit 0",
     "test": "standard && nyc mocha 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
-    "browserify": "browserify -s toryt.contracts.iv --outfile bundle.js lib/IV/Contract.js",
-    "browserifyTest": "browserify -r must --outfile testBundle.js test/**/*Test.js"
+    "browserify": "browserify -s toryt.contracts.iv --outfile contracts.js lib/IV/Contract.js",
+    "browserifyTest": "browserify -r must --outfile test/browserified.js test/**/*Test.js"
   },
   "repository": {
     "type": "git",
