@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="controlled" pattern="file[contracts]:*/&amp;&amp;!file[contracts]:.idea//*&amp;&amp;!file[contracts]:bower_components//*&amp;&amp;!file[contracts]:doc/lib/*&amp;&amp;!file[contracts]:doc/lib//*" />
+  <scope name="controlled" pattern="file[contracts]:*/&amp;&amp;!file[contracts]:.idea//*&amp;&amp;!file[contracts]:bower_components//*&amp;&amp;!file[contracts]:doc/lib/*&amp;&amp;!file[contracts]:doc/lib//*&amp;&amp;!file:browser/test/suite.js&amp;&amp;!file[contracts]:.nyc_output//*&amp;&amp;!file[contracts]:coverage//*" />
 </component>
