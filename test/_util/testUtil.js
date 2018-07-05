@@ -210,7 +210,11 @@ function environment () {
 }
 
 function trimLineAndColumnPattern (stackLine) {
-  return stackLine.replace(/:\d*:\d*\)$/, ')')
+  return stackLine
+    // node, chrome
+    .replace(/:\d*:\d*\)$/, ')')
+    // other browsers
+    .replace(/:\d*:\d*\$/, '')
 }
 
 function mustBeCallerLocation (actual, expected) {
