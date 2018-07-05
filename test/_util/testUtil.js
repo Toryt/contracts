@@ -209,6 +209,15 @@ function environment () {
   return undefined
 }
 
+function trimLineAndColumnPattern (stackLine) {
+  return stackLine.replace(/:\d*:\d*\)$/, ')')
+}
+
+function mustBeCallerLocation (actual, expected) {
+  expected.must.be.a.string()
+  trimLineAndColumnPattern(expected).must.equal(trimLineAndColumnPattern(actual))
+}
+
 module.exports = {
   x: x,
   expectOwnFrozenProperty: expectOwnFrozenProperty,
@@ -222,5 +231,6 @@ module.exports = {
   regExpEscape: regExpEscape,
   propertyIsWritable: propertyIsWritable,
   anyCasesGenerators: anyCasesGenerators,
-  environment: environment()
+  environment: environment(),
+  mustBeCallerLocation: mustBeCallerLocation
 }

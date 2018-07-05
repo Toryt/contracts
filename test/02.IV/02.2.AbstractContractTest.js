@@ -283,7 +283,7 @@ describe('IV/AbstractContract', function () {
       const contractFunction = function () {}
       const contract = new AbstractContract({})
       const implFunction = function () {}
-      const location = util.firstLocationOutsideLibrary()
+      const location = util.callerLocation()
       AbstractContract.bless(contractFunction, contract, implFunction, location)
       AbstractContract.isAContractFunction(contractFunction).must.be.true()
       testUtil.expectOwnFrozenProperty(contractFunction, 'contract')
@@ -316,7 +316,7 @@ describe('IV/AbstractContract', function () {
             const postConditions = post()
             const exceptionConditions = exception()
             const result = new AbstractContract({pre: preConditions, post: postConditions, exception: exceptionConditions})
-            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result)
+            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, util.callerLocation(), result)
           })
         })
       })
