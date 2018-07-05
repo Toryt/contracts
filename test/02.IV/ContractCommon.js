@@ -18,6 +18,7 @@
 
 'use strict'
 
+const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
 const common = require('./AbstractContractCommon')
 const Contract = require('../../lib/IV/Contract')
@@ -38,12 +39,13 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
   const self = this // jshint ignore:line
 
   describe('#implementation', function () {
-    function expectPost (contract, implFunction, result) {
+    function expectPost (contract, implFunction, location, result) {
       contract.isImplementedBy(result).must.be.true()
       // noinspection JSUnresolvedFunction
       Contract.isAContractFunction(result).must.be.true()
       result.contract.must.equal(contract)
       result.implementation.must.equal(implFunction)
+      testUtil.mustBeCallerLocation(result.location, location)
       self.expectInvariants(contract)
     }
 
@@ -51,7 +53,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const subject = oneSubjectGenerator()
       const impl = function () {}
       const result = subject.implementation(impl)
-      expectPost(subject, impl, result)
+      expectPost(subject, impl, util.callerLocation(), result)
     })
 
     it('returns a different Contract function when called with the same implementation', function () {
@@ -59,7 +61,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const impl = function () {}
       const result = subject.implementation(impl)
       const result2 = subject.implementation(impl)
-      expectPost(subject, impl, result2)
+      expectPost(subject, impl, util.callerLocation(), result2)
       result2.must.not.equal(result)
     })
 
@@ -69,7 +71,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const impl2 = function () {}
       const result = subject.implementation(impl)
       const result2 = subject.implementation(impl2)
-      expectPost(subject, impl2, result2)
+      expectPost(subject, impl2, util.callerLocation(), result2)
       result2.must.not.equal(result)
       result2.implementation.must.not.equal(result.implementation)
     })
