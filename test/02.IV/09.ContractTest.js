@@ -19,6 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
+const util = require('../../lib/_private/util')
 const common = require('./ContractCommon')
 const Contract = require('../../lib/IV/Contract')
 const abstractContractCommon = require('./AbstractContractCommon')
@@ -58,7 +59,7 @@ describe('IV/Contract', function () {
               exception: exceptionConditions
             })
             // noinspection JSUnresolvedFunction
-            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, result)
+            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, util.callerLocation(), result)
           })
         })
       })

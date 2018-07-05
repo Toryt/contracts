@@ -86,7 +86,7 @@ function expectInvariants (/* AbstractContract */ subject) {
   }
 }
 
-function expectConstructorPost (pre, post, exception, result) {
+function expectConstructorPost (pre, post, exception, location, result) {
   function expectArrayPost (array, propName, privatePropName) {
     result[propName].must.be.an.array()
     if (!array) {
@@ -100,16 +100,11 @@ function expectConstructorPost (pre, post, exception, result) {
     }
   }
 
-  it('has a shallow copy of the given pre-conditions, and the private array is frozen', function () {
+  it('has the expectedProperties, and adheres to the invariants', function () {
     expectArrayPost(pre, 'pre', '_pre')
-  })
-  it('has a shallow copy of the given post-conditions, and the private array is frozen', function () {
     expectArrayPost(post, 'post', '_post')
-  })
-  it('has a shallow copy of the given exception-conditions, and the private array is frozen', function () {
     expectArrayPost(exception, 'exception', '_exception')
-  })
-  it('adheres to the invariants', function () {
+    testUtil.mustBeCallerLocation(result.location, location)
     expectInvariants(result)
   })
 }
@@ -121,7 +116,7 @@ function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName
 
   const contract = otherPropertyName === 'contract' ? otherPropertyValue : new AbstractContract({})
   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
-  const location = otherPropertyName === 'location' ? otherPropertyValue : util.firstLocationOutsideLibrary()
+  const location = otherPropertyName === 'location' ? otherPropertyValue : util.callerLocation()
   const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractContract.bindContractFunction
 
   if (doNotFreezeProperty === 'contract') {
