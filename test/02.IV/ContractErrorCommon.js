@@ -45,6 +45,8 @@ function expectInvariants (subject) {
   stackSource.message.must.equal(ContractError.stackSourceMessage)
   testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
   subject.name.must.be.a.string()
+  subject.name.must.equal(subject.constructor.name)
+  console.log(subject)
   testUtil.expectOwnFrozenProperty(ContractError.prototype, 'message')
   subject.message.must.be.a.string()
   expectStackInvariants(subject)
