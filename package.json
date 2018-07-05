@@ -11,7 +11,7 @@
     "test": "standard && nyc mocha 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "browserify": "browserify -s toryt.contracts.iv --outfile contracts.js lib/IV/Contract.js",
-    "browserifyTest": "browserify -r must --outfile test-browser/suite.js test/**/*Test.js"
+    "browserifyTest": "browserify -r must --outfile browser/test/suite.js test/**/*Test.js"
   },
   "repository": {
     "type": "git",

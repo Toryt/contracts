@@ -103,4 +103,4 @@ node_modules
 .nyc_output
 coverage
 contracts.js
-test-browser/suite.js
+browser/test/suite.js
