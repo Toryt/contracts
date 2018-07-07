@@ -26,14 +26,17 @@ const common = require('./ContractErrorCommon')
 describe('IV/ContractError', function () {
   describe('#ContractError()', function () {
     it('creates an instance with all toppings', function () {
-      const result = new ContractError()
-      common.expectConstructorPost(result, ContractError.message)
+      const rawStack = util.callerStack()
+      const result = new ContractError(rawStack)
+      testUtil.log('result:\n%s', result)
+      testUtil.log('result.toString():\n%s', result.toString())
+      common.expectConstructorPost(result, ContractError.message, rawStack)
       common.expectInvariants(result)
       result.must.not.have.ownProperty('message')
       testUtil.log('result.stack:\n%s', result.stack)
     })
     it('can get a message set', function () {
-      const result = new ContractError()
+      const result = new ContractError(util.callerStack())
       const message = 'another message'
       util.defineFrozenDerivedProperty(result, 'message', function () { return message })
       result.must.have.ownProperty('message')
@@ -43,12 +46,10 @@ describe('IV/ContractError', function () {
   })
 
   common.generatePrototypeMethodsDescriptions(
-    function () {
-      return new ContractError()
-    },
-    [{
-      subject: new ContractError(),
+    () => new ContractError(util.callerStack()),
+    [() => ({
+      subject: new ContractError(util.callerStack()),
       description: 'a contract error'
-    }]
+    })]
   )
 })
