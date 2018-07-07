@@ -123,6 +123,91 @@ describe('_private/util', function () {
     })
   })
 
+  describe('#callerStack', function () {
+    it('returns the expected stack without arguments', function () {
+      function aFourthFunction () {
+        function aFifthFunction () {
+          return util.callerStack()
+        }
+
+        return aFifthFunction()
+      }
+
+      function aSecondFunction () {
+        function aThirdFunction () {
+          return aFourthFunction()
+        }
+
+        return aThirdFunction()
+      }
+
+      function aFirstFunction () {
+        return aSecondFunction()
+      }
+
+      const result = aFirstFunction()
+      console.log(result)
+      result.must.be.a.string()
+      const lines = result.split(os.EOL)
+      lines.length.must.be.at.least(1)
+      if (testUtil.environment !== 'safari') {
+        lines.length.must.be.at.least(5)
+        lines[0].must.contain('aFifthFunction')
+        lines[1].must.contain('aFourthFunction')
+        lines[2].must.contain('aThirdFunction')
+        lines[3].must.contain('aSecondFunction')
+        lines[4].must.contain('aFirstFunction')
+      }
+    })
+    it('returns the expected stack. 2 deep', function () {
+      function skipTwo (skip) {
+        function skipOne (skip) {
+          return util.callerStack(skip + 1)
+        }
+
+        return skipOne(skip + 1)
+      }
+
+      function skipThree (skip) {
+        return skipTwo(skip + 1)
+      }
+
+      function aFourthFunction () {
+        function aFifthFunction () {
+          return skipThree(0)
+        }
+
+        return aFifthFunction()
+      }
+
+      function aSecondFunction () {
+        function aThirdFunction () {
+          return aFourthFunction()
+        }
+
+        return aThirdFunction()
+      }
+
+      function aFirstFunction () {
+        return aSecondFunction()
+      }
+
+      const result = aFirstFunction()
+      console.log(result)
+      result.must.be.a.string()
+      const lines = result.split(os.EOL)
+      lines.length.must.be.at.least(1)
+      if (testUtil.environment !== 'safari') {
+        lines.length.must.be.at.least(5)
+        lines[0].must.contain('aFifthFunction')
+        lines[1].must.contain('aFourthFunction')
+        lines[2].must.contain('aThirdFunction')
+        lines[3].must.contain('aSecondFunction')
+        lines[4].must.contain('aFirstFunction')
+      }
+    })
+  })
+
   describe('#contractLibPath', function () {
     it('is a string', function () {
       util.contractLibPath.must.be.a.string()
