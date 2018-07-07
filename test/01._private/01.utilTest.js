@@ -681,48 +681,4 @@ string`
       util.pathUp.bind(null, {}).must.throw(TypeError)
     })
   })
-
-  describe('#browserModuleLocation', function () {
-    // Note: for these tests to work, we must be at least 1 directory down from the server root.
-    const isNode = testUtil.environment === 'node';
-    [
-      {uri: 'simple.js', expectedEnd: 'simple.js'},
-      {uri: './peer.js', expectedEnd: 'peer.js'},
-      {uri: './dir/dir/deep.js', expectedEnd: '/dir/dir/deep.js'},
-      {uri: '../down/other.js', expectedEnd: 'other.js'},
-      {uri: './.././down/down/../../down/down/./complex.js', expectedEnd: '/down/complex.js'},
-      {uri: '/dir/dir/deep.js', expectedEnd: '/dir/dir/deep.js'}
-    ].forEach(testCase => {
-      it('returns a sensible result with AMD module URI "' + testCase.uri + '"', function () {
-        const origin = typeof window === 'undefined' ? 'http://localhost:23494' : window.location.origin
-        if (isNode) {
-          global.window = {location: {href: origin + '/contracts/test/mocha.html', origin: origin}}
-        }
-        const amdModule = {uri: testCase.uri}
-        const result = util.browserModuleLocation(amdModule)
-        result.must.be.a.string()
-        result.must.match(new RegExp(testCase.expectedEnd + '$'))
-        result.must.match(/^https?:\/{2,}\[?[\w.:-]+]?(?::[0-9]*)?\//)
-        result.must.match(new RegExp('^' + origin))
-        result.must.not.match(/\/\.{1,2}\//)
-        result.match(/\/{2,}/g).length.must.be.at.most(1)
-        if (isNode) {
-          delete global.window
-        }
-        testUtil.log('browserModuleLocation: %s', result)
-      })
-    })
-
-    it('throws an error if the AMD module URI would bring us above the root of the server', function () {
-      const origin = typeof window === 'undefined' ? 'http://localhost:23494' : window.location.origin
-      if (isNode) {
-        global.window = {location: {href: origin + '/contracts/test/mocha.html', origin: origin}}
-      }
-      const amdModule = {uri: '../../../../../../down/down/other.js'}
-      util.browserModuleLocation.bind(util, amdModule).must.throw(Error)
-      if (isNode) {
-        delete global.window
-      }
-    })
-  })
 })
