@@ -71,14 +71,6 @@ const stuff = [
 ].concat(generateMutableStuff())
 
 describe('_private/util', function () {
-  describe('#isNode', function () {
-    it('is a Boolean', function () {
-      // there seems no way to check the correctness of this, without using the same code, creating a tautology
-      util.isNode.must.be.a.boolean()
-      util.isNode.must.equal(testUtil.environment === 'node')
-    })
-  })
-
   describe('#eol', function () {
     it('is a string', function () {
       util.eol.must.be.a.string()
