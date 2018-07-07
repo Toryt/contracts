@@ -99,8 +99,10 @@ describe('_private/util', function () {
       const result = aFirstFunction()
       console.log(result)
       result.must.be.a.string()
-      result.must.contain('aSecondFunction')
       result.split(util.eol).length.must.equal(1)
+      if (testUtil.environment !== 'safari') {
+        result.must.contain('aSecondFunction')
+      }
     })
     it('returns the expected line 2 deep', function () {
       function aFirstFunction () {
@@ -122,8 +124,10 @@ describe('_private/util', function () {
       const result = aFirstFunction()
       console.log(result)
       result.must.be.a.string()
-      result.must.contain('aSecondFunction')
       result.split(util.eol).length.must.equal(1)
+      if (testUtil.environment !== 'safari') {
+        result.must.contain('aSecondFunction')
+      }
     })
   })
 
