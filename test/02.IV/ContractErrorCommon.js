@@ -21,41 +21,37 @@
 const ContractError = require('../../lib/IV/ContractError')
 const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
+const os = require('os')
 
 function expectStackInvariants (subject) {
-  subject.stack.must.be.a.string()
   const stack = subject.stack
-  const startOfStack = subject.name + ': ' + subject.message + util.eol
+  stack.must.be.a.string()
+  const startOfStack = subject.name + ': ' + subject.message + os.EOL
   stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
+  const restOfStack = stack.replace(startOfStack, '')
+  util.isAStack(restOfStack).must.be.true()
   // noinspection JSUnresolvedVariable
-  stack.must.match(new RegExp(
-    testUtil.regExpEscape(util.eol + util.stackOutsideThisLibrary(subject._stackSource)) + '$')
-  )
+  restOfStack.must.equal(subject._rawStack)
 }
 
 function expectInvariants (subject) {
   subject.must.be.an.instanceof(ContractError)
-  testUtil.expectOwnFrozenProperty(subject, '_stackSource')
-  // noinspection JSUnresolvedVariable
-  const stackSource = subject._stackSource
-  Object.isFrozen(stackSource).must.be.true()
-  stackSource.must.be.instanceof(Error)
-  stackSource.name.must.equal(ContractError.stackSourceName)
-  stackSource.message.must.be.a.string()
-  stackSource.message.must.equal(ContractError.stackSourceMessage)
   testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
   subject.name.must.be.a.string()
   subject.name.must.equal(subject.constructor.name)
-  console.log(subject)
   testUtil.expectOwnFrozenProperty(ContractError.prototype, 'message')
   subject.message.must.be.a.string()
+  testUtil.expectOwnFrozenProperty(subject, '_rawStack')
+  // noinspection JSUnresolvedVariable
+  util.isAStack(subject._rawStack).must.be.true()
   expectStackInvariants(subject)
 }
 
-function expectConstructorPost (result, message) {
+function expectConstructorPost (result, message, rawStack) {
   Object.isExtensible(result).must.be.true()
   result.name.must.equal(result.constructor.name)
   result.message.must.equal(message)
+  result._rawStack.must.equal(rawStack)
 }
 
 // noinspection FunctionNamingConventionJS
