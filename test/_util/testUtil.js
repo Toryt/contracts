@@ -219,7 +219,7 @@ function trimLineAndColumnPattern (stackLine) {
     // node, chrome
     .replace(/:\d*:\d*\)$/, ')')
     // other browsers
-    .replace(/:\d*:\d*\$/, '')
+    .replace(/:\d*:\d*$/, '')
 }
 
 function mustBeCallerLocation (actual, expected) {
