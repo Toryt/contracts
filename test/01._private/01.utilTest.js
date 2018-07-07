@@ -544,6 +544,51 @@ string`
     })
   })
 
+  describe('#isAStack', function () {
+    stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
+      it(`says no to ${s}`, function () {
+        const result = util.isAStack(s)
+        result.must.be.false()
+      })
+    })
+    it(`says no to ''`, function () {
+      const result = util.isAStack('')
+      result.must.be.false()
+    })
+    it(`says yes to 'abc'`, function () {
+      const result = util.isAStack('abc')
+      result.must.be.true()
+    })
+    it(`says yes to a multi-line string`, function () {
+      const candidate = `this is a 
+multi-line
+string`
+      const result = util.isAStack(candidate)
+      result.must.be.true()
+    })
+    it(`says no to a multi-line string with a blank line`, function () {
+      const result = util.isAStack(`this is a 
+multi-line
+string, with a
+
+blank line`
+      )
+      result.must.be.false()
+    })
+    it(`says yes to a stack trace`, function () {
+      const message = 'This is an error to get a platform dependent stack'
+      // sadly, also to the message, on some platforms
+      const error = new Error(message)
+      const stackLines = error.stack.split(os.EOL)
+      const stack = stackLines
+        // remove message line
+        .filter(sl => sl.indexOf(message) < 0)
+        .join(os.EOL)
+      const result = util.isAStack(stack)
+      result.must.be.true()
+    })
+  })
+
   describe('#stackOutsideThisLibrary', function () {
     function defineErrorRecursively (togo) {
       /* It would be better here to be able to go in and out the library code, to see these calls are filtered.
