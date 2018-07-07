@@ -95,6 +95,7 @@ describe('_private/util', function () {
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
+      util.isAStackLocation(result).must.be.true()
     })
     it('returns the expected line 2 deep', function () {
       function aFirstFunction () {
@@ -120,6 +121,7 @@ describe('_private/util', function () {
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
+      util.isAStackLocation(result).must.be.true()
     })
   })
 
@@ -158,6 +160,7 @@ describe('_private/util', function () {
         lines[3].must.contain('aSecondFunction')
         lines[4].must.contain('aFirstFunction')
       }
+      util.isAStack(result).must.be.true()
     })
     it('returns the expected stack. 2 deep', function () {
       function skipTwo (skip) {
@@ -205,6 +208,7 @@ describe('_private/util', function () {
         lines[3].must.contain('aSecondFunction')
         lines[4].must.contain('aFirstFunction')
       }
+      util.isAStack(result).must.be.true()
     })
   })
 
