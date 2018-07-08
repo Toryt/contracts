@@ -327,11 +327,11 @@ describe('IV/AbstractContract', function () {
   })
 
   common.generatePrototypeMethodsDescriptions(
-    function () { return new AbstractContract({}) },
+    () => new AbstractContract({}),
     testUtil
       .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
       .map(parameters =>
-        function () {
+        () => {
           const preConditions = parameters[0]()
           const postConditions = parameters[1]()
           const exceptionConditions = parameters[2]()
