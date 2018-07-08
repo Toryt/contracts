@@ -35,8 +35,8 @@ function expectInvariants (subject) {
   Object.getPrototypeOf(subject).message.must.equal(AbstractError.message)
 }
 
-function expectConstructorPost (result, message, contract) {
-  common.expectConstructorPost(result, message)
+function expectConstructorPost (result, message, contract, rawStack) {
+  common.expectConstructorPost(result, message, rawStack)
   result.contract.must.equal(contract)
 }
 
