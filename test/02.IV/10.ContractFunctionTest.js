@@ -230,7 +230,7 @@ describe('IV/ContractFunction', function () {
     })
   }
 
-  const intentionalError = new Error('This precondition intentionally fails.')
+  const intentionalError = new Error('This condition intentionally fails.')
 
   const contractWithAFailingPre = new Contract(
     {
