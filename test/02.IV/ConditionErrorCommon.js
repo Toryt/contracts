@@ -115,10 +115,10 @@ function expectDetailsPost (subject, result) {
   result.must.contain(util.conciseConditionRepresentation('', subject.condition))
   // noinspection JSUnresolvedVariable
   result.must.contain('' + util.eol + subject.contractFunction.contract.location)
-  result.must.contain('' + subject.self)
+  result.must.contain(util.inspect(subject.self))
   Array.prototype.forEach.call(
     subject.args,
-    arg => { result.must.contain('' + arg) }
+    arg => { result.must.contain(util.inspect(arg)) }
   )
 }
 
