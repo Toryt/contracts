@@ -111,7 +111,7 @@ function expectConstructorPost (result, contractFunction, condition, self, args)
 function expectDetailsPost (subject, result) {
   result.must.be.a.string()
   // noinspection JSUnresolvedVariable
-  result.must.contain('' + subject.condition)
+  result.must.contain(util.conciseConditionRepresentation('', subject.condition))
   // noinspection JSUnresolvedVariable
   result.must.contain('' + util.eol + subject.contractFunction.contract.location)
   result.must.contain('' + subject.self)
