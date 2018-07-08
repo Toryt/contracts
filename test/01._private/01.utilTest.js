@@ -669,13 +669,15 @@ blank line`
     function isAConciseVersion (original, concise) {
       const split = ('' + concise).split(util.conciseSeparator)
       const cleanOriginal = original.replace(/\s\s+/g, ' ')
+      let result
       if (split.length < 2) {
-        return original === concise
+        result = (original.trim() === concise)
       } else {
         // > 2 is not supported right now, and will fail
-        return cleanOriginal.indexOf(split[0]) === 0 &&
-               cleanOriginal.indexOf(split[1]) === cleanOriginal.length - split[1].length
+        result = cleanOriginal.indexOf(split[0]) === 0 &&
+                 cleanOriginal.indexOf(split[1]) === cleanOriginal.length - split[1].length
       }
+      return result
     }
 
     function expectGeneralPostconditions (result, expected) {
