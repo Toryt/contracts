@@ -37,9 +37,9 @@ describe('IV/AbstractError', function () {
 
   common.generatePrototypeMethodsDescriptions(
     () => new AbstractError(AbstractContract.root, util.callerStack()),
-    [() => ({
-      subject: new AbstractError(AbstractContract.root, util.callerStack()),
+    [{
+      subject: () => new AbstractError(AbstractContract.root, util.callerStack()),
       description: 'AbstractContract.root'
-    })]
+    }]
   )
 })
