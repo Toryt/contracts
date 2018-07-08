@@ -59,6 +59,7 @@ other.displayName += 'this function should have a display name'
 conditionCases.push(other)
 
 const selfCaseGenerators = testUtil.anyCasesGenerators('self')
+const oneSelfCase = selfCaseGenerators[selfCaseGenerators.length - 1]()
 
 let argsCases = [
   [],
@@ -71,6 +72,7 @@ argsCases = argsCases.concat(argsCases.map(c => {
 
   return asArgs.apply(undefined, c)
 }))
+const oneArgsCase = argsCases[argsCases.length - 1]
 
 function expectInvariants (subject) {
   subject.must.be.an.instanceof(ConditionError)
@@ -152,7 +154,9 @@ const test = {
   expectDetailsPost: expectDetailsPost,
   expectInvariants: expectInvariants,
   generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
-  createCandidateContractFunction: abstractContractCommon.createCandidateContractFunction
+  createCandidateContractFunction: abstractContractCommon.createCandidateContractFunction,
+  oneSelfCase: oneSelfCase,
+  oneArgsCase: oneArgsCase
 }
 Object.setPrototypeOf(test, common)
 
