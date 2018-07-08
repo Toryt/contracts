@@ -21,6 +21,7 @@
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
+const os = require('os')
 
 const someConditions = [
   function () { return [] },
@@ -78,11 +79,15 @@ function expectInvariants (/* AbstractContract */ subject) {
   AbstractContract.isAGeneralContractFunction(abstract).must.be.true()
   abstract.location.must.equal(location)
   subject.isImplementedBy(abstract).must.be.true()
-  abstract.must.to.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message)
+  abstract.must.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message)
   try {
     abstract()
   } catch (err) {
-    testUtil.log(err.stack)
+    const stack = err.stack
+    stack.must.contain(AbstractContract.AbstractError.message)
+    stack.must.contain(AbstractContract.AbstractError.name)
+    stack.split(os.EOL)[0].must.contain('abstract')
+    testUtil.log(stack)
   }
 }
 
