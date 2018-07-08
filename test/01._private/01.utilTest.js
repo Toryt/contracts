@@ -22,6 +22,7 @@ const util = require('../../lib/_private/util')
 const testUtil = require('../_util/testUtil')
 const must = require('must')
 const os = require('os')
+const nodeUtil = require('util')
 
 /* MUDO This depends on AMD modules still; it does not make sense now, but the node approach will probably not
   transpile either. Further, this is for getting nice stack traces that hide the inners of this lib. In node,
@@ -792,6 +793,31 @@ blank line`
           result.lastIndexOf(stack).must.equal(expectedStart)
         }
         testUtil.log(result)
+      })
+    })
+  })
+
+  describe('#inspect', function () {
+    stuff.concat(generateMutableStuff()).map(s => s.subject).forEach(s => {
+      it(`returns a string that is expected for ${s}`, function () {
+        const result = util.inspect(s)
+        testUtil.log(result)
+        result.must.be.a.string()
+        result.must.not.equal('')
+        // noinspection IfStatementWithTooManyBranchesJS
+        if (typeof s === 'string' || s instanceof String) {
+          result.must.equal(`'${s}'`)
+        } else if (util.isPrimitive(s) ||
+                   s instanceof Date ||
+                   s instanceof Error ||
+                   s instanceof Number ||
+                   s instanceof Boolean) {
+          result.must.equal('' + s)
+        } else if (typeof s === 'function') {
+          result.must.equal(util.conciseConditionRepresentation('', s))
+        } else {
+          result.must.equal(nodeUtil.inspect(s, {depth: 0, maxArrayLength: 5, breakLength: 120}))
+        }
       })
     })
   })
