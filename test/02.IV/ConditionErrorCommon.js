@@ -22,6 +22,7 @@ const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
 const common = require('./ContractErrorCommon')
 const ConditionError = require('../../lib/IV/ConditionError')
+const AbstractContract = require('../../lib/IV/AbstractContract')
 const abstractContractCommon = require('./AbstractContractCommon')
 const must = require('must')
 
@@ -75,8 +76,8 @@ function expectInvariants (subject) {
   subject.must.be.an.instanceof(ConditionError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
-  subject.must.have.property('contractFunction')
-  // MUDO AbstractContract.isAGeneralContractFunction(subject).must.be.true()
+  // noinspection JSUnresolvedVariable
+  AbstractContract.isAGeneralContractFunction(subject.contractFunction).must.be.true()
   // noinspection JSUnresolvedVariable
   subject.condition.must.be.a.function()
   testUtil.expectOwnFrozenProperty(subject, 'condition')
