@@ -70,9 +70,9 @@ const errorCases = [
 
 function expectDetailsPost (subject, result) {
   common.expectDetailsPost(subject, result)
-  result.must.contain('' + subject.error)
+  result.must.contain(util.extensiveThrownRepresentation(subject.error))
   if (subject.error && subject.error.stack) {
-    result.must.contain(util.eol + subject.error.stack)
+    result.must.contain(subject.error.stack)
   }
 }
 
