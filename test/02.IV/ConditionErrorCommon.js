@@ -103,7 +103,7 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
 }
 
 function expectConstructorPost (result, contractFunction, condition, self, args) {
-  common.expectConstructorPost(result, result.message)
+  common.expectConstructorPost(result, result.message, result._rawStack)
   expectProperties(result, ConditionError, contractFunction, condition, self, args)
   Object.isExtensible(result).must.be.true()
 }
