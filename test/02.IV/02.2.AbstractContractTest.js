@@ -330,16 +330,13 @@ describe('IV/AbstractContract', function () {
     () => new AbstractContract({}),
     testUtil
       .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
-      .map(parameters =>
-        () => {
-          const preConditions = parameters[0]()
-          const postConditions = parameters[1]()
-          const exceptionConditions = parameters[2]()
-          return {
-            subject: new AbstractContract({pre: preConditions, post: postConditions, exception: exceptionConditions}),
-            description: parameters.join(' - ')
-          }
-        }
-      )
+      .map(parameters => ({
+        subject: () => new AbstractContract({
+          pre: parameters[0](),
+          post: parameters[1](),
+          exception: parameters[2]()
+        }),
+        description: parameters.join(' - ')
+      }))
   )
 })

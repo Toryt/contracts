@@ -47,9 +47,9 @@ describe('IV/ContractError', function () {
 
   common.generatePrototypeMethodsDescriptions(
     () => new ContractError(util.callerStack()),
-    [() => ({
-      subject: new ContractError(util.callerStack()),
+    [{
+      subject: () => new ContractError(util.callerStack()),
       description: 'a contract error'
-    })]
+    }]
   )
 })

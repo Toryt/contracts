@@ -41,15 +41,13 @@ describe('IV/ConditionError', function () {
   })
 
   common.generatePrototypeMethodsDescriptions(
-    function () {
-      return new ConditionError(common.conditionCase, null, common.argsCases[0])
-    },
+    () => new ConditionError(common.conditionCase, null, common.argsCases[0]),
     testUtil
       .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
-      .map(parameters => () => {
+      .map(parameters => {
         const self = parameters[1]()
         return {
-          subject: new ConditionError(
+          subject: () => new ConditionError(
             common.createCandidateContractFunction(),
             parameters[0],
             self,

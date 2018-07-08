@@ -129,12 +129,13 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
 
   describe('#getDetails()', function () {
     allSubjectGenerators.forEach(generator => {
-      const testCase = generator()
-      it('returns the details as expected for ' + testCase.description, function () {
+      it('returns the details as expected for ' + generator.description, function () {
+        const subject = generator.subject()
         // noinspection JSUnresolvedFunction
-        const result = testCase.subject.getDetails()
-        self.expectDetailsPost(testCase.subject, result)
-        self.expectInvariants(testCase.subject)
+        const result = subject.getDetails()
+        testUtil.log(result)
+        self.expectDetailsPost(subject, result)
+        self.expectInvariants(subject)
       })
     })
   })

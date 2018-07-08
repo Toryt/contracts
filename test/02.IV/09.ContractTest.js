@@ -68,22 +68,16 @@ describe('IV/Contract', function () {
 
   // noinspection JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
-    function () { return new Contract({}) },
+    () => new Contract({}),
     testUtil
       .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
-      .map(parameters => () => {
-        const preConditions = parameters[0]()
-        const postConditions = parameters[1]()
-        const exceptionConditions = parameters[2]()
-        return {
-          subject: new Contract({
-            pre: preConditions,
-            post: postConditions,
-            exception: exceptionConditions
-          }),
-          description: parameters.join(' - ')
-        }
-      }
-      )
+      .map(parameters => ({
+        subject: () => new Contract({
+          pre: parameters[0](),
+          post: parameters[1](),
+          exception: parameters[2]()
+        }),
+        description: parameters.join(' - ')
+      }))
   )
 })
