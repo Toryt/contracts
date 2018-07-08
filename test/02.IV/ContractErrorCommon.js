@@ -31,7 +31,7 @@ function expectStackInvariants (subject) {
   const restOfStack = stack.replace(startOfStack, '')
   util.isAStack(restOfStack).must.be.true()
   // noinspection JSUnresolvedVariable
-  restOfStack.must.equal(subject._rawStack)
+  restOfStack.must.contain(subject._rawStack)
 }
 
 function expectInvariants (subject) {
