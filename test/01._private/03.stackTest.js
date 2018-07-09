@@ -23,7 +23,7 @@ const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
 const os = require('os')
 
-describe('_private/util', function () {
+describe('_private/stack', function () {
   describe('#location', function () {
     it('returns the expected line without arguments', function () {
       function aFirstFunction () {

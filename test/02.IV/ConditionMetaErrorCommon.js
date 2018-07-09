@@ -19,7 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const report = require('../../lib/_private/report')
 const common = require('./ConditionErrorCommon')
 const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
 const must = require('must')
@@ -70,7 +70,7 @@ const errorCases = [
 
 function expectDetailsPost (subject, result) {
   common.expectDetailsPost(subject, result)
-  result.must.contain(util.extensiveThrownRepresentation(subject.error))
+  result.must.contain(report.extensiveThrownRepresentation(subject.error))
   if (subject.error && subject.error.stack) {
     result.must.contain(subject.error.stack)
   }

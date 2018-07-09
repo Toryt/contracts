@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="01._private/01.utilTest.js" type="mocha-javascript-test-runner" factoryName="Mocha">
+  <configuration default="false" name="01._private/04.reportTest.js" type="mocha-javascript-test-runner" factoryName="Mocha">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
@@ -7,7 +7,7 @@
     <ui>bdd</ui>
     <extra-mocha-options>--watch</extra-mocha-options>
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/01._private/01.utilTest.js</test-file>
+    <test-file>$PROJECT_DIR$/test/01._private/04.reportTest.js</test-file>
     <method />
   </configuration>
 </component>
