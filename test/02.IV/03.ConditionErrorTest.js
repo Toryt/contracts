@@ -19,7 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const stack = require('../../lib/_private/stack')
 const common = require('./ConditionErrorCommon')
 const ConditionError = require('../../lib/IV/ConditionError')
 
@@ -30,9 +30,9 @@ describe('IV/ConditionError', function () {
         const self = selfCaseGenerator()
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
           const contractFunction = common.createCandidateContractFunction()
-          const stack = util.callerStack()
-          const result = new ConditionError(contractFunction, common.conditionCase, self, args, stack)
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, stack)
+          const rawStack = stack.raw()
+          const result = new ConditionError(contractFunction, common.conditionCase, self, args, rawStack)
+          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, rawStack)
           common.expectInvariants(result)
           result.must.not.have.ownProperty('message')
           result.must.not.have.ownProperty('stack')
@@ -43,7 +43,7 @@ describe('IV/ConditionError', function () {
   })
 
   common.generatePrototypeMethodsDescriptions(
-    () => new ConditionError(common.conditionCase, null, common.argsCases[0], util.callerStack()),
+    () => new ConditionError(common.conditionCase, null, common.argsCases[0], stack.raw()),
     testUtil
       .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
       .map(parameters => {
@@ -54,7 +54,7 @@ describe('IV/ConditionError', function () {
             parameters[0],
             self,
             parameters[2],
-            util.callerStack()
+            stack.raw()
           ),
           description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
         }

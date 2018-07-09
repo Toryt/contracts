@@ -19,7 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const common = require('./AbstractContractCommon')
 const Contract = require('../../lib/IV/Contract')
@@ -54,7 +54,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const subject = oneSubjectGenerator()
       const impl = function () {}
       const result = subject.implementation(impl)
-      expectPost(subject, impl, util.callerLocation(), result)
+      expectPost(subject, impl, stack.location(), result)
     })
 
     it('returns a different Contract function when called with the same implementation', function () {
@@ -62,7 +62,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const impl = function () {}
       const result = subject.implementation(impl)
       const result2 = subject.implementation(impl)
-      expectPost(subject, impl, util.callerLocation(), result2)
+      expectPost(subject, impl, stack.location(), result2)
       result2.must.not.equal(result)
     })
 
@@ -72,7 +72,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const impl2 = function () {}
       const result = subject.implementation(impl)
       const result2 = subject.implementation(impl2)
-      expectPost(subject, impl2, util.callerLocation(), result2)
+      expectPost(subject, impl2, stack.location(), result2)
       result2.must.not.equal(result)
       result2.implementation.must.not.equal(result.implementation)
     })

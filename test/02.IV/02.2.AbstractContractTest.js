@@ -20,7 +20,7 @@
 
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const stack = require('../../lib/_private/stack')
 const common = require('./AbstractContractCommon')
 const must = require('must')
 const os = require('os')
@@ -286,7 +286,7 @@ describe('IV/AbstractContract', function () {
       const contractFunction = function () {}
       const contract = new AbstractContract({})
       const implFunction = function () {}
-      const location = util.callerLocation()
+      const location = stack.location()
       AbstractContract.bless(contractFunction, contract, implFunction, location)
       AbstractContract.isAContractFunction(contractFunction).must.be.true()
       testUtil.expectOwnFrozenProperty(contractFunction, 'contract')
@@ -319,7 +319,7 @@ describe('IV/AbstractContract', function () {
             const postConditions = post()
             const exceptionConditions = exception()
             const result = new AbstractContract({pre: preConditions, post: postConditions, exception: exceptionConditions})
-            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, util.callerLocation(), result)
+            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, stack.location(), result)
           })
         })
       })

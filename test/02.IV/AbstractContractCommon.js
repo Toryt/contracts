@@ -20,7 +20,7 @@
 
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
 const os = require('os')
@@ -123,7 +123,7 @@ function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName
 
   const contract = otherPropertyName === 'contract' ? otherPropertyValue : new AbstractContract({})
   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
-  const location = otherPropertyName === 'location' ? otherPropertyValue : util.callerLocation()
+  const location = otherPropertyName === 'location' ? otherPropertyValue : stack.location()
   const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractContract.bindContractFunction
 
   if (doNotFreezeProperty === 'contract') {
