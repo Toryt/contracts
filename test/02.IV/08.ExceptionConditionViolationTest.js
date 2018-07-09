@@ -24,7 +24,7 @@ const common = require('./ExceptionConditionViolationCommon')
 const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViolation')
 
 // noinspection JSUnresolvedVariable
-const argsCases = common.argsCases.filter(a => util.typeOf(a) === 'array')
+const argsCases = common.argsCases.filter(a => Array.isArray(a))
 
 describe('IV/ExceptionConditionViolation', function () {
   describe('#prototype', function () {
