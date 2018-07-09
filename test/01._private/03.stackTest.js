@@ -157,4 +157,11 @@ describe('_private/stack', function () {
       is.stack(result).must.be.true()
     })
   })
+
+  describe('skipsForEach', function () {
+    it('return the expected value for this platform', function () {
+      testUtil.log('stack.skipsForEach:', stack.skipsForEach)
+      stack.skipsForEach.must.equal(testUtil.environment === 'firefox')
+    })
+  })
 })
