@@ -475,29 +475,6 @@ describe('_private/util', function () {
     })
   })
 
-  describe('#nrOfLines', function () {
-    const regExp = new RegExp(util.eol, 'gi')
-
-    stuff
-      .map(s => s.subject)
-      .concat([
-        'This is a' + util.eol + 'multi-line-string' + util.eol + 'of 3 lines',
-        new Error().stack,
-        JSON.stringify(
-          {
-            a: 'a',
-            b: 'b'
-          }
-        )
-      ])
-      .forEach(str => {
-        const nrOfEols = (('' + str).match(regExp) || []).length + 1
-        it('the number of lines in the string representation of ' + str + ' should be ' + nrOfEols, function () {
-          util.nrOfLines(str).must.equal(nrOfEols)
-        })
-      })
-  })
-
   describe('#isAStackLocation', function () {
     stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
       it(`says no to ${s}`, function () {
