@@ -19,7 +19,6 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const report = require('../../lib/_private/report')
 const common = require('./ExceptionConditionViolationCommon')
 const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViolation')
 
