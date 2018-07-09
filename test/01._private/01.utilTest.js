@@ -213,14 +213,6 @@ describe('_private/util', function () {
     })
   })
 
-  describe('#contractLibPath', function () {
-    it('is a string', function () {
-      util.contractLibPath.must.be.a.string()
-      // there seems to be no sensible way to test what the result actually is
-      testUtil.log('contractLibPath: ' + util.contractLibPath)
-    })
-  })
-
   describe('#typeof()', function () {
     stuff.forEach(record => {
       it('should return "' + record.expected + '" for ' + record.subject, function () {
