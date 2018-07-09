@@ -195,7 +195,9 @@ describe('_private/report', function () {
         result.must.be.a.string()
         result.must.not.equal('')
         // noinspection IfStatementWithTooManyBranchesJS
-        if (typeof s === 'string' || s instanceof String) {
+        if (s === global) {
+          result.must.equal('{global}')
+        } else if (typeof s === 'string' || s instanceof String) {
           result.must.equal(`'${s}'`)
         } else if (is.primitive(s) ||
                    s instanceof Date ||
@@ -206,7 +208,8 @@ describe('_private/report', function () {
         } else if (typeof s === 'function') {
           result.must.equal(report.conciseCondition('', s))
         } else {
-          result.must.equal(util.inspect(s, {depth: 0, maxArrayLength: 5, breakLength: 120}))
+          const expected = util.inspect(s, {depth: 0, maxArrayLength: 5, breakLength: 120})
+          result.must.equal(expected)
         }
       })
     })
