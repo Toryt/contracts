@@ -797,6 +797,36 @@ blank line`
     })
   })
 
+  describe('#type', function () {
+    stuff.concat(generateMutableStuff()).map(s => s.subject).forEach(s => {
+      it(`returns a string that is expected for ${s}`, function () {
+        const result = util.type(s)
+        testUtil.log(result)
+        result.must.be.a.string()
+        result.must.not.equal('')
+        // noinspection IfStatementWithTooManyBranchesJS
+        if (s === null) {
+          result.must.equal('null')
+        } else if (typeof s === 'object') {
+          // noinspection IfStatementWithTooManyBranchesJS
+          if (s === Math) {
+            result.must.equal('Math')
+          } else if (s === JSON) {
+            result.must.equal('JSON')
+          } else if (Array.isArray(s)) {
+            result.must.equal('Array')
+          } else if (s.toString().indexOf('Arguments') >= 0) {
+            result.must.equal('arguments')
+          } else {
+            result.must.equal(s.constructor.displayName || s.constructor.name)
+          }
+        } else {
+          result.must.equal(typeof s)
+        }
+      })
+    })
+  })
+
   describe('#inspect', function () {
     stuff.concat(generateMutableStuff()).map(s => s.subject).forEach(s => {
       it(`returns a string that is expected for ${s}`, function () {
