@@ -119,12 +119,15 @@ blank line`
       const message = 'This is an error to get a platform dependent stack'
       // sadly, also to the message, on some platforms
       const error = new Error(message)
+      testUtil.showStack(error)
       const stackLines = error.stack.split(os.EOL)
-      const stack = stackLines
+      const rawStack = stackLines
         // remove message line
-        .filter(sl => sl.indexOf(message) < 0)
+        .filter(sl => sl && sl.indexOf(message) < 0)
         .join(os.EOL)
-      const result = is.stack(stack)
+      testUtil.log('rawStack:')
+      testUtil.log(`▷${rawStack}◁`)
+      const result = is.stack(rawStack)
       result.must.be.true()
     })
   })
