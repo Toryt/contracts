@@ -27,7 +27,7 @@ const Contract = require('../../lib/IV/Contract')
 function expectInvariants (subject) {
   subject.must.be.an.instanceof(Contract)
   common.expectInvariants(subject)
-  is.isAStackLocation(subject.location).must.be.true()
+  is.stackLocation(subject.location).must.be.true()
   // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   Contract.isAContractFunction(subject.abstract)

@@ -73,7 +73,7 @@ function expectInvariants (/* AbstractContract */ subject) {
   testUtil.expectOwnFrozenProperty(subject, 'location')
   // noinspection JSUnresolvedVariable
   const location = subject.location
-  ; (location === AbstractContract.internalLocation || is.isAStackLocation(location)).must.be.true()
+  ; (location === AbstractContract.internalLocation || is.stackLocation(location)).must.be.true()
   testUtil.expectOwnFrozenProperty(subject, 'abstract')
   // noinspection JSUnresolvedVariable
   const abstract = subject.abstract

@@ -29,7 +29,7 @@ function expectStackInvariants (subject) {
   const startOfStack = subject.name + ': ' + subject.message + os.EOL
   stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
   const restOfStack = stack.replace(startOfStack, '')
-  is.isAStack(restOfStack).must.be.true()
+  is.stack(restOfStack).must.be.true()
   // noinspection JSUnresolvedVariable
   restOfStack.must.contain(subject._rawStack)
 }
@@ -43,7 +43,7 @@ function expectInvariants (subject) {
   subject.message.must.be.a.string()
   testUtil.expectOwnFrozenProperty(subject, '_rawStack')
   // noinspection JSUnresolvedVariable
-  is.isAStack(subject._rawStack).must.be.true()
+  is.stack(subject._rawStack).must.be.true()
   expectStackInvariants(subject)
 }
 
