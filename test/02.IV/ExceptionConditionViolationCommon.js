@@ -19,7 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const report = require('../../lib/_private/report')
 const common = require('./ConditionViolationCommon')
 const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViolation')
 const must = require('must')
@@ -28,7 +28,7 @@ function expectInvariants (subject) {
   subject.must.be.an.instanceof(ExceptionConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'exception')
-  subject.stack.must.contain(util.extensiveThrownRepresentation(subject.exception))
+  subject.stack.must.contain(report.extensiveThrownRepresentation(subject.exception))
 }
 
 function expectConstructorPost (executionResult, contractFunction, condition, self, args, exception) {
