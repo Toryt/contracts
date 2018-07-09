@@ -44,9 +44,8 @@ describe('IV/ConditionViolation', function () {
           // noinspection JSUnresolvedVariable
           const result = new ConditionViolation(contractFunction, common.conditionCase, self, args)
           // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
+          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, result._rawStack)
           common.expectInvariants(result)
-          testUtil.log('result.stack: %s', result.stack)
           result.must.not.have.ownProperty('message')
           result.must.not.have.ownProperty('stack')
           testUtil.log('result.stack:\n%s', result.stack)
@@ -57,28 +56,24 @@ describe('IV/ConditionViolation', function () {
 
   // noinspection JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
-    function () {
-      // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-      return new ConditionViolation(common.createCandidateContractFunction(),
-        common.conditionCase,
-        null,
-        common.argsCases[0])
-    },
+    () => new ConditionViolation(common.createCandidateContractFunction(),
+      common.conditionCase,
+      null,
+      common.argsCases[0]
+    ),
     testUtil
       .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
-      .map(function (parameters) {
-        return function () {
-          const self = parameters[1]()
-          // noinspection JSUnresolvedFunction
-          return {
-            subject: new ConditionViolation(
-              common.createCandidateContractFunction(),
-              parameters[0],
-              self,
-              parameters[2]
-            ),
-            description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
-          }
+      .map(parameters => {
+        const self = parameters[1]()
+        // noinspection JSUnresolvedFunction
+        return {
+          subject: () => new ConditionViolation(
+            common.createCandidateContractFunction(),
+            parameters[0],
+            self,
+            parameters[2]
+          ),
+          description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
         }
       })
   )
