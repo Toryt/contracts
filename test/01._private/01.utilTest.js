@@ -26,56 +26,6 @@ const nodeUtil = require('util')
 const stuff = require('./_stuff')
 
 describe('_private/util', function () {
-  const truthy = function () { return true }
-  const falsy = function () { return undefined }
-
-  function escape (str) {
-    let result = str.replace(/\(/g, '\\(')
-    result = result.replace(/\)/g, '\\)')
-    result = result.replace(/{}/g, '\\{')
-    return result
-  }
-
-  const truthySelf = {truth: true}
-
-  const falsySelf = {truth: undefined}
-
-  function selfCondition () { return this.truth }
-
-  describe('#pre()', function () {
-    it('ends nominally with a condition that returns true without self', function () {
-      util.pre.bind(null, truthy).must.not.throw()
-    });
-    [undefined, null, {a: 4}].forEach(self => {
-      it('ends nominally with a condition that returns true with self === ' + self, function () {
-        util.pre.bind(null, self, truthy).must.not.throw()
-      })
-    })
-    it('throws with a condition that returns false without self', function () {
-      util.pre.bind(null, falsy).must.throw(
-        Error,
-        new RegExp('^Precondition violation in Toryt Contracts: ' + escape('' + falsy) + '$')
-      )
-    });
-    [undefined, null, {a: 4}].forEach(self => {
-      it('throws with a condition that returns false with self === ' + self, function () {
-        util.pre.bind(null, self, falsy).must.throw(
-          Error,
-          new RegExp('^Precondition violation in Toryt Contracts: ' + escape('' + falsy) + '$')
-        )
-      })
-    })
-    it('correctly uses self when given, with a nominal end with a condition that returns true', function () {
-      util.pre.bind(null, truthySelf, selfCondition).must.not.throw()
-    })
-    it('correctly uses self when given, throwing with a condition that returns false', function () {
-      util.pre.bind(null, falsySelf, selfCondition).must.throw(
-        Error,
-        new RegExp('^Precondition violation in Toryt Contracts: ' + escape('' + selfCondition) + '$')
-      )
-    })
-  })
-
   describe('#conciseConditionRepresentation', function () {
     function isAConciseVersion (original, concise) {
       const split = ('' + concise).split(util.conciseSeparator)
