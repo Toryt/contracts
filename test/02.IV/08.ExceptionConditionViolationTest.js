@@ -75,7 +75,7 @@ describe('IV/ExceptionConditionViolation', function () {
 
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
-    function () {
+    () => {
       // noinspection JSUnresolvedFunction
       const contractFunction = common.createCandidateContractFunction()
       const self = null
@@ -86,16 +86,17 @@ describe('IV/ExceptionConditionViolation', function () {
     },
     testUtil
       .x(common.conditionCases, common.selfCaseGenerators, argsCases, common.exceptionCaseGenerators)
-      .map(parameters => () => {
-        // noinspection JSUnresolvedFunction
-        const contractFunction = common.createCandidateContractFunction()
+      .map(parameters => {
         const self = parameters[1]()
-        const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
         return {
-          subject: new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs),
+          subject: () => {
+            // noinspection JSUnresolvedFunction
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
+            return new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs)
+          },
           description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
         }
-      }
-      )
+      })
   )
 })
