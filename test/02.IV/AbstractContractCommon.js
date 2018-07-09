@@ -22,6 +22,7 @@ const AbstractContract = require('../../lib/IV/AbstractContract')
 const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
 const is = require('../../lib/_private/is')
+const property = require('../../lib/_private/property')
 const os = require('os')
 
 const someConditions = [
@@ -128,22 +129,22 @@ function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName
   if (doNotFreezeProperty === 'contract') {
     candidate.contract = contract
   } else {
-    util.setAndFreezeProperty(candidate, 'contract', contract)
+    property.setAndFreeze(candidate, 'contract', contract)
   }
   if (doNotFreezeProperty === 'implementation') {
     candidate.implementation = implementation
   } else {
-    util.setAndFreezeProperty(candidate, 'implementation', implementation)
+    property.setAndFreeze(candidate, 'implementation', implementation)
   }
   if (doNotFreezeProperty === 'location') {
     candidate.location = location
   } else {
-    util.setAndFreezeProperty(candidate, 'location', location)
+    property.setAndFreeze(candidate, 'location', location)
   }
   if (doNotFreezeProperty === 'bind') {
     candidate.bind = bind
   } else {
-    util.setAndFreezeProperty(candidate, 'bind', bind)
+    property.setAndFreeze(candidate, 'bind', bind)
   }
   candidate.displayName =
     (otherPropertyName === 'displayName')

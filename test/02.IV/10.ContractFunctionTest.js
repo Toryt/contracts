@@ -19,7 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const property = require('../../lib/_private/property')
 const is = require('../../lib/_private/is')
 const Contract = require('../../lib/IV/Contract')
 const AbstractContract = require('../../lib/IV/AbstractContract')
@@ -525,7 +525,7 @@ describe('IV/ContractFunction', function () {
     PersonImplementation.prototype.must.have.property('constructor')
     PersonImplementation.prototype.constructor.must.equal(PersonImplementation)
     PersonImplementation.prototype._name = null
-    util.defineFrozenDerivedProperty(PersonImplementation.prototype, 'name', function () { return this._name })
+    property.frozenDerived(PersonImplementation.prototype, 'name', function () { return this._name })
 
     expectConstructorToWork(PersonImplementation)
   })
@@ -538,7 +538,7 @@ describe('IV/ContractFunction', function () {
     PersonImplementation.prototype.must.have.property('constructor')
     PersonImplementation.prototype.constructor.must.equal(PersonImplementation)
     PersonImplementation.prototype._name = null
-    util.defineFrozenDerivedProperty(PersonImplementation.prototype, 'name', function () { return this._name })
+    property.frozenDerived(PersonImplementation.prototype, 'name', function () { return this._name })
 
     expectConstructorToWork(PersonImplementation, true)
   })
