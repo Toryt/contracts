@@ -24,13 +24,6 @@ const must = require('must')
 const os = require('os')
 const nodeUtil = require('util')
 
-/* MUDO This depends on AMD modules still; it does not make sense now, but the node approach will probably not
-  transpile either. Further, this is for getting nice stack traces that hide the inners of this lib. In node,
-  that is simple with constructorOpt. So, we can get rid of all this code, and maybe try to hack that more
-  isolated for browsers. */
-const fileName = __filename || module.uri || window.location.origin
-
-const contractLibTestPath = util.pathUp(util.pathUp(fileName))
 // eslint-disable-next-line
 const getGlobal = new Function('return this;')
 
@@ -769,20 +762,6 @@ blank line`
           result.must.equal(nodeUtil.inspect(s, {depth: 0, maxArrayLength: 5, breakLength: 120}))
         }
       })
-    })
-  })
-
-  describe('#pathUp', function () {
-    it('returns the directory of a file path in a browser', function () {
-      const dirPath = 'http://localhost:63342/contracts/test/_private'
-      const fileName = '01.utilTest.js'
-      const testCase = dirPath + util.dirSeparator + fileName
-      const result = util.pathUp(testCase)
-      result.must.be.a.string()
-      result.must.equal(dirPath)
-    })
-    it('throws when the argument is not a string', function () {
-      util.pathUp.bind(null, {}).must.throw(TypeError)
     })
   })
 })
