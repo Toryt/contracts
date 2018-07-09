@@ -132,7 +132,7 @@ function propertyIsWritable (object, propertyName) {
 
 function anyCasesGenerators (discriminator) {
   // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-  return [
+  const generators = [
     () => new Error('This is a ' + discriminator + ' case'),
     () => undefined,
     () => null,
@@ -153,8 +153,12 @@ function anyCasesGenerators (discriminator) {
     () => new String(discriminator + ' string'),
     () => arguments,
     () => ({}),
-    () => ({a: 1, b: 'b', c: {}, d: {d1: undefined, d2: 'd2', d3: {d31: 31}}})
+    () => ({a: 1, b: 'b', c: {}, d: {d1: undefined, d2: 'd2', d3: {d31: 31}}}),
+    () => []
   ]
+  const result = generators.slice()
+  result.push(() => generators.map(g => g()))
+  return result
 }
 
 // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
