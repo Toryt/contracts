@@ -19,7 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const stack = require('../../lib/_private/stack')
 const common = require('./ConditionMetaErrorCommon')
 const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
 
@@ -38,11 +38,11 @@ describe('IV/ConditionMetaError', function () {
       it('creates an instance with all toppings for ' + common.oneSelfCase + ' - ' + common.oneArgsCase + ' - ' + error, function () {
         // noinspection JSUnresolvedFunction
         const contractFunction = common.createCandidateContractFunction()
-        const stack = util.callerStack()
+        const rawStack = stack.raw()
         // noinspection JSUnresolvedVariable
-        const result = new ConditionMetaError(contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, stack)
+        const result = new ConditionMetaError(contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, rawStack)
         // noinspection JSUnresolvedVariable
-        common.expectConstructorPost(result, contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, stack)
+        common.expectConstructorPost(result, contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, rawStack)
         common.expectInvariants(result)
         result.must.not.have.ownProperty('message')
         result.must.not.have.ownProperty('stack')
@@ -59,7 +59,7 @@ describe('IV/ConditionMetaError', function () {
       null,
       common.oneArgsCase,
       common.errorCases[0],
-      util.callerStack()
+      stack.raw()
     ),
     common.errorCases.map(errorCase => {
       // noinspection JSUnresolvedFunction, JSUnresolvedVariable
@@ -70,7 +70,7 @@ describe('IV/ConditionMetaError', function () {
           common.oneSelfCase,
           common.oneArgsCase,
           errorCase,
-          util.callerStack()
+          stack.raw()
         ),
         description: common.conditionCase + ' — ' + common.oneSelfCase + ' – ' + common.oneArgsCase + ' – ' + errorCase
       }

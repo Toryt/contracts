@@ -20,14 +20,14 @@
 
 const ContractError = require('../../lib/IV/ContractError')
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
 const property = require('../../lib/_private/property')
+const stack = require('../../lib/_private/stack')
 const common = require('./ContractErrorCommon')
 
 describe('IV/ContractError', function () {
   describe('#ContractError()', function () {
     it('creates an instance with all toppings', function () {
-      const rawStack = util.callerStack()
+      const rawStack = stack.raw()
       const result = new ContractError(rawStack)
       testUtil.log('result:\n%s', result)
       testUtil.log('result.toString():\n%s', result.toString())
@@ -37,7 +37,7 @@ describe('IV/ContractError', function () {
       testUtil.log('result.stack:\n%s', result.stack)
     })
     it('can get a message set', function () {
-      const result = new ContractError(util.callerStack())
+      const result = new ContractError(stack.raw())
       const message = 'another message'
       property.frozenDerived(result, 'message', function () { return message })
       result.must.have.ownProperty('message')
@@ -47,9 +47,9 @@ describe('IV/ContractError', function () {
   })
 
   common.generatePrototypeMethodsDescriptions(
-    () => new ContractError(util.callerStack()),
+    () => new ContractError(stack.raw()),
     [{
-      subject: () => new ContractError(util.callerStack()),
+      subject: () => new ContractError(stack.raw()),
       description: 'a contract error'
     }]
   )

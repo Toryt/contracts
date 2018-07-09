@@ -21,13 +21,13 @@
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const AbstractError = AbstractContract.AbstractError
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const stack = require('../../lib/_private/stack')
 const common = require('./AbstractErrorCommon')
 
 describe('IV/AbstractError', function () {
   describe('#AbstractError()', function () {
     it('creates an instance with all toppings for AbstractContract.root', function () {
-      const rawStack = util.callerStack()
+      const rawStack = stack.raw()
       const result = new AbstractError(AbstractContract.root, rawStack)
       common.expectConstructorPost(result, AbstractError.message, AbstractContract.root, rawStack)
       common.expectInvariants(result)
@@ -36,9 +36,9 @@ describe('IV/AbstractError', function () {
   })
 
   common.generatePrototypeMethodsDescriptions(
-    () => new AbstractError(AbstractContract.root, util.callerStack()),
+    () => new AbstractError(AbstractContract.root, stack.raw()),
     [{
-      subject: () => new AbstractError(AbstractContract.root, util.callerStack()),
+      subject: () => new AbstractError(AbstractContract.root, stack.raw()),
       description: 'AbstractContract.root'
     }]
   )
