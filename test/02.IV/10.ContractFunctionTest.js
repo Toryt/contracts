@@ -69,7 +69,7 @@ describe('IV/ContractFunction', function () {
   const wrongParameter = 4
   const wrongResult = -3
 
-  const fibonacciWrong = fibonacci.contract.implementation(function (n) {
+  const fibonacciWrong = fibonacci.contract.implementation(function fWrong (n) {
     // noinspection IfStatementWithTooManyBranchesJS
     if (n === 0) {
       return 0
@@ -169,7 +169,7 @@ describe('IV/ContractFunction', function () {
 
   const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
-  function callAndExpectException (self, func, parameter, expectException) {
+  function callAndExpectException (self, func, parameter, expectException, recursive) {
     // eslint-disable-next-line no-unused-vars
     let result
     let endsNominally = false
@@ -209,7 +209,13 @@ describe('IV/ContractFunction', function () {
       // do is to point to where the contract function is called. The same applies to Meta errors (in conditions),
       // since we cannot create a stack trace that points in the condition. The caused by probably will for meta errors,
       // but there is no such thing for pre-, post- or exception conditions.
-      stackLines[0].must.contain('callAndExpectException')
+      if (!recursive) {
+        stackLines[0].must.contain('callAndExpectException')
+      } else {
+        stackLines[0].must.contain(recursive)
+        stackLines[2].must.contain(recursive)
+        stackLines[4].must.contain('callAndExpectException')
+      }
     }
     endsNominally.must.be.false()
   }
@@ -289,7 +295,7 @@ describe('IV/ContractFunction', function () {
     fibonacci: fibonacci.contract.implementation(function (n) {
       return n <= 1 ? n : this.fibonacci(n - 1) + this.fibonacci(n - 2)
     }),
-    fibonacciWrong: fibonacci.contract.implementation(function (n) {
+    fibonacciWrong: fibonacci.contract.implementation(function fWrong (n) {
       // noinspection IfStatementWithTooManyBranchesJS
       if (n === 0) {
         return 0
@@ -449,11 +455,11 @@ describe('IV/ContractFunction', function () {
   })
   it('fails when a postcondition is violated in a called function with a nested Violation', function () {
     const parameter = 6
-    callAndExpectException(undefined, fibonacciWrong, parameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong))
+    callAndExpectException(undefined, fibonacciWrong, parameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong), 'fWrong')
   })
   it('fails when a postcondition is violated in a called function with a nested Violation when it is a method', function () {
     const parameter = 6
-    callAndExpectException(self, self.fibonacciWrong, parameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong))
+    callAndExpectException(self, self.fibonacciWrong, parameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong), 'fWrong')
   })
 
   it('works with a defensive function', function () {
