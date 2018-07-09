@@ -199,6 +199,19 @@ describe('_private/util', function () {
     })
   })
 
+  describe('#isArguments', function () {
+    stuff.concat(generateMutableStuff()).forEach(s => {
+      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
+        const result = util.isArguments(s.subject)
+        if (s.expected === 'arguments') {
+          result.must.be.true()
+        } else {
+          must(result).be.falsy()
+        }
+      })
+    })
+  })
+
   describe('#isPrimitive()', function () {
     stuff.forEach(record => {
       it('correctly decides whether the argument is a primitive for ' + record.subject, function () {
