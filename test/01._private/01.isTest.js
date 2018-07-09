@@ -168,4 +168,94 @@ blank line`
       result.must.be.true()
     })
   })
+
+  describe('#isFrozenOwnProperty()', function () {
+    const propName = 'test prop name'
+    const propValue = 'dummy value'
+    const truths = [true, false]
+    testUtil.x(truths, truths, truths).forEach(values => {
+      const subject = {}
+      Object.defineProperty(
+        subject,
+        propName,
+        {
+          configurable: values[0],
+          enumerable: values[1],
+          writable: values[2],
+          value: propValue
+        }
+      )
+      if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
+        it('reports true if the property is an own property, ' +
+            'and it is enumerable, not configurable and not writable', function () {
+          const result = is.isFrozenOwnProperty(subject, propName)
+          result.must.be.truthy()
+        })
+      } else {
+        it('reports false if the property is an own property, and' +
+           ' enumerable === ' + values[1] +
+           ' configurable === ' + values[0] +
+           ' writable === ' + values[2], function () {
+          const result = is.isFrozenOwnProperty(subject, propName)
+          must(result).be.falsy()
+        })
+      }
+      it('reports false if the property does not exist', function () {
+        const result = is.isFrozenOwnProperty(subject, 'some other, non-existing property name')
+        must(result).be.falsy()
+      })
+      const specialized = {}
+      Object.setPrototypeOf(specialized, subject)
+      specialized[propName].must.equal(propValue) // check inheritance - test code validity
+      it('reports false if the property is not an own property, and' +
+         ' enumerable === ' + values[1] +
+         ' configurable === ' + values[0] +
+         ' writable === ' + values[2], function () {
+        const specializedResult = is.isFrozenOwnProperty(specialized, propName)
+        must(specializedResult).be.falsy()
+      })
+    })
+    const notObjects = [0, false, '', 'lala']
+    notObjects.forEach(notAnObject => {
+      // cannot set a property on primitives
+      it('reports false if the first parameter is a primitive (' + typeof notAnObject + ')', function () {
+        const result = is.isFrozenOwnProperty(notAnObject, propName)
+        must(result).be.falsy()
+      })
+    })
+    const fCandidates = [undefined, function () {}]
+    testUtil.x(truths, truths, fCandidates, fCandidates).forEach(values => {
+      const subject = {}
+      Object.defineProperty(
+        subject,
+        propName,
+        {
+          configurable: values[0],
+          enumerable: values[1],
+          get: values[2],
+          set: values[3]
+        }
+      )
+      if (!values[0] &&
+          values[1] &&
+          typeof values[2] === 'function' &&
+          values[3] === undefined &&
+          subject.hasOwnProperty(propName)) {
+        it('reports true if the property is an own property, ' +
+           'and it is enumerable, and not configurable, has a getter, but not a setter', function () {
+          const result = is.isFrozenOwnProperty(subject, propName)
+          result.must.be.truthy()
+        })
+      } else {
+        it('reports false if the property is an own property,' +
+           ' enumerable === ' + values[1] +
+           ' configurable === ' + values[0] +
+           ' get === ' + values[2] +
+           ' set === ' + values[3], function () {
+          const result = is.isFrozenOwnProperty(subject, propName)
+          must(result).be.falsy()
+        })
+      }
+    })
+  })
 })

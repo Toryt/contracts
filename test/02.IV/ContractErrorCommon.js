@@ -20,7 +20,7 @@
 
 const ContractError = require('../../lib/IV/ContractError')
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
+const is = require('../../lib/_private/is')
 const os = require('os')
 
 function expectStackInvariants (subject) {
@@ -29,7 +29,7 @@ function expectStackInvariants (subject) {
   const startOfStack = subject.name + ': ' + subject.message + os.EOL
   stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
   const restOfStack = stack.replace(startOfStack, '')
-  util.isAStack(restOfStack).must.be.true()
+  is.isAStack(restOfStack).must.be.true()
   // noinspection JSUnresolvedVariable
   restOfStack.must.contain(subject._rawStack)
 }
@@ -43,7 +43,7 @@ function expectInvariants (subject) {
   subject.message.must.be.a.string()
   testUtil.expectOwnFrozenProperty(subject, '_rawStack')
   // noinspection JSUnresolvedVariable
-  util.isAStack(subject._rawStack).must.be.true()
+  is.isAStack(subject._rawStack).must.be.true()
   expectStackInvariants(subject)
 }
 
