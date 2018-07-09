@@ -50,11 +50,11 @@ describe('IV/ContractFunction', function () {
   // noinspection JSUnresolvedFunction
   fibonacci = new Contract({
     pre: [
-      function (n) { return is.isInteger(n) },
+      function (n) { return is.integer(n) },
       function (n) { return n >= 0 }
     ],
     post: [
-      function (n, result) { return is.isInteger(result) },
+      function (n, result) { return is.integer(result) },
       function (n, result) { return n !== 0 || result === 0 },
       function (n, result) { return n !== 1 || result === 1 },
       function (n, result, fibonacci) {
@@ -85,11 +85,11 @@ describe('IV/ContractFunction', function () {
 
   const factorialContract = new Contract({
     pre: [
-      function (n) { return is.isInteger(n) },
+      function (n) { return is.integer(n) },
       function (n) { return n >= 0 }
     ],
     post: [
-      function (n, result) { return is.isInteger(result) },
+      function (n, result) { return is.integer(result) },
       function (n, result) { return n !== 0 || result === 1 },
       function (n, result, f) {
         // don't refer to a specific implementation in the Contract!
@@ -130,17 +130,17 @@ describe('IV/ContractFunction', function () {
   // noinspection JSUnresolvedFunction
   const defensiveIntegerSum = new Contract({
     post: [
-      function (n, result) { return is.isInteger(result) },
+      function (n, result) { return is.integer(result) },
       function (n, result) { return result >= 0 },
       function (n, result) { return n !== 0 || result === 0 },
       function (n, result, sum) { return n === 0 || result === sum(n - 1) + n }
     ],
     exception: [
       function (n, exc) { return !(exc instanceof Error) || exc.message !== positiveMessage || n < 0 },
-      function (n, exc) { return !(exc instanceof Error) || exc.message !== integerMessage || !is.isInteger(n) }
+      function (n, exc) { return !(exc instanceof Error) || exc.message !== integerMessage || !is.integer(n) }
     ]
   }).implementation(function (n) {
-    if (!is.isInteger(n)) { throw new Error(integerMessage) }
+    if (!is.integer(n)) { throw new Error(integerMessage) }
     if (n < 0) { throw new Error(positiveMessage) }
     let count = 0
     let result = 0
@@ -152,7 +152,7 @@ describe('IV/ContractFunction', function () {
   })
 
   const fastDefensiveIntegerSum = defensiveIntegerSum.contract.implementation(function (n) {
-    if (!is.isInteger(n)) { throw new Error(integerMessage) }
+    if (!is.integer(n)) { throw new Error(integerMessage) }
     if (n < 0) { throw new Error(positiveMessage) }
     return (n * (n + 1)) / 2
   })
@@ -160,7 +160,7 @@ describe('IV/ContractFunction', function () {
   const wrongException = new Error(integerMessage) // will be thrown in error
 
   const fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(function (n) {
-    if (is.isInteger(n)) { throw wrongException } // wrong
+    if (is.integer(n)) { throw wrongException } // wrong
     if (n < 0) { throw new Error(positiveMessage) }
     return (n * (n + 1)) / 2
   })

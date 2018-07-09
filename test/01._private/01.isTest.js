@@ -25,10 +25,10 @@ const os = require('os')
 const stuff = require('./_stuff')
 
 describe('_private/is', function () {
-  describe('#isArguments', function () {
+  describe('#arguments', function () {
     stuff.forEach(s => {
       it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
-        const result = is.isArguments(s.subject)
+        const result = is.arguments(s.subject)
         if (s.expected === 'arguments') {
           result.must.be.true()
         } else {
@@ -38,23 +38,23 @@ describe('_private/is', function () {
     })
   })
 
-  describe('#isPrimitive()', function () {
+  describe('#primitive()', function () {
     stuff.forEach(record => {
       it('correctly decides whether the argument is a primitive for ' + record.subject, function () {
-        const result = is.isPrimitive(record.subject)
+        const result = is.primitive(record.subject)
         result.must.be.a.boolean()
         result.must.equal(record.isPrimitive)
       })
     })
   })
 
-  describe('#isInteger()', function () {
+  describe('#integer()', function () {
     stuff
       .map(record => record.subject)
       .filter(thing => typeof thing !== 'number')
       .forEach(thing => {
         it('should return false for ' + thing, function () {
-          const result = is.isInteger(thing)
+          const result = is.integer(thing)
           result.must.be.false()
         })
       })
@@ -62,7 +62,7 @@ describe('_private/is', function () {
     const cases1 = [Number.MIN_SAFE_INTEGER, -4, -2.0, -1, 0, 1, 2.0, 6, Number.MAX_SAFE_INTEGER, Number.MAX_VALUE]
     cases1.forEach(int => {
       it('should return true for ' + int, function () {
-        const result = is.isInteger(int)
+        const result = is.integer(int)
         result.must.be.true()
       })
     })
@@ -82,29 +82,29 @@ describe('_private/is', function () {
     ]
     cases2.forEach(nr => {
       it('should return false for ' + nr, function () {
-        const result = is.isInteger(nr)
+        const result = is.integer(nr)
         result.must.be.false()
       })
     })
   })
 
-  describe('#isAStackLocation', function () {
+  describe('#stackLocation', function () {
     stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
       it(`says no to ${s}`, function () {
-        const result = is.isAStackLocation(s)
+        const result = is.stackLocation(s)
         result.must.be.false()
       })
     })
     it(`says no to ''`, function () {
-      const result = is.isAStackLocation('')
+      const result = is.stackLocation('')
       result.must.be.false()
     })
     it(`says yes to 'abc'`, function () {
-      const result = is.isAStackLocation('abc')
+      const result = is.stackLocation('abc')
       result.must.be.true()
     })
     it(`says no to a multi-line string`, function () {
-      const result = is.isAStackLocation(`this is a 
+      const result = is.stackLocation(`this is a 
 multi-line
 string`
       )
@@ -117,37 +117,37 @@ string`
       lines
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line
         .forEach(line => {
-          const result = is.isAStackLocation(line)
+          const result = is.stackLocation(line)
           testUtil.log(`${result}: ${line}`)
           result.must.be.true()
         })
     })
   })
 
-  describe('#isAStack', function () {
+  describe('#stack', function () {
     stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
       it(`says no to ${s}`, function () {
-        const result = is.isAStack(s)
+        const result = is.stack(s)
         result.must.be.false()
       })
     })
     it(`says no to ''`, function () {
-      const result = is.isAStack('')
+      const result = is.stack('')
       result.must.be.false()
     })
     it(`says yes to 'abc'`, function () {
-      const result = is.isAStack('abc')
+      const result = is.stack('abc')
       result.must.be.true()
     })
     it(`says yes to a multi-line string`, function () {
       const candidate = `this is a 
 multi-line
 string`
-      const result = is.isAStack(candidate)
+      const result = is.stack(candidate)
       result.must.be.true()
     })
     it(`says no to a multi-line string with a blank line`, function () {
-      const result = is.isAStack(`this is a 
+      const result = is.stack(`this is a 
 multi-line
 string, with a
 
@@ -164,12 +164,12 @@ blank line`
         // remove message line
         .filter(sl => sl.indexOf(message) < 0)
         .join(os.EOL)
-      const result = is.isAStack(stack)
+      const result = is.stack(stack)
       result.must.be.true()
     })
   })
 
-  describe('#isFrozenOwnProperty()', function () {
+  describe('#frozenOwnProperty()', function () {
     const propName = 'test prop name'
     const propValue = 'dummy value'
     const truths = [true, false]
@@ -188,7 +188,7 @@ blank line`
       if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
         it('reports true if the property is an own property, ' +
             'and it is enumerable, not configurable and not writable', function () {
-          const result = is.isFrozenOwnProperty(subject, propName)
+          const result = is.frozenOwnProperty(subject, propName)
           result.must.be.truthy()
         })
       } else {
@@ -196,12 +196,12 @@ blank line`
            ' enumerable === ' + values[1] +
            ' configurable === ' + values[0] +
            ' writable === ' + values[2], function () {
-          const result = is.isFrozenOwnProperty(subject, propName)
+          const result = is.frozenOwnProperty(subject, propName)
           must(result).be.falsy()
         })
       }
       it('reports false if the property does not exist', function () {
-        const result = is.isFrozenOwnProperty(subject, 'some other, non-existing property name')
+        const result = is.frozenOwnProperty(subject, 'some other, non-existing property name')
         must(result).be.falsy()
       })
       const specialized = {}
@@ -211,7 +211,7 @@ blank line`
          ' enumerable === ' + values[1] +
          ' configurable === ' + values[0] +
          ' writable === ' + values[2], function () {
-        const specializedResult = is.isFrozenOwnProperty(specialized, propName)
+        const specializedResult = is.frozenOwnProperty(specialized, propName)
         must(specializedResult).be.falsy()
       })
     })
@@ -219,7 +219,7 @@ blank line`
     notObjects.forEach(notAnObject => {
       // cannot set a property on primitives
       it('reports false if the first parameter is a primitive (' + typeof notAnObject + ')', function () {
-        const result = is.isFrozenOwnProperty(notAnObject, propName)
+        const result = is.frozenOwnProperty(notAnObject, propName)
         must(result).be.falsy()
       })
     })
@@ -243,7 +243,7 @@ blank line`
           subject.hasOwnProperty(propName)) {
         it('reports true if the property is an own property, ' +
            'and it is enumerable, and not configurable, has a getter, but not a setter', function () {
-          const result = is.isFrozenOwnProperty(subject, propName)
+          const result = is.frozenOwnProperty(subject, propName)
           result.must.be.truthy()
         })
       } else {
@@ -252,7 +252,7 @@ blank line`
            ' configurable === ' + values[0] +
            ' get === ' + values[2] +
            ' set === ' + values[3], function () {
-          const result = is.isFrozenOwnProperty(subject, propName)
+          const result = is.frozenOwnProperty(subject, propName)
           must(result).be.falsy()
         })
       }
