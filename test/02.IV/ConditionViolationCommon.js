@@ -62,6 +62,7 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
 }
 
 function expectConstructorPost (result, contractFunction, condition, self, args) {
+  // noinspection JSUnresolvedVariable
   common.expectConstructorPost(result, contractFunction, condition, self, args, result._rawStack)
   common.expectProperties.call(undefined, result, ConditionViolation, contractFunction, condition, self, args)
   // not frozen yet
@@ -76,104 +77,70 @@ function doctorArgs (args, boundContractFunction) {
 function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
   common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
-  const that = this // jshint ignore:line
+  const that = this
 
   describe('#verify()', function () {
-    function expectPost (subject, contractFunction, condition, self, args, doctoredArgs, appliedSelf, appliedArgs, exception) {
-      let outcome
-      try {
-        outcome = condition.apply()
-      } catch (ignore) {
-        it('should throw a ConditionMetaError because the condition had an error', function () {
-          // noinspection JSUnresolvedFunction
-          conditionMetaErrorCommon.expectProperties(exception, ConditionMetaError, contractFunction, condition, self, doctoredArgs)
-        })
-        return
-      }
-      it('should have called the condition with the given this', function () {
-        must(appliedSelf).equal(self)
-      })
-      it('should have called the condition with the given arguments', function () {
-        appliedArgs.must.be.truthy()
-        isArguments(appliedArgs)
-        // doctoredArgs might be arguments, or Array
-        Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(appliedArgs))
-      })
-      it(
-        'should throw an exception when the condition and evaluates to false, and not otherwise, ' +
-        'because the condition ended nominally',
-        function () {
-          const notException = !exception
-          notException.must.equal(!!outcome)
-        }
-      )
-      if (!outcome) {
-        it(
-          'should throw a ...ConditionViolation that is correctly configured, ' +
-          'because the condition evaluated to false nominally',
-          function () {
-            const extraProperty = doctoredArgs[args.length] // might not exist
-            that.expectProperties(exception, subject.constructor, contractFunction, condition, self, args, extraProperty)
-          }
-        )
-      } else {
-        it('should not throw an exception, because the condition evaluated to true nominally', function () {
-          must(exception).be.falsy()
-        })
-      }
-      it('adheres to the invariants', function () {
-        that.expectInvariants(subject)
-      })
-    }
-
     const conditionCases = [
-      function () {
-        return function f () {
-          f.self = this
-          f.args = arguments
-          // no return
-        }
+      () => function f () {
+        f.self = this
+        f.args = arguments
+        // no return
       },
-      function () {
-        return function f () {
-          f.self = this
-          f.args = arguments
-          return false
-        }
+      () => function f () {
+        f.self = this
+        f.args = arguments
+        return false
       },
-      function () {
-        return function f () {
-          f.self = this
-          f.args = arguments
-          return true
-        }
+      () => function f () {
+        f.self = this
+        f.args = arguments
+        return true
       },
-      function () {
-        return function f () {
-          f.self = this
-          f.args = arguments
-          throw new Error('This condition fails with an error')
-        }
+      () => function f () {
+        f.self = this
+        f.args = arguments
+        throw new Error('This condition fails with an error')
       }
     ]
 
-    conditionCases.forEach(function (conditionGenerator) {
-      selfVerifyCases.forEach(function (selfGenerator) {
-        argsVerifyCases.forEach(function (argGenerator) {
-          const subject = oneSubjectGenerator()
+    conditionCases.forEach(conditionGenerator => {
+      selfVerifyCases.forEach(selfGenerator => {
+        argsVerifyCases.forEach(argGenerator => {
           const condition = conditionGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          const contractFunction = common.createCandidateContractFunction()
-          const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
-          describe('works for ' + condition + ' - ' + self + ' - ' + args, function () {
-            let exception
+          it('works for ' + condition + ' - ' + self + ' - ' + args, function () {
+            const subject = oneSubjectGenerator()
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
+            let outcome
+            let metaError = false
+            try {
+              outcome = condition.apply()
+            } catch (ignore) { // ConditionMetaError
+              metaError = true
+            }
+
             try {
               subject.verify(contractFunction, condition, self, doctoredArgs)
+              outcome.must.be.truthy() // otherwise, we get an exception
             } catch (exc) {
-              exception = exc
+              if (metaError) {
+                // noinspection JSUnresolvedFunction
+                conditionMetaErrorCommon.expectProperties(exc, ConditionMetaError, contractFunction, condition, self, doctoredArgs)
+              } else { // ConditionViolation
+                must(outcome).be.falsy()
+                const extraProperty = doctoredArgs[args.length] // might not exist
+                that.expectProperties(exc, subject.constructor, contractFunction, condition, self, args, extraProperty)
+              }
+            } finally {
+              must(condition.self).equal(self)
+              condition.args.must.be.truthy()
+              isArguments(condition.args)
+              // doctoredArgs might be arguments, or Array
+              Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
+              that.expectInvariants(subject)
             }
-            expectPost(subject, contractFunction, condition, self, args, doctoredArgs, condition.self, condition.args, exception)
           })
         })
       })
