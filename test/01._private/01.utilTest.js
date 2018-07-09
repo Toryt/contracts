@@ -785,7 +785,7 @@ blank line`
       it('returns the expected, normalized string representation for ' + thrown, function () {
         const result = util.extensiveThrownRepresentation(thrown)
         result.must.be.a.string()
-        result.indexOf('' + thrown).must.equal(0)
+        result.indexOf(util.inspect(thrown)).must.equal(0)
         let stack = thrown && thrown.stack
         if (stack) {
           stack = util.eol + stack
