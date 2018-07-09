@@ -1,14 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="III/ContractError" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
+  <configuration default="false" name="02.IV/02.1.AbstractErrorTest.js" type="mocha-javascript-test-runner" factoryName="Mocha">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
     <pass-parent-env>true</pass-parent-env>
-    <envs />
     <ui>bdd</ui>
-    <extra-mocha-options />
+    <extra-mocha-options>--watch</extra-mocha-options>
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/III/ContractErrorTest.js</test-file>
+    <test-file>$PROJECT_DIR$/test/02.IV/02.1.AbstractErrorTest.js</test-file>
     <method />
   </configuration>
 </component>

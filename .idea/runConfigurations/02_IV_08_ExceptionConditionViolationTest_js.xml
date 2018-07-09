@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="js/Error.js" type="mocha-javascript-test-runner" factoryName="Mocha">
+  <configuration default="false" name="02.IV/08.ExceptionConditionViolationTest.js" type="mocha-javascript-test-runner" factoryName="Mocha">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
@@ -7,7 +7,7 @@
     <ui>bdd</ui>
     <extra-mocha-options>--watch</extra-mocha-options>
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/js/ErrorTest.js</test-file>
+    <test-file>$PROJECT_DIR$/test/02.IV/08.ExceptionConditionViolationTest.js</test-file>
     <method />
   </configuration>
 </component>

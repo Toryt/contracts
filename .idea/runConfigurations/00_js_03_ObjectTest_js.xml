@@ -1,13 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="IV/ConditionError" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
+  <configuration default="false" name="00.js/03.ObjectTest.js" type="mocha-javascript-test-runner" factoryName="Mocha">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
     <pass-parent-env>true</pass-parent-env>
     <ui>bdd</ui>
-    <extra-mocha-options />
+    <extra-mocha-options>--watch</extra-mocha-options>
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/IV/ConditionErrorTest.js</test-file>
+    <test-file>$PROJECT_DIR$/test/00.js/03.ObjectTest.js</test-file>
     <method />
   </configuration>
 </component>
