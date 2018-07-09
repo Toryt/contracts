@@ -21,6 +21,7 @@
 const ContractError = require('../../lib/IV/ContractError')
 const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
+const property = require('../../lib/_private/property')
 const common = require('./ContractErrorCommon')
 
 describe('IV/ContractError', function () {
@@ -38,7 +39,7 @@ describe('IV/ContractError', function () {
     it('can get a message set', function () {
       const result = new ContractError(util.callerStack())
       const message = 'another message'
-      util.defineFrozenDerivedProperty(result, 'message', function () { return message })
+      property.frozenDerived(result, 'message', function () { return message })
       result.must.have.ownProperty('message')
       result.message.must.equal(message)
       common.expectInvariants(result)

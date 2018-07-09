@@ -21,7 +21,6 @@
 const util = require('../../lib/_private/util')
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-const must = require('must')
 const os = require('os')
 const nodeUtil = require('util')
 const stuff = require('./_stuff')
@@ -208,77 +207,6 @@ describe('_private/util', function () {
         Error,
         new RegExp('^Precondition violation in Toryt Contracts: ' + escape('' + selfCondition) + '$')
       )
-    })
-  })
-
-  describe('#setAndFreezeProperty()', function () {
-    it('sets a property, with a value, and freezes it', function () {
-      const subject = {a: 4}
-      const propertyName = 'a new property'
-      const propertyValue = 'a new value'
-      util.setAndFreezeProperty(subject, propertyName, propertyValue)
-      testUtil.expectOwnFrozenProperty(subject, propertyName)
-      subject[propertyName].must.equal(propertyValue)
-    })
-    it('sets a property, without a value, and freezes it', function () {
-      const subject = {a: 4}
-      const propertyName = 'a new property'
-      util.setAndFreezeProperty(subject, propertyName)
-      testUtil.expectOwnFrozenProperty(subject, propertyName)
-      must(subject[propertyName]).be.undefined()
-    })
-  })
-
-  describe('#defineConfigurableDerivedProperty', function () {
-    it('sets a read-only property, with a getter', function () {
-      const subject = {
-        a: 4,
-        expectedOfGetter: {}
-      }
-      Object.setPrototypeOf(subject, {})
-      const propertyName = 'a new property'
-
-      function getter () { return this.expectedOfGetter }
-
-      util.defineConfigurableDerivedProperty(Object.getPrototypeOf(subject), propertyName, getter)
-      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
-      must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
-      testUtil.expectConfigurableDerivedPropertyOnAPrototype(subject, propertyName)
-      subject[propertyName].must.equal(subject.expectedOfGetter)
-    })
-  })
-
-  describe('#defineFrozenDerivedProperty', function () {
-    it('sets a frozen read-only property, with a getter', function () {
-      const subject = {
-        a: 4,
-        expectedOfGetter: {}
-      }
-      Object.setPrototypeOf(subject, {})
-      const propertyName = 'a new property'
-
-      function getter () { return this.expectedOfGetter }
-
-      util.defineFrozenDerivedProperty(Object.getPrototypeOf(subject), propertyName, getter)
-      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
-      must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
-      testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, propertyName)
-      subject[propertyName].must.equal(subject.expectedOfGetter)
-    })
-  })
-
-  describe('#defineFrozenReadOnlyArrayProperty', function () {
-    it('sets a frozen read-only property, with a getter', function () {
-      const subject = {a: 4}
-      Object.setPrototypeOf(subject, {})
-      const propertyName = 'a new property'
-      const privatePropertyName = '_' + propertyName
-      const array = [1, 2, 3]
-      util.setAndFreezeProperty(subject, privatePropertyName, array)
-      util.defineFrozenReadOnlyArrayProperty(Object.getPrototypeOf(subject), propertyName, privatePropertyName)
-      testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propertyName, privatePropertyName)
-      subject[propertyName].must.not.equal(array)
-      subject[propertyName].must.eql(array)
     })
   })
 
