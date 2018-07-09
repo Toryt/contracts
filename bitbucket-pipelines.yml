@@ -1,0 +1,60 @@
+image: node:carbon # latest node@8 LTS
+
+pipelines:
+  branches:
+    master:
+      - parallel:
+        - step:
+            image: node:boron
+            caches:
+              - node
+            script:
+              - scripts/test.sh
+        - step:
+            image: node:carbon
+            caches:
+              - node
+            script:
+              - scripts/test.sh
+        - step:
+            image: node:10
+            caches:
+              - node
+            script:
+              - scripts/test.sh
+      - step:
+          script:
+            - scripts/tag.sh
+    feature/*:
+      - parallel:
+        - step:
+            image: node:boron
+            caches:
+              - node
+            script:
+              - scripts/test.sh
+        - step:
+            image: node:carbon
+            caches:
+              - node
+            script:
+              - scripts/test.sh
+        - step:
+            image: node:10
+            caches:
+              - node
+            script:
+              - scripts/test.sh
+      - step:
+          script:
+            - scripts/tag.sh
+  tags:
+    version/**:
+      - step:
+          caches:
+            - node
+          script:
+            - scripts/test.sh
+            - scripts/tag.sh
+#           - scripts/authenticateWithRegistry.sh
+#           - scripts/publishOnTag.sh
