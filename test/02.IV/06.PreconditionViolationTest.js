@@ -21,6 +21,7 @@
 const testUtil = require('../_util/testUtil')
 const common = require('./PreconditionViolationCommon')
 const PreconditionViolation = require('../../lib/IV/PreconditionViolation')
+
 describe('IV/PreconditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
@@ -53,30 +54,25 @@ describe('IV/PreconditionViolation', function () {
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
   common.generatePrototypeMethodsDescriptions(
-    function () {
-      // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-      return new PreconditionViolation(
-        common.createCandidateContractFunction(),
-        common.conditionCase,
-        null,
-        common.argsCases[0]
-      )
-    },
+    () => new PreconditionViolation(
+      common.createCandidateContractFunction(),
+      common.conditionCase,
+      null,
+      common.argsCases[0]
+    ),
     testUtil
       .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
-      .map(function (parameters) {
-        return function () {
-          const self = parameters[1]()
-          // noinspection JSUnresolvedFunction
-          return {
-            subject: new PreconditionViolation(
-              common.createCandidateContractFunction(),
-              parameters[0],
-              self,
-              parameters[2]
-            ),
-            description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
-          }
+      .map(parameters => {
+        const self = parameters[1]()
+        // noinspection JSUnresolvedFunction
+        return {
+          subject: () => new PreconditionViolation(
+            common.createCandidateContractFunction(),
+            parameters[0],
+            self,
+            parameters[2]
+          ),
+          description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
         }
       })
   )

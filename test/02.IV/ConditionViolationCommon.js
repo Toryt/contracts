@@ -61,6 +61,12 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
   exception.must.be.frozen()
 }
 
+function expectConstructorPost (result, contractFunction, condition, self, args) {
+  common.expectConstructorPost(result, contractFunction, condition, self, args, result._rawStack)
+  common.expectProperties.call(undefined, result, ConditionViolation, contractFunction, condition, self, args)
+  // not frozen yet
+}
+
 // noinspection JSUnusedLocalSymbols
 function doctorArgs (args, boundContractFunction) {
   return args
@@ -360,6 +366,7 @@ const test = {
   generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
   expectInvariants: expectInvariants,
   expectProperties: expectProperties,
+  expectConstructorPost: expectConstructorPost,
   doctorArgs: doctorArgs
 }
 Object.setPrototypeOf(test, common)

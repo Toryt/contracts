@@ -44,7 +44,7 @@ describe('IV/ConditionViolation', function () {
           // noinspection JSUnresolvedVariable
           const result = new ConditionViolation(contractFunction, common.conditionCase, self, args)
           // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, result._rawStack)
+          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
           common.expectInvariants(result)
           result.must.not.have.ownProperty('message')
           result.must.not.have.ownProperty('stack')
