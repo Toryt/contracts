@@ -113,6 +113,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             const subject = oneSubjectGenerator()
             const contractFunction = common.createCandidateContractFunction()
             const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
+
             let outcome
             let metaError = false
             try {
@@ -124,6 +125,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             try {
               subject.verify(contractFunction, condition, self, doctoredArgs)
               outcome.must.be.truthy() // otherwise, we get an exception
+              must(metaError).be.falsy()
             } catch (exc) {
               if (metaError) {
                 // noinspection JSUnresolvedFunction
@@ -148,178 +150,140 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
   })
 
   describe('#verifyAll()', function () {
-    function expectPost (subject, contractFunction, conditions, self, args, doctoredArgs, exception) {
-      if (conditions.length <= 0) {
-        it("doesn't throw an exception if there are no conditions", function () {
-          must(exception).be.falsy()
-        })
-        return
-      }
-      const selfAndArgs = conditions.map(condition => {
-        // save self and args, because in our determination of firstFailure, they will be overwritten
-        return {self: condition.self, args: condition.args}
-      })
-      let firstFailure
-      let firstFailureIndex
-      let thrown
-      for (let i = 0; !firstFailure && i < conditions.length; i++) {
-        try {
-          const outcome = conditions[i].apply()
-          if (!outcome) {
-            firstFailure = conditions[i]
-            firstFailureIndex = i
-          }
-        } catch (err) {
-          firstFailure = conditions[i]
-          firstFailureIndex = i
-          thrown = err
-        }
-      }
-      it('throws an exception if one of the conditions fails or evaluates nominally to false', function () {
-        const e = !!exception
-        e.must.equal(!!firstFailure)
-      })
-      if (thrown) {
-        it('throws a ConditionMetaError if one of the conditions fails', function () {
-          // noinspection JSUnresolvedFunction
-          conditionMetaErrorCommon.expectProperties(exception, ConditionMetaError, contractFunction, firstFailure, self, doctoredArgs)
-        })
-      } else if (firstFailure) {
-        it('throws a …ConditionViolation if one of the conditions evaluates nominally to false', function () {
-          const extraProperty = doctoredArgs[args.length] // might not exist
-          that.expectProperties(exception, subject.constructor, contractFunction, firstFailure, self, args, extraProperty)
-        })
-      } else {
-        it('ends nominally if all conditions evaluate nominally to true', function () {
-          must(exception).be.falsy()
-        })
-      }
-      it('evaluates all conditions up until the first failure with the given self and arguments', function () {
-        for (let j = 0; j <= firstFailureIndex; j++) {
-          must(selfAndArgs[j].self).equal(self)
-          const appliedArgs = selfAndArgs[j].args
-          appliedArgs.must.be.truthy()
-          isArguments(appliedArgs)
-          if (!args) {
-            appliedArgs.must.be.empty()
-          } else {
-            // doctoredArgs might be arguments, or Array
-            Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(appliedArgs))
-          }
-        }
-      })
-      it('does not evaluate conditions after the first failure', function () {
-        for (let j = firstFailureIndex + 1; j < conditions.length; j++) {
-          must(selfAndArgs[j].self).be.falsy()
-          must(selfAndArgs[j].args).be.falsy()
-        }
-      })
-      it('adheres to the invariants', function () {
-        that.expectInvariants(subject)
-      })
-    }
-
     const conditionsCases = [
-      function () { return [] },
-      function () {
-        return [
-          function f () {
-            f.self = this
-            f.args = arguments
-            return false
-          }
-        ]
-      },
-      function () {
-        return [
-          function f () {
-            f.self = this
-            f.args = arguments
-            return true
-          }
-        ]
-      },
-      function () {
-        return [
-          function f () {
-            f.self = this
-            f.args = arguments
-            return {}
-          }
-        ]
-      },
-      function () {
-        return [
-          function f1 () {
-            f1.self = this
-            f1.args = arguments
-            return true
-          },
-          function f2 () {
-            f2.self = this
-            f2.args = arguments
-            return true
-          }
-        ]
-      },
-      function () {
-        return [
-          function f1 () {
-            f1.self = this
-            f1.args = arguments
-            return true
-          },
-          function f2 () {
-            f2.self = this
-            f2.args = arguments
-            return false
-          },
-          function f3 () {
-            f3.self = this
-            f3.args = arguments
-            return true
-          }
-        ]
-      },
-      function () {
-        return [
-          function f1 () {
-            f1.self = this
-            f1.args = arguments
-            return true
-          },
-          function f3 () {
-            f3.self = this
-            f3.args = arguments
-            throw new Error('This condition fails with an error')
-          },
-          function f3 () {
-            f3.self = this
-            f3.args = arguments
-            return true
-          }
-        ]
-      }
+      () => [],
+      () => [
+        function f () {
+          f.self = this
+          f.args = arguments
+          return false
+        }
+      ],
+      () => [
+        function f () {
+          f.self = this
+          f.args = arguments
+          return true
+        }
+      ],
+      () => [
+        function f () {
+          f.self = this
+          f.args = arguments
+          return {}
+        }
+      ],
+      () => [
+        function f1 () {
+          f1.self = this
+          f1.args = arguments
+          return true
+        },
+        function f2 () {
+          f2.self = this
+          f2.args = arguments
+          return true
+        }
+      ],
+      () => [
+        function f1 () {
+          f1.self = this
+          f1.args = arguments
+          return true
+        },
+        function f2 () {
+          f2.self = this
+          f2.args = arguments
+          return false
+        },
+        function f3 () {
+          f3.self = this
+          f3.args = arguments
+          return true
+        }
+      ],
+      () => [
+        function f1 () {
+          f1.self = this
+          f1.args = arguments
+          return true
+        },
+        function f3 () {
+          f3.self = this
+          f3.args = arguments
+          throw new Error('This condition fails with an error')
+        },
+        function f3 () {
+          f3.self = this
+          f3.args = arguments
+          return true
+        }
+      ]
     ]
 
     conditionsCases.forEach(conditionsGenerator => {
       selfVerifyCases.forEach(selfGenerator => {
         argsVerifyCases.forEach(argGenerator => {
-          const subject = oneSubjectGenerator()
           const conditions = conditionsGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          const contractFunction = common.createCandidateContractFunction()
-          const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
-          describe('works for ' + conditions + ' - ' + self + ' - ' + args, function () {
-            let exception
+          it('works for ' + conditions + ' - ' + self + ' - ' + args, function () {
+            const subject = oneSubjectGenerator()
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
+
+            let firstFailure
+            let firstFailureIndex
+            let metaError = false
+            for (let i = 0; !firstFailure && i < conditions.length; i++) {
+              try {
+                const outcome = conditions[i].apply()
+                if (!outcome) {
+                  firstFailure = conditions[i]
+                  firstFailureIndex = i
+                }
+              } catch (ignore) { // ConditionMetaError
+                metaError = true
+                firstFailure = conditions[i]
+                firstFailureIndex = i
+              }
+            }
+
             try {
               // noinspection JSUnresolvedFunction
               subject.verifyAll(contractFunction, conditions, self, doctoredArgs)
+              must(firstFailure).be.falsy() // any failure would give an exception
+              must(metaError).be.falsy()
             } catch (exc) {
-              exception = exc
+              conditions.length.must.be.at.least(1) // otherwise, there can be no failure
+              firstFailure.must.be.truthy() // metaError or a false condition
+              if (metaError) {
+                conditionMetaErrorCommon.expectProperties(exc, ConditionMetaError, contractFunction, firstFailure, self, doctoredArgs)
+              } else {
+                const extraProperty = doctoredArgs[args.length] // might not exist
+                that.expectProperties(exc, subject.constructor, contractFunction, firstFailure, self, args, extraProperty)
+              }
+            } finally {
+              // evaluates all conditions up until the first failure with the given self and arguments
+              for (let j = 0; j <= firstFailureIndex; j++) {
+                must(conditions[j].self).equal(self)
+                const appliedArgs = conditions[j].args
+                appliedArgs.must.be.truthy()
+                isArguments(appliedArgs)
+                if (!args) {
+                  appliedArgs.must.be.empty()
+                } else {
+                  // doctoredArgs might be arguments, or Array
+                  Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(appliedArgs))
+                }
+              }
+              // does not evaluate conditions after the first failure
+              for (let j = firstFailureIndex + 1; j < conditions.length; j++) {
+                must(conditions[j].self).be.falsy()
+                must(conditions[j].args).be.falsy()
+              }
+              that.expectInvariants(subject)
             }
-            expectPost(subject, contractFunction, conditions, self, args, doctoredArgs, exception)
           })
         })
       })
