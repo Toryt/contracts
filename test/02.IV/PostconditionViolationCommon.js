@@ -19,6 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
+const util = require('../../lib/_private/util')
 const common = require('./ConditionViolationCommon')
 const PostconditionViolation = require('../../lib/IV/PostconditionViolation')
 const must = require('must')
@@ -28,7 +29,7 @@ function expectInvariants (subject) {
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'result')
   // noinspection JSUnresolvedVariable
-  subject.stack.must.contain('' + subject.result)
+  subject.stack.must.contain(util.inspect(subject.result))
 }
 
 function expectConstructorPost (executionResult, contractFunction, condition, self, args, result) {
