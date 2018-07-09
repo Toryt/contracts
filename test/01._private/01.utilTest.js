@@ -90,7 +90,7 @@ describe('_private/util', function () {
       }
 
       const result = aFirstFunction()
-      console.log(result)
+      testUtil.log(result)
       result.must.be.a.string()
       result.split(util.eol).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
@@ -116,7 +116,7 @@ describe('_private/util', function () {
       }
 
       const result = aFirstFunction()
-      console.log(result)
+      testUtil.log(result)
       result.must.be.a.string()
       result.split(util.eol).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
@@ -149,7 +149,7 @@ describe('_private/util', function () {
       }
 
       const result = aFirstFunction()
-      console.log(result)
+      testUtil.log(result)
       result.must.be.a.string()
       const lines = result.split(os.EOL)
       lines.length.must.be.at.least(1)
@@ -197,7 +197,7 @@ describe('_private/util', function () {
       }
 
       const result = aFirstFunction()
-      console.log(result)
+      testUtil.log(result)
       result.must.be.a.string()
       const lines = result.split(os.EOL)
       lines.length.must.be.at.least(1)
@@ -543,7 +543,7 @@ string`
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line
         .forEach(line => {
           const result = util.isAStackLocation(line)
-          console.log(`${result}: ${line}`)
+          testUtil.log(`${result}: ${line}`)
           result.must.be.true()
         })
     })
