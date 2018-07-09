@@ -19,12 +19,11 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const util = require('../../lib/_private/util')
 const common = require('./PostconditionViolationCommon')
 const PostconditionViolation = require('../../lib/IV/PostconditionViolation')
 
 // noinspection JSUnresolvedVariable
-const argsCases = common.argsCases.filter(a => util.typeOf(a) === 'array')
+const argsCases = common.argsCases.filter(a => Array.isArray(a))
 
 describe('IV/PostconditionViolation', function () {
   describe('#prototype', function () {
@@ -74,6 +73,12 @@ describe('IV/PostconditionViolation', function () {
     })
   })
 
+  // noinspection JSUnresolvedVariable
+  const cases = testUtil
+    .x(common.conditionCases, [() => common.oneSelfCase], [() => common.oneArgsCase], common.resultCaseGenerators)
+    .concat(testUtil.x([common.conditionCase], common.selfCaseGenerators, [() => common.oneArgsCase], [() => null]))
+    .concat(testUtil.x([common.conditionCase], [() => common.oneSelfCase], argsCases, [() => null]))
+
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
     () => {
@@ -85,20 +90,17 @@ describe('IV/PostconditionViolation', function () {
       // noinspection JSUnresolvedVariable
       return new PostconditionViolation(contractFunction, common.conditionCase, self, doctoredArgs)
     },
-    testUtil
-      .x(common.conditionCases, common.selfCaseGenerators, argsCases, common.resultCaseGenerators)
-      .map(parameters => {
-        // noinspection JSUnresolvedFunction
-        const self = parameters[1]()
-        return {
-          subject: () => {
-            const contractFunction = common.createCandidateContractFunction()
-            const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
-            return new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs)
-          },
-          description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
-        }
+    cases.map(parameters => {
+      // noinspection JSUnresolvedFunction
+      const self = parameters[1]()
+      return {
+        subject: () => {
+          const contractFunction = common.createCandidateContractFunction()
+          const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
+          return new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs)
+        },
+        description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
       }
-      )
+    })
   )
 })
