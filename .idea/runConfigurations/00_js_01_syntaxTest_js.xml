@@ -1,14 +1,13 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="III" type="mocha-javascript-test-runner" factoryName="Mocha" singleton="false">
+  <configuration default="false" name="00.js/01.syntaxTest.js" type="mocha-javascript-test-runner" factoryName="Mocha">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
     <pass-parent-env>true</pass-parent-env>
-    <envs />
     <ui>bdd</ui>
-    <extra-mocha-options />
-    <test-kind>PATTERN</test-kind>
-    <test-pattern>test/III/*Test.js</test-pattern>
+    <extra-mocha-options>--watch</extra-mocha-options>
+    <test-kind>TEST_FILE</test-kind>
+    <test-file>$PROJECT_DIR$/test/00.js/01.syntaxTest.js</test-file>
     <method />
   </configuration>
 </component>
