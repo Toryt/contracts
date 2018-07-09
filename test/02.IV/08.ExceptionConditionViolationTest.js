@@ -73,6 +73,12 @@ describe('IV/ExceptionConditionViolation', function () {
     })
   })
 
+  // noinspection JSUnresolvedVariable
+  const cases = testUtil
+    .x(common.conditionCases, [() => common.oneSelfCase], [() => common.oneArgsCase], common.exceptionCaseGenerators)
+    .concat(testUtil.x([common.conditionCase], common.selfCaseGenerators, [() => common.oneArgsCase], [() => new Error('test error')]))
+    .concat(testUtil.x([common.conditionCase], [() => common.oneSelfCase], argsCases, [() => new Error('test error')]))
+
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
     () => {
@@ -84,19 +90,17 @@ describe('IV/ExceptionConditionViolation', function () {
       // noinspection JSUnresolvedVariable
       return new ExceptionConditionViolation(contractFunction, common.conditionCase, self, doctoredArgs)
     },
-    testUtil
-      .x(common.conditionCases, common.selfCaseGenerators, argsCases, common.exceptionCaseGenerators)
-      .map(parameters => {
-        const self = parameters[1]()
-        return {
-          subject: () => {
-            // noinspection JSUnresolvedFunction
-            const contractFunction = common.createCandidateContractFunction()
-            const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
-            return new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs)
-          },
-          description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
-        }
-      })
+    cases.map(parameters => {
+      const self = parameters[1]()
+      return {
+        subject: () => {
+          // noinspection JSUnresolvedFunction
+          const contractFunction = common.createCandidateContractFunction()
+          const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
+          return new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs)
+        },
+        description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
+      }
+    })
   )
 })
