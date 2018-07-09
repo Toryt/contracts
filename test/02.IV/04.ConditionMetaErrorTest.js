@@ -19,6 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
+const util = require('../../lib/_private/util')
 const common = require('./ConditionMetaErrorCommon')
 const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
 
@@ -37,10 +38,11 @@ describe('IV/ConditionMetaError', function () {
       it('creates an instance with all toppings for ' + common.oneSelfCase + ' - ' + common.oneArgsCase + ' - ' + error, function () {
         // noinspection JSUnresolvedFunction
         const contractFunction = common.createCandidateContractFunction()
+        const stack = util.callerStack()
         // noinspection JSUnresolvedVariable
-        const result = new ConditionMetaError(contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error)
+        const result = new ConditionMetaError(contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, stack)
         // noinspection JSUnresolvedVariable
-        common.expectConstructorPost(result, contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error)
+        common.expectConstructorPost(result, contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, stack)
         common.expectInvariants(result)
         result.must.not.have.ownProperty('message')
         result.must.not.have.ownProperty('stack')
@@ -56,7 +58,8 @@ describe('IV/ConditionMetaError', function () {
       common.conditionCase,
       null,
       common.oneArgsCase,
-      common.errorCases[0]
+      common.errorCases[0],
+      util.callerStack()
     ),
     common.errorCases.map(errorCase => {
       // noinspection JSUnresolvedFunction, JSUnresolvedVariable
@@ -66,7 +69,8 @@ describe('IV/ConditionMetaError', function () {
           common.conditionCase,
           common.oneSelfCase,
           common.oneArgsCase,
-          errorCase
+          errorCase,
+          util.callerStack()
         ),
         description: common.conditionCase + ' — ' + common.oneSelfCase + ' – ' + common.oneArgsCase + ' – ' + errorCase
       }
