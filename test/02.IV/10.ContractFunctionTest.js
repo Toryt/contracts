@@ -20,7 +20,6 @@
 
 const testUtil = require('../_util/testUtil')
 const property = require('../../lib/_private/property')
-const is = require('../../lib/_private/is')
 const Contract = require('../../lib/IV/Contract')
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
