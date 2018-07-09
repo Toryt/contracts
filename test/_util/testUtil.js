@@ -16,8 +16,8 @@ limitations under the License.
 
 'use strict'
 
-const util = require('../../lib/_private/util')
 const must = require('must')
+const os = require('os')
 
 // noinspection FunctionNamingConventionJS
 function x () {
@@ -116,7 +116,7 @@ function log () {
 }
 
 function showStack (exc) {
-  log('Exception stack%s---------------%s%s', util.eol, util.eol, exc.stack)
+  log('Exception stack%s---------------%s%s', os.EOL, os.EOL, exc.stack)
 }
 
 function regExpEscape (s) {
@@ -162,6 +162,7 @@ function anyCasesGenerators (discriminator) {
 }
 
 // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+// noinspection OverlyComplexFunctionJS
 function environment () {
   // eslint-disable-next-line
   if ((new Function('try {return this === global;}catch(e){return false;}'))()) {
@@ -180,8 +181,8 @@ function environment () {
   if (typeof InstallTrigger !== 'undefined') {
     return 'firefox'
   }
-  // noinspection JSUnresolvedVariable
   // this no longer detects safari in v11
+  // noinspection JSUnresolvedVariable
   if (/constructor/i.test(window.HTMLElement) ||
       (function (p) {
         return p.toString() === '[object SafariRemoteNotification]'
@@ -205,6 +206,7 @@ function environment () {
   }
   // noinspection JSUnresolvedVariable
   if (window.CSS) {
+    // noinspection JSUnresolvedVariable
     if (navigator.userAgent.indexOf('Safari') >= 0) {
       return 'safari'
     } else {

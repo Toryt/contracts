@@ -56,7 +56,7 @@ const constructorPreCases = [function () { return undefined }].concat(preCases)
 const constructorPostCases = [function () { return undefined }].concat(postCases)
 const constructorExceptionCases = [function () { return undefined }].concat(exceptionCases)
 
-const location = util.eol + '    at /'
+const location = os.EOL + '    at /'
 
 function expectInvariants (/* AbstractContract */ subject) {
   subject.must.be.an.instanceof(AbstractContract)

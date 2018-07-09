@@ -65,13 +65,6 @@ const stuff = [
 ].concat(generateMutableStuff())
 
 describe('_private/util', function () {
-  describe('#eol', function () {
-    it('is a string', function () {
-      util.eol.must.be.a.string()
-      testUtil.log('eol: start>' + util.eol + '<end')
-    })
-  })
-
   describe('#callerLocation', function () {
     it('returns the expected line without arguments', function () {
       function aFirstFunction () {
@@ -85,7 +78,7 @@ describe('_private/util', function () {
       const result = aFirstFunction()
       testUtil.log(result)
       result.must.be.a.string()
-      result.split(util.eol).length.must.equal(1)
+      result.split(os.EOL).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
@@ -111,7 +104,7 @@ describe('_private/util', function () {
       const result = aFirstFunction()
       testUtil.log(result)
       result.must.be.a.string()
-      result.split(util.eol).length.must.equal(1)
+      result.split(os.EOL).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
@@ -573,7 +566,7 @@ blank line`
 
     function expectGeneralPostconditions (result, expected) {
       testUtil.log('result: %s', result)
-      result.must.not.contain(util.eol)
+      result.must.not.contain(os.EOL)
       result.length.must.be.at.most(util.maxLengthOfConciseRepresentation)
       isAConciseVersion(expected, result).must.be.truthy()
     }
@@ -652,7 +645,7 @@ blank line`
 
     function stackDoesContainToString () {
       return {
-        stack: toStringString + util.eol + stackString,
+        stack: toStringString + os.EOL + stackString,
         toString: function () { return toStringString }
       }
     }
@@ -678,7 +671,7 @@ blank line`
         result.indexOf(util.inspect(thrown)).must.equal(0)
         let stack = thrown && thrown.stack
         if (stack) {
-          stack = util.eol + stack
+          stack = os.EOL + stack
           const expectedStart = result.length - stack.length
           result.lastIndexOf(stack).must.equal(expectedStart)
         }
