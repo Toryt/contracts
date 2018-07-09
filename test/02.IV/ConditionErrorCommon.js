@@ -105,8 +105,8 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
   exception.args.must.eql(Array.prototype.slice.call(args))
 }
 
-function expectConstructorPost (result, contractFunction, condition, self, args) {
-  common.expectConstructorPost(result, result.message, result._rawStack)
+function expectConstructorPost (result, contractFunction, condition, self, args, rawStack) {
+  common.expectConstructorPost(result, result.message, rawStack)
   expectProperties(result, ConditionError, contractFunction, condition, self, args)
   Object.isExtensible(result).must.be.true()
 }
