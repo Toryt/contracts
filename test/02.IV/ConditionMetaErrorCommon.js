@@ -38,8 +38,8 @@ function expectInvariants (subject) {
   subject.message.must.contain('(' + subject.error + ')')
 }
 
-function expectConstructorPost (result, contractFunction, condition, self, args, error) {
-  common.expectConstructorPost.apply(undefined, arguments)
+function expectConstructorPost (result, contractFunction, condition, self, args, error, rawStack) {
+  common.expectConstructorPost.call(undefined, result, contractFunction, condition, self, args, rawStack)
   must(result.error).equal(error)
 }
 
