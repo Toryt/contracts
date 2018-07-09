@@ -28,7 +28,7 @@ function expectInvariants (subject) {
   subject.must.be.an.instanceof(ExceptionConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'exception')
-  subject.stack.must.contain(report.extensiveThrownRepresentation(subject.exception))
+  subject.stack.must.contain(report.extensiveThrown(subject.exception))
 }
 
 function expectConstructorPost (executionResult, contractFunction, condition, self, args, exception) {
