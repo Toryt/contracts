@@ -28,7 +28,7 @@ describe('_private/is', function () {
   describe('#arguments', function () {
     stuff.forEach(s => {
       it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
-        const result = is.arguments(s.subject)
+        const result = is.functionArguments(s.subject)
         if (s.expected === 'arguments') {
           result.must.be.true()
         } else {
