@@ -5,47 +5,55 @@ pipelines:
     master:
       - parallel:
         - step:
+            name: Boron (Nodejs 6 LTS)
             image: node:boron
             caches:
               - node
             script:
               - scripts/test.sh
         - step:
+            name: Carbon (Nodejs 8 LTS)
             image: node:carbon
             caches:
               - node
             script:
               - scripts/test.sh
         - step:
+            name: Nodejs 10
             image: node:10
             caches:
               - node
             script:
               - scripts/test.sh
       - step:
+          name: Tag
           script:
             - scripts/tag.sh
     feature/*:
       - parallel:
         - step:
+            name: Boron (Nodejs 6 LTS)
             image: node:boron
             caches:
               - node
             script:
               - scripts/test.sh
         - step:
+            name: Carbon (Nodejs 8 LTS)
             image: node:carbon
             caches:
               - node
             script:
               - scripts/test.sh
         - step:
+            name: Nodejs 10
             image: node:10
             caches:
               - node
             script:
               - scripts/test.sh
       - step:
+          name: Tag
           script:
             - scripts/tag.sh
   tags:
