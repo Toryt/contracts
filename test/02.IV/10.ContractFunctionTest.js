@@ -488,7 +488,7 @@ describe('IV/ContractFunction', function () {
   // noinspection LocalVariableNamingConventionJS
   const PersonConstructorContract = new Contract({
     pre: [
-      function (name) { return util.typeOf(name) === 'string' },
+      function (name) { return typeof name === 'string' },
       function (name) { return !!name }
     ],
     post: [

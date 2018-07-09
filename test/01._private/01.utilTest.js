@@ -199,16 +199,6 @@ describe('_private/util', function () {
     })
   })
 
-  describe('#typeof()', function () {
-    stuff.forEach(record => {
-      it('should return "' + record.expected + '" for ' + record.subject, function () {
-        const result = util.typeOf(record.subject)
-        result.must.be.a.string()
-        result.must.equal(record.expected)
-      })
-    })
-  })
-
   describe('#isPrimitive()', function () {
     stuff.forEach(record => {
       it('correctly decides whether the argument is a primitive for ' + record.subject, function () {
@@ -222,7 +212,7 @@ describe('_private/util', function () {
   describe('#isInteger()', function () {
     stuff
       .map(record => record.subject)
-      .filter(thing => util.typeOf(thing) !== 'number')
+      .filter(thing => typeof thing !== 'number')
       .forEach(thing => {
         it('should return false for ' + thing, function () {
           const result = util.isInteger(thing)
@@ -428,7 +418,7 @@ describe('_private/util', function () {
     const notObjects = [0, false, '', 'lala']
     notObjects.forEach(notAnObject => {
       // cannot set a property on primitives
-      it('reports false if the first parameter is a primitive (' + util.typeOf(notAnObject) + ')', function () {
+      it('reports false if the first parameter is a primitive (' + typeof notAnObject + ')', function () {
         const result = util.isFrozenOwnProperty(notAnObject, propName)
         must(result).be.falsy()
       })
@@ -449,7 +439,7 @@ describe('_private/util', function () {
       const result = util.isFrozenOwnProperty(subject, propName)
       if (!values[0] &&
           values[1] &&
-          util.typeOf(values[2]) === 'function' &&
+          typeof values[2] === 'function' &&
           values[3] === undefined &&
           subject.hasOwnProperty(propName)) {
         it('reports true if the property is an own property, ' +
