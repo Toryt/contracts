@@ -48,46 +48,6 @@ describe('_private/is', function () {
     })
   })
 
-  describe('#integer()', function () {
-    stuff
-      .map(record => record.subject)
-      .filter(thing => typeof thing !== 'number')
-      .forEach(thing => {
-        it('should return false for ' + thing, function () {
-          const result = is.integer(thing)
-          result.must.be.false()
-        })
-      })
-    // noinspection MagicNumberJS
-    const cases1 = [Number.MIN_SAFE_INTEGER, -4, -2.0, -1, 0, 1, 2.0, 6, Number.MAX_SAFE_INTEGER, Number.MAX_VALUE]
-    cases1.forEach(int => {
-      it('should return true for ' + int, function () {
-        const result = is.integer(int)
-        result.must.be.true()
-      })
-    })
-    // It is surprising that this give true for Number.MAX_VALUE, and not for Number.MIN_VALUE!
-    // noinspection MagicNumberJS
-    const cases2 = [
-      Number.NEGATIVE_INFINITY,
-      Number.MIN_VALUE,
-      -4.2,
-      -1.000000000000001,
-      0.00000000000000000009,
-      Number.EPSILON,
-      Math.E,
-      Math.PI,
-      Number.POSITIVE_INFINITY,
-      Number.NaN
-    ]
-    cases2.forEach(nr => {
-      it('should return false for ' + nr, function () {
-        const result = is.integer(nr)
-        result.must.be.false()
-      })
-    })
-  })
-
   describe('#stackLocation', function () {
     stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
       it(`says no to ${s}`, function () {
