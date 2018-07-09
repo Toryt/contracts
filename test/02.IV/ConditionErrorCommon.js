@@ -92,7 +92,7 @@ function expectInvariants (subject) {
   // noinspection JSUnresolvedVariable
   subject.message.must.match(subject.contractFunction.displayName)
   // noinspection JSUnresolvedVariable
-  subject.message.must.contain(report.conciseConditionRepresentation('condition', subject.condition))
+  subject.message.must.contain(report.conciseCondition('condition', subject.condition))
 }
 
 // noinspection ParameterNamingConventionJS
@@ -115,13 +115,13 @@ function expectConstructorPost (result, contractFunction, condition, self, args,
 function expectDetailsPost (subject, result) {
   result.must.be.a.string()
   // noinspection JSUnresolvedVariable
-  result.must.contain(report.conciseConditionRepresentation('', subject.condition))
+  result.must.contain(report.conciseCondition('', subject.condition))
   // noinspection JSUnresolvedVariable
   result.must.contain(os.EOL + subject.contractFunction.contract.location)
-  result.must.contain(report.inspect(subject.self))
+  result.must.contain(report.value(subject.self))
   Array.prototype.forEach.call(
     subject.args,
-    arg => { result.must.contain(report.inspect(arg)) }
+    arg => { result.must.contain(report.value(arg)) }
   )
 }
 

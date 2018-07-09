@@ -26,7 +26,7 @@ const util = require('util')
 const stuff = require('./_stuff')
 
 describe('_private/report', function () {
-  describe('#conciseConditionRepresentation', function () {
+  describe('#conciseCondition', function () {
     function isAConciseVersion (original, concise) {
       const split = ('' + concise).split(report.conciseSeparator)
       const cleanOriginal = original.replace(/\s\s+/g, ' ')
@@ -89,7 +89,7 @@ describe('_private/report', function () {
     stuffToo.push(other)
 
     stuffToo.forEach(f => {
-      const result = report.conciseConditionRepresentation(prefix, f)
+      const result = report.conciseCondition(prefix, f)
       if (!f || (!f.displayName && !f.name)) {
         it('returns the string representation with the prefix, ' +
            'when there is no f, or it has no display name and no name, for ' + f, function () {
@@ -108,7 +108,7 @@ describe('_private/report', function () {
     })
   })
 
-  describe('#extensiveThrownRepresentation', function () {
+  describe('#extensiveThrown', function () {
     let caseGenerators = testUtil.anyCasesGenerators('thrown')
     const toStringString = 'This is the toString'
     const stackString = 'This is the stack'
@@ -143,9 +143,9 @@ describe('_private/report', function () {
     caseGenerators.forEach(thrownGenerator => {
       const thrown = thrownGenerator()
       it('returns the expected, normalized string representation for ' + thrown, function () {
-        const result = report.extensiveThrownRepresentation(thrown)
+        const result = report.extensiveThrown(thrown)
         result.must.be.a.string()
-        result.indexOf(report.inspect(thrown)).must.equal(0)
+        result.indexOf(report.value(thrown)).must.equal(0)
         let stack = thrown && thrown.stack
         if (stack) {
           stack = os.EOL + stack
@@ -187,10 +187,10 @@ describe('_private/report', function () {
     })
   })
 
-  describe('#inspect', function () {
+  describe('#value', function () {
     stuff.map(s => s.subject).forEach(s => {
       it(`returns a string that is expected for ${s}`, function () {
-        const result = report.inspect(s)
+        const result = report.value(s)
         testUtil.log(result)
         result.must.be.a.string()
         result.must.not.equal('')
@@ -204,7 +204,7 @@ describe('_private/report', function () {
                    s instanceof Boolean) {
           result.must.equal('' + s)
         } else if (typeof s === 'function') {
-          result.must.equal(report.conciseConditionRepresentation('', s))
+          result.must.equal(report.conciseCondition('', s))
         } else {
           result.must.equal(util.inspect(s, {depth: 0, maxArrayLength: 5, breakLength: 120}))
         }
