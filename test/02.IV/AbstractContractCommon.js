@@ -21,6 +21,7 @@
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
+const is = require('../../lib/_private/is')
 const os = require('os')
 
 const someConditions = [
@@ -72,7 +73,7 @@ function expectInvariants (/* AbstractContract */ subject) {
   testUtil.expectOwnFrozenProperty(subject, 'location')
   // noinspection JSUnresolvedVariable
   const location = subject.location
-  ; (location === AbstractContract.internalLocation || util.isAStackLocation(location)).must.be.true()
+  ; (location === AbstractContract.internalLocation || is.isAStackLocation(location)).must.be.true()
   testUtil.expectOwnFrozenProperty(subject, 'abstract')
   // noinspection JSUnresolvedVariable
   const abstract = subject.abstract

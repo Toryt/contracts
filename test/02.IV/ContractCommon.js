@@ -20,13 +20,14 @@
 
 const testUtil = require('../_util/testUtil')
 const util = require('../../lib/_private/util')
+const is = require('../../lib/_private/is')
 const common = require('./AbstractContractCommon')
 const Contract = require('../../lib/IV/Contract')
 
 function expectInvariants (subject) {
   subject.must.be.an.instanceof(Contract)
   common.expectInvariants(subject)
-  util.isAStackLocation(subject.location).must.be.true()
+  is.isAStackLocation(subject.location).must.be.true()
   // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   Contract.isAContractFunction(subject.abstract)

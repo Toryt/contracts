@@ -19,6 +19,7 @@
 'use strict'
 
 const util = require('../../lib/_private/util')
+const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
 const must = require('must')
 const os = require('os')
@@ -43,7 +44,7 @@ describe('_private/util', function () {
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
-      util.isAStackLocation(result).must.be.true()
+      is.isAStackLocation(result).must.be.true()
     })
     it('returns the expected line 2 deep', function () {
       function aFirstFunction () {
@@ -69,7 +70,7 @@ describe('_private/util', function () {
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
-      util.isAStackLocation(result).must.be.true()
+      is.isAStackLocation(result).must.be.true()
     })
   })
 
@@ -108,7 +109,7 @@ describe('_private/util', function () {
         lines[3].must.contain('aSecondFunction')
         lines[4].must.contain('aFirstFunction')
       }
-      util.isAStack(result).must.be.true()
+      is.isAStack(result).must.be.true()
     })
     it('returns the expected stack. 2 deep', function () {
       function skipTwo (skip) {
@@ -156,70 +157,7 @@ describe('_private/util', function () {
         lines[3].must.contain('aSecondFunction')
         lines[4].must.contain('aFirstFunction')
       }
-      util.isAStack(result).must.be.true()
-    })
-  })
-
-  describe('#isArguments', function () {
-    stuff.forEach(s => {
-      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
-        const result = util.isArguments(s.subject)
-        if (s.expected === 'arguments') {
-          result.must.be.true()
-        } else {
-          must(result).be.falsy()
-        }
-      })
-    })
-  })
-
-  describe('#isPrimitive()', function () {
-    stuff.forEach(record => {
-      it('correctly decides whether the argument is a primitive for ' + record.subject, function () {
-        const result = util.isPrimitive(record.subject)
-        result.must.be.a.boolean()
-        result.must.equal(record.isPrimitive)
-      })
-    })
-  })
-
-  describe('#isInteger()', function () {
-    stuff
-      .map(record => record.subject)
-      .filter(thing => typeof thing !== 'number')
-      .forEach(thing => {
-        it('should return false for ' + thing, function () {
-          const result = util.isInteger(thing)
-          result.must.be.false()
-        })
-      })
-    // noinspection MagicNumberJS
-    const cases1 = [Number.MIN_SAFE_INTEGER, -4, -2.0, -1, 0, 1, 2.0, 6, Number.MAX_SAFE_INTEGER, Number.MAX_VALUE]
-    cases1.forEach(int => {
-      it('should return true for ' + int, function () {
-        const result = util.isInteger(int)
-        result.must.be.true()
-      })
-    })
-    // It is surprising that this give true for Number.MAX_VALUE, and not for Number.MIN_VALUE!
-    // noinspection MagicNumberJS
-    const cases2 = [
-      Number.NEGATIVE_INFINITY,
-      Number.MIN_VALUE,
-      -4.2,
-      -1.000000000000001,
-      0.00000000000000000009,
-      Number.EPSILON,
-      Math.E,
-      Math.PI,
-      Number.POSITIVE_INFINITY,
-      Number.NaN
-    ]
-    cases2.forEach(nr => {
-      it('should return false for ' + nr, function () {
-        const result = util.isInteger(nr)
-        result.must.be.false()
-      })
+      is.isAStack(result).must.be.true()
     })
   })
 
@@ -341,175 +279,6 @@ describe('_private/util', function () {
       testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propertyName, privatePropertyName)
       subject[propertyName].must.not.equal(array)
       subject[propertyName].must.eql(array)
-    })
-  })
-
-  describe('#isFrozenOwnProperty()', function () {
-    const propName = 'test prop name'
-    const propValue = 'dummy value'
-    const truths = [true, false]
-    testUtil.x(truths, truths, truths).forEach(values => {
-      const subject = {}
-      Object.defineProperty(
-        subject,
-        propName,
-        {
-          configurable: values[0],
-          enumerable: values[1],
-          writable: values[2],
-          value: propValue
-        }
-      )
-      const result = util.isFrozenOwnProperty(subject, propName)
-      if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
-        it('reports true if the property is an own property, ' +
-            'and it is enumerable, not configurable and not writable', function () {
-          result.must.be.truthy()
-        })
-      } else {
-        it('reports false if the property is an own property, and' +
-           ' enumerable === ' + values[1] +
-           ' configurable === ' + values[0] +
-           ' writable === ' + values[2], function () {
-          must(result).be.falsy()
-        })
-      }
-      it('reports false if the property does not exist', function () {
-        const result = util.isFrozenOwnProperty(subject, 'some other, non-existing property name')
-        must(result).be.falsy()
-      })
-      const specialized = {}
-      Object.setPrototypeOf(specialized, subject)
-      specialized[propName].must.equal(propValue) // check inheritance - test code validity
-      const specializedResult = util.isFrozenOwnProperty(specialized, propName)
-      it('reports false if the property is not an own property, and' +
-         ' enumerable === ' + values[1] +
-         ' configurable === ' + values[0] +
-         ' writable === ' + values[2], function () {
-        must(specializedResult).be.falsy()
-      })
-    })
-    const notObjects = [0, false, '', 'lala']
-    notObjects.forEach(notAnObject => {
-      // cannot set a property on primitives
-      it('reports false if the first parameter is a primitive (' + typeof notAnObject + ')', function () {
-        const result = util.isFrozenOwnProperty(notAnObject, propName)
-        must(result).be.falsy()
-      })
-    })
-    const fCandidates = [undefined, function () {}]
-    testUtil.x(truths, truths, fCandidates, fCandidates).forEach(values => {
-      const subject = {}
-      Object.defineProperty(
-        subject,
-        propName,
-        {
-          configurable: values[0],
-          enumerable: values[1],
-          get: values[2],
-          set: values[3]
-        }
-      )
-      const result = util.isFrozenOwnProperty(subject, propName)
-      if (!values[0] &&
-          values[1] &&
-          typeof values[2] === 'function' &&
-          values[3] === undefined &&
-          subject.hasOwnProperty(propName)) {
-        it('reports true if the property is an own property, ' +
-           'and it is enumerable, and not configurable, has a getter, but not a setter', function () {
-          result.must.be.truthy()
-        })
-      } else {
-        it('reports false if the property is an own property,' +
-           ' enumerable === ' + values[1] +
-           ' configurable === ' + values[0] +
-           ' get === ' + values[2] +
-           ' set === ' + values[3], function () {
-          must(result).be.falsy()
-        })
-      }
-    })
-  })
-
-  describe('#isAStackLocation', function () {
-    stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
-      it(`says no to ${s}`, function () {
-        const result = util.isAStackLocation(s)
-        result.must.be.false()
-      })
-    })
-    it(`says no to ''`, function () {
-      const result = util.isAStackLocation('')
-      result.must.be.false()
-    })
-    it(`says yes to 'abc'`, function () {
-      const result = util.isAStackLocation('abc')
-      result.must.be.true()
-    })
-    it(`says no to a multi-line string`, function () {
-      const result = util.isAStackLocation(`this is a 
-multi-line
-string`
-      )
-      result.must.be.false()
-    })
-    it(`says yes to all lines of a stack trace`, function () {
-      // sadly, also to the message
-      const error = new Error('This is an error to get a platform dependent stack')
-      const lines = error.stack.split(os.EOL)
-      lines
-        .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line
-        .forEach(line => {
-          const result = util.isAStackLocation(line)
-          testUtil.log(`${result}: ${line}`)
-          result.must.be.true()
-        })
-    })
-  })
-
-  describe('#isAStack', function () {
-    stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
-      it(`says no to ${s}`, function () {
-        const result = util.isAStack(s)
-        result.must.be.false()
-      })
-    })
-    it(`says no to ''`, function () {
-      const result = util.isAStack('')
-      result.must.be.false()
-    })
-    it(`says yes to 'abc'`, function () {
-      const result = util.isAStack('abc')
-      result.must.be.true()
-    })
-    it(`says yes to a multi-line string`, function () {
-      const candidate = `this is a 
-multi-line
-string`
-      const result = util.isAStack(candidate)
-      result.must.be.true()
-    })
-    it(`says no to a multi-line string with a blank line`, function () {
-      const result = util.isAStack(`this is a 
-multi-line
-string, with a
-
-blank line`
-      )
-      result.must.be.false()
-    })
-    it(`says yes to a stack trace`, function () {
-      const message = 'This is an error to get a platform dependent stack'
-      // sadly, also to the message, on some platforms
-      const error = new Error(message)
-      const stackLines = error.stack.split(os.EOL)
-      const stack = stackLines
-        // remove message line
-        .filter(sl => sl.indexOf(message) < 0)
-        .join(os.EOL)
-      const result = util.isAStack(stack)
-      result.must.be.true()
     })
   })
 
@@ -684,7 +453,7 @@ blank line`
         // noinspection IfStatementWithTooManyBranchesJS
         if (typeof s === 'string' || s instanceof String) {
           result.must.equal(`'${s}'`)
-        } else if (util.isPrimitive(s) ||
+        } else if (is.isPrimitive(s) ||
                    s instanceof Date ||
                    s instanceof Error ||
                    s instanceof Number ||
