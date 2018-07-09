@@ -23,46 +23,7 @@ const testUtil = require('../_util/testUtil')
 const must = require('must')
 const os = require('os')
 const nodeUtil = require('util')
-
-// eslint-disable-next-line
-const getGlobal = new Function('return this;')
-
-function generateMutableStuff () {
-  // noinspection JSPrimitiveTypeWrapperUsage
-  const result = [
-    {subject: {a: 4}, expected: 'object'},
-    {subject: [1, 2, 3], expected: 'array'},
-    {subject: function () {}, expected: 'function'},
-    {subject: () => 0, expected: 'function'},
-    {subject: new ReferenceError(), expected: 'error'},
-    {subject: new Date(), expected: 'date'},
-    {subject: /a-z/, expected: 'regexp'},
-    // eslint-disable-next-line
-    {subject: new Number(4), expected: 'number'},
-    // eslint-disable-next-line
-    {subject: new String('abc'), expected: 'string'},
-    // eslint-disable-next-line
-    {subject: new String(''), expected: 'string'},
-    // eslint-disable-next-line
-    {subject: new Boolean(true), expected: 'boolean'},
-    {subject: arguments, expected: 'arguments'}
-  ]
-  result.forEach(r => { r.isPrimitive = false })
-  return result
-}
-
-// noinspection JSPrimitiveTypeWrapperUsage
-const stuff = [
-  {subject: undefined, expected: 'undefined', isPrimitive: false},
-  {subject: null, expected: 'null', isPrimitive: false},
-  {subject: Math, expected: 'math', isPrimitive: false},
-  {subject: JSON, expected: 'json', isPrimitive: false},
-  {subject: 'abc', expected: 'string', isPrimitive: true},
-  {subject: '', expected: 'string', isPrimitive: true},
-  {subject: 4, expected: 'number', isPrimitive: true},
-  {subject: false, expected: 'boolean', isPrimitive: true},
-  {subject: getGlobal(), expected: 'object', isPrimitive: false}
-].concat(generateMutableStuff())
+const stuff = require('./_stuff')
 
 describe('_private/util', function () {
   describe('#callerLocation', function () {
@@ -200,7 +161,7 @@ describe('_private/util', function () {
   })
 
   describe('#isArguments', function () {
-    stuff.concat(generateMutableStuff()).forEach(s => {
+    stuff.forEach(s => {
       it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
         const result = util.isArguments(s.subject)
         if (s.expected === 'arguments') {
@@ -576,11 +537,11 @@ blank line`
 
     const prefix = 'This is a test prefix'
     const alternativeName = 'This is an alternative name'
-    const namedStuff = generateMutableStuff()
+    const namedStuff = stuff.generateMutableStuff()
     namedStuff
       .filter(ms => testUtil.propertyIsWritable(ms.subject, 'name'))
       .forEach(ms => { ms.subject.name = alternativeName })
-    const displayNamedStuff = generateMutableStuff()
+    const displayNamedStuff = stuff.generateMutableStuff()
     displayNamedStuff
       .forEach(ms => { ms.subject.displayName = alternativeName })
 
@@ -684,7 +645,7 @@ blank line`
   })
 
   describe('#type', function () {
-    stuff.concat(generateMutableStuff()).map(s => s.subject).forEach(s => {
+    stuff.map(s => s.subject).forEach(s => {
       it(`returns a string that is expected for ${s}`, function () {
         const result = util.type(s)
         testUtil.log(result)
@@ -714,7 +675,7 @@ blank line`
   })
 
   describe('#inspect', function () {
-    stuff.concat(generateMutableStuff()).map(s => s.subject).forEach(s => {
+    stuff.map(s => s.subject).forEach(s => {
       it(`returns a string that is expected for ${s}`, function () {
         const result = util.inspect(s)
         testUtil.log(result)
