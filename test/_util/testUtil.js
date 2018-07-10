@@ -207,11 +207,14 @@ function environment () {
   // noinspection JSUnresolvedVariable
   if (window.CSS) {
     // noinspection JSUnresolvedVariable
-    if (navigator.userAgent.indexOf('Safari') >= 0) {
-      return 'safari'
-    } else {
-      return 'blink'
+    const ua = navigator.userAgent
+    if (ua.indexOf('HeadlessChrome')) {
+      return 'headless-chrome'
     }
+    if (ua.indexOf('Safari') >= 0) {
+      return 'safari'
+    }
+    return 'blink'
   }
   // eslint-disable-next-line
   if ((new Function('try {return this === window;}catch(e){ return false;}'))()) {
