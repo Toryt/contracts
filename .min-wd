@@ -1,17 +1,18 @@
+const build = `manual ${new Date().toISOString()}`
+console.log(`build: ${build}`)
+
 const credentials = {
   project: 'Toryt contracts',
-  build: `manual ${new Date().toISOString()}`,
+  build: build,
   'browserstack.user': process.env.BROWSERSTACK_USERNAME,
   'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
 }
 
 const oses = {
-/*
   osX: {
     name: 'OS X',
     versions: ['High Sierra']
   },
-*/
   windows: {
     name: 'Windows',
     versions: ['10'/*, '8.1'*/]
@@ -24,10 +25,22 @@ const browsers = {
     name: 'Chrome',
     versions: ['67.0', '66.0']
   },
-*/
   edge: {
     name: 'Edge',
-    versions: ['17.0', 'insider preview']
+    versions: ['17.0', 'insider preview'],
+    os: 'Windows'
+  },
+*/
+/* MUDO firefox dpes not work on Mac, nor Windows
+  firefox: {
+    name: 'Firefox',
+    versions: ['61.0']
+  },
+*/
+  safari: {
+    name: 'Safari',
+    versions: ['11.1'],
+    os: 'OS X'
   }
 }
 
@@ -44,6 +57,9 @@ function osVersionDefinition (capabilities, version) {
 }
 
 function osDefinition (capabilities, os) {
+  if (capabilities.os && capabilities.os !== os.name) {
+    return []
+  }
   capabilities.os = os.name
   return os.versions.map(v => osVersionDefinition(Object.assign({}, capabilities), v))
 }
@@ -60,6 +76,9 @@ function browserVersionDefinition (capabilities, version) {
 
 function browserDefinition (capabilities, browser) {
   capabilities.browser = browser.name
+  if (browser.os) {
+    capabilities.os = browser.os
+  }
   return browser.versions.reduce(
     (acc, v) => acc.concat(browserVersionDefinition(Object.assign({}, capabilities), v)),
     []
