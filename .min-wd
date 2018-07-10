@@ -1,18 +1,12 @@
 {
-  "hostname": "localhost",
-  "port": 4444,
-  "browsers": [
-    {
-      "name": "chrome"
-    },
-    {
-      "name": "firefox"
-    },
-    {
-      "name": "safari"
-    },
-    {
-      "name": "edge"
+  "hostname": "hub-cloud.browserstack.com",
+  "port": 80,
+  "browsers": [{
+    "name": "chrome",
+    "capabilities": {
+      "browser": "Chrome",
+      "browserstack.user": "jandockx1",
+      "browserstack.key": "XXXXXXXXXXXXXXXXXXX"
     }
-  ]
+  }]
 }
