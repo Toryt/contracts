@@ -37,12 +37,39 @@ const browsers = {
     versions: ['61.0']
   },
 */
+/*
   safari: {
     name: 'Safari',
     versions: ['11.1'],
     os: 'OS X'
   }
+*/
 }
+
+const mobile = [
+  {
+    device: 'Samsung Galaxy S9',
+    os_version: '8.0'
+  },
+  {
+    device: 'Samsung Galaxy Note 4',
+    os_version: '6.0'
+  },
+  {
+    device: 'iPhone X',
+    os_version: '11.0'
+  },
+  {
+    device: 'iPad Pro',
+    os_version: '11.2'
+  }
+].map(m => {
+  const capabilities = Object.assign(m, {real_mobile: true}, credentials)
+  return {
+    name: `${capabilities.device} - ${capabilities.os_version}`,
+    capabilities: capabilities
+  }
+})
 
 function name(capabilities) {
   return `${capabilities.browser} ${capabilities.browser_version} - ${capabilities.os} ${capabilities.os_version}`
@@ -92,7 +119,7 @@ function definition (capabilities) {
   )
 }
 
-const definitions = definition(credentials)
+const definitions = definition(credentials).concat(mobile)
 console.log(`${definitions.length}:`, definitions.map(d => d.name))
 
 module.exports = {
