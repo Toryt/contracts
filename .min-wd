@@ -15,12 +15,11 @@ const oses = {
   },
   windows: {
     name: 'Windows',
-    versions: ['10'/*, '8.1'*/]
+    versions: ['10', '8.1']
   }
 }
 
 const browsers = {
-/*
   chrome: {
     name: 'Chrome',
     versions: ['67.0', '66.0']
@@ -30,20 +29,15 @@ const browsers = {
     versions: ['17.0', 'insider preview'],
     os: 'Windows'
   },
-*/
-/* MUDO firefox dpes not work on Mac, nor Windows
   firefox: {
     name: 'Firefox',
     versions: ['61.0']
   },
-*/
-/*
   safari: {
     name: 'Safari',
     versions: ['11.1'],
     os: 'OS X'
   }
-*/
 }
 
 const mobile = [
