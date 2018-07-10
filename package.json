@@ -11,7 +11,10 @@
     "test": "standard && nyc mocha 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "browserify": "browserify -s toryt.contracts.iv --outfile contracts.js lib/IV/Contract.js",
-    "browserifyTest": "browserify -r must --outfile browser/test/suite.js test/**/*Test.js"
+    "browserifyTest": "browserify -r must --outfile browser/test/suite.js test/**/*Test.js",
+    "browserTest": "mochify 'test/**/*Test.js'",
+    "watch": "mochify --watch 'test/**/*Test.js'",
+    "wd": "mochify --wd 'test/**/*Test.js'"
   },
   "repository": {
     "type": "git",
@@ -50,10 +53,10 @@
     "legally": "^2.10.0",
     "mocha": "^5.2.0",
     "mocha-reporter": "^0.1.1",
+    "mochify": "^5.8.0",
     "must": "^0.13.4",
     "npm-check": "^5.7.1",
     "nyc": "^12.0.2",
-    "selenium-webdriver": "^4.0.0-alpha.1",
     "standard": "^11.0.1",
     "tldrlegal": "^1.0.6"
   },
