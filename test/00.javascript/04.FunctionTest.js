@@ -20,7 +20,7 @@
 
 const testUtil = require('../_util/testUtil')
 
-describe('js/Function', function () {
+describe('javascript/Function', function () {
   describe('#bind()', function () {
     it('keeps a call of a bound function with another this bound to the bound this', function () {
       function testF () { return this.property }

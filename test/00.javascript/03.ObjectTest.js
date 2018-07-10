@@ -21,7 +21,7 @@
 const must = require('must')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
 
-describe('js/Object', function () {
+describe('javascript/Object', function () {
   describe('#keys()', function () {
     /*
      Does for ... iteration respect the order in which properties on an object are defined?

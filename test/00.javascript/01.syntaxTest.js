@@ -22,7 +22,7 @@ const testUtil = require('../_util/testUtil')
 const must = require('must')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
 
-describe('js/syntax', function () {
+describe('javascript/syntax', function () {
   describe('#for-in', function () {
     /*
      Does for ... iteration respect the order in which properties on an object are defined?

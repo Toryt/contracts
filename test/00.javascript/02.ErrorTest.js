@@ -26,7 +26,7 @@ const env = testUtil.environment
 const isFF = (env === 'firefox')
 const isFFOrSafari = isFF || (env === 'safari')
 
-describe('js/Error', function () {
+describe('javascript/Error', function () {
   describe('#message', function () {
     it('has the expected message', function () {
       const subject = new Error(message)
