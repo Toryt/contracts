@@ -1,4 +1,6 @@
 const credentials = {
+  project: 'Toryt contracts',
+  build: `manual ${new Date().toISOString()}`,
   'browserstack.user': process.env.BROWSERSTACK_USERNAME,
   'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
 }
@@ -64,7 +66,7 @@ function definition (capabilities) {
 }
 
 const definitions = definition(credentials)
-console.log(definitions.map(d => d.name))
+console.log(`${definitions.length}:`, definitions.map(d => d.name))
 
 module.exports = {
   "hostname": "hub-cloud.browserstack.com",
