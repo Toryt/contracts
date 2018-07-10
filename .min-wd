@@ -1,50 +1,73 @@
+const credentials = {
+  'browserstack.user': process.env.BROWSERSTACK_USERNAME,
+  'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
+}
+
+const oses = {
+  osX: {
+    name: 'OS X',
+    versions: ['High Sierra']
+  },
+  windows: {
+    name: 'Windows',
+    versions: ['10', '8.1']
+  }
+}
+
+const browsers = {
+  chrome: {
+    name: 'Chrome',
+    versions: ['67.0', '66.0']
+  }
+}
+
+function name(capabilities) {
+  return `${capabilities.browser} ${capabilities.browser_version} - ${capabilities.os} ${capabilities.os_version}`
+}
+
+function osVersionDefinition (capabilities, version) {
+  capabilities.os_version = version
+  return {
+    name: name(capabilities),
+    capabilities: capabilities
+  }
+}
+
+function osDefinition (capabilities, os) {
+  capabilities.os = os.name
+  return os.versions.map(v => osVersionDefinition(Object.assign({}, capabilities), v))
+}
+
+function browserVersionDefinition (capabilities, version) {
+  capabilities.browser_version = version
+  return Object.keys(oses).reduce(
+    (acc, os) => {
+      return acc.concat(osDefinition(Object.assign({}, capabilities), oses[os]))
+    },
+    []
+  )
+}
+
+function browserDefinition (capabilities, browser) {
+  capabilities.browser = browser.name
+  return browser.versions.reduce(
+    (acc, v) => acc.concat(browserVersionDefinition(Object.assign({}, capabilities), v)),
+    []
+  )
+}
+
+function definition (capabilities) {
+  return Object.keys(browsers).reduce(
+    (acc, browser) => acc.concat(browserDefinition(Object.assign({}, capabilities), browsers[browser])),
+    []
+  )
+}
+
+const definitions = definition(credentials)
+console.log(definitions.map(d => d.name))
+
 module.exports = {
   "hostname": "hub-cloud.browserstack.com",
   "port": 80,
-  "browsers": [
-    {
-      "name": "Chrome 67, Mac",
-      "capabilities": {
-        "os": "OS X",
-        "os_version": "High Sierra",
-        "browser": "Chrome",
-        "browser_version": "67.0",
-        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
-        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
-      }
-    },
-    {
-      "name": "Chrome 66, Mac",
-      "capabilities": {
-        "os": "OS X",
-        "os_version": "High Sierra",
-        "browser": "Chrome",
-        "browser_version": "66.0",
-        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
-        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
-      }
-    },
-    {
-      "name": "Chrome 67, Win",
-      "capabilities": {
-        "os": "Windows",
-        "os_version": "10",
-        "browser": "Chrome",
-        "browser_version": "67.0",
-        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
-        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
-      }
-    },
-    {
-      "name": "Chrome 66, Win",
-      "capabilities": {
-        "os": "Windows",
-        "os_version": "10",
-        "browser": "Chrome",
-        "browser_version": "66.0",
-        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
-        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
-      }
-    }
-  ]
+  "browsers": definitions
 }
