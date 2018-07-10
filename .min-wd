@@ -1,12 +1,50 @@
 module.exports = {
   "hostname": "hub-cloud.browserstack.com",
   "port": 80,
-  "browsers": [{
-    "name": "chrome",
-    "capabilities": {
-      "browser": "Chrome",
-      "browserstack.user": process.env.BROWSERSTACK_USERNAME,
-      "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
+  "browsers": [
+    {
+      "name": "Chrome 67, Mac",
+      "capabilities": {
+        "os": "OS X",
+        "os_version": "High Sierra",
+        "browser": "Chrome",
+        "browser_version": "67.0",
+        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
+        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
+      }
+    },
+    {
+      "name": "Chrome 66, Mac",
+      "capabilities": {
+        "os": "OS X",
+        "os_version": "High Sierra",
+        "browser": "Chrome",
+        "browser_version": "66.0",
+        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
+        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
+      }
+    },
+    {
+      "name": "Chrome 67, Win",
+      "capabilities": {
+        "os": "Windows",
+        "os_version": "10",
+        "browser": "Chrome",
+        "browser_version": "67.0",
+        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
+        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
+      }
+    },
+    {
+      "name": "Chrome 66, Win",
+      "capabilities": {
+        "os": "Windows",
+        "os_version": "10",
+        "browser": "Chrome",
+        "browser_version": "66.0",
+        "browserstack.user": process.env.BROWSERSTACK_USERNAME,
+        "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
+      }
     }
-  }]
+  ]
 }
