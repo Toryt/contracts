@@ -1,21 +1,16 @@
 {
   "hostname": "hub-cloud.browserstack.com",
   "port": 80,
-      "browserstack.key": "XXXXXXXXXXXXXXXXXXX"
   "browsers": [
     {
-      "name": "Chrome",
+      "name": "Safari",
       "capabilities": {
-        "browser": "Chrome",
+        "os": "OS X",
+        "os_version": "High Sierra",
+        "browser": "Safari",
+        "browser_version": "11.0",
         "browserstack.user": "jandockx1",
-      }
-    },
-    {
-      "name": "Firefox",
-      "capabilities": {
-        "browser": "Firefox",
-        "browserstack.user": "jandockx1",
-        "browserstack.key": "XXXXXXXXXXXXXX"
+        "browserstack.key": "XXXXXXXXXXXXX"
       }
     }
   ]
