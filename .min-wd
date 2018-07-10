@@ -6,20 +6,28 @@ const credentials = {
 }
 
 const oses = {
+/*
   osX: {
     name: 'OS X',
     versions: ['High Sierra']
   },
+*/
   windows: {
     name: 'Windows',
-    versions: ['10', '8.1']
+    versions: ['10'/*, '8.1'*/]
   }
 }
 
 const browsers = {
+/*
   chrome: {
     name: 'Chrome',
     versions: ['67.0', '66.0']
+  },
+*/
+  edge: {
+    name: 'Edge',
+    versions: ['17.0', 'insider preview']
   }
 }
 
