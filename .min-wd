@@ -1,17 +1,12 @@
-{
+module.exports = {
   "hostname": "hub-cloud.browserstack.com",
   "port": 80,
-  "browsers": [
-    {
-      "name": "Safari",
-      "capabilities": {
-        "os": "OS X",
-        "os_version": "High Sierra",
-        "browser": "Safari",
-        "browser_version": "11.0",
-        "browserstack.user": "jandockx1",
-        "browserstack.key": "XXXXXXXXXXXXX"
-      }
+  "browsers": [{
+    "name": "chrome",
+    "capabilities": {
+      "browser": "Chrome",
+      "browserstack.user": process.env.BROWSERSTACK_USERNAME,
+      "browserstack.key": process.env.BROWSERSTACK_ACCESS_KEY
     }
-  ]
+  }]
 }
