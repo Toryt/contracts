@@ -213,6 +213,9 @@ function environment () {
     if (ua.indexOf('HeadlessChrome')) {
       return 'headless-chrome'
     }
+    if (ua.indexOf('Edge') >= 0) {
+      return 'edge'
+    }
     if (ua.indexOf('Safari') >= 0) {
       return 'safari'
     }
