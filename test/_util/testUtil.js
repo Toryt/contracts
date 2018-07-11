@@ -210,7 +210,7 @@ function environment () {
   }
   // noinspection JSUnresolvedVariable
   if (window.CSS) {
-    if (ua.indexOf('HeadlessChrome')) {
+    if (ua.indexOf('HeadlessChrome') >= 0) {
       return 'headless-chrome'
     }
     if (ua.indexOf('Edge') >= 0) {
