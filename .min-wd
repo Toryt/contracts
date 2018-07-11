@@ -1,120 +1,52 @@
 const build = `manual ${new Date().toISOString()}`
 console.log(`build: ${build}`)
 
-const credentials = {
+const capabilitiesBase = {
   project: 'Toryt contracts',
   build: build,
   'browserstack.user': process.env.BROWSERSTACK_USERNAME,
   'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
 }
 
-const oses = {
-  osX: {
-    name: 'OS X',
-    versions: ['High Sierra']
-  },
-  windows: {
-    name: 'Windows',
-    versions: ['10', '8.1']
-  }
+const osVersion = {
+  'OS X': 'High Sierra',
+  'Windows': '10'
 }
 
-const browsers = {
-  chrome: {
-    name: 'Chrome',
-    versions: ['67.0', '66.0']
-  },
-  edge: {
-    name: 'Edge',
-    versions: ['17.0', 'insider preview'],
-    os: 'Windows'
-  },
-  firefox: {
-    name: 'Firefox',
-    versions: ['61.0']
-  },
-  safari: {
-    name: 'Safari',
-    versions: ['11.1'],
-    os: 'OS X'
-  }
-}
+/* We only test the last version of every combination, by not specifying any version.
+   By running the tests every week, we stay compatible. */
+const desktop = [
+  {browser: 'Chrome', os: 'OS X', os_version: 'High Sierra'},
+  {browser: 'Chrome', os: 'Windows'},
+  {browser: 'Firefox', os: 'OS X'},
+  {browser: 'Firefox', os: 'Windows'},
+  {browser: 'Safari', os: 'OS X'},
+  {browser: 'Edge', os: 'Windows'}
+]
+  .map(d => ({
+    name: `${d.browser} - ${d.os}`,
+    capabilities: Object.assign(d, capabilitiesBase, {os_version: osVersion[d.os]})
+  }))
 
 const mobile = [
-  {
-    device: 'Samsung Galaxy S9',
-    os_version: '8.0'
-  },
-  {
-    device: 'Samsung Galaxy Note 4',
-    os_version: '6.0'
-  },
-  {
-    device: 'iPhone X',
-    os_version: '11.0'
-  },
-  {
-    device: 'iPad Pro',
-    os_version: '11.2'
-  }
-].map(m => {
-  const capabilities = Object.assign(m, {real_mobile: true}, credentials)
-  return {
-    name: `${capabilities.device} - ${capabilities.os_version}`,
-    capabilities: capabilities
-  }
-})
+  'Samsung Galaxy S9',
+  'Samsung Galaxy Note 4',
+  'iPhone X',
+  'iPad Pro'
+]
+  .map(m => ({
+    name: m,
+    capabilities: Object.assign(
+      {
+        device: m,
+        real_mobile: true
+      },
+      capabilitiesBase
+    )
+  }))
 
-function name(capabilities) {
-  return `${capabilities.browser} ${capabilities.browser_version} - ${capabilities.os} ${capabilities.os_version}`
-}
-
-function osVersionDefinition (capabilities, version) {
-  capabilities.os_version = version
-  return {
-    name: name(capabilities),
-    capabilities: capabilities
-  }
-}
-
-function osDefinition (capabilities, os) {
-  if (capabilities.os && capabilities.os !== os.name) {
-    return []
-  }
-  capabilities.os = os.name
-  return os.versions.map(v => osVersionDefinition(Object.assign({}, capabilities), v))
-}
-
-function browserVersionDefinition (capabilities, version) {
-  capabilities.browser_version = version
-  return Object.keys(oses).reduce(
-    (acc, os) => {
-      return acc.concat(osDefinition(Object.assign({}, capabilities), oses[os]))
-    },
-    []
-  )
-}
-
-function browserDefinition (capabilities, browser) {
-  capabilities.browser = browser.name
-  if (browser.os) {
-    capabilities.os = browser.os
-  }
-  return browser.versions.reduce(
-    (acc, v) => acc.concat(browserVersionDefinition(Object.assign({}, capabilities), v)),
-    []
-  )
-}
-
-function definition (capabilities) {
-  return Object.keys(browsers).reduce(
-    (acc, browser) => acc.concat(browserDefinition(Object.assign({}, capabilities), browsers[browser])),
-    []
-  )
-}
-
-const definitions = definition(credentials).concat(mobile)
-console.log(`${definitions.length}:`, definitions.map(d => d.name))
+const definitions = desktop.concat(mobile)
+console.log(`${definitions.length}:`, definitions.map(d => d.name).join(', '))
 
 module.exports = {
   "hostname": "hub-cloud.browserstack.com",
