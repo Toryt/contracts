@@ -213,6 +213,9 @@ function environment () {
     if (ua.indexOf('HeadlessChrome') >= 0) {
       return 'headless-chrome'
     }
+    if (ua.indexOf('Linux; Android') >= 0) {
+      return 'android'
+    }
     if (ua.indexOf('Edge') >= 0) {
       return 'edge'
     }
