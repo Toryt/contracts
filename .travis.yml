@@ -6,10 +6,6 @@ language: node_js
 cache:
   directories:
     - "node_modules"
-node_js:
-  - '6'
-  - '8'
-  - '10'
 os:
   - linux
 # Windows is not supported at all. Bummer.
@@ -21,8 +17,14 @@ matrix:
         - npm run wd
 jobs:
   include:
+    # stage test
+    - node_js: '6' # npm test
+    - node_js: '8' # npm test
+    - node_js: '10' # npm test
+    - node_js: '8'
+      script: npm run wd
+    # stage tag
     - stage: tag
       node_js: '8'
       install: skip
-      script:
-        - scripts/travisGithubTag.sh
+      script: scripts/travisGithubTag.sh
