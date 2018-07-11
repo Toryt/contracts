@@ -7,3 +7,8 @@ os:
   - linux
 # Windows is not supported at all. Bummer.
 # Testing on OS X makes no sense, when everything is tested on linux and in browsers
+matrix:
+  include:
+    - node_js: 'lts'
+      script:
+        - echo 'HELLO'
