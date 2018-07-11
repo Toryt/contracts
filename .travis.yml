@@ -15,3 +15,19 @@ matrix:
     - node_js: '8'
       script:
         - npm run wd
+jobs:
+  include:
+    - stage: tag
+      node_js: '8'
+      install: skip
+      script:
+        - echo TAG STAGE
+    - stage: publish
+      node_js: '8'
+      script:
+        - echo PUBLISH STAGE
+stages:
+  - test
+  - tag
+  - name: publish
+    if: tag = version/**
