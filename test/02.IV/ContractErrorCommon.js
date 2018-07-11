@@ -28,7 +28,12 @@ function expectStackInvariants (subject) {
   stack.must.be.a.string()
   const startOfStack = subject.name + ': ' + subject.message + os.EOL
   stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
-  const restOfStack = stack.replace(startOfStack, '')
+  const restOfStack = stack
+    .replace(startOfStack, '')
+    .split(os.EOL)
+    // remove empty lines that may occur in 'caused by' in Safari when used via Web Driver
+    .filter(l => !!l)
+    .join(os.EOL)
   is.stack(restOfStack).must.be.true()
   // noinspection JSUnresolvedVariable
   restOfStack.must.contain(subject._rawStack)
