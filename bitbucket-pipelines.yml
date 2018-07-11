@@ -25,14 +25,17 @@ pipelines:
               - node
             script:
               - scripts/test.sh
+        - step:
+            name: Browserstack
+            image: node:carbon
+            caches:
+              - node
+            script:
+              - npm install
+              - npm run wd
       - step:
           name: Tag
-          image: node:10
-          caches:
-            - node
           script:
-            - npm install
-            - npm run wd
             - scripts/tag.sh
     feature/*:
       - parallel:
@@ -57,14 +60,17 @@ pipelines:
               - node
             script:
               - scripts/test.sh
+        - step:
+            name: Browserstack
+            image: node:carbon
+            caches:
+              - node
+            script:
+              - npm install
+              - npm run wd
       - step:
           name: Tag
-          image: node:10
-          caches:
-            - node
           script:
-            - npm install
-            - npm run wd
             - scripts/tag.sh
   tags:
     version/**:
