@@ -107,9 +107,15 @@ describe('javascript/Error', function () {
       try {
         throwAnError()
       } catch (err) {
-        testUtil.log('err.stack: %s', err.stack)
-        err.stack.must.be.truthy()
-        err.stack.must.contain('createAnError')
+        const stack = err.stack
+        stack.must.be.truthy()
+        stack.must.be.a.string()
+        testUtil.log('err.stack: %s', stack)
+        stack.must.contain('throwAnError')
+        if (testUtil.environment !== 'edge') {
+          // Edge restarts stack trace on throw
+          stack.must.contain('createAnError')
+        }
         // and be on the first line
         const lines = err.stack.split('\n')
         if (lines[0] === err.toString()) {
@@ -117,13 +123,18 @@ describe('javascript/Error', function () {
           lines.shift()
         }
         lines.forEach((l, i) => {
-          l.must[i === 0 ? 'to' : 'not'].contain('createAnErrorOne')
-          if (testUtil.environment !== 'safari') {
-            // Safari EATS stack frames
-            l.must[i === 1 ? 'to' : 'not'].contain('createAnErrorTwo')
-            l.must[i === 2 ? 'to' : 'not'].contain('throwAnError')
+          if (testUtil.environment === 'edge') {
+            // Edge restarts stack trace on throw
+            l.must[i === 0 ? 'to' : 'not'].contain('throwAnError')
           } else {
-            l.must[i === 1 ? 'to' : 'not'].contain('throwAnError')
+            l.must[i === 0 ? 'to' : 'not'].contain('createAnErrorOne')
+            if (testUtil.environment === 'safari') {
+              // Safari EATS stack frames
+              l.must[i === 1 ? 'to' : 'not'].contain('throwAnError')
+            } else {
+              l.must[i === 1 ? 'to' : 'not'].contain('createAnErrorTwo')
+              l.must[i === 2 ? 'to' : 'not'].contain('throwAnError')
+            }
           }
         })
       }
