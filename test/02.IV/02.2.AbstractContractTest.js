@@ -93,12 +93,18 @@ describe('IV/AbstractContract', function () {
       const anonymousFunction = function () {}
 
       const result = AbstractContract.contractFunctionDisplayName(anonymousFunction)
+      testUtil.log('contractFunctionDisplayName: %s', result)
       // in ES6, this function has the name of the variable
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
       // This is, at 2017-03-26, implemented in node, Chrome and Safari on Mac, but not yet in Firefox 52.
       // Firefox 53, based on Gecko 53, will ship in April 2017, and will have this functionality:
       // https://developer.mozilla.org/en-US/Firefox/Releases/53
-      result.must.equal(AbstractContract.displayNamePrefix + 'anonymousFunction')
+      if (testUtil.environment === 'edge') {
+        // This does not work on edge
+        result.must.equal(AbstractContract.displayNamePrefix + '<<anonymous>>')
+      } else {
+        result.must.equal(AbstractContract.displayNamePrefix + 'anonymousFunction')
+      }
     })
 
     it('returns the expected display name with an anonymous function with an implementation property that has a display name', function () {
@@ -155,12 +161,18 @@ describe('IV/AbstractContract', function () {
       f.displayName = 'display name'
 
       const result = AbstractContract.contractFunctionDisplayName(f)
+      testUtil.log('contractFunctionDisplayName with a display name: %s', result)
       // in ES6, this function has the name of the variable
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
       // This is, at 2017-03-26, implemented in node, Chrome and Safari on Mac, but not yet in Firefox 52.
       // Firefox 53, based on Gecko 53, will ship in April 2017, and will have this functionality:
       // https://developer.mozilla.org/en-US/Firefox/Releases/53
-      result.must.equal(AbstractContract.displayNamePrefix + 'f')
+      if (testUtil.environment === 'edge') {
+        // This does not work on edge
+        result.must.equal(AbstractContract.displayNamePrefix + '<<anonymous>>')
+      } else {
+        result.must.equal(AbstractContract.displayNamePrefix + 'f')
+      }
     })
 
     it('returns the expected display name with an anonymous function as a method', function () {
