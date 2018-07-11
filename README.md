@@ -93,6 +93,35 @@ Javascript testing framework.
 In that respect, it might also prove useful to use other browser testing services [supported by Intern] in the future.
 
 
+Browsers
+--------
+
+Some workarounds were made to accommodate different browsers. This only concerns using `Error` stack traces
+to report where a contract has failed.
+
+Whether the `error.toString()` is added at front of an `error.stack` differs, but is not a problem to take that into 
+account.
+
+Chrome has no issues, on any platform, nor headless. 
+
+Firefox add an extra `EOL` after a stack trace, but is not a problem to take that into account.
+Secondly, Firefox has issues with Selenium for remote tests. This requires the addition of `--async-polling false `
+when doing automated, Browserstack tests.
+
+Edge resets the stack trace on throw. This is not an issue in the core code.
+
+Safari support for traces is bad. First of all, Safari haphazardly skips frames in its stack trace.
+Second, there is a difference in the stack traces generated when using Safari 'live', and via Web Driver.
+In the latter case, no lines or columns are reported, and the stack contains a lot of empty lines.
+As a result, _it is impossible to return a sensible location of contract failure consistently with Safari_.
+A best effort is will need to suffice.
+
+Environment detection is used in tests to exclude some conditions in some environments.
+The environment detection is fragile, however. A better solution should be found. However,
+generally weakening the conditions is not a good idea. For most browsers, a good location reporting
+is possible, and should be tested, to guard against regression.
+
+
 Versions
 --------
 
