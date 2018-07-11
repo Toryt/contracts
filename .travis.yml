@@ -9,6 +9,6 @@ os:
 # Testing on OS X makes no sense, when everything is tested on linux and in browsers
 matrix:
   include:
-    - node_js: 'carbon'
+    - node_js: '8'
       script:
         - echo 'HELLO'
