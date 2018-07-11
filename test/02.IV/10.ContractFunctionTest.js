@@ -209,12 +209,14 @@ describe('IV/ContractFunction', function () {
       // do is to point to where the contract function is called. The same applies to Meta errors (in conditions),
       // since we cannot create a stack trace that points in the condition. The caused by probably will for meta errors,
       // but there is no such thing for pre-, post- or exception conditions.
-      if (!recursive) {
-        stackLines[0].must.contain('callAndExpectException')
-      } else {
-        stackLines[0].must.contain(recursive)
-        stackLines[2].must.contain(recursive)
-        stackLines[4].must.contain('callAndExpectException')
+      if (testUtil.environment !== 'safari') {
+        if (!recursive) {
+          stackLines[0].must.contain('callAndExpectException')
+        } else {
+          stackLines[0].must.contain(recursive)
+          stackLines[2].must.contain(recursive)
+          stackLines[4].must.contain('callAndExpectException')
+        }
       }
     }
     endsNominally.must.be.false()
@@ -227,7 +229,7 @@ describe('IV/ContractFunction', function () {
         // noinspection JSUnresolvedVariable
         exception.condition.must.equal(violatedCondition)
         if (!self) {
-          must(exception.self).must.be.falsy()
+          must(exception.self).be.falsy()
         } else {
           exception.self.must.equal(self)
         }
