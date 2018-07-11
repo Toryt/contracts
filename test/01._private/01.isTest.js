@@ -75,7 +75,8 @@ string`
       const error = new Error('This is an error to get a platform dependent stack')
       const lines = error.stack.split(os.EOL)
       lines
-        .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line
+        .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
+        .filter((line, index) => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
         .forEach(line => {
           const result = is.stackLocation(line)
           testUtil.log(`${result}: ${line}`)
