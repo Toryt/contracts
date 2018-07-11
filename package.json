@@ -12,8 +12,8 @@
     "legalReport": "legally -l -r && tldrlegal",
     "browserify": "browserify -s toryt.contracts.iv --outfile contracts.js lib/IV/Contract.js",
     "browserifyTest": "browserify -r must --outfile browser/test/suite.js test/**/*Test.js",
-    "browserTest": "mochify --allow-chrome-as-root 'test/**/*Test.js'",
-    "watch": "mochify --watch 'test/**/*Test.js'",
+    "browserTest": "mochify --allow-chrome-as-root --reporter dot 'test/**/*Test.js'",
+    "watch": "mochify --watch --reporter min 'test/**/*Test.js'",
     "wd": "mochify --wd --async-polling false --reporter min 'test/**/*Test.js'"
   },
   "repository": {
