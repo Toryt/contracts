@@ -25,4 +25,4 @@ jobs:
       node_js: '8'
       install: skip
       script:
-        - echo TAG STAGE
+        - scripts/travisGithubTag.sh
