@@ -27,7 +27,11 @@ pipelines:
               - scripts/test.sh
       - step:
           name: Tag
+          image: node:10
+          caches:
+            - node
           script:
+            - npm install
             - npm run wd
             - scripts/tag.sh
     feature/*:
