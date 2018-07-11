@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-  - "6"
-  - "8"
-  - "10"
-"os":
-  - "linux"
-# Node js is not supported on macOS on Travis
+  - '6'
+  - '8'
+  - '10'
+os:
+  - linux
 # Windows is not supported at all. Bummer.
+# Testing on OS X makes no sense, when everything is tested on linux and in browsers
