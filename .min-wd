@@ -29,8 +29,8 @@ const desktop = [
   {browser: 'Firefox', os: 'OS X'}, // NOTE initially ok, with `--async-polling false`
   {browser: 'Firefox', os: 'Windows'}, // NOTE initially ok, with `--async-polling false`
   {browser: 'Edge', os: 'Windows'}, // NOTE initially ok, with exception of contract function name (test workaround)
-*/
   {browser: 'Safari', os: 'OS X'}, // NOTE initially ok, with exception of stack trace being bogus in Web Driver mode, and skipping frames in general
+*/
 ]
   .map(d => ({
     name: `${d.browser} - ${d.os}`,
@@ -41,9 +41,9 @@ const mobile = [
 /*
   'Samsung Galaxy S9', // NOTE initially ok
   'Samsung Galaxy Note 4', // NOTE initially ok
+*/
   'iPhone X', // MUDO many errors
   'iPad Pro' // MUDO many errors
-*/
 ]
   .map(m => ({
     name: m,
