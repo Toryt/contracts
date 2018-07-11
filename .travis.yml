@@ -1,3 +1,7 @@
+branches:
+  except:
+    - /^bitbucket\/.*/
+    - /^travis\/.*/
 language: node_js
 cache:
   directories:
