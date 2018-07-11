@@ -166,8 +166,12 @@ function anyCasesGenerators (discriminator) {
 function environment () {
   // eslint-disable-next-line
   if ((new Function('try {return this === global;}catch(e){return false;}'))()) {
+    console.log('Node (no User Agent')
     return 'node'
   }
+  // noinspection JSUnresolvedVariable
+  const ua = navigator.userAgent
+  console.log(`User Agent: "${ua}"`)
   // noinspection JSUnresolvedVariable
   if (
     // eslint-disable-next-line
@@ -206,8 +210,6 @@ function environment () {
   }
   // noinspection JSUnresolvedVariable
   if (window.CSS) {
-    // noinspection JSUnresolvedVariable
-    const ua = navigator.userAgent
     if (ua.indexOf('HeadlessChrome')) {
       return 'headless-chrome'
     }
@@ -236,6 +238,9 @@ function mustBeCallerLocation (actual, expected) {
   trimLineAndColumnPattern(expected).must.equal(trimLineAndColumnPattern(actual))
 }
 
+const env = environment()
+console.log(`Detected environment "${env}"`)
+
 module.exports = {
   x: x,
   expectOwnFrozenProperty: expectOwnFrozenProperty,
@@ -249,6 +254,6 @@ module.exports = {
   regExpEscape: regExpEscape,
   propertyIsWritable: propertyIsWritable,
   anyCasesGenerators: anyCasesGenerators,
-  environment: environment(),
+  environment: env,
   mustBeCallerLocation: mustBeCallerLocation
 }
