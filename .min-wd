@@ -23,15 +23,13 @@ const osVersion = {
          But that now applies to all tests */
 
 const desktop = [
-/*
-*/
   {browser: 'Chrome', os: 'OS X', os_version: 'High Sierra'}, // NOTE initially ok
   {browser: 'Chrome', os: 'Windows'}, // NOTE initially ok
   {browser: 'Firefox', os: 'OS X'}, // NOTE initially ok, with `--async-polling false`
   {browser: 'Firefox', os: 'Windows'}, // NOTE initially ok, with `--async-polling false`
+  {browser: 'Edge', os: 'Windows'}, // NOTE initially ok, with exception of contract function name (test workaround)
 /*
   {browser: 'Safari', os: 'OS X'}, // MUDO stops after errors
-  {browser: 'Edge', os: 'Windows'} // MUDO 3 fails
 */
 ]
   .map(d => ({
