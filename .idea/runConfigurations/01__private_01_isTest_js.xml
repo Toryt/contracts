@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="01._private/01.isTest.js" type="mocha-javascript-test-runner" factoryName="Mocha">
-    <node-interpreter>project</node-interpreter>
+    <node-interpreter>$USER_HOME$/.nvm/versions/node/v8.11.3/bin/node</node-interpreter>
     <node-options />
     <working-directory>$PROJECT_DIR$</working-directory>
     <pass-parent-env>true</pass-parent-env>
