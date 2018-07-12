@@ -71,7 +71,7 @@ use another browser anyway.
 
 Once we get things working with [Browserstack] on Windows 10 for the latest versions of Chrome, Firefox, Edge,
 and possibly Internet Explorer, and on the latest version of iOS, and possibly Android, tests will be extended to
-go back in versions as much as possible, to see how compatible the code is. If the latest versions to date are
+go back in versions as much as possible, to see how compatible  the code is. If the latest versions to date are
 supported, this will be our basis. Code will not be changed to support older versions, but it is interesting to
 know how far back we can go.
 
