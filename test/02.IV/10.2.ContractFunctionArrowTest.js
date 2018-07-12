@@ -41,7 +41,7 @@ const os = require('os')
    Tests that require this in the implementation function are removed. That doesn't work with arrow functions. */
 
 // noinspection FunctionTooLongJS
-describe.only('IV/ContractFunction-ArrowFunctions', function () {
+describe('IV/ContractFunction-ArrowFunctions', function () {
   let fibonacci
 
   const fibonacciImpl = n => n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2)
