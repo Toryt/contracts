@@ -39,6 +39,8 @@ describe('IV/Contract', function () {
       Contract.must.have.ownProperty('isAContractFunction')
       // noinspection JSUnresolvedVariable
       Contract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
+      Contract.falseCondition.must.equal(AbstractContract.falseCondition)
+      Contract.mustNotHappen.must.equal(AbstractContract.mustNotHappen)
     })
   })
 
