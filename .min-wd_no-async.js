@@ -1,4 +1,13 @@
-const build = `manual ${new Date().toISOString()}`
+/* Note: Firefox tests work up until version 58. After that, Selenium has a problem:
+         POST /session/14641de4c7f12c2f9b2eaf307a0955edf23dc59b/timeouts/async_script did not match a known command
+         No combination of browserstack.geckodriver and browserstack.selenium_version that worked was found.
+         The solution is to call mochify with `--async-polling false`.
+         Firefox definitions are in a separate file, to make a separate mochify call possible */
+
+const travisBuild = process.env.TRAVIS_BUILD_NUMBER
+const build = travisBuild
+  ? `travis/${travisBuild.padStart(5, '0')}`
+  : `manual ${new Date().toISOString()}`
 console.log(`build: ${build}`)
 
 const capabilitiesBase = {
@@ -16,32 +25,21 @@ const osVersion = {
 
 /* We only test the last version of every combination, by not specifying any version.
    By running the tests every week, we stay compatible. */
-/* Note: Firefox tests work up until version 58. After that, Selenium has  a problem:
-         POST /session/14641de4c7f12c2f9b2eaf307a0955edf23dc59b/timeouts/async_script did not match a known command
-         No combination of browserstack.geckodriver and browserstack.selenium_version that worked was found.
-         The solution is to call mochify with `--async-polling false`.
-         But that now applies to all tests */
 
 const desktop = [
-  {browser: 'Chrome', os: 'OS X', os_version: 'High Sierra'}, // NOTE initially ok
-  {browser: 'Chrome', os: 'Windows'}, // NOTE initially ok
   {browser: 'Firefox', os: 'OS X'}, // NOTE initially ok, with `--async-polling false`
-  {browser: 'Firefox', os: 'Windows'}, // NOTE initially ok, with `--async-polling false`
-  {browser: 'Edge', os: 'Windows'}, // NOTE initially ok, with exception of contract function name (test workaround)
-  {browser: 'Safari', os: 'OS X'} // NOTE initially ok, with exception of stack trace being bogus in Web Driver mode, and skipping frames in general
+  {browser: 'Firefox', os: 'Windows'} // NOTE initially ok, with `--async-polling false`
 ]
   .map(d => ({
     name: `${d.browser} - ${d.os}`,
     capabilities: Object.assign(d, capabilitiesBase, {os_version: osVersion[d.os]})
   }))
-
 const mobile = [
-  'Samsung Galaxy S9', // NOTE initially ok
   'Samsung Galaxy Note 4', // NOTE initially ok
   'iPhone X', // NOTE initially ok, with exception of stack trace being bogus in Web Driver mode, and skipping frames in general
   'iPad Pro' // NOTE initially ok, with exception of stack trace being bogus in Web Driver mode, and skipping frames in general
-]
-  .map(m => ({
+].map(m => (
+  {
     name: m,
     capabilities: Object.assign(
       {
@@ -50,7 +48,8 @@ const mobile = [
       },
       capabilitiesBase
     )
-  }))
+  }
+))
 
 const definitions = desktop.concat(mobile)
 console.log(`${definitions.length}:`, definitions.map(d => d.name).join(', '))
