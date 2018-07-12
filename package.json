@@ -1,8 +1,8 @@
 {
   "name": "@toryt/contracts-iv",
-  "version": "4.0.0-pre.0",
+  "version": "4.0.0-pre.1",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
-  "main": "src/IV/Contract.js",
+  "main": "lib/IV/Contract.js",
   "directories": {
     "test": "test"
   },

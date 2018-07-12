@@ -3,6 +3,7 @@
 browser
 coverage
 scripts
+test
 .min-wd
 .travis.yml
 bitbucket-pipelines.yml
