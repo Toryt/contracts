@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/toryt/contracts.git"
+    "url": "https://github.com/Toryt/contracts.git"
   },
   "keywords": [
     "design-by-contract",
@@ -38,9 +38,9 @@
   },
   "contributors": [],
   "license": "Apache-2.0",
-  "homepage": "https://bitbucket.org/toryt/contracts#readme",
+  "homepage": "https://github.com/Toryt/contracts",
   "bugs": {
-    "url": "https://bitbucket.org/toryt/contracts/issues?status=new&status=open"
+    "url": "https://github.com/Toryt/contracts/issues"
   },
   "engines": {
     "node": ">=8.11.2",
