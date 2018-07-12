@@ -19,6 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
+const must = require('must')
 
 describe('javascript/Function', function () {
   describe('#bind()', function () {
@@ -218,6 +219,83 @@ describe('javascript/Function', function () {
       } catch (err) {
         err.must.be.an.error(TypeError)
       }
+    })
+  })
+  describe('name', function () {
+    describe('isolated', function () {
+      it('the name of a function is explicit', function () {
+        function thisIsAFunction () {}
+
+        thisIsAFunction.name.must.equal('thisIsAFunction')
+      })
+      it('the name of an anonymous function is inferred, except on Edge', function () {
+        const thisIsAFunction = function () {}
+
+        thisIsAFunction.name.must.equal(testUtil.environment === 'edge' ? '' : 'thisIsAFunction')
+      })
+      it('the name of an arrow function is inferred, even on Edge', function () {
+        const thisIsAFunction = () => null
+
+        thisIsAFunction.name.must.equal('thisIsAFunction')
+      })
+      it('the name of a named function is fixed', function () {
+        const thisIsAnotherFunction = function thisIsAFunction () {}
+
+        thisIsAnotherFunction.name.must.equal('thisIsAFunction')
+      })
+    })
+    describe('method', function () {
+      it('the name of an anonymous function method is inferred', function () {
+        const obj = {thisIsAFunction: function () {}}
+
+        obj.thisIsAFunction.name.must.equal('thisIsAFunction')
+      })
+      it('the name of an arrow function method is inferred', function () {
+        const obj = {thisIsAFunction: () => null}
+
+        obj.thisIsAFunction.name.must.equal('thisIsAFunction')
+      })
+      it('the name of a named function method is fixed', function () {
+        const obj = {thisIsAnotherFunction: function thisIsAFunction () {}}
+
+        obj.thisIsAnotherFunction.name.must.equal('thisIsAFunction')
+      })
+    })
+    describe('argument', function () {
+      it('the name of an anonymous function argument is the empty string', function () {
+        function test (f) {
+          f.name.must.be.a.string()
+          f.name.must.equal('')
+        }
+
+        test(function () {})
+      })
+      it('the name of an arrow function argument is the empty string', function () {
+        function test (f) {
+          f.name.must.be.a.string()
+          f.name.must.equal('')
+        }
+
+        test(() => null)
+      })
+      it('the name of an named function argument is fixed', function () {
+        function test (f) {
+          f.name.must.equal('thisIsAFunction')
+        }
+
+        test(function thisIsAFunction () {})
+      })
+    })
+    describe('inline', function () {
+      it('the name of an anonymous function is the empty string', function () {
+        (function () {}).name.must.equal('')
+      })
+      it('the name of an arrow function is the empty string', function () {
+        (() => null).name.must.equal('')
+      })
+      it('the name of an named function is fixed', function () {
+        (function thisIsAFunction () {}).name.must.equal('thisIsAFunction')
+      })
     })
   })
 })
