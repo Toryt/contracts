@@ -1,6 +1,9 @@
 .idea
-
-How_to_publish.md
-
-coverage
 .nyc_output
+browser
+coverage
+scripts
+.min-wd
+.travis.yml
+bitbucket-pipelines.yml
+How_to_publish.md
