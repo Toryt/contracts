@@ -61,9 +61,7 @@ describe('IV/ContractFunction', function () {
         return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2)
       }
     ],
-    exception: [
-      function () { return false }
-    ]
+    exception: Contract.mustNotHappen
   }).implementation(fibonacciImpl)
 
   const wrongParameter = 4
@@ -95,9 +93,7 @@ describe('IV/ContractFunction', function () {
         return n < 1 || result === n * f(n - 1)
       }
     ],
-    exception: [
-      function () { return false }
-    ]
+    exception: Contract.mustNotHappen
   })
 
   // noinspection JSUnresolvedFunction
@@ -224,7 +220,7 @@ describe('IV/ContractFunction', function () {
 
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
-      callAndExpectException(self, func, parameter, function (exception) {
+      callAndExpectException(self, func, parameter, exception => {
         exception.must.be.an.instanceof(PreconditionViolation)
         // noinspection JSUnresolvedVariable
         exception.condition.must.equal(violatedCondition)
@@ -248,7 +244,7 @@ describe('IV/ContractFunction', function () {
 
   function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
-    callAndExpectException(self, functionWithAMetaError, param, function (exception) {
+    callAndExpectException(self, functionWithAMetaError, param, exception => {
       exception.must.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
       exception.condition.must.equal(conditionWithAMetaError)
@@ -352,11 +348,11 @@ describe('IV/ContractFunction', function () {
     // eslint-disable-next-line no-unused-vars
     const ignore = self.defensiveIntegerSum(5)
   })
-  argumentsOfWrongType.forEach(function (wrongArg) {
+  argumentsOfWrongType.forEach(wrongArg => {
     failsOnPreconditionViolation(undefined, fibonacci, wrongArg, fibonacci.contract.pre[0])
   })
   failsOnPreconditionViolation(undefined, fibonacci, -5, fibonacci.contract.pre[1])
-  argumentsOfWrongType.forEach(function (wrongArg) {
+  argumentsOfWrongType.forEach(wrongArg => {
     failsOnPreconditionViolation(self, self.fibonacci, wrongArg, fibonacci.contract.pre[0])
   })
   failsOnPreconditionViolation(self, self.fibonacci, -5, fibonacci.contract.pre[1])
@@ -496,9 +492,7 @@ describe('IV/ContractFunction', function () {
     post: [
       function (name, ignore) { return this.name === name }
     ],
-    exception: [
-      function () { return false }
-    ]
+    exception: Contract.mustNotHappen
   })
 
   // noinspection ParameterNamingConventionJS
