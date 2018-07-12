@@ -166,7 +166,7 @@ function anyCasesGenerators (discriminator) {
 function environment () {
   // eslint-disable-next-line
   if ((new Function('try {return this === global;}catch(e){return false;}'))()) {
-    console.log('Node (no User Agent')
+    console.log('Node (no User Agent)')
     return 'node'
   }
   // noinspection JSUnresolvedVariable
