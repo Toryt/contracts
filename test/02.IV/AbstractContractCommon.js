@@ -98,7 +98,11 @@ function expectConstructorPost (pre, post, exception, location, result) {
   function expectArrayPost (array, propName, privatePropName) {
     result[propName].must.be.an.array()
     if (!array) {
-      result[propName].must.be.empty()
+      if (propName === 'exception') {
+        result[propName].must.eql(AbstractContract.mustNotHappen)
+      } else {
+        result[propName].must.be.empty()
+      }
     } else {
       result[privatePropName].must.not.equal(array) // it must be copy, don't share the array
       result[privatePropName].must.eql(array)
@@ -117,6 +121,7 @@ function expectConstructorPost (pre, post, exception, location, result) {
   })
 }
 
+// noinspection OverlyComplexFunctionJS
 function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName, otherPropertyValue) {
   function candidate () {}
 
