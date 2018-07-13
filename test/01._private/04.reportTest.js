@@ -177,7 +177,7 @@ this function should have a display name   ` // trim
           } else if (s.toString().indexOf('Arguments') >= 0) {
             result.must.equal('arguments')
           } else {
-            result.must.equal(s.constructor.displayName || s.constructor.name)
+            result.must.equal(s.constructor.name)
           }
         } else {
           result.must.equal(typeof s)
