@@ -74,18 +74,16 @@ describe('IV/PromiseContractFunction', function () {
         function () {
           // noinspection IfStatementWithTooManyBranchesJS
           if (n === 0) {
-            return 0
+            resolve(0)
           } else if (n === 1) {
-            return 1
+            resolve(1)
           } else if (n === 4) {
-            return -3 // wrong!
+            resolve(-3) // wrong!
           } else {
-            return Promise.all([
+            resolve(Promise.all([
               fibonacciWrong(n - 1),
               fibonacciWrong(n - 2)
-            ]).then(function (results) {
-              return results[0] + results[1]
-            })
+            ]).then(results => results[0] + results[1]))
           }
         },
         0
@@ -276,18 +274,16 @@ describe('IV/PromiseContractFunction', function () {
           function () {
             // noinspection IfStatementWithTooManyBranchesJS
             if (n === 0) {
-              return 0
+              resolve(0)
             } else if (n === 1) {
-              return 1
+              resolve(1)
             } else if (n === 4) {
-              return -3 // wrong!
+              resolve(-3) // wrong!
             } else {
-              return Promise.all([
+              resolve(Promise.all([
                 self.fibonacciWrong(n - 1),
                 self.fibonacciWrong(n - 2)
-              ]).then(function (results) {
-                return results[0] + results[1]
-              })
+              ]).then(results => results[0] + results[1]))
             }
           },
           0
