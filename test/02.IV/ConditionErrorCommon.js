@@ -39,7 +39,6 @@ function generateMultiLineAnonFunction () {
     x += 'is to shortened version of this'
     x += 'as a concise representation'
     x += 'this function should have no name'
-    x += 'and no display name'
     return x
   }
 }
@@ -47,20 +46,20 @@ function generateMultiLineAnonFunction () {
 const conditionCases = [conditionCase, generateMultiLineAnonFunction()]
 
 function functionWithAName () {}
-property.setAndFreeze(functionWithAName, 'name', '  This is a display name  ') // trim
+property.setAndFreeze(functionWithAName, 'name', '  This is a name  ') // trim
 conditionCases.push(functionWithAName)
 const other = generateMultiLineAnonFunction()
 property.setAndFreeze(
   other,
   'name',
-  `   This is a multi-line display name
+  `   This is a multi-line name
 The intention of this test
 is to verify
 
 whether we get an acceptable
 is to shortened version of this
 as a concise representation
-this function should have a display name   ` // trim
+this function should have a name   ` // trim
 )
 conditionCases.push(other)
 

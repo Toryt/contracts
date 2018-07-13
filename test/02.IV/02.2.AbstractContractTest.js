@@ -88,7 +88,7 @@ describe('IV/AbstractContract', function () {
   function generateIAGCFTests (isAGeneralizedContractFunction) {
     it(
       'says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 ' +
-       'properties are frozen, and it has the expected display name',
+       'properties are frozen, and it has the expected name',
       function () {
         const candidate = common.createCandidateContractFunction()
         isAGeneralizedContractFunction(candidate).must.be.truthy()
@@ -141,7 +141,7 @@ describe('IV/AbstractContract', function () {
       .forEach(v => {
         it(
           'says yes if there is an implementation Function, an AbstractContract, and a location that is ' + v +
-          ', and all 3 properties are frozen, and it has the expected display name',
+          ', and all 3 properties are frozen, and it has the expected name',
           function () {
             const candidate = common.createCandidateContractFunction(null, 'location', v)
             AbstractContract.isAGeneralContractFunction(candidate).must.be.truthy()

@@ -68,8 +68,7 @@ describe('_private/report', function () {
         x += 'whether we get an acceptable'
         x += 'is to shortened version of this'
         x += 'as a concise representation'
-        x += 'this function should have no name'
-        x += 'and no display name  ' // trim
+        x += 'this function should have no name  ' // trim
         return x
       }
     }
@@ -80,14 +79,14 @@ describe('_private/report', function () {
     property.setAndFreeze(
       other,
       'name',
-      `   This is a multi-line display name
+      `   This is a multi-line name
 The intention of this test
 is to verify
 
 whether we get an acceptable
 is to shortened version of this
 as a concise representation
-this function should have a display name   ` // trim
+this function should have a name   ` // trim
     )
     stuffToo.push(other)
 
