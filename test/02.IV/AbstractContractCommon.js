@@ -97,7 +97,7 @@ function expectInvariants (/* AbstractContract */ subject) {
 function expectArrayPost (result, array, propName, privatePropName) {
   result[propName].must.be.an.array()
   if (!array) {
-    if (propName === 'exception') {
+    if (propName === 'exception' || propName === 'fastException') {
       result[propName].must.eql(AbstractContract.mustNotHappen)
     } else {
       result[propName].must.be.empty()
