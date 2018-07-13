@@ -14,9 +14,7 @@
     "browserifyTest": "browserify -r must --outfile browser/test/suite.js test/**/*Test.js",
     "browserTest": "mochify --allow-chrome-as-root --reporter dot 'test/**/*Test.js'",
     "watch": "mochify --watch --reporter min 'test/**/*Test.js'",
-    "wd-async": "mochify --wd --wd-file .min-wd_async.js --timeout 5000 --reporter min 'test/**/*Test.js'",
-    "wd-no_async": "mochify --wd --wd-file .min-wd_no-async.js --timeout 5000 --async-polling false --reporter min 'test/**/*Test.js'",
-    "wd": "npm run wd-async && npm run wd-no_async"
+    "wd": "mochify --wd --wd-file .min-wd.js --async-polling false --reporter dot 'test/**/*Test.js'"
   },
   "repository": {
     "type": "git",
