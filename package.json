@@ -8,7 +8,7 @@
   },
   "scripts": {
     "pretest": "npm-check -i standard -i mocha-reporter -i legally -i tldrlegal -i inherits -i _process -i kindof -i lodash._root -i lodash._createwrapper -i lodash.wrap -i oolong -i json-stringify-safe -i egal; npm outdated || exit 0",
-    "test": "standard && nyc mocha 'test/**/*Test.js'",
+    "test": "standard && nyc mocha --reporter landing 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "browserify": "browserify -s toryt.contracts.iv --outfile contracts.js lib/IV/Contract.js",
     "browserifyTest": "browserify -r must --outfile browser/test/suite.js test/**/*Test.js",
