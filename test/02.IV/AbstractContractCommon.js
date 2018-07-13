@@ -94,28 +94,28 @@ function expectInvariants (/* AbstractContract */ subject) {
   }
 }
 
-function expectConstructorPost (pre, post, exception, location, result) {
-  function expectArrayPost (array, propName, privatePropName) {
-    result[propName].must.be.an.array()
-    if (!array) {
-      if (propName === 'exception') {
-        result[propName].must.eql(AbstractContract.mustNotHappen)
-      } else {
-        result[propName].must.be.empty()
-      }
+function expectArrayPost (result, array, propName, privatePropName) {
+  result[propName].must.be.an.array()
+  if (!array) {
+    if (propName === 'exception') {
+      result[propName].must.eql(AbstractContract.mustNotHappen)
     } else {
-      result[privatePropName].must.not.equal(array) // it must be copy, don't share the array
-      result[privatePropName].must.eql(array)
-      Object.isFrozen(result[privatePropName])
-      result[propName].must.eql(array)
-      result[propName].must.not.equal(result[privatePropName]) // it must be copy, don't share the array
+      result[propName].must.be.empty()
     }
+  } else {
+    result[privatePropName].must.not.equal(array) // it must be copy, don't share the array
+    result[privatePropName].must.eql(array)
+    Object.isFrozen(result[privatePropName])
+    result[propName].must.eql(array)
+    result[propName].must.not.equal(result[privatePropName]) // it must be copy, don't share the array
   }
+}
 
+function expectConstructorPost (pre, post, exception, location, result) {
   it('has the expectedProperties, and adheres to the invariants', function () {
-    expectArrayPost(pre, 'pre', '_pre')
-    expectArrayPost(post, 'post', '_post')
-    expectArrayPost(exception, 'exception', '_exception')
+    expectArrayPost(result, pre, 'pre', '_pre')
+    expectArrayPost(result, post, 'post', '_post')
+    expectArrayPost(result, exception, 'exception', '_exception')
     testUtil.mustBeCallerLocation(result.location, location)
     expectInvariants(result)
   })
@@ -205,6 +205,7 @@ module.exports = {
   constructorExceptionCases: constructorExceptionCases,
   location: location,
   expectInvariants: expectInvariants,
+  expectArrayPost: expectArrayPost,
   expectConstructorPost: expectConstructorPost,
   createCandidateContractFunction: createCandidateContractFunction,
   generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
