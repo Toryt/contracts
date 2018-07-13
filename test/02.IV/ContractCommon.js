@@ -37,7 +37,7 @@ function expectInvariants (subject) {
 // noinspection FunctionNamingConventionJS
 function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
   common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
-  const self = this // jshint ignore:line
+  const self = this
 
   describe('#implementation', function () {
     function expectPost (contract, implFunction, location, result) {
