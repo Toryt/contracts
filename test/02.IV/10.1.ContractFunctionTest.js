@@ -311,11 +311,37 @@ describe('IV/ContractFunction', function () {
     fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
   }
 
-  describe('names', function () {
-    it('has the right name', function () {
+  describe('#name', function () {
+    it('fibonacci has the right name', function () {
       fibonacciImpl.name.must.equal('fibonacciImpl')
       testUtil.log(`fibonacci.name: %s`, fibonacci.name)
       fibonacci.name.must.equal(`${AbstractContract.displayNamePrefix} ${fibonacciImpl.name}`)
+    })
+    it('fibonacciWrong has the right name', function () {
+      testUtil.log(`fibonacciWrong.name: %s`, fibonacciWrong.name)
+      fibonacciWrong.name.must.equal(`${AbstractContract.displayNamePrefix} fWrong`)
+    })
+    it('self.fibonacciWrong has the right name', function () {
+      testUtil.log(`self.fibonacciWrong.name: %s`, self.fibonacciWrong.name)
+      self.fibonacciWrong.name.must.equal(`${AbstractContract.displayNamePrefix} fWrong`)
+    })
+    const anonymousContractFunctions = [
+      {name: 'factorial', f: factorial},
+      {name: 'factorialIterative', f: factorialIterative},
+      {name: 'defensiveIntegerSum', f: defensiveIntegerSum},
+      {name: 'fastDefensiveIntegerSum', f: fastDefensiveIntegerSum},
+      {name: 'fastDefensiveIntegerSumWrong', f: fastDefensiveIntegerSumWrong},
+      {name: 'self.fibonacci', f: self.fibonacci},
+      {name: 'self.factorial', f: self.factorial},
+      {name: 'self.defensiveIntegerSum', f: self.defensiveIntegerSum},
+      {name: 'self.fastDefensiveIntegerSum', f: self.fastDefensiveIntegerSum},
+      {name: 'self.fastDefensiveIntegerSumWrong', f: self.fastDefensiveIntegerSumWrong}
+    ]
+    anonymousContractFunctions.forEach(a => {
+      it(`${a.name} has the right name`, function () {
+        testUtil.log(`${a.name}.name: ${a.f.name}`)
+        a.f.name.must.contain(`${AbstractContract.displayNamePrefix} function (n) {`)
+      })
     })
   })
   it("doesn't interfere when the implementation is correct", function () {
