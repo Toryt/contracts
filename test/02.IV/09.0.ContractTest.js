@@ -51,7 +51,7 @@ describe('IV/Contract', function () {
       common.constructorPostCases.forEach(post => {
         // noinspection JSUnresolvedVariable
         common.constructorExceptionCases.forEach(exception => {
-          describe('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
+          it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
             const preConditions = pre()
             const postConditions = post()
             const exceptionConditions = exception()

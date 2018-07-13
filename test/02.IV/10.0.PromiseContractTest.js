@@ -60,7 +60,7 @@ describe('IV/PromiseContract', function () {
         common.constructorExceptionCases.forEach(exception => {
           // noinspection JSUnresolvedVariable
           common.constructorExceptionCases.forEach(fastException => {
-            describe('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception + ', fastException: ' + fastException, function () {
+            it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception + ', fastException: ' + fastException, function () {
               const preConditions = pre()
               const postConditions = post()
               const exceptionConditions = exception()

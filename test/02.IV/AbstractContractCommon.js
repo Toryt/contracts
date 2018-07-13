@@ -112,13 +112,11 @@ function expectArrayPost (result, array, propName, privatePropName) {
 }
 
 function expectConstructorPost (pre, post, exception, location, result) {
-  it('has the expectedProperties, and adheres to the invariants', function () {
-    expectArrayPost(result, pre, 'pre', '_pre')
-    expectArrayPost(result, post, 'post', '_post')
-    expectArrayPost(result, exception, 'exception', '_exception')
-    testUtil.mustBeCallerLocation(result.location, location)
-    expectInvariants(result)
-  })
+  expectArrayPost(result, pre, 'pre', '_pre')
+  expectArrayPost(result, post, 'post', '_post')
+  expectArrayPost(result, exception, 'exception', '_exception')
+  testUtil.mustBeCallerLocation(result.location, location)
+  expectInvariants(result)
 }
 
 // noinspection OverlyComplexFunctionJS
