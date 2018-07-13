@@ -243,8 +243,8 @@ describe('IV/AbstractContract', function () {
       {propertyName: 'implementation', expected: 'a Function', extra: [new AbstractContract({})]},
       {propertyName: 'bind', expected: 'AbstractContract.bindContractFunction', extra: []},
       {
-        propertyName: 'displayName',
-        expected: 'the contractFunctionDisplayName',
+        propertyName: 'name',
+        expected: 'the contractFunction.name',
         extra: ['candidate', AbstractContract.namePrefix]
       }
     ].forEach(aCase => {

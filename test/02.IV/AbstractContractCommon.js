@@ -150,7 +150,7 @@ function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName
   property.setAndFreeze(
     candidate,
     'name',
-    (otherPropertyName === 'displayName') ? otherPropertyValue : report.conciseCondition(AbstractContract.namePrefix, implementation)
+    (otherPropertyName === 'name') ? otherPropertyValue : report.conciseCondition(AbstractContract.namePrefix, implementation)
   )
   // noinspection JSPotentiallyInvalidConstructorUsage
   candidate.prototype = Object.create(impl.prototype, {constructor: {value: candidate}})
