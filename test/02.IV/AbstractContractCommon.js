@@ -21,6 +21,7 @@
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const testUtil = require('../_util/testUtil')
 const stack = require('../../lib/_private/stack')
+const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
 const os = require('os')
@@ -146,10 +147,11 @@ function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName
   } else {
     property.setAndFreeze(candidate, 'bind', bind)
   }
-  candidate.displayName =
-    (otherPropertyName === 'displayName')
-      ? otherPropertyValue
-      : AbstractContract.contractFunctionDisplayName(candidate)
+  property.setAndFreeze(
+    candidate,
+    'name',
+    (otherPropertyName === 'displayName') ? otherPropertyValue : report.conciseCondition(AbstractContract.displayNamePrefix, implementation)
+  )
   // noinspection JSPotentiallyInvalidConstructorUsage
   candidate.prototype = Object.create(impl.prototype, {constructor: {value: candidate}})
   return candidate
