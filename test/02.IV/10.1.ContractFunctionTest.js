@@ -311,6 +311,13 @@ describe('IV/ContractFunction', function () {
     fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
   }
 
+  describe('names', function () {
+    it('has the right name', function () {
+      fibonacciImpl.name.must.equal('fibonacciImpl')
+      testUtil.log(`fibonacci.name: %s`, fibonacci.name)
+      fibonacci.name.must.equal(`${AbstractContract.displayNamePrefix} ${fibonacciImpl.name}`)
+    })
+  })
   it("doesn't interfere when the implementation is correct", function () {
     // any exception will fail the test
     // eslint-disable-next-line no-unused-vars
