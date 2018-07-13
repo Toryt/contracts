@@ -20,6 +20,7 @@
 
 const testUtil = require('../_util/testUtil')
 const report = require('../../lib/_private/report')
+const property = require('../../lib/_private/property')
 const common = require('./ContractErrorCommon')
 const ConditionError = require('../../lib/IV/ConditionError')
 const AbstractContract = require('../../lib/IV/AbstractContract')
@@ -45,18 +46,22 @@ function generateMultiLineAnonFunction () {
 
 const conditionCases = [conditionCase, generateMultiLineAnonFunction()]
 
-function functionWithADisplayName () {}
-
-functionWithADisplayName.displayName = 'This is a display name'
-conditionCases.push(functionWithADisplayName)
+function functionWithAName () {}
+property.setAndFreeze(functionWithAName, 'name', '  This is a display name  ') // trim
+conditionCases.push(functionWithAName)
 const other = generateMultiLineAnonFunction()
-other.displayName = 'This is a multi-line display name'
-other.displayName += 'The intention of this test'
-other.displayName += 'is to verify'
-other.displayName += 'whether we get an acceptable'
-other.displayName += 'is to shortened version of this'
-other.displayName += 'as a concise representation'
-other.displayName += 'this function should have a display name'
+property.setAndFreeze(
+  other,
+  'name',
+  `   This is a multi-line display name
+The intention of this test
+is to verify
+
+whether we get an acceptable
+is to shortened version of this
+as a concise representation
+this function should have a display name   ` // trim
+)
 conditionCases.push(other)
 
 const selfCaseGenerators = testUtil.anyCasesGenerators('self')
