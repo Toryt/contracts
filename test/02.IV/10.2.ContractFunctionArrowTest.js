@@ -295,6 +295,31 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
   }
 
+  describe('#name', function () {
+    it('fibonacci has the right name', function () {
+      fibonacciImpl.name.must.equal('fibonacciImpl')
+      testUtil.log(`fibonacci.name: %s`, fibonacci.name)
+      fibonacci.name.must.equal(`${AbstractContract.displayNamePrefix} ${fibonacciImpl.name}`)
+    })
+    const anonymousContractFunctions = [
+      {name: 'fibonacciWrong', f: fibonacciWrong},
+      {name: 'factorial', f: factorial},
+      {name: 'factorialIterative', f: factorialIterative},
+      {name: 'defensiveIntegerSum', f: defensiveIntegerSum},
+      {name: 'fastDefensiveIntegerSum', f: fastDefensiveIntegerSum},
+      {name: 'fastDefensiveIntegerSumWrong', f: fastDefensiveIntegerSumWrong},
+      {name: 'self.factorial', f: self.factorial},
+      {name: 'self.defensiveIntegerSum', f: self.defensiveIntegerSum},
+      {name: 'self.fastDefensiveIntegerSum', f: self.fastDefensiveIntegerSum},
+      {name: 'self.fastDefensiveIntegerSumWrong', f: self.fastDefensiveIntegerSumWrong}
+    ]
+    anonymousContractFunctions.forEach(a => {
+      it(`${a.name} has the right name`, function () {
+        testUtil.log(`${a.name}.name: ${a.f.name}`)
+        a.f.name.must.contain(`${AbstractContract.displayNamePrefix} n => {`)
+      })
+    })
+  })
   it("doesn't interfere when the implementation is correct", function () {
     // any exception will fail the test
     // eslint-disable-next-line no-unused-vars
