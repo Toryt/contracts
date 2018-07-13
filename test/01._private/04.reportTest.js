@@ -20,6 +20,7 @@
 
 const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
+const property = require('../../lib/_private/property')
 const testUtil = require('../_util/testUtil')
 const os = require('os')
 const util = require('util')
@@ -29,10 +30,10 @@ describe('_private/report', function () {
   describe('#conciseCondition', function () {
     function isAConciseVersion (original, concise) {
       const split = ('' + concise).split(report.conciseSeparator)
-      const cleanOriginal = original.replace(/\s\s+/g, ' ')
+      const cleanOriginal = original.replace(/[\r\n]/g, ' ').replace(/\s\s+/g, ' ').trim()
       let result
       if (split.length < 2) {
-        result = (original.trim() === concise)
+        result = (cleanOriginal === concise)
       } else {
         // > 2 is not supported right now, and will fail
         result = cleanOriginal.indexOf(split[0]) === 0 &&
@@ -45,64 +46,62 @@ describe('_private/report', function () {
       testUtil.log('result: %s', result)
       result.must.not.contain(os.EOL)
       result.length.must.be.at.most(report.maxLengthOfConciseRepresentation)
+      result.trim().must.equal(result)
       isAConciseVersion(expected, result).must.be.truthy()
     }
 
     const prefix = 'This is a test prefix'
     const alternativeName = 'This is an alternative name'
     const namedStuff = stuff.generateMutableStuff()
-    namedStuff
-      .filter(ms => testUtil.propertyIsWritable(ms.subject, 'name'))
-      .forEach(ms => { ms.subject.name = alternativeName })
-    const displayNamedStuff = stuff.generateMutableStuff()
-    displayNamedStuff
-      .forEach(ms => { ms.subject.displayName = alternativeName })
+    namedStuff.forEach(ms => { property.setAndFreeze(ms.subject, 'name', alternativeName) })
 
     // noinspection FunctionNamingConventionJS
     function generateMultiLineAnonymousFunction () {
       return function () {
-        let x = 'This is a multi-line function'
+        // trim: spaces at start
+        let x = '  This is a multi-line function'
         x += 'The intention of this test'
         x += 'is to verify'
+        // start of white line
+
+        // end of white line
         x += 'whether we get an acceptable'
         x += 'is to shortened version of this'
         x += 'as a concise representation'
         x += 'this function should have no name'
-        x += 'and no display name'
+        x += 'and no display name  ' // trim
         return x
       }
     }
 
-    const stuffToo = stuff
-      .concat(namedStuff)
-      .concat(displayNamedStuff)
-      .map(s => s.subject)
+    const stuffToo = stuff.concat(namedStuff).map(s => s.subject)
     stuffToo.push(generateMultiLineAnonymousFunction())
     const other = generateMultiLineAnonymousFunction()
-    other.displayName = 'This is a multi-line display name'
-    other.displayName += 'The intention of this test'
-    other.displayName += 'is to verify'
-    other.displayName += 'whether we get an acceptable'
-    other.displayName += 'is to shortened version of this'
-    other.displayName += 'as a concise representation'
-    other.displayName += 'this function should have a display name'
+    property.setAndFreeze(
+      other,
+      'name',
+      `   This is a multi-line display name
+The intention of this test
+is to verify
+
+whether we get an acceptable
+is to shortened version of this
+as a concise representation
+this function should have a display name   ` // trim
+    )
     stuffToo.push(other)
 
     stuffToo.forEach(f => {
       const result = report.conciseCondition(prefix, f)
-      if (!f || (!f.displayName && !f.name)) {
+      if (!f || !f.name) {
         it('returns the string representation with the prefix, ' +
-           'when there is no f, or it has no display name and no name, for ' + f, function () {
+           'when there is no f, or it has no name, for ' + f, function () {
           expectGeneralPostconditions(result, prefix + ' ' + f)
         })
-      } else if (!f.displayName && !!f.name) {
-        it('returns the name with the prefix, ' +
-           'when there is no f and it has no display name, but it has a name, for ' + f, function () {
-          expectGeneralPostconditions(result, prefix + ' ' + f.name)
-        })
       } else {
-        it('returns the display name if there is an f, and it has a display name, for ' + f, function () {
-          expectGeneralPostconditions(result, f.displayName)
+        it('returns the name with the prefix, ' +
+           'when there is an f and it has a name, for ' + f, function () {
+          expectGeneralPostconditions(result, prefix + ' ' + f.name)
         })
       }
     })
