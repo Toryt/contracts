@@ -19,7 +19,6 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const must = require('must')
 
 describe('javascript/Function', function () {
   describe('#bind()', function () {
