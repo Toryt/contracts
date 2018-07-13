@@ -22,14 +22,14 @@ const testUtil = require('../_util/testUtil')
 const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const common = require('./AbstractContractCommon')
-const Contract = require('../../lib/IV/Contract')
+const AbstractContract = require('../../lib/IV/AbstractContract')
 
 function expectInvariants (subject) {
   common.expectInvariants(subject)
   is.stackLocation(subject.location).must.be.true()
   // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-  Contract.isAContractFunction(subject.abstract)
+  AbstractContract.isAContractFunction(subject.abstract)
   subject.implementation.must.be.a.function()
 }
 
@@ -42,7 +42,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
     function expectPost (contract, implFunction, location, result) {
       contract.isImplementedBy(result).must.be.true()
       // noinspection JSUnresolvedFunction
-      Contract.isAContractFunction(result).must.be.true()
+      AbstractContract.isAContractFunction(result).must.be.true()
       Object.getPrototypeOf(result.contract).must.equal(contract)
       result.implementation.must.equal(implFunction)
       testUtil.mustBeCallerLocation(result.location, location)
