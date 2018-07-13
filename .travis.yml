@@ -10,11 +10,6 @@ os:
   - linux
 # Windows is not supported at all. Bummer.
 # Testing on OS X makes no sense, when everything is tested on linux and in browsers
-matrix:
-  include:
-    - node_js: '8'
-      script:
-        - npm run wd
 jobs:
   include:
     # stage test
@@ -27,4 +22,6 @@ jobs:
     - stage: tag
       node_js: '8'
       install: skip
-      script: scripts/travisGithubTag.sh
+      script:
+        - npm run legalReport
+        - scripts/travisGithubTag.sh
