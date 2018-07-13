@@ -532,7 +532,7 @@ describe('IV/PromiseContractFunction', function () {
 
   it('works with a defensive function', function () {
     defensiveIntegerSum.contract.verifyPostconditions = true
-    defensiveIntegerSum.bind(undefined, negativeParameter).must.throw(Error, positiveMessage)
+    defensiveIntegerSum.bind(undefined, nonIntegerParameter).must.throw(Error, integerMessage)
     defensiveIntegerSum.contract.verifyPostconditions = false
   })
   it('works with a defensive method', function () {
