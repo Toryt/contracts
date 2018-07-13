@@ -95,7 +95,7 @@ function expectInvariants (subject) {
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'message')
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'stack')
   // noinspection JSUnresolvedVariable
-  subject.message.must.match(subject.contractFunction.displayName)
+  subject.message.must.contain(subject.contractFunction.name)
   // noinspection JSUnresolvedVariable
   subject.message.must.contain(report.conciseCondition('condition', subject.condition))
 }
