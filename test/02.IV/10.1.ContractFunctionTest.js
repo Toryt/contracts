@@ -187,9 +187,12 @@ describe('IV/ContractFunction', function () {
               : null
       common.must.be.truthy()
       common.expectInvariants(exception)
+      exception.message.must.contain(func.name)
+      const stack = exception.stack
+      stack.must.contain(func.name)
       testUtil.showStack(exception)
       expectException(exception)
-      const stackLines = exception.stack.split(os.EOL)
+      const stackLines = stack.split(os.EOL)
       const callStackLine = stackLines.indexOf('call stack:')
       callStackLine.must.be.at.least(0)
       stackLines.splice(0, callStackLine + 1)

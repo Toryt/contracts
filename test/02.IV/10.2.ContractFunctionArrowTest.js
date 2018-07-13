@@ -184,6 +184,10 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
               : null
       common.must.be.truthy()
       common.expectInvariants(exception)
+      exception.message.must.contain(func.name)
+      const stack = exception.stack
+      stack.must.contain(func.name)
+      testUtil.showStack(exception)
       testUtil.showStack(exception)
       expectException(exception)
       const stackLines = exception.stack.split(os.EOL)
