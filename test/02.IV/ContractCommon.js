@@ -18,70 +18,15 @@
 
 'use strict'
 
-const testUtil = require('../_util/testUtil')
-const stack = require('../../lib/_private/stack')
-const is = require('../../lib/_private/is')
-const common = require('./AbstractContractCommon')
+const common = require('./ImplementationContractCommon')
 const Contract = require('../../lib/IV/Contract')
 
 function expectInvariants (subject) {
   subject.must.be.an.instanceof(Contract)
-  common.expectInvariants(subject)
-  is.stackLocation(subject.location).must.be.true()
-  // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
-  // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-  Contract.isAContractFunction(subject.abstract)
-  subject.implementation.must.be.a.function()
-}
-
-// noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
-  common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
-  const self = this
-
-  describe('#implementation', function () {
-    function expectPost (contract, implFunction, location, result) {
-      contract.isImplementedBy(result).must.be.true()
-      // noinspection JSUnresolvedFunction
-      Contract.isAContractFunction(result).must.be.true()
-      Object.getPrototypeOf(result.contract).must.equal(contract)
-      result.implementation.must.equal(implFunction)
-      testUtil.mustBeCallerLocation(result.location, location)
-      self.expectInvariants(contract)
-    }
-
-    it('returns an Contract function that is configured as expected', function () {
-      const subject = oneSubjectGenerator()
-      const impl = function () {}
-      const result = subject.implementation(impl)
-      expectPost(subject, impl, stack.location(), result)
-    })
-
-    it('returns a different Contract function when called with the same implementation', function () {
-      const subject = oneSubjectGenerator()
-      const impl = function () {}
-      const result = subject.implementation(impl)
-      const result2 = subject.implementation(impl)
-      expectPost(subject, impl, stack.location(), result2)
-      result2.must.not.equal(result)
-    })
-
-    it('returns a different Contract function with a different implementation', function () {
-      const subject = oneSubjectGenerator()
-      const impl = function () {}
-      const impl2 = function () {}
-      const result = subject.implementation(impl)
-      const result2 = subject.implementation(impl2)
-      expectPost(subject, impl2, stack.location(), result2)
-      result2.must.not.equal(result)
-      result2.implementation.must.not.equal(result.implementation)
-    })
-  })
 }
 
 const test = {
-  expectInvariants: expectInvariants,
-  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+  expectInvariants: expectInvariants
 }
 Object.setPrototypeOf(test, common)
 
