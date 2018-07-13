@@ -303,7 +303,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     it('fibonacci has the right name', function () {
       fibonacciImpl.name.must.equal('fibonacciImpl')
       testUtil.log(`fibonacci.name: %s`, fibonacci.name)
-      fibonacci.name.must.equal(`${AbstractContract.displayNamePrefix} ${fibonacciImpl.name}`)
+      fibonacci.name.must.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
     const anonymousContractFunctions = [
       {name: 'fibonacciWrong', f: fibonacciWrong},
@@ -320,7 +320,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
-        a.f.name.must.contain(`${AbstractContract.displayNamePrefix} n => {`)
+        a.f.name.must.contain(`${AbstractContract.namePrefix} n => {`)
       })
     })
   })

@@ -30,8 +30,8 @@ describe('IV/AbstractContract', function () {
   describe('AbstractContract', function () {
     // noinspection FunctionTooLongJS
     it('has the expected properties', function () {
-      AbstractContract.must.have.ownProperty('displayNamePrefix')
-      AbstractContract.displayNamePrefix.must.be.a.string()
+      AbstractContract.must.have.ownProperty('namePrefix')
+      AbstractContract.namePrefix.must.be.a.string()
       AbstractContract.must.have.ownProperty('contractFunctionDisplayName')
       AbstractContract.contractFunctionDisplayName.must.be.a.function()
       AbstractContract.must.have.ownProperty('bindContractFunction')
@@ -79,7 +79,7 @@ describe('IV/AbstractContract', function () {
       function namedFunction () {}
 
       const result = AbstractContract.contractFunctionDisplayName(namedFunction)
-      result.must.equal(AbstractContract.displayNamePrefix + 'namedFunction')
+      result.must.equal(AbstractContract.namePrefix + 'namedFunction')
     })
 
     it('returns the expected display name with a named function with a display name', function () {
@@ -87,7 +87,7 @@ describe('IV/AbstractContract', function () {
       namedFunction.displayName = 'display name'
 
       const result = AbstractContract.contractFunctionDisplayName(namedFunction)
-      result.must.equal(AbstractContract.displayNamePrefix + 'namedFunction')
+      result.must.equal(AbstractContract.namePrefix + 'namedFunction')
     })
 
     it('returns the expected display name with an anonymous function assigned to a variable', function () {
@@ -102,9 +102,9 @@ describe('IV/AbstractContract', function () {
       // https://developer.mozilla.org/en-US/Firefox/Releases/53
       if (testUtil.environment === 'edge') {
         // This does not work on edge
-        result.must.equal(AbstractContract.displayNamePrefix + '<<anonymous>>')
+        result.must.equal(AbstractContract.namePrefix + '<<anonymous>>')
       } else {
-        result.must.equal(AbstractContract.displayNamePrefix + 'anonymousFunction')
+        result.must.equal(AbstractContract.namePrefix + 'anonymousFunction')
       }
     })
 
@@ -117,7 +117,7 @@ describe('IV/AbstractContract', function () {
       const result = AbstractContract.contractFunctionDisplayName(anonymousFunction)
       // in ES6, this function has the name of the variable
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-      result.must.equal(AbstractContract.displayNamePrefix + implementationDisplayName)
+      result.must.equal(AbstractContract.namePrefix + implementationDisplayName)
     })
 
     it('returns the expected display name with an anonymous function with an implementation property that has no display name, but has a name', function () {
@@ -127,7 +127,7 @@ describe('IV/AbstractContract', function () {
       const result = AbstractContract.contractFunctionDisplayName(anonymousFunction)
       // in ES6, this function has the name of the variable
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-      result.must.equal(AbstractContract.displayNamePrefix + 'implementationWithNoName')
+      result.must.equal(AbstractContract.namePrefix + 'implementationWithNoName')
     })
 
     it('returns the expected display name with a function without a name and without an implementation', function () {
@@ -137,7 +137,7 @@ describe('IV/AbstractContract', function () {
       anonymousFunction.must.not.have.property('implementation')
 
       const result = AbstractContract.contractFunctionDisplayName(anonymousFunction)
-      result.must.equal(AbstractContract.displayNamePrefix + '<<anonymous>>')
+      result.must.equal(AbstractContract.namePrefix + '<<anonymous>>')
     })
 
     it('returns the expected display name with an anonymous function with an implementation property that has no display name and no name', function () {
@@ -152,7 +152,7 @@ describe('IV/AbstractContract', function () {
       const result = AbstractContract.contractFunctionDisplayName(anonymousFunction)
       // in ES6, this function has the name of the variable
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-      result.must.equal(AbstractContract.displayNamePrefix + '<<anonymous>>')
+      result.must.equal(AbstractContract.namePrefix + '<<anonymous>>')
     })
 
     // MUDO add tests for arrow functions
@@ -170,9 +170,9 @@ describe('IV/AbstractContract', function () {
       // https://developer.mozilla.org/en-US/Firefox/Releases/53
       if (testUtil.environment === 'edge') {
         // This does not work on edge
-        result.must.equal(AbstractContract.displayNamePrefix + '<<anonymous>>')
+        result.must.equal(AbstractContract.namePrefix + '<<anonymous>>')
       } else {
-        result.must.equal(AbstractContract.displayNamePrefix + 'f')
+        result.must.equal(AbstractContract.namePrefix + 'f')
       }
     })
 
@@ -187,7 +187,7 @@ describe('IV/AbstractContract', function () {
       // This is, at 2017-03-26, implemented in node, Chrome and Safari on Mac, but not yet in Firefox 52.
       // Firefox 53, based on Gecko 53, will ship in April 2017, and will have this functionality:
       // https://developer.mozilla.org/en-US/Firefox/Releases/53
-      result.must.equal(AbstractContract.displayNamePrefix + 'anonymousFunction')
+      result.must.equal(AbstractContract.namePrefix + 'anonymousFunction')
     })
 
     it('returns the expected display name with an named function function as a method', function () {
@@ -198,7 +198,7 @@ describe('IV/AbstractContract', function () {
       const result = AbstractContract.contractFunctionDisplayName(obj.f)
       // in ES6, this function has the name of the variable
       // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
-      result.must.equal(AbstractContract.displayNamePrefix + 'namedFunction')
+      result.must.equal(AbstractContract.namePrefix + 'namedFunction')
     })
   })
 
@@ -245,7 +245,7 @@ describe('IV/AbstractContract', function () {
       {
         propertyName: 'displayName',
         expected: 'the contractFunctionDisplayName',
-        extra: ['candidate', AbstractContract.displayNamePrefix]
+        extra: ['candidate', AbstractContract.namePrefix]
       }
     ].forEach(aCase => {
       common.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach(v => {
@@ -312,7 +312,7 @@ describe('IV/AbstractContract', function () {
       contractFunction.bind.must.equal(AbstractContract.bindContractFunction)
       testUtil.expectFrozenDerivedPropertyOnAPrototype(contractFunction, 'name')
       contractFunction.must.have.ownProperty('name')
-      contractFunction.name.must.equal(report.conciseCondition(AbstractContract.displayNamePrefix, contractFunction.implementation))
+      contractFunction.name.must.equal(report.conciseCondition(AbstractContract.namePrefix, contractFunction.implementation))
     })
   })
 

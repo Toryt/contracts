@@ -318,15 +318,15 @@ describe('IV/ContractFunction', function () {
     it('fibonacci has the right name', function () {
       fibonacciImpl.name.must.equal('fibonacciImpl')
       testUtil.log(`fibonacci.name: %s`, fibonacci.name)
-      fibonacci.name.must.equal(`${AbstractContract.displayNamePrefix} ${fibonacciImpl.name}`)
+      fibonacci.name.must.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
     it('fibonacciWrong has the right name', function () {
       testUtil.log(`fibonacciWrong.name: %s`, fibonacciWrong.name)
-      fibonacciWrong.name.must.equal(`${AbstractContract.displayNamePrefix} fWrong`)
+      fibonacciWrong.name.must.equal(`${AbstractContract.namePrefix} fWrong`)
     })
     it('self.fibonacciWrong has the right name', function () {
       testUtil.log(`self.fibonacciWrong.name: %s`, self.fibonacciWrong.name)
-      self.fibonacciWrong.name.must.equal(`${AbstractContract.displayNamePrefix} fWrong`)
+      self.fibonacciWrong.name.must.equal(`${AbstractContract.namePrefix} fWrong`)
     })
     const anonymousContractFunctions = [
       {name: 'factorial', f: factorial},
@@ -343,7 +343,7 @@ describe('IV/ContractFunction', function () {
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
-        a.f.name.must.contain(`${AbstractContract.displayNamePrefix} function (n) {`)
+        a.f.name.must.contain(`${AbstractContract.namePrefix} function (n) {`)
       })
     })
   })
