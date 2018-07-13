@@ -420,6 +420,7 @@ describe('IV/ContractFunction', function () {
 
     // noinspection JSUnresolvedFunction
     const implementation = contractWithAFailingPost.implementation(function () { return resultWhenMetaError })
+    implementation.contract.verifyPostconditions = true
     // noinspection JSUnresolvedVariable
     failsOnMetaError(
       undefined,
@@ -436,6 +437,7 @@ describe('IV/ContractFunction', function () {
     const self = {
       method: contractWithAFailingPost.implementation(function () { return resultWhenMetaError })
     }
+    self.method.contract.verifyPostconditions = true
 
     // noinspection JSUnresolvedVariable
     failsOnMetaError(
@@ -453,6 +455,7 @@ describe('IV/ContractFunction', function () {
     const anExceptedException = 'This exception is expected.'
     // noinspection JSUnresolvedFunction
     const implementation = contractWithAFailingExceptionCondition.implementation(function () { throw anExceptedException })
+    implementation.contract.verifyPostconditions = true
     // noinspection JSUnresolvedVariable
     failsOnMetaError(
       undefined,
@@ -471,6 +474,7 @@ describe('IV/ContractFunction', function () {
     const self = {
       method: contractWithAFailingExceptionCondition.implementation(function () { throw anExceptedException })
     }
+    self.method.contract.verifyPostconditions = true
 
     // noinspection JSUnresolvedVariable
     failsOnMetaError(
@@ -482,18 +486,26 @@ describe('IV/ContractFunction', function () {
   })
 
   it('fails when a simple postcondition is violated', function () {
+    fibonacciWrong.contract.verifyPostconditions = true
     callAndExpectException(undefined, fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong))
+    fibonacciWrong.contract.verifyPostconditions = false
   })
   it('fails when a simple postcondition is violated when it is a method', function () {
+    self.fibonacciWrong.contract.verifyPostconditions = true
     callAndExpectException(self, self.fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong))
+    self.fibonacciWrong.contract.verifyPostconditions = false
   })
   it('fails when a postcondition is violated in a called function with a nested Violation', function () {
     const parameter = 6
+    fibonacciWrong.contract.verifyPostconditions = true
     callAndExpectException(undefined, fibonacciWrong, parameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong), 'fWrong')
+    fibonacciWrong.contract.verifyPostconditions = false
   })
   it('fails when a postcondition is violated in a called function with a nested Violation when it is a method', function () {
     const parameter = 6
+    self.fibonacciWrong.contract.verifyPostconditions = true
     callAndExpectException(self, self.fibonacciWrong, parameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong), 'fWrong')
+    self.fibonacciWrong.contract.verifyPostconditions = false
   })
 
   it('works with a defensive function', function () {
@@ -504,20 +516,24 @@ describe('IV/ContractFunction', function () {
   })
 
   it('fails when a simple exception condition is violated', function () {
+    fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
     callAndExpectException(
       undefined,
       fastDefensiveIntegerSumWrong,
       wrongParameter,
       expectExceptionProperties.bind(undefined, undefined, fastDefensiveIntegerSumWrong)
     )
+    fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
   })
   it('fails when a simple exception condition is violated when it is a method', function () {
+    self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
     callAndExpectException(
       self,
       self.fastDefensiveIntegerSumWrong,
       wrongParameter,
       expectExceptionProperties.bind(undefined, self, self.fastDefensiveIntegerSumWrong)
     )
+    self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
   })
   // noinspection LocalVariableNamingConventionJS
   const PersonConstructorContract = new Contract({
