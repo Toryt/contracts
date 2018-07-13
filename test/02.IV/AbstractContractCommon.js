@@ -122,7 +122,10 @@ function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName
 
   function impl () {}
 
-  const contract = otherPropertyName === 'contract' ? otherPropertyValue : new AbstractContract({})
+  let contract = otherPropertyName === 'contract' ? otherPropertyValue : new AbstractContract({})
+  if (typeof contract === 'object') {
+    contract = Object.create(contract)
+  }
   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
   const location = otherPropertyName === 'location' ? otherPropertyValue : stack.location()
   const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractContract.bindContractFunction

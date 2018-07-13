@@ -44,7 +44,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       contract.isImplementedBy(result).must.be.true()
       // noinspection JSUnresolvedFunction
       Contract.isAContractFunction(result).must.be.true()
-      result.contract.must.equal(contract)
+      Object.getPrototypeOf(result.contract).must.equal(contract)
       result.implementation.must.equal(implFunction)
       testUtil.mustBeCallerLocation(result.location, location)
       self.expectInvariants(contract)

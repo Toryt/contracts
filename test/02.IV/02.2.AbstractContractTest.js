@@ -77,7 +77,7 @@ describe('IV/AbstractContract', function () {
       const subject = common.createCandidateContractFunction()
       const result = AbstractContract.bindContractFunction.apply(subject)
       AbstractContract.isAGeneralContractFunction(result).must.be.true()
-      result.contract.must.equal(subject.contract)
+      Object.getPrototypeOf(result.contract).must.equal(subject.contract)
       result.location.must.equal(subject.location)
       if (AbstractContract.isAContractFunction(subject)) {
         AbstractContract.isAContractFunction(result).must.be.true()
@@ -173,7 +173,7 @@ describe('IV/AbstractContract', function () {
       AbstractContract.bless(contractFunction, contract, implFunction, location)
       AbstractContract.isAContractFunction(contractFunction).must.be.true()
       testUtil.expectOwnFrozenProperty(contractFunction, 'contract')
-      contractFunction.contract.must.equal(contract)
+      Object.getPrototypeOf(contractFunction.contract).must.equal(contract)
       testUtil.expectOwnFrozenProperty(contractFunction, 'implementation')
       contractFunction.implementation.must.equal(implFunction)
       testUtil.expectOwnFrozenProperty(contractFunction, 'location')
