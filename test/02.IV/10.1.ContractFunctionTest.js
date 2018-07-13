@@ -556,10 +556,14 @@ describe('IV/ContractFunction', function () {
   })
 
   it('works with a defensive function', function () {
+    fastDefensiveIntegerSum.contract.verifyPostconditions = true
     fastDefensiveIntegerSum.bind(undefined, negativeParameter).must.throw(Error, positiveMessage)
+    fastDefensiveIntegerSum.contract.verifyPostconditions = false
   })
   it('works with a defensive method', function () {
+    self.defensiveIntegerSum.contract.verifyPostconditions = true
     self.defensiveIntegerSum.bind(self, nonIntegerParameter).must.throw(Error, integerMessage)
+    self.defensiveIntegerSum.contract.verifyPostconditions = false
   })
 
   it('fails when a simple exception condition is violated', function () {
