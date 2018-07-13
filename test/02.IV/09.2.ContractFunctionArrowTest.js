@@ -455,16 +455,16 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       [anExceptedException, implementation]
     )
   })
-  it('does not fail when a postcondition is kaput when verify is false', function () {
+  it('does not fail when an exception condition is kaput when verify is false', function () {
     const expectedResult = 'expected result'
-    contractWithAFailingPre.verify = false
-    contractWithAFailingPre.verifyPostconditions = true
+    contractWithAFailingExceptionCondition.verify = false
+    contractWithAFailingExceptionCondition.verifyPostconditions = true
     const result = contractWithAFailingExceptionCondition.implementation(() => expectedResult)()
-    contractWithAFailingPre.verifyPostconditions = false
-    contractWithAFailingPre.verify = true
+    contractWithAFailingExceptionCondition.verifyPostconditions = false
+    contractWithAFailingExceptionCondition.verify = true
     result.must.equal(expectedResult)
   })
-  it('does not fail when a postcondition is kaput when verifyPostcondition is false', function () {
+  it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
     const expectedResult = 'expected result'
     const result = contractWithAFailingExceptionCondition.implementation(function () { return expectedResult })()
     result.must.equal(expectedResult)
@@ -523,7 +523,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     )
     self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
   })
-  it('does not fail when a exception condition is violated when verify is false', function () {
+  it('does not fail when an exception condition is violated when verify is false', function () {
     fastDefensiveIntegerSumWrong.contract.verify = false
     fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
     try {
@@ -545,65 +545,5 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     } catch (err) {
       err.must.equal(wrongException)
     }
-  })
-
-  // noinspection LocalVariableNamingConventionJS
-  const PersonConstructorContract = new Contract({
-    pre: [
-      name => typeof name === 'string',
-      name => !!name
-    ],
-    post: [
-      // uses this, cannot be an arrow function
-      function (name, ignore) { return this.name === name }
-    ],
-    exception: Contract.mustNotHappen
-  })
-
-  // noinspection ParameterNamingConventionJS
-  function expectConstructorToWork (PersonImplementation, doBind) {
-    // noinspection LocalVariableNamingConventionJS, JSUnresolvedFunction
-    let ContractPerson = PersonConstructorContract.implementation(PersonImplementation)
-    if (doBind) {
-      ContractPerson = ContractPerson.bind(undefined)
-    }
-    const caseName = 'Jim'
-    const result = new ContractPerson(caseName)
-    result.must.be.truthy()
-    result.must.be.instanceof(ContractPerson)
-    result.must.be.instanceof(PersonImplementation)
-    result.must.have.ownProperty('_name')
-    result.name.must.equal(caseName)
-  }
-
-  it('works with a constructor', function () {
-    // uses this, cannot be an arrow function
-    // noinspection LocalVariableNamingConventionJS
-    const PersonImplementation = function (name) {
-      this._name = name
-    }
-    PersonImplementation.must.have.property('prototype')
-    PersonImplementation.prototype.must.have.property('constructor')
-    PersonImplementation.prototype.constructor.must.equal(PersonImplementation)
-    PersonImplementation.prototype._name = null
-    // uses this, cannot be an arrow function
-    property.frozenDerived(PersonImplementation.prototype, 'name', function () { return this._name })
-
-    expectConstructorToWork(PersonImplementation)
-  })
-  it('works with a bound constructor', function () {
-    // uses this, cannot be an arrow function
-    // noinspection LocalVariableNamingConventionJS
-    const PersonImplementation = function (name) {
-      this._name = name
-    }
-    PersonImplementation.must.have.property('prototype')
-    PersonImplementation.prototype.must.have.property('constructor')
-    PersonImplementation.prototype.constructor.must.equal(PersonImplementation)
-    PersonImplementation.prototype._name = null
-    // uses this, cannot be an arrow function
-    property.frozenDerived(PersonImplementation.prototype, 'name', function () { return this._name })
-
-    expectConstructorToWork(PersonImplementation, true)
   })
 })

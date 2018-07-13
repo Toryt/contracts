@@ -505,11 +505,11 @@ describe('IV/ContractFunction', function () {
   })
   it('does not fail when a exception condition is kaput when verify is false', function () {
     const expectedResult = 'expected result'
-    contractWithAFailingExceptionCondition.verify = false
-    contractWithAFailingExceptionCondition.verifyPostconditions = true
+    contractWithAFailingPre.verify = false
+    contractWithAFailingPre.verifyPostconditions = true
     const result = contractWithAFailingExceptionCondition.implementation(function () { return expectedResult })()
-    contractWithAFailingExceptionCondition.verifyPostconditions = false
-    contractWithAFailingExceptionCondition.verify = true
+    contractWithAFailingPre.verifyPostconditions = false
+    contractWithAFailingPre.verify = true
     result.must.equal(expectedResult)
   })
   it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
