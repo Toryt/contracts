@@ -444,8 +444,8 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   const contractWithAFailingExceptionCondition = new Contract({
     exception: [() => { throw intentionalError }]
   })
+  const anExceptedException = 'This exception is expected.'
   it('fails with a meta-error when an exception condition is kaput', function () {
-    const anExceptedException = 'This exception is expected.'
     // noinspection JSUnresolvedFunction
     const implementation = contractWithAFailingExceptionCondition.implementation(() => { throw anExceptedException })
     implementation.contract.verifyPostconditions = true
@@ -458,18 +458,26 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     )
   })
   it('does not fail when an exception condition is kaput when verify is false', function () {
-    const expectedResult = 'expected result'
     contractWithAFailingExceptionCondition.verify = false
     contractWithAFailingExceptionCondition.verifyPostconditions = true
-    const result = contractWithAFailingExceptionCondition.implementation(() => expectedResult)()
-    contractWithAFailingExceptionCondition.verifyPostconditions = false
-    contractWithAFailingExceptionCondition.verify = true
-    result.must.equal(expectedResult)
+    try {
+      // eslint-disable-next-line
+      const ignore = contractWithAFailingExceptionCondition.implementation(function () { throw anExceptedException })()
+      contractWithAFailingExceptionCondition.verifyPostconditions = false
+      contractWithAFailingExceptionCondition.verify = true
+      true.must.be.false()
+    } catch (err) {
+      err.must.equal(anExceptedException)
+    }
   })
   it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
-    const expectedResult = 'expected result'
-    const result = contractWithAFailingExceptionCondition.implementation(function () { return expectedResult })()
-    result.must.equal(expectedResult)
+    try {
+      // eslint-disable-next-line
+      const ignore = contractWithAFailingExceptionCondition.implementation(function () { throw anExceptedException })()
+      true.must.be.false()
+    } catch (err) {
+      err.must.equal(anExceptedException)
+    }
   })
 
   it('fails when a simple postcondition is violated', function () {
