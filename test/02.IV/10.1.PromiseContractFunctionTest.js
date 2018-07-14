@@ -357,6 +357,10 @@ describe('IV/PromiseContractFunction', function () {
       testUtil.log(`fibonacci.name: %s`, fibonacci.name)
       fibonacci.name.must.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
+    it(`self.fibonacci has the right name`, function () {
+      testUtil.log(`self.fibonacci.name: ${self.fibonacci.name}`)
+      self.fibonacci.name.must.contain(`${AbstractContract.namePrefix} function (n) {`)
+    })
     it('fibonacciWrong has the right name', function () {
       testUtil.log(`fibonacciWrong.name: %s`, fibonacciWrong.name)
       fibonacciWrong.name.must.equal(`${AbstractContract.namePrefix} fWrong`)
@@ -368,14 +372,13 @@ describe('IV/PromiseContractFunction', function () {
     const anonymousContractFunctions = [
       {name: 'defensiveIntegerSum', f: defensiveIntegerSum},
       {name: 'fastDefensiveIntegerSumWrong', f: fastDefensiveIntegerSumWrong},
-      {name: 'self.fibonacci', f: self.fibonacci},
       {name: 'self.defensiveIntegerSum', f: self.defensiveIntegerSum},
       {name: 'self.fastDefensiveIntegerSumWrong', f: self.fastDefensiveIntegerSumWrong}
     ]
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
-        a.f.name.must.contain(`${AbstractContract.namePrefix} function (n) {`)
+        a.f.name.must.contain(`${AbstractContract.namePrefix} n => {`)
       })
     })
   })
