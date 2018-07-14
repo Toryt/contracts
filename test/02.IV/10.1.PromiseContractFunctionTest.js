@@ -312,6 +312,18 @@ describe('IV/PromiseContractFunction', function () {
     })
   }
 
+  function expectNotAPromisePostProperties (self, contractFunction, exception) {
+    postconditionViolationCommon.expectProperties(
+      exception,
+      PostconditionViolation,
+      contractFunction,
+      PromiseContract.resultIsAPromiseCondition,
+      self,
+      [4],
+      'some result'
+    )
+  }
+
   function expectPostProperties (self, contractFunction, exception) {
     postconditionViolationCommon.expectProperties(
       exception,
@@ -633,6 +645,17 @@ describe('IV/PromiseContractFunction', function () {
         contractWithAFailingExceptionCondition.verify = true
         err.must.equal(anExceptedException)
       })
+  })
+
+  it('fails when it does not return a Promise', function () {
+    const doesNotReturnAPromise = fibonacci.contract.implementation(() => 'some result')
+    doesNotReturnAPromise.contract.verifyPostconditions = true
+    callAndExpectFastException(
+      undefined,
+      doesNotReturnAPromise,
+      4,
+      expectNotAPromisePostProperties.bind(null, undefined, doesNotReturnAPromise)
+    )
   })
 
   it('fails when a simple postcondition is violated', function () {
