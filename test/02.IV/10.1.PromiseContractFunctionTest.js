@@ -190,6 +190,65 @@ describe('IV/PromiseContractFunction', function () {
     endsNominally.must.be.false()
   }
 
+  function callAndExpectRejection (self, func, parameter, expectException, recursive) {
+    // eslint-disable-next-line no-unused-vars
+    let promise
+    if (!self) {
+      // noinspection JSUnusedAssignment
+      promise = func(parameter)
+    } else {
+      // noinspection JSUnusedAssignment
+      promise = func.call(self, parameter)
+    }
+    return promise
+      .catch(rejection => {
+        testUtil.log('' + rejection)
+        rejection.must.be.truthy()
+        const common = rejection instanceof ConditionMetaError
+          ? conditionMetaErrorCommon
+          : rejection instanceof PostconditionViolation
+            ? postconditionViolationCommon
+            : rejection instanceof ExceptionConditionViolation
+              ? exceptionConditionViolationCommon
+              : null
+        common.must.be.truthy()
+        common.expectInvariants(rejection)
+        rejection.message.must.contain(func.name)
+        const stack = rejection.stack
+        stack.must.contain(func.name)
+        testUtil.showStack(rejection)
+        expectException(rejection)
+        const stackLines = stack.split(os.EOL)
+        const callStackLine = stackLines.indexOf('call stack:')
+        callStackLine.must.be.at.least(0)
+        stackLines.splice(0, callStackLine + 1)
+        stackLines.length.must.be.at.least(1)
+        // For post- and exception conditions, we expect the top of the stack trace to be the contract function (it is at
+        // fault).  For preconditions, we expect the top of the stack trace to be where we called the contract function,
+        // but then we have no report of the implementation that was called in the report. The top will point to the line
+        // where the contract function was called, so we know it indirectly. For post- and exception condition, the line
+        // to refer to would be inside the implementation. It would be the return statement, or the throw. This would be
+        // important, because an implementation might have multiple exit points, and this would report which exit point
+        // failed the contract. But we cannot create a stacktrace to that. We only can use our 'contractFunction' wrapper
+        // for the stack trace, and it makes no sense to point inside, or to that internal function. So the best we can
+        // do is to point to where the contract function is called. The same applies to Meta errors (in conditions),
+        // since we cannot create a stack trace that points in the condition. The caused by probably will for meta errors,
+        // but there is no such thing for pre-, post- or exception conditions.
+        if (testUtil.environment !== 'safari') {
+          if (!recursive) {
+            stackLines[0].must.contain('callAndExpectRejection')
+          } else {
+            stackLines[0].must.contain(recursive)
+            stackLines[2].must.contain(recursive)
+            stackLines[4].must.contain('callAndExpectRejection')
+          }
+        }
+      })
+      .then(() => {
+        true.must.be.false()
+      })
+  }
+
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
       callAndExpectFastException(self, func, parameter, exception => {
@@ -490,27 +549,31 @@ describe('IV/PromiseContractFunction', function () {
   })
   // MUDO repeat for exceptions
 
-  it.skip('fails when a simple postcondition is violated', function () {
+  it('fails when a simple postcondition is violated', function () {
     fibonacciWrong.contract.verifyPostconditions = true
-    callAndExpectFastException(undefined, fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong))
-    fibonacciWrong.contract.verifyPostconditions = false
+    return callAndExpectRejection(undefined, fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong))
+      .catch(() => { fibonacciWrong.contract.verifyPostconditions = false })
+      .then(() => { fibonacciWrong.contract.verifyPostconditions = false })
   })
-  it.skip('fails when a simple postcondition is violated when it is a method', function () {
+  it('fails when a simple postcondition is violated when it is a method', function () {
     self.fibonacciWrong.contract.verifyPostconditions = true
-    callAndExpectFastException(self, self.fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong))
-    self.fibonacciWrong.contract.verifyPostconditions = false
+    return callAndExpectRejection(self, self.fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong))
+      .catch(() => { fibonacciWrong.contract.verifyPostconditions = false })
+      .then(() => { fibonacciWrong.contract.verifyPostconditions = false })
   })
-  it.skip('fails when a postcondition is violated in a called function with a nested Violation', function () {
+  it('fails when a postcondition is violated in a called function with a nested Violation', function () {
     const parameter = 6
     fibonacciWrong.contract.verifyPostconditions = true
-    callAndExpectFastException(undefined, fibonacciWrong, parameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong), 'fWrong')
-    fibonacciWrong.contract.verifyPostconditions = false
+    return callAndExpectRejection(undefined, fibonacciWrong, parameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong), 'fWrong')
+      .catch(() => { fibonacciWrong.contract.verifyPostconditions = false })
+      .then(() => { fibonacciWrong.contract.verifyPostconditions = false })
   })
-  it.skip('fails when a postcondition is violated in a called function with a nested Violation when it is a method', function () {
+  it('fails when a postcondition is violated in a called function with a nested Violation when it is a method', function () {
     const parameter = 6
     self.fibonacciWrong.contract.verifyPostconditions = true
-    callAndExpectFastException(self, self.fibonacciWrong, parameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong), 'fWrong')
-    self.fibonacciWrong.contract.verifyPostconditions = false
+    return callAndExpectRejection(self, self.fibonacciWrong, parameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong), 'fWrong')
+      .catch(() => { fibonacciWrong.contract.verifyPostconditions = false })
+      .then(() => { fibonacciWrong.contract.verifyPostconditions = false })
   })
   it('does not fail when a simple postcondition is violated when verify is false', function () {
     fibonacciWrong.contract.verify = false
