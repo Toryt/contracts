@@ -131,8 +131,10 @@ describe('IV/ContractFunction', function () {
       function (n, result, sum) { return n === 0 || result === sum(n - 1) + n }
     ],
     exception: [
-      function (n, exc) { return !(exc instanceof Error) || exc.message !== positiveMessage || n < 0 },
-      function (n, exc) { return !(exc instanceof Error) || exc.message !== integerMessage || !Number.isInteger(n) }
+      function (n, exc) { return exc instanceof Error },
+      function (n, exc) { return exc.message === positiveMessage || exc.message === integerMessage },
+      function (n, exc) { return exc.message !== positiveMessage || n < 0 },
+      function (n, exc) { return exc.message !== integerMessage || !Number.isInteger(n) }
     ]
   }).implementation(function (n) {
     if (!Number.isInteger(n)) { throw new Error(integerMessage) }
@@ -283,7 +285,7 @@ describe('IV/ContractFunction', function () {
       exception,
       ExceptionConditionViolation,
       contractFunction,
-      contractFunction.contract.exception[1], // integer was programmed wrong
+      contractFunction.contract.exception[3], // integer was programmed wrong
       self,
       [wrongParameter],
       wrongException

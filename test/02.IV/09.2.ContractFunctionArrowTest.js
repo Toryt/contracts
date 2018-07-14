@@ -127,8 +127,10 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       (n, result, sum) => n === 0 || result === sum(n - 1) + n
     ],
     exception: [
-      (n, exc) => !(exc instanceof Error) || exc.message !== positiveMessage || n < 0,
-      (n, exc) => !(exc instanceof Error) || exc.message !== integerMessage || !Number.isInteger(n)
+      (n, exc) => exc instanceof Error,
+      (n, exc) => exc.message === positiveMessage || exc.message === integerMessage,
+      (n, exc) => exc.message !== positiveMessage || n < 0,
+      (n, exc) => exc.message !== integerMessage || !Number.isInteger(n)
     ]
   }).implementation(n => {
     if (!Number.isInteger(n)) { throw new Error(integerMessage) }
@@ -281,7 +283,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       exception,
       ExceptionConditionViolation,
       contractFunction,
-      contractFunction.contract.exception[1], // integer was programmed wrong
+      contractFunction.contract.exception[3], // integer was programmed wrong
       self,
       [wrongParameter],
       wrongException
