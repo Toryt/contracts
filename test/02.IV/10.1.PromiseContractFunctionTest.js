@@ -198,6 +198,9 @@ describe('IV/PromiseContractFunction', function () {
       promise = func.call(self, parameter)
     }
     return promise
+      .then(() => {
+        true.must.be.false()
+      })
       .catch(rejection => {
         testUtil.log('' + rejection)
         rejection.must.be.truthy()
@@ -233,16 +236,13 @@ describe('IV/PromiseContractFunction', function () {
         // but there is no such thing for pre-, post- or exception conditions.
         if (testUtil.environment !== 'safari') {
           if (!recursive) {
-            stackLines[0].must.contain('callAndExpectRejection')
+            stackLines[0].must.contain('anonymous') // because it is in the event loop; this is not our code
           } else {
             stackLines[0].must.contain(recursive)
             stackLines[2].must.contain(recursive)
-            stackLines[4].must.contain('callAndExpectRejection')
+            stackLines[4].must.contain('anonymous') // because it is in the event loop; this is not our code
           }
         }
-      })
-      .then(() => {
-        true.must.be.false()
       })
   }
 
@@ -273,6 +273,27 @@ describe('IV/PromiseContractFunction', function () {
   function failsOnMetaErrorFast (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectFastException(self, functionWithAMetaError, param, exception => {
+      exception.must.be.an.instanceof(ConditionMetaError)
+      // noinspection JSUnresolvedVariable
+      exception.condition.must.equal(conditionWithAMetaError)
+      if (!self) {
+        must(exception.self).be.falsy()
+      } else {
+        exception.self.must.equal(self)
+      }
+      exception.args.length.must.equal(extraArgs ? extraArgs.length + 1 : 1)
+      exception.args[0].must.equal(param)
+      if (extraArgs) {
+        exception.args[1].must.equal(extraArgs[0])
+        AbstractContract.isAContractFunction(exception.args[2]).must.be.true()
+      }
+      exception.error.must.equal(intentionalError)
+    })
+  }
+
+  function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
+    const param = 'a parameter'
+    return callAndExpectRejection(self, functionWithAMetaError, param, exception => {
       exception.must.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
       exception.condition.must.equal(conditionWithAMetaError)
@@ -534,20 +555,85 @@ describe('IV/PromiseContractFunction', function () {
     )
   })
   it('does not fail when a fast exception condition is kaput when verify is false', function () {
-    const expectedResult = 'expected result'
     contractWithAFailingFastExceptionCondition.verify = false
     contractWithAFailingFastExceptionCondition.verifyPostconditions = true
-    const result = contractWithAFailingFastExceptionCondition.implementation(() => expectedResult)()
-    contractWithAFailingFastExceptionCondition.verifyPostconditions = false
-    contractWithAFailingFastExceptionCondition.verify = true
-    result.must.equal(expectedResult)
+    try {
+      // eslint-disable-next-line
+      const ignore = contractWithAFailingFastExceptionCondition.implementation(() => { throw anExceptedException })()
+      contractWithAFailingFastExceptionCondition.verifyPostconditions = false
+      contractWithAFailingFastExceptionCondition.verify = true
+      true.must.be.false()
+    } catch (err) {
+      contractWithAFailingFastExceptionCondition.verifyPostconditions = false
+      contractWithAFailingFastExceptionCondition.verify = true
+      err.must.equal(anExceptedException)
+    }
   })
   it('does not fail when a fast exception condition is kaput when verifyPostcondition is false', function () {
-    const expectedResult = 'expected result'
-    const result = contractWithAFailingFastExceptionCondition.implementation(() => expectedResult)()
-    result.must.equal(expectedResult)
+    try {
+      // eslint-disable-next-line
+      const ignore = contractWithAFailingFastExceptionCondition.implementation(() => { throw anExceptedException })()
+      true.must.be.false()
+    } catch (err) {
+      err.must.equal(anExceptedException)
+    }
   })
-  // MUDO repeat for exceptions
+
+  // noinspection LocalVariableNamingConventionJS
+  const contractWithAFailingExceptionCondition = new PromiseContract({
+    exception: [() => { throw intentionalError }]
+  })
+  const anExceptedException = 'This exception is expected.'
+  it('fails with a meta-error when an exception condition is kaput', function () {
+    // noinspection JSUnresolvedFunction
+    const implementation = contractWithAFailingExceptionCondition
+      .implementation(function reject () { return Promise.reject(anExceptedException) })
+    implementation.contract.verifyPostconditions = true
+    // noinspection JSUnresolvedVariable
+    return failsOnMetaError(
+      undefined,
+      implementation,
+      contractWithAFailingExceptionCondition.exception[0],
+      [anExceptedException, implementation]
+    )
+  })
+  it('fails with a meta-error when an exception condition is kaput when it is a method', function () {
+    // noinspection JSUnresolvedFunction
+    const self = {
+      method: contractWithAFailingExceptionCondition.implementation(() => Promise.reject(anExceptedException))
+    }
+    self.method.contract.verifyPostconditions = true
+
+    // noinspection JSUnresolvedVariable
+    return failsOnMetaError(
+      self,
+      self.method,
+      contractWithAFailingExceptionCondition.exception[0],
+      [anExceptedException, self.method.bind(self)]
+    )
+  })
+  it('does not fail when an exception condition is kaput when verify is false', function () {
+    contractWithAFailingExceptionCondition.verify = false
+    contractWithAFailingExceptionCondition.verifyPostconditions = true
+    return contractWithAFailingExceptionCondition
+      .implementation(() => Promise.reject(anExceptedException))()
+      .then(() => { true.must.be.false() })
+      .catch(err => {
+        contractWithAFailingFastExceptionCondition.verifyPostconditions = false
+        contractWithAFailingFastExceptionCondition.verify = true
+        err.must.equal(anExceptedException)
+      })
+  })
+  it('does not fail when an exception condition is kaput when verifyPostcondition is false', function () {
+    return contractWithAFailingExceptionCondition
+      .implementation(() => Promise.reject(anExceptedException))()
+      .then(() => { true.must.be.false() })
+      .catch(err => {
+        contractWithAFailingExceptionCondition.verifyPostconditions = false
+        contractWithAFailingExceptionCondition.verify = true
+        err.must.equal(anExceptedException)
+      })
+  })
 
   it('fails when a simple postcondition is violated', function () {
     fibonacciWrong.contract.verifyPostconditions = true
