@@ -474,27 +474,27 @@ describe('IV/PromiseContractFunction', function () {
   const contractWithAFailingPost = new PromiseContract({
     post: [() => { throw intentionalError }]
   })
-  it.skip('fails with a meta-error when a postcondition is kaput', function () {
+  it('fails with a meta-error when a postcondition is kaput', function () {
     // noinspection JSUnresolvedFunction
-    const implementation = contractWithAFailingPost.implementation(function () { return resultWhenMetaError })
+    const implementation = contractWithAFailingPost.implementation(() => Promise.resolve(resultWhenMetaError))
     implementation.contract.verifyPostconditions = true
     // noinspection JSUnresolvedVariable
-    failsOnMetaErrorFast(
+    return failsOnMetaError(
       undefined,
       implementation,
       contractWithAFailingPost.post[0],
       [resultWhenMetaError, implementation]
     )
   })
-  it.skip('fails with a meta-error when a postcondition is kaput when it is a method', function () {
+  it('fails with a meta-error when a postcondition is kaput when it is a method', function () {
     // noinspection JSUnresolvedFunction
     const self = {
-      method: contractWithAFailingPost.implementation(() => resultWhenMetaError)
+      method: contractWithAFailingPost.implementation(() => Promise.resolve(resultWhenMetaError))
     }
     self.method.contract.verifyPostconditions = true
 
     // noinspection JSUnresolvedVariable
-    failsOnMetaErrorFast(
+    return failsOnMetaError(
       self,
       self.method,
       contractWithAFailingPost.post[0],
