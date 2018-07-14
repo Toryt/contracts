@@ -19,7 +19,6 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const property = require('../../lib/_private/property')
 const Contract = require('../../lib/IV/Contract')
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
