@@ -214,7 +214,7 @@ describe('IV/PromiseContractFunction', function () {
     }
   )
 
-  function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
+  function failsOnMetaErrorFast (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectFastException(self, functionWithAMetaError, param, exception => {
       exception.must.be.an.instanceof(ConditionMetaError)
@@ -362,7 +362,7 @@ describe('IV/PromiseContractFunction', function () {
   })
   it('fails with a meta-error when a precondition is kaput', function () {
     // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-    failsOnMetaError(
+    failsOnMetaErrorFast(
       undefined,
       contractWithAFailingPre.implementation(function () { return resultWhenMetaError }),
       contractWithAFailingPre.pre[0]
@@ -375,7 +375,7 @@ describe('IV/PromiseContractFunction', function () {
     }
 
     // noinspection JSUnresolvedVariable
-    failsOnMetaError(
+    failsOnMetaErrorFast(
       self,
       self.method,
       contractWithAFailingPre.pre[0]
@@ -399,7 +399,7 @@ describe('IV/PromiseContractFunction', function () {
     const implementation = contractWithAFailingPost.implementation(function () { return resultWhenMetaError })
     implementation.contract.verifyPostconditions = true
     // noinspection JSUnresolvedVariable
-    failsOnMetaError(
+    failsOnMetaErrorFast(
       undefined,
       implementation,
       contractWithAFailingPost.post[0],
@@ -414,7 +414,7 @@ describe('IV/PromiseContractFunction', function () {
     self.method.contract.verifyPostconditions = true
 
     // noinspection JSUnresolvedVariable
-    failsOnMetaError(
+    failsOnMetaErrorFast(
       self,
       self.method,
       contractWithAFailingPost.post[0],
@@ -443,18 +443,18 @@ describe('IV/PromiseContractFunction', function () {
   })
   // noinspection LocalVariableNamingConventionJS
   const contractWithAFailingFastExceptionCondition = new PromiseContract({
-    exception: [function () { throw intentionalError }]
+    fastException: [function () { throw intentionalError }]
   })
-  it.skip('fails with a meta-error when a fast exception condition is kaput', function () {
+  it('fails with a meta-error when a fast exception condition is kaput', function () {
     const anExceptedException = 'This exception is expected.'
     // noinspection JSUnresolvedFunction
     const implementation = contractWithAFailingFastExceptionCondition.implementation(function () { throw anExceptedException })
     implementation.contract.verifyPostconditions = true
     // noinspection JSUnresolvedVariable
-    failsOnMetaError(
+    failsOnMetaErrorFast(
       undefined,
       implementation,
-      contractWithAFailingFastExceptionCondition.exception[0],
+      contractWithAFailingFastExceptionCondition.fastException[0],
       [anExceptedException, implementation]
     )
   })
@@ -467,10 +467,10 @@ describe('IV/PromiseContractFunction', function () {
     self.method.contract.verifyPostconditions = true
 
     // noinspection JSUnresolvedVariable
-    failsOnMetaError(
+    failsOnMetaErrorFast(
       self,
       self.method,
-      contractWithAFailingFastExceptionCondition.exception[0],
+      contractWithAFailingFastExceptionCondition.fastException[0],
       [anExceptedException, self.method.bind(self)]
     )
   })
