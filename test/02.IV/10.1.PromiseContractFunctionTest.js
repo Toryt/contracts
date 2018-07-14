@@ -50,17 +50,15 @@ describe('IV/PromiseContractFunction', function () {
   // noinspection JSUnresolvedFunction
   fibonacci = new PromiseContract({
     pre: [
-      function (n) { return Number.isInteger(n) },
-      function (n) { return n >= 0 }
+      Number.isInteger,
+      n => n >= 0
     ],
     post: [
-      function (n, result) { return Number.isInteger(result) },
-      function (n, result) { return n !== 0 || result === 0 },
-      function (n, result) { return n !== 1 || result === 1 },
-      function (n, result, fibonacci) {
-        // don't refer to a specific implementation ("fibonacci") in the Contract!
-        return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2)
-      }
+      (n, result) => Number.isInteger(result),
+      (n, result) => n !== 0 || result === 0,
+      (n, result) => n !== 1 || result === 1,
+      // don't refer to a specific implementation ("fibonacci") in the Contract!
+      (n, result, fibonacci) => n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2)
     ]
   }).implementation(fibonacciImpl)
 
@@ -68,9 +66,9 @@ describe('IV/PromiseContractFunction', function () {
   const wrongResult = -3
 
   const fibonacciWrong = fibonacci.contract.implementation(function fWrong (n) {
-    return new Promise(function (resolve) {
+    return new Promise((resolve) => {
       setTimeout(
-        function () {
+        () => {
           // noinspection IfStatementWithTooManyBranchesJS
           if (n === 0) {
             resolve(0)
@@ -107,7 +105,7 @@ describe('IV/PromiseContractFunction', function () {
     exception: [
       (n, exc) => exc instanceof Error && exc.message === positiveMessage && n < 0
     ]
-  }).implementation(function (n) {
+  }).implementation(n => {
     if (!Number.isInteger(n)) { throw new Error(integerMessage) }
     if (n < 0) { return Promise.reject(new Error(positiveMessage)) }
     let count = 0
@@ -121,7 +119,7 @@ describe('IV/PromiseContractFunction', function () {
 
   const wrongException = new Error('this message is wrong') // will be thrown in error
 
-  const fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(function (n) {
+  const fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(n => {
     if (Number.isInteger(n)) { throw wrongException } // wrong
     if (n >= 0) { return Promise.reject(wrongException) } // wrong
     return Promise.resolve((n * (n + 1)) / 2)
@@ -328,9 +326,9 @@ describe('IV/PromiseContractFunction', function () {
           .then(function (result) { return result[0] + result[1] })
     }),
     fibonacciWrong: fibonacci.contract.implementation(function fWrong (n) {
-      return new Promise(function (resolve) {
+      return new Promise((resolve) => {
         setTimeout(
-          function () {
+          () => {
             // noinspection IfStatementWithTooManyBranchesJS
             if (n === 0) {
               resolve(0)
@@ -414,7 +412,7 @@ describe('IV/PromiseContractFunction', function () {
   it('does not fail on a precondition violation when verify is false', function () {
     fibonacci.contract.verify = false
     // eslint-disable-next-line
-    return fibonacci(-5).then(function () {
+    return fibonacci(-5).then(() => {
       fibonacci.contract.verify = true
     })
   })
@@ -422,14 +420,14 @@ describe('IV/PromiseContractFunction', function () {
     // noinspection JSUnresolvedFunction, JSUnresolvedVariable
     failsOnMetaErrorFast(
       undefined,
-      contractWithAFailingPre.implementation(function () { return resultWhenMetaError }),
+      contractWithAFailingPre.implementation(() => resultWhenMetaError),
       contractWithAFailingPre.pre[0]
     )
   })
   it('fails with a meta-error when a precondition is kaput when it is a method', function () {
     // noinspection JSUnresolvedFunction
     const self = {
-      method: contractWithAFailingPre.implementation(function () { return resultWhenMetaError })
+      method: contractWithAFailingPre.implementation(() => resultWhenMetaError)
     }
 
     // noinspection JSUnresolvedVariable
@@ -443,14 +441,14 @@ describe('IV/PromiseContractFunction', function () {
     const expectedResult = 'expected result'
     contractWithAFailingPre.verify = false
     return contractWithAFailingPre
-      .implementation(function () { return Promise.resolve(expectedResult) })()
+      .implementation(() => Promise.resolve(expectedResult))()
       .then(function (result) {
         contractWithAFailingPre.verify = true
         result.must.equal(expectedResult)
       })
   })
   const contractWithAFailingPost = new PromiseContract({
-    post: [function () { throw intentionalError }]
+    post: [() => { throw intentionalError }]
   })
   it.skip('fails with a meta-error when a postcondition is kaput', function () {
     // noinspection JSUnresolvedFunction
@@ -467,7 +465,7 @@ describe('IV/PromiseContractFunction', function () {
   it.skip('fails with a meta-error when a postcondition is kaput when it is a method', function () {
     // noinspection JSUnresolvedFunction
     const self = {
-      method: contractWithAFailingPost.implementation(function () { return resultWhenMetaError })
+      method: contractWithAFailingPost.implementation(() => resultWhenMetaError)
     }
     self.method.contract.verifyPostconditions = true
 
@@ -484,7 +482,7 @@ describe('IV/PromiseContractFunction', function () {
     contractWithAFailingPre.verify = false
     contractWithAFailingPre.verifyPostconditions = true
     return contractWithAFailingPost
-      .implementation(function () { return Promise.resolve(expectedResult) })()
+      .implementation(() => Promise.resolve(expectedResult))()
       .then(result => {
         contractWithAFailingPre.verifyPostconditions = false
         contractWithAFailingPre.verify = true
@@ -501,12 +499,12 @@ describe('IV/PromiseContractFunction', function () {
   })
   // noinspection LocalVariableNamingConventionJS
   const contractWithAFailingFastExceptionCondition = new PromiseContract({
-    fastException: [function () { throw intentionalError }]
+    fastException: [() => { throw intentionalError }]
   })
   it('fails with a meta-error when a fast exception condition is kaput', function () {
     const anExceptedException = 'This exception is expected.'
     // noinspection JSUnresolvedFunction
-    const implementation = contractWithAFailingFastExceptionCondition.implementation(function () { throw anExceptedException })
+    const implementation = contractWithAFailingFastExceptionCondition.implementation(() => { throw anExceptedException })
     implementation.contract.verifyPostconditions = true
     // noinspection JSUnresolvedVariable
     failsOnMetaErrorFast(
@@ -520,7 +518,7 @@ describe('IV/PromiseContractFunction', function () {
     const anExceptedException = 'This exception is expected.'
     // noinspection JSUnresolvedFunction
     const self = {
-      method: contractWithAFailingFastExceptionCondition.implementation(function () { throw anExceptedException })
+      method: contractWithAFailingFastExceptionCondition.implementation(() => { throw anExceptedException })
     }
     self.method.contract.verifyPostconditions = true
 
@@ -536,14 +534,14 @@ describe('IV/PromiseContractFunction', function () {
     const expectedResult = 'expected result'
     contractWithAFailingFastExceptionCondition.verify = false
     contractWithAFailingFastExceptionCondition.verifyPostconditions = true
-    const result = contractWithAFailingFastExceptionCondition.implementation(function () { return expectedResult })()
+    const result = contractWithAFailingFastExceptionCondition.implementation(() => expectedResult)()
     contractWithAFailingFastExceptionCondition.verifyPostconditions = false
     contractWithAFailingFastExceptionCondition.verify = true
     result.must.equal(expectedResult)
   })
   it('does not fail when a fast exception condition is kaput when verifyPostcondition is false', function () {
     const expectedResult = 'expected result'
-    const result = contractWithAFailingFastExceptionCondition.implementation(function () { return expectedResult })()
+    const result = contractWithAFailingFastExceptionCondition.implementation(() => expectedResult)()
     result.must.equal(expectedResult)
   })
   // MUDO repeat for exceptions
