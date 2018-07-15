@@ -58,7 +58,7 @@ describe('IV/PromiseContractFunction', function () {
       (n, result) => n !== 0 || result === 0,
       (n, result) => n !== 1 || result === 1,
       // don't refer to a specific implementation ("fibonacci") in the Contract!
-      (n, result, fibonacci) => n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2) // MUDO does not work because async
+      (n, result, fibonacci) => n < 2 || Promise.all([fibonacci(n - 1), fibonacci(n - 2)]).then(results => result === results[0] + results[1])
     ]
   }).implementation(fibonacciImpl)
 
@@ -69,26 +69,18 @@ describe('IV/PromiseContractFunction', function () {
     return new Promise((resolve) => {
       setTimeout(
         () => {
-          console.log('CALLING WITH ' + n, Date.now())
           // noinspection IfStatementWithTooManyBranchesJS
           if (n === 0) {
-            console.log('ANSWER 0 ' + n, Date.now())
             resolve(0)
           } else if (n === 1) {
-            console.log('ANSWER 1 ' + n, Date.now())
             resolve(1)
           } else if (n === 4) {
-            console.log('ANSWER -3 ' + n, Date.now())
             resolve(-3) // wrong!
           } else {
-            Promise.all([
+            resolve(Promise.all([
               fibonacciWrong(n - 1),
               fibonacciWrong(n - 2)
-            ]).then(results => {
-              const r = results[0] + results[1]
-              console.log('ANSWER ' + r + ' ' + n, Date.now())
-              resolve(r)
-            })
+            ]).then(results => results[0] + results[1]))
           }
         },
         0
@@ -525,8 +517,8 @@ describe('IV/PromiseContractFunction', function () {
     })
   })
 
-  describe.only('postcondition', function () {
-    describe.only('violation', function () {
+  describe('postcondition', function () {
+    describe('violation', function () {
       // MUDO not if verifyPostconditions === false x 2
 
       it('fails when a simple postcondition is violated', function () {
@@ -539,20 +531,20 @@ describe('IV/PromiseContractFunction', function () {
             fibonacciWrong.contract.verifyPostconditions = false
           })
       })
-      it.skip('fails when a simple postcondition is violated when it is a method', function () {
+      it('fails when a simple postcondition is violated when it is a method', function () {
         self.fibonacciWrong.contract.verifyPostconditions = true
         return callAndExpectRejection(self, self.fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, self, self.fibonacciWrong))
           .catch(() => { fibonacciWrong.contract.verifyPostconditions = false })
           .then(() => { fibonacciWrong.contract.verifyPostconditions = false })
       })
-      it.skip('fails when a postcondition is violated in a called function with a nested Violation', function () {
+      it('fails when a postcondition is violated in a called function with a nested Violation', function () {
         const parameter = 6
         fibonacciWrong.contract.verifyPostconditions = true
         return callAndExpectRejection(undefined, fibonacciWrong, parameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong), 'fWrong')
           .catch(() => { fibonacciWrong.contract.verifyPostconditions = false })
           .then(() => { fibonacciWrong.contract.verifyPostconditions = false })
       })
-      it.skip(
+      it(
         'fails when a postcondition is violated in a called function with a nested Violation when it is a method',
         function () {
           const parameter = 6
@@ -565,7 +557,7 @@ describe('IV/PromiseContractFunction', function () {
             .then(() => { fibonacciWrong.contract.verifyPostconditions = false })
         }
       )
-      it.skip('does not fail when a simple postcondition is violated when verify is false', function () {
+      it('does not fail when a simple postcondition is violated when verify is false', function () {
         fibonacciWrong.contract.verify = false
         fibonacciWrong.contract.verifyPostconditions = true
         // eslint-disable-next-line
@@ -575,7 +567,7 @@ describe('IV/PromiseContractFunction', function () {
           result.must.equal(wrongResult)
         })
       })
-      it.skip('does not fail when a simple postcondition is violated when verifyPostcondition is false', function () {
+      it('does not fail when a simple postcondition is violated when verifyPostcondition is false', function () {
         // eslint-disable-next-line
         return fibonacciWrong(wrongParameter).then(result => {
           result.must.equal(wrongResult)
