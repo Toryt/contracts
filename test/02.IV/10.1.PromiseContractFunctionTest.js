@@ -523,8 +523,6 @@ describe('IV/PromiseContractFunction', function () {
 
   describe('postcondition', function () {
     describe('violation', function () {
-      // MUDO not if verifyPostconditions === false x 2
-
       it('fails when a simple postcondition is violated', function () {
         fibonacciWrong.contract.verifyPostconditions = true
         return callAndExpectRejection(undefined, fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong))
