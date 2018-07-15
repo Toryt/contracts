@@ -130,8 +130,13 @@ describe('IV/PromiseContractFunction', function () {
     return Promise.resolve((n * (n + 1)) / 2)
   })
 
-  const fastExceptionParameter = -10
+  const defensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(n => {
+    return Promise.reject(wrongException) // wrong
+  })
+
   const rejectionParameter = Math.PI
+  const fastExceptionParameter = -10
+  const exceptionParameter = 5
 
   const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
