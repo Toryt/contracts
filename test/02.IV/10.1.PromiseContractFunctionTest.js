@@ -105,6 +105,7 @@ describe('IV/PromiseContractFunction', function () {
     ],
     exception: [
       (n, exc) => exc instanceof Error,
+      (n, exc) => exc.message === positiveMessage || exc.message === overflowMessage,
       (n, exc) => exc.message === positiveMessage && n < 0,
       (n, exc, sum) =>
         exc.message === overflowMessage && sum(n - 1).then(nMinusOneSum => Number.MAX_SAFE_INTEGER - n <= nMinusOneSum)
