@@ -370,10 +370,10 @@ describe('IV/PromiseContractFunction', function () {
             } else if (n === 4) {
               resolve(-3) // wrong!
             } else {
-              Promise.all([
+              resolve(Promise.all([
                 self.fibonacciWrong(n - 1),
                 self.fibonacciWrong(n - 2)
-              ].then(results => resolve(results[0] + results[1])))
+              ]).then(results => results[0] + results[1]))
             }
           },
           0
@@ -524,7 +524,7 @@ describe('IV/PromiseContractFunction', function () {
       it('fails when a simple postcondition is violated', function () {
         fibonacciWrong.contract.verifyPostconditions = true
         return callAndExpectRejection(undefined, fibonacciWrong, wrongParameter, expectPostProperties.bind(undefined, undefined, fibonacciWrong))
-          .catch((err) => {
+          .catch(() => {
             fibonacciWrong.contract.verifyPostconditions = false
           })
           .then(() => {
