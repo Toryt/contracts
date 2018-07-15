@@ -826,26 +826,36 @@ describe('IV/PromiseContractFunction', function () {
   })
 
   describe('exception condition', function () {
-    describe.only('violation', function () {
+    describe('violation', function () {
       it('fails when a simple exception condition is violated', function () {
         defensiveIntegerSumWrong.contract.verifyPostconditions = true
-        callAndExpectRejection(
+        return callAndExpectRejection(
           undefined,
           defensiveIntegerSumWrong,
           exceptionParameter,
           expectExceptionProperties.bind(undefined, undefined, defensiveIntegerSumWrong)
         )
-        defensiveIntegerSumWrong.contract.verifyPostconditions = false
+          .then(() => {
+            defensiveIntegerSumWrong.contract.verifyPostconditions = false
+          })
+          .catch(() => {
+            defensiveIntegerSumWrong.contract.verifyPostconditions = false
+          })
       })
       it('fails when a simple exception condition is violated when it is a method', function () {
         self.defensiveIntegerSumWrong.contract.verifyPostconditions = true
-        callAndExpectRejection(
+        return callAndExpectRejection(
           self,
           self.defensiveIntegerSumWrong,
           exceptionParameter,
           expectExceptionProperties.bind(undefined, self, self.defensiveIntegerSumWrong)
         )
-        self.defensiveIntegerSumWrong.contract.verifyPostconditions = false
+          .then(() => {
+            defensiveIntegerSumWrong.contract.verifyPostconditions = false
+          })
+          .catch(() => {
+            defensiveIntegerSumWrong.contract.verifyPostconditions = false
+          })
       })
       it('does not fail when a exception condition is violated when verify is false', function () {
         defensiveIntegerSumWrong.contract.verify = false
