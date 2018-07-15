@@ -90,6 +90,7 @@ describe('IV/PromiseContractFunction', function () {
 
   const integerMessage = 'n must be integer'
   const positiveMessage = 'n must be positive'
+  const overflowMessage = 'no overflow'
 
   // noinspection JSUnresolvedFunction
   const defensiveIntegerSum = new PromiseContract({
@@ -97,13 +98,16 @@ describe('IV/PromiseContractFunction', function () {
       (n, result) => Number.isInteger(result),
       (n, result) => result >= 0,
       (n, result) => n !== 0 || result === 0,
-      (n, result, sum) => n === 0 || result === sum(n - 1) + n
+      (n, result, sum) => n === 0 || sum(n - 1).then(nMinusOneSum => result === nMinusOneSum + n)
     ],
     fastException: [
       (n, exc) => exc instanceof Error && exc.message === integerMessage && !Number.isInteger(n)
     ],
     exception: [
-      (n, exc) => exc instanceof Error && exc.message === positiveMessage && n < 0
+      (n, exc) => exc instanceof Error,
+      (n, exc) => exc.message === positiveMessage && n < 0,
+      (n, exc, sum) =>
+        exc.message === overflowMessage && sum(n - 1).then(nMinusOneSum => Number.MAX_SAFE_INTEGER - n <= nMinusOneSum)
     ]
   }).implementation(n => {
     if (!Number.isInteger(n)) { throw new Error(integerMessage) }
