@@ -106,13 +106,14 @@ describe('IV/PromiseContractFunction', function () {
     exception: [
       (n, exc) => exc instanceof Error,
       (n, exc) => exc.message === positiveMessage || exc.message === overflowMessage,
-      (n, exc) => exc.message === positiveMessage && n < 0,
+      (n, exc) => exc.message !== positiveMessage || n < 0,
       (n, exc, sum) =>
-        exc.message === overflowMessage && sum(n - 1).then(nMinusOneSum => Number.MAX_SAFE_INTEGER - n <= nMinusOneSum)
+        exc.message !== overflowMessage || sum(n - 1).then(nMinusOneSum => Number.MAX_SAFE_INTEGER - n <= nMinusOneSum)
     ]
   }).implementation(n => {
     if (!Number.isInteger(n)) { throw new Error(integerMessage) }
     if (n < 0) { return Promise.reject(new Error(positiveMessage)) }
+    // we are obliged to throw an overflow message (but then the postcondition will fail)
     let count = 0
     let result = 0
     while (count < n) {
@@ -134,7 +135,8 @@ describe('IV/PromiseContractFunction', function () {
     return Promise.reject(wrongException) // wrong
   })
 
-  const rejectionParameter = Math.PI
+  const defensiveSumFastExcParameter = Math.PI
+  const defensiveSumRejectParameter = -5
   const fastExceptionParameter = -10
   const exceptionParameter = 5
 
@@ -445,6 +447,14 @@ describe('IV/PromiseContractFunction', function () {
       // eslint-disable-next-line no-unused-vars
       return fibonacci(5)
     })
+    it("doesn't interfere when the implementation is correct, testing conditions", function () {
+      fibonacci.contract.verifyPostconditions = true
+      // any exception will fail the test
+      // eslint-disable-next-line no-unused-vars
+      return fibonacci(5).then(() => {
+        fibonacci.contract.verifyPostconditions = false
+      })
+    })
     it("doesn't interfere when the implementation is correct too", function () {
       // noinspection MagicNumberJS
       const oneHundred = 100
@@ -452,25 +462,109 @@ describe('IV/PromiseContractFunction', function () {
       // eslint-disable-next-line no-unused-vars
       return defensiveIntegerSum(oneHundred)
     })
+    it("doesn't interfere when the implementation is correct too, testing conditions", function () {
+      // noinspection MagicNumberJS
+      const oneHundred = 100
+      defensiveIntegerSum.contract.verifyPostconditions = true
+      // any exception will fail the test
+      // eslint-disable-next-line no-unused-vars
+      return defensiveIntegerSum(oneHundred).then(() => {
+        defensiveIntegerSum.contract.verifyPostconditions = false
+      })
+    })
     it('works with a method that is correct', function () {
       // any exception will fail the test
       // eslint-disable-next-line no-unused-vars
       return self.fibonacci(5)
+    })
+    it('works with a method that is correct, testing conditions', function () {
+      self.fibonacci.contract.verifyPostconditions = true
+      // any exception will fail the test
+      // eslint-disable-next-line no-unused-vars
+      return self.fibonacci(5).then(() => {
+        self.fibonacci.contract.verifyPostconditions = false
+      })
     })
     it('works with a method that is correct too', function () {
       // any exception will fail the test
       // eslint-disable-next-line no-unused-vars
       return self.defensiveIntegerSum(5)
     })
-    it('works with a defensive function', function () {
+    it('works with a method that is correct too, testing conditions', function () {
+      self.defensiveIntegerSum.contract.verifyPostconditions = true
+      // any exception will fail the test
+      // eslint-disable-next-line no-unused-vars
+      return self.defensiveIntegerSum(5).then(() => {
+        self.defensiveIntegerSum.contract.verifyPostconditions = false
+      })
+    })
+    it('works with a defensive function, fast exception', function () {
+      defensiveIntegerSum.bind(undefined, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
+    })
+    it('works with a defensive function, fast exception, testing conditions', function () {
       defensiveIntegerSum.contract.verifyPostconditions = true
-      defensiveIntegerSum.bind(undefined, rejectionParameter).must.throw(Error, integerMessage)
+      defensiveIntegerSum.bind(undefined, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
       defensiveIntegerSum.contract.verifyPostconditions = false
     })
-    it('works with a defensive method', function () {
+    it('works with a defensive method, fast exception', function () {
+      self.defensiveIntegerSum.bind(self, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
+    })
+    it('works with a defensive method, fast exception, testing conditions', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
-      self.defensiveIntegerSum.bind(self, rejectionParameter).must.throw(Error, integerMessage)
+      self.defensiveIntegerSum.bind(self, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
       self.defensiveIntegerSum.contract.verifyPostconditions = false
+    })
+    it('works with a defensive function, rejecting', function () {
+      return defensiveIntegerSum(defensiveSumRejectParameter)
+        .then(
+          () => {
+            true.must.be.false()
+          },
+          err => {
+            err.must.be.error(Error, positiveMessage)
+          }
+        )
+    })
+    it('works with a defensive function, rejecting, testing conditions', function () {
+      defensiveIntegerSum.contract.verifyPostconditions = true
+      return defensiveIntegerSum(defensiveSumRejectParameter)
+        .then(
+          () => {
+            defensiveIntegerSum.contract.verifyPostconditions = false
+            true.must.be.false()
+          },
+          err => {
+            defensiveIntegerSum.contract.verifyPostconditions = false
+            testUtil.log(err)
+            err.must.be.error(Error, positiveMessage)
+          }
+        )
+    })
+    it('works with a defensive method, rejecting', function () {
+      return self.defensiveIntegerSum(defensiveSumRejectParameter)
+        .then(
+          () => {
+            true.must.be.false()
+          },
+          err => {
+            err.must.be.error(Error, positiveMessage)
+          }
+        )
+    })
+    it('works with a defensive method, rejecting, testing conditions', function () {
+      self.defensiveIntegerSum.contract.verifyPostconditions = true
+      return self.defensiveIntegerSum(defensiveSumRejectParameter)
+        .then(
+          () => {
+            defensiveIntegerSum.contract.verifyPostconditions = false
+            true.must.be.false()
+          },
+          err => {
+            defensiveIntegerSum.contract.verifyPostconditions = false
+            testUtil.log(err)
+            err.must.be.error(Error, positiveMessage)
+          }
+        )
     })
   })
   describe('precondition', function () {
