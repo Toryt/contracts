@@ -575,56 +575,112 @@ describe('IV/PromiseContractFunction', function () {
       })
     })
     describe('meta-error', function () {
-      const contractWithAFailingPost = new PromiseContract({
-        post: [() => { throw intentionalError }]
+      describe('fast', function () {
+        const contractWithAFailingPost = new PromiseContract({
+          post: [() => { throw intentionalError }]
+        })
+
+        it('fails with a meta-error when a postcondition is kaput', function () {
+          // noinspection JSUnresolvedFunction
+          const implementation = contractWithAFailingPost.implementation(() => Promise.resolve(resultWhenMetaError))
+          implementation.contract.verifyPostconditions = true
+          // noinspection JSUnresolvedVariable
+          return failsOnMetaError(
+            undefined,
+            implementation,
+            contractWithAFailingPost.post[0],
+            [resultWhenMetaError, implementation]
+          )
+        })
+        it('fails with a meta-error when a postcondition is kaput when it is a method', function () {
+          // noinspection JSUnresolvedFunction
+          const self = {
+            method: contractWithAFailingPost.implementation(() => Promise.resolve(resultWhenMetaError))
+          }
+          self.method.contract.verifyPostconditions = true
+
+          // noinspection JSUnresolvedVariable
+          return failsOnMetaError(
+            self,
+            self.method,
+            contractWithAFailingPost.post[0],
+            [resultWhenMetaError, self.method.bind(self)]
+          )
+        })
+        it('does not fail when a postcondition is kaput when verify is false', function () {
+          const expectedResult = 'expected result'
+          contractWithAFailingPre.verify = false
+          contractWithAFailingPre.verifyPostconditions = true
+          return contractWithAFailingPost
+            .implementation(() => Promise.resolve(expectedResult))()
+            .then(result => {
+              contractWithAFailingPre.verifyPostconditions = false
+              contractWithAFailingPre.verify = true
+              result.must.equal(expectedResult)
+            })
+        })
+        it('does not fail when a postcondition is kaput when verifyPostcondition is false', function () {
+          const expectedResult = 'expected result'
+          return contractWithAFailingPost
+            .implementation(() => Promise.resolve(expectedResult))()
+            .then(result => {
+              result.must.equal(expectedResult)
+            })
+        })
       })
 
-      it('fails with a meta-error when a postcondition is kaput', function () {
-        // noinspection JSUnresolvedFunction
-        const implementation = contractWithAFailingPost.implementation(() => Promise.resolve(resultWhenMetaError))
-        implementation.contract.verifyPostconditions = true
-        // noinspection JSUnresolvedVariable
-        return failsOnMetaError(
-          undefined,
-          implementation,
-          contractWithAFailingPost.post[0],
-          [resultWhenMetaError, implementation]
-        )
-      })
-      it('fails with a meta-error when a postcondition is kaput when it is a method', function () {
-        // noinspection JSUnresolvedFunction
-        const self = {
-          method: contractWithAFailingPost.implementation(() => Promise.resolve(resultWhenMetaError))
-        }
-        self.method.contract.verifyPostconditions = true
+      describe('reject', function () {
+        const contractWithARejectingPost = new PromiseContract({
+          post: [() => Promise.reject(intentionalError)]
+        })
 
-        // noinspection JSUnresolvedVariable
-        return failsOnMetaError(
-          self,
-          self.method,
-          contractWithAFailingPost.post[0],
-          [resultWhenMetaError, self.method.bind(self)]
-        )
-      })
-      it('does not fail when a postcondition is kaput when verify is false', function () {
-        const expectedResult = 'expected result'
-        contractWithAFailingPre.verify = false
-        contractWithAFailingPre.verifyPostconditions = true
-        return contractWithAFailingPost
-          .implementation(() => Promise.resolve(expectedResult))()
-          .then(result => {
-            contractWithAFailingPre.verifyPostconditions = false
-            contractWithAFailingPre.verify = true
-            result.must.equal(expectedResult)
-          })
-      })
-      it('does not fail when a postcondition is kaput when verifyPostcondition is false', function () {
-        const expectedResult = 'expected result'
-        return contractWithAFailingPost
-          .implementation(() => Promise.resolve(expectedResult))()
-          .then(result => {
-            result.must.equal(expectedResult)
-          })
+        it('fails with a meta-error when a postcondition is kaput', function () {
+          // noinspection JSUnresolvedFunction
+          const implementation = contractWithARejectingPost.implementation(() => Promise.resolve(resultWhenMetaError))
+          implementation.contract.verifyPostconditions = true
+          // noinspection JSUnresolvedVariable
+          return failsOnMetaError(
+            undefined,
+            implementation,
+            contractWithARejectingPost.post[0],
+            [resultWhenMetaError, implementation]
+          )
+        })
+        it('fails with a meta-error when a postcondition is kaput when it is a method', function () {
+          // noinspection JSUnresolvedFunction
+          const self = {
+            method: contractWithARejectingPost.implementation(() => Promise.resolve(resultWhenMetaError))
+          }
+          self.method.contract.verifyPostconditions = true
+
+          // noinspection JSUnresolvedVariable
+          return failsOnMetaError(
+            self,
+            self.method,
+            contractWithARejectingPost.post[0],
+            [resultWhenMetaError, self.method.bind(self)]
+          )
+        })
+        it('does not fail when a postcondition is kaput when verify is false', function () {
+          const expectedResult = 'expected result'
+          contractWithAFailingPre.verify = false
+          contractWithAFailingPre.verifyPostconditions = true
+          return contractWithARejectingPost
+            .implementation(() => Promise.resolve(expectedResult))()
+            .then(result => {
+              contractWithAFailingPre.verifyPostconditions = false
+              contractWithAFailingPre.verify = true
+              result.must.equal(expectedResult)
+            })
+        })
+        it('does not fail when a postcondition is kaput when verifyPostcondition is false', function () {
+          const expectedResult = 'expected result'
+          return contractWithARejectingPost
+            .implementation(() => Promise.resolve(expectedResult))()
+            .then(result => {
+              result.must.equal(expectedResult)
+            })
+        })
       })
     })
   })
