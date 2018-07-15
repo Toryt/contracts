@@ -291,6 +291,8 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
   })
 }
 
+// TODO test verifyPromise and verifyAllPromise
+
 const test = {
   selfVerifyCases: selfVerifyCases,
   argsVerifyCases: argsVerifyCases,
