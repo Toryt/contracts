@@ -358,6 +358,18 @@ describe('IV/PromiseContractFunction', function () {
     )
   }
 
+  function expectExceptionProperties (self, contractFunction, exception) {
+    exceptionConditionViolationCommon.expectProperties(
+      exception,
+      ExceptionConditionViolation,
+      contractFunction,
+      contractFunction.contract.exception[0], // integer was programmed wrong
+      self,
+      [exceptionParameter],
+      wrongException
+    )
+  }
+
   const argumentsOfWrongType = [undefined, null, 'bar']
   const self = {
     aProperty: 'a property value',
@@ -391,7 +403,8 @@ describe('IV/PromiseContractFunction', function () {
       })
     }),
     defensiveIntegerSum: defensiveIntegerSum,
-    fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
+    fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong,
+    defensiveIntegerSumWrong: defensiveIntegerSumWrong
   }
 
   describe('#name', function () {
@@ -813,7 +826,55 @@ describe('IV/PromiseContractFunction', function () {
   })
 
   describe('exception condition', function () {
-    describe('violation', function () {
+    describe.only('violation', function () {
+      it('fails when a simple exception condition is violated', function () {
+        defensiveIntegerSumWrong.contract.verifyPostconditions = true
+        callAndExpectRejection(
+          undefined,
+          defensiveIntegerSumWrong,
+          exceptionParameter,
+          expectExceptionProperties.bind(undefined, undefined, defensiveIntegerSumWrong)
+        )
+        defensiveIntegerSumWrong.contract.verifyPostconditions = false
+      })
+      it('fails when a simple exception condition is violated when it is a method', function () {
+        self.defensiveIntegerSumWrong.contract.verifyPostconditions = true
+        callAndExpectRejection(
+          self,
+          self.defensiveIntegerSumWrong,
+          exceptionParameter,
+          expectExceptionProperties.bind(undefined, self, self.defensiveIntegerSumWrong)
+        )
+        self.defensiveIntegerSumWrong.contract.verifyPostconditions = false
+      })
+      it('does not fail when a exception condition is violated when verify is false', function () {
+        defensiveIntegerSumWrong.contract.verify = false
+        defensiveIntegerSumWrong.contract.verifyPostconditions = true
+        return defensiveIntegerSumWrong(exceptionParameter)
+          .then(
+            () => {
+              defensiveIntegerSumWrong.contract.verifyPostconditions = false
+              defensiveIntegerSumWrong.contract.verify = true
+              true.must.be.false()
+            },
+            err => {
+              defensiveIntegerSumWrong.contract.verifyPostconditions = false
+              defensiveIntegerSumWrong.contract.verify = true
+              err.must.equal(wrongException)
+            }
+          )
+      })
+      it('does not fail when a simple exception condition is violated when verifyPostcondition is false', function () {
+        return defensiveIntegerSumWrong(exceptionParameter)
+          .then(
+            () => {
+              true.must.be.false()
+            },
+            err => {
+              err.must.equal(wrongException)
+            }
+          )
+      })
     })
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
