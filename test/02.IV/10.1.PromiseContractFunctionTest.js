@@ -108,7 +108,8 @@ describe('IV/PromiseContractFunction', function () {
       (n, exc) => exc.message === positiveMessage || exc.message === overflowMessage,
       (n, exc) => exc.message !== positiveMessage || n < 0,
       (n, exc, sum) =>
-        exc.message !== overflowMessage || sum(n - 1).then(nMinusOneSum => Number.MAX_SAFE_INTEGER - n <= nMinusOneSum)
+        exc.message !== overflowMessage || sum(n - 1).then(nMinusOneSum => 20 - n <= nMinusOneSum)
+        // 20, because MAX_SAFE_INTEGER takes too long
     ]
   }).implementation(n => {
     if (!Number.isInteger(n)) { throw new Error(integerMessage) }
