@@ -691,7 +691,58 @@ describe('IV/PromiseContractFunction', function () {
 
   describe('fast exception condition', function () {
     describe('violation', function () {
-
+      it('fails when a simple fast exception condition is violated', function () {
+        fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
+        callAndExpectFastException(
+          undefined,
+          fastDefensiveIntegerSumWrong,
+          fastExceptionParameter,
+          expectFastExceptionProperties.bind(undefined, undefined, fastDefensiveIntegerSumWrong)
+        )
+        fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
+      })
+      it('fails when a simple fast exception condition is violated when it is a method', function () {
+        self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
+        callAndExpectFastException(
+          self,
+          self.fastDefensiveIntegerSumWrong,
+          fastExceptionParameter,
+          expectFastExceptionProperties.bind(undefined, self, self.fastDefensiveIntegerSumWrong)
+        )
+        self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
+      })
+      it('does not fail when a fast exception condition is violated when verify is false', function () {
+        fastDefensiveIntegerSumWrong.contract.verify = false
+        fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
+        try {
+          return fastDefensiveIntegerSumWrong(fastExceptionParameter).catch(() => {
+            fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
+            fastDefensiveIntegerSumWrong.contract.verify = true
+            true.must.be.false()
+          }).then(() => {
+            fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
+            fastDefensiveIntegerSumWrong.contract.verify = true
+            true.must.be.false()
+          })
+        } catch (err) {
+          fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
+          fastDefensiveIntegerSumWrong.contract.verify = true
+          err.must.equal(wrongException)
+        }
+      })
+      it('does not fail when a simple fast exception condition is violated when verifyPostcondition is false', function () {
+        try {
+          return fastDefensiveIntegerSumWrong(fastExceptionParameter)
+            .catch(() => {
+              true.must.be.false()
+            })
+            .then(() => {
+              true.must.be.false()
+            })
+        } catch (err) {
+          err.must.equal(wrongException)
+        }
+      })
     })
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
@@ -757,59 +808,6 @@ describe('IV/PromiseContractFunction', function () {
 
   describe('exception condition', function () {
     describe('violation', function () {
-      it('fails when a simple fast exception condition is violated', function () {
-        fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
-        callAndExpectFastException(
-          undefined,
-          fastDefensiveIntegerSumWrong,
-          fastExceptionParameter,
-          expectFastExceptionProperties.bind(undefined, undefined, fastDefensiveIntegerSumWrong)
-        )
-        fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
-      })
-      it('fails when a simple fast exception condition is violated when it is a method', function () {
-        self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
-        callAndExpectFastException(
-          self,
-          self.fastDefensiveIntegerSumWrong,
-          fastExceptionParameter,
-          expectFastExceptionProperties.bind(undefined, self, self.fastDefensiveIntegerSumWrong)
-        )
-        self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
-      })
-      it('does not fail when a fast exception condition is violated when verify is false', function () {
-        fastDefensiveIntegerSumWrong.contract.verify = false
-        fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
-        try {
-          return fastDefensiveIntegerSumWrong(fastExceptionParameter).catch(() => {
-            fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
-            fastDefensiveIntegerSumWrong.contract.verify = true
-            true.must.be.false()
-          }).then(() => {
-            fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
-            fastDefensiveIntegerSumWrong.contract.verify = true
-            true.must.be.false()
-          })
-        } catch (err) {
-          fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
-          fastDefensiveIntegerSumWrong.contract.verify = true
-          err.must.equal(wrongException)
-        }
-      })
-      it('does not fail when a simple fast exception condition is violated when verifyPostcondition is false', function () {
-        try {
-          return fastDefensiveIntegerSumWrong(fastExceptionParameter)
-            .catch(() => {
-              true.must.be.false()
-            })
-            .then(() => {
-              true.must.be.false()
-            })
-        } catch (err) {
-          err.must.equal(wrongException)
-        }
-      })
-      // MUDO repeat with exception
     })
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
