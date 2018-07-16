@@ -291,7 +291,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
   })
 }
 
-// TODO test verifyPromise and verifyAllPromise
+// MUDO test verifyPromise and verifyAllPromise (now covered indirectly via PromiseContractFunctionTest)
 
 const test = {
   selfVerifyCases: selfVerifyCases,
