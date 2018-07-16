@@ -248,9 +248,15 @@ describe('IV/PromiseContractFunction', function () {
         // since we cannot create a stack trace that points in the condition. The caused by probably will for meta errors,
         // but there is no such thing for pre-, post- or exception conditions.
         if (testUtil.environment !== 'safari') {
-          // because it is in the event loop; this is not our code; we have to show something, but for Promises, it is
-          // largely irrelevant
-          const expectReference = /anonymous|conditionResult\.catch\.err/
+          /* Because it is in the event loop; this is not our code; we have to show something, but for Promises, it is
+             largely irrelevant.
+             In order:
+             - node 8
+             - headless chrome, chrome (x 3)
+             - Firefox
+             - Edge
+           */
+          const expectReference = /anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous/
           if (!recursive) {
             stackLines[0].must.match(expectReference) // because it is in the event loop; this is not our code
           } else {
