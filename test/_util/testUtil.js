@@ -105,7 +105,7 @@ function expectToBeArrayOfFunctions (a) {
   a.forEach(element => { element.must.be.a.function() })
 }
 
-const doLog = false
+const doLog = true
 
 // noinspection FunctionNamingConventionJS
 function log () {

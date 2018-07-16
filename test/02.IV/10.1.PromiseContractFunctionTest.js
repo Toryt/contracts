@@ -42,6 +42,7 @@ describe('IV/PromiseContractFunction', function () {
   let fibonacci
 
   function fibonacciImpl (n) {
+    // console.log('CALL ' + n) // MUDO iOS works with this line here, and fails without!
     return n <= 1
       ? Promise.resolve(n)
       : Promise.all([fibonacci(n - 1), fibonacci(n - 2)]).then(function (result) { return result[0] + result[1] })
@@ -451,17 +452,21 @@ describe('IV/PromiseContractFunction', function () {
     })
   })
 
-  describe('correct', function () {
-    it("doesn't interfere when the implementation is correct", function () {
+  describe.only('correct', function () {
+    it.only("doesn't interfere when the implementation is correct", function () {
+      console.log('starting test')
       // any exception will fail the test
       // eslint-disable-next-line no-unused-vars
-      return fibonacci(5)
+      const p = fibonacci(5).then(result => { console.log('test done', result) }).catch(err => { console.error('test error', err) })
+      console.log('test initiated')
+      return p
     })
     it("doesn't interfere when the implementation is correct, testing conditions", function () {
       fibonacci.contract.verifyPostconditions = true
       // any exception will fail the test
       // eslint-disable-next-line no-unused-vars
       return fibonacci(5).then(() => {
+        console.log('YES!')
         fibonacci.contract.verifyPostconditions = false
       })
     })

@@ -14,7 +14,7 @@
     "browserifyTest": "browserify -r must --outfile browser/test/suite.js test/**/*Test.js",
     "browserTest": "mochify --allow-chrome-as-root --reporter dot 'test/**/*Test.js'",
     "watch": "mochify --watch --reporter min 'test/**/*Test.js'",
-    "wd": "mochify --wd --wd-file .min-wd.js --async-polling false --reporter dot 'test/**/*Test.js'"
+    "wd": "mochify --wd --wd-file .min-wd.js --async-polling false 'test/**/*Test.js'"
   },
   "repository": {
     "type": "git",
