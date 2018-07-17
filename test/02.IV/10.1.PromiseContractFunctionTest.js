@@ -255,8 +255,9 @@ describe('IV/PromiseContractFunction', function () {
              - headless chrome, chrome (x 3)
              - Firefox
              - Edge
+             - node 6
            */
-          const expectReference = /anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous/
+          const expectReference = /anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
           if (!recursive) {
             stackLines[0].must.match(expectReference) // because it is in the event loop; this is not our code
           } else {
