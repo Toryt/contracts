@@ -76,7 +76,7 @@ describe('IV/AbstractContract', function () {
 
   describe('AbstractContract.bindContractFunction', function () {
     it('behaves as expected', function () {
-      const subject = common.createCandidateContractFunction()
+      const subject = common.createCandidateContractFunction(AbstractContract)
       const result = AbstractContract.bindContractFunction.apply(subject)
       AbstractContract.isAGeneralContractFunction(result).must.be.true()
       Object.getPrototypeOf(result.contract).must.equal(subject.contract)
@@ -87,56 +87,8 @@ describe('IV/AbstractContract', function () {
     })
   })
 
-  function generateIAGCFTests (isAGeneralizedContractFunction) {
-    it(
-      'says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 ' +
-       'properties are frozen, and it has the expected name',
-      function () {
-        const candidate = common.createCandidateContractFunction()
-        isAGeneralizedContractFunction(candidate).must.be.truthy()
-      }
-    )
-
-    common.thingsThatAreNotAFunctionNorAContract.forEach(thing => {
-      it('says no if the argument is not a function, but ' + thing, function () {
-        must(isAGeneralizedContractFunction(thing)).be.falsy()
-      })
-    });
-
-    ['contract', 'implementation', 'location', 'bind'].forEach(doNotFreezeProperty => {
-      it('says no if the ' + doNotFreezeProperty + ' property is not frozen', function () {
-        const candidate = common.createCandidateContractFunction(doNotFreezeProperty)
-        must(isAGeneralizedContractFunction(candidate)).be.falsy()
-      })
-    });
-
-    [
-      {propertyName: 'contract', expected: 'an AbstractContract', extra: [function () {}]},
-      {propertyName: 'implementation', expected: 'a Function', extra: [new AbstractContract({})]},
-      {propertyName: 'bind', expected: 'AbstractContract.bindContractFunction', extra: []},
-      {
-        propertyName: 'name',
-        expected: 'the contractFunction.name',
-        extra: ['candidate', AbstractContract.namePrefix]
-      }
-    ].forEach(aCase => {
-      common.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach(v => {
-        it('says no if the ' + aCase.propertyName + ' is not ' + aCase.expected + ' but ' + v, function () {
-          const candidate = common.createCandidateContractFunction(null, aCase.propertyName, v)
-          must(isAGeneralizedContractFunction(candidate)).be.falsy()
-        })
-      })
-    })
-    common.thingsThatAreNotAFunctionNorAContract.filter(v => !v).forEach(v => {
-      it('says no if the location is not truthy but ' + v, function () {
-        const candidate = common.createCandidateContractFunction(null, 'location', v)
-        must(AbstractContract.isAContractFunction(candidate)).be.falsy()
-      })
-    })
-  }
-
   describe('AbstractContract.isAGeneralizedContractFunction', function () {
-    generateIAGCFTests(AbstractContract.isAGeneralContractFunction)
+    common.generateIAGCFTests(AbstractContract, AbstractContract.isAGeneralContractFunction)
     common.thingsThatAreNotAFunctionNorAContract
       .filter(v => !!v)
       .concat(['    at', 'at /', {}, AbstractContract.internalLocation])
@@ -145,26 +97,14 @@ describe('IV/AbstractContract', function () {
           'says yes if there is an implementation Function, an AbstractContract, and a location that is ' + v +
           ', and all 3 properties are frozen, and it has the expected name',
           function () {
-            const candidate = common.createCandidateContractFunction(null, 'location', v)
+            const candidate = common.createCandidateContractFunction(AbstractContract, null, 'location', v)
             AbstractContract.isAGeneralContractFunction(candidate).must.be.truthy()
           }
         )
       })
   })
 
-  describe('AbstractContract.isAContractFunction', function () {
-    generateIAGCFTests(AbstractContract.isAContractFunction)
-    common
-      .thingsThatAreNotAFunctionNorAContract
-      .filter(t => !t || typeof t !== 'string' || t.indexOf(os.EOL) >= 0)
-      .concat([{}, AbstractContract.internalLocation])
-      .forEach(v => {
-        it('says no if the location is not a location outside this library but ' + v, function () {
-          const candidate = common.createCandidateContractFunction(null, 'location', v)
-          must(AbstractContract.isAContractFunction(candidate)).be.falsy()
-        })
-      })
-  })
+  common.generateConstructorMethodsDescriptions(AbstractContract)
 
   describe('AbstractContract.bless', function () {
     it('behaves as expected', function () {

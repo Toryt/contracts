@@ -24,6 +24,7 @@ const common = require('./ContractCommon')
 const Contract = require('../../lib/IV/Contract')
 const abstractContractCommon = require('./AbstractContractCommon')
 const AbstractContract = require('../../lib/IV/AbstractContract')
+const PromiseContract = require('../../lib/IV/PromiseContract')
 
 describe('IV/Contract', function () {
   describe('Contract', function () {
@@ -68,6 +69,8 @@ describe('IV/Contract', function () {
     })
   })
 
+  common.generateConstructorMethodsDescriptions(Contract)
+
   // noinspection JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
     () => new Contract({}),
@@ -82,4 +85,13 @@ describe('IV/Contract', function () {
         description: parameters.join(' - ')
       }))
   )
+
+  describe('@isAContractFunction specific', function () {
+    it('does not accept a PromiseContract', function () {
+      const contract = new PromiseContract({})
+      const contractFunction = contract.implementation(() => {})
+      const result = Contract.isAContractFunction(contractFunction)
+      result.must.be.false()
+    })
+  })
 })

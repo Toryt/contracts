@@ -25,6 +25,7 @@ const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
 const os = require('os')
+const must = require('must')
 
 const someConditions = [
   function () { return [] },
@@ -119,13 +120,13 @@ function expectConstructorPost (pre, post, exception, location, result) {
   expectInvariants(result)
 }
 
-// noinspection OverlyComplexFunctionJS
-function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName, otherPropertyValue) {
+// noinspection OverlyComplexFunctionJS, ParameterNamingConventionJS
+function createCandidateContractFunction (ContractConstructor, doNotFreezeProperty, otherPropertyName, otherPropertyValue) {
   function candidate () {}
 
   function impl () {}
 
-  let contract = otherPropertyName === 'contract' ? otherPropertyValue : new AbstractContract({})
+  let contract = otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AbstractContract)({})
   if (typeof contract === 'object') {
     contract = Object.create(contract)
   }
@@ -163,6 +164,71 @@ function createCandidateContractFunction (doNotFreezeProperty, otherPropertyName
   return candidate
 }
 
+// noinspection ParameterNamingConventionJS
+function generateIAGCFTests (ContractConstructor, isAXXXContractFunction) {
+  it(
+    'says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 ' +
+     'properties are frozen, and it has the expected name',
+    function () {
+      const candidate = createCandidateContractFunction(ContractConstructor)
+      isAXXXContractFunction.call(ContractConstructor, candidate).must.be.truthy()
+    }
+  )
+
+  notAFunctionNorAContract.forEach(thing => {
+    it('says no if the argument is not a function, but ' + thing, function () {
+      must(isAXXXContractFunction.call(ContractConstructor, thing)).be.falsy()
+    })
+  });
+
+  ['contract', 'implementation', 'location', 'bind'].forEach(doNotFreezeProperty => {
+    it('says no if the ' + doNotFreezeProperty + ' property is not frozen', function () {
+      const candidate = createCandidateContractFunction(ContractConstructor, doNotFreezeProperty)
+      must(isAXXXContractFunction.call(ContractConstructor, candidate)).be.falsy()
+    })
+  });
+
+  [
+    {propertyName: 'contract', expected: 'an AbstractContract', extra: [function () {}]},
+    {propertyName: 'implementation', expected: 'a Function', extra: [new AbstractContract({})]},
+    {propertyName: 'bind', expected: 'AbstractContract.bindContractFunction', extra: []},
+    {
+      propertyName: 'name',
+      expected: 'the contractFunction.name',
+      extra: ['candidate', AbstractContract.namePrefix]
+    }
+  ].forEach(aCase => {
+    notAFunctionNorAContract.concat(aCase.extra).forEach(v => {
+      it('says no if the ' + aCase.propertyName + ' is not ' + aCase.expected + ' but ' + v, function () {
+        const candidate = createCandidateContractFunction(ContractConstructor, null, aCase.propertyName, v)
+        must(isAXXXContractFunction.call(ContractConstructor, candidate)).be.falsy()
+      })
+    })
+  })
+}
+
+// noinspection FunctionNamingConventionJS, ParameterNamingConventionJS
+function generateConstructorMethodsDescriptions (ContractConstructor) {
+  describe('@isAContractFunction', function () {
+    generateIAGCFTests(ContractConstructor, ContractConstructor.isAContractFunction)
+    notAFunctionNorAContract
+      .filter(t => !t || typeof t !== 'string' || t.indexOf(os.EOL) >= 0)
+      .concat([{}, AbstractContract.internalLocation])
+      .forEach(v => {
+        it('says no if the location is not a location outside this library but ' + v, function () {
+          const candidate = createCandidateContractFunction(null, 'location', v)
+          must(AbstractContract.isAContractFunction(candidate)).be.falsy()
+        })
+      })
+    notAFunctionNorAContract.filter(v => !v).forEach(v => {
+      it('says no if the location is not truthy but ' + v, function () {
+        const candidate = createCandidateContractFunction(ContractConstructor, null, 'location', v)
+        must(ContractConstructor.isAContractFunction(candidate)).be.falsy()
+      })
+    })
+  })
+}
+
 // noinspection FunctionNamingConventionJS,JSUnusedLocalSymbols
 function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
   const self = this
@@ -170,7 +236,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
   describe('#isImplementedBy()', function () {
     it('says yes if the argument is a general contract function for the contract', function () {
       const subject = oneSubjectGenerator()
-      const f = createCandidateContractFunction(null, 'contract', subject)
+      const f = createCandidateContractFunction(subject.constructor, null, 'contract', subject)
       subject.isImplementedBy(f).must.be.truthy()
       self.expectInvariants(subject)
     })
@@ -186,7 +252,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
     it('says no if the argument is a contract function for another contract', function () {
       const subject = oneSubjectGenerator()
       const otherContract = oneSubjectGenerator()
-      const f = createCandidateContractFunction(null, 'contract', otherContract)
+      const f = createCandidateContractFunction(null, null, 'contract', otherContract)
       subject.isImplementedBy(f).must.be.falsy()
       self.expectInvariants(subject)
     })
@@ -206,5 +272,7 @@ module.exports = {
   expectArrayPost: expectArrayPost,
   expectConstructorPost: expectConstructorPost,
   createCandidateContractFunction: createCandidateContractFunction,
+  generateIAGCFTests: generateIAGCFTests,
+  generateConstructorMethodsDescriptions: generateConstructorMethodsDescriptions,
   generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
 }
