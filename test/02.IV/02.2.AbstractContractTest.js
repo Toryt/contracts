@@ -46,6 +46,10 @@ describe('IV/AbstractContract', function () {
       AbstractContract.mustNotHappen.must.be.an.array()
       AbstractContract.mustNotHappen.must.have.length(1)
       AbstractContract.mustNotHappen[0].must.equal(AbstractContract.falseCondition)
+      AbstractContract.must.have.ownProperty('outcome')
+      AbstractContract.outcome.must.be.a.function()
+      AbstractContract.must.have.ownProperty('callee')
+      AbstractContract.callee.must.be.a.function()
 
       AbstractContract.must.have.ownProperty('root')
       AbstractContract.root.must.be.an.instanceof(AbstractContract)
