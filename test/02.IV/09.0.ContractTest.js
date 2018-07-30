@@ -42,6 +42,7 @@ describe('IV/Contract', function () {
       Contract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
       Contract.falseCondition.must.equal(AbstractContract.falseCondition)
       Contract.mustNotHappen.must.equal(AbstractContract.mustNotHappen)
+      Contract.Promise.must.equal(PromiseContract)
     })
   })
 
