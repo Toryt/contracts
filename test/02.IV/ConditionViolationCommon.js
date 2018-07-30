@@ -129,35 +129,62 @@ function generatePrototypeMethodsDescriptions (
 
   const that = this
 
-  describe('#verify()', function () {
-    const conditionCases = [
-      () =>
-        function f () {
-          f.self = this
-          f.args = arguments
-          // no return
-        },
-      () =>
-        function f () {
-          f.self = this
-          f.args = arguments
-          return false
-        },
-      () =>
-        function f () {
-          f.self = this
-          f.args = arguments
-          return true
-        },
-      () =>
-        function f () {
-          f.self = this
-          f.args = arguments
-          throw new Error('This condition fails with an error')
-        }
-    ]
+  const verifyConditionCases = [
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        // no return
+      },
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        return false
+      },
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        return true
+      },
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        throw new Error('This condition fails with an error')
+      }
+  ]
 
-    conditionCases.forEach(conditionGenerator => {
+  const verifyPromiseConditionCases = [
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        return Promise.resolve()
+      },
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        return Promise.resolve(false)
+      },
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        return Promise.resolve(true)
+      },
+    () =>
+      function f () {
+        f.self = this
+        f.args = arguments
+        return Promise.reject(new Error('This condition fails with an error'))
+      }
+  ]
+
+  describe('#verify()', function () {
+    verifyConditionCases.forEach(conditionGenerator => {
       selfVerifyCases.forEach(selfGenerator => {
         argsVerifyCases.forEach(argGenerator => {
           const condition = conditionGenerator()
@@ -172,7 +199,6 @@ function generatePrototypeMethodsDescriptions (
                 args,
                 contractFunction.bind(self)
               )
-
               let outcome
               let metaError = false
               try {
@@ -181,7 +207,6 @@ function generatePrototypeMethodsDescriptions (
                 // ConditionMetaError
                 metaError = true
               }
-
               try {
                 subject.verify(contractFunction, condition, self, doctoredArgs)
                 outcome.must.be.truthy() // otherwise, we get an exception
@@ -221,6 +246,174 @@ function generatePrototypeMethodsDescriptions (
                   .must.eql(Array.prototype.slice.call(condition.args))
                 that.expectInvariants(subject)
               }
+            }
+          )
+        })
+      })
+    })
+  })
+
+  describe('#verifyPromise()', function () {
+    verifyConditionCases.forEach(conditionGenerator => {
+      selfVerifyCases.forEach(selfGenerator => {
+        argsVerifyCases.forEach(argGenerator => {
+          const condition = conditionGenerator()
+          const self = selfGenerator()
+          const args = argGenerator()
+          it(
+            'works for ' + condition + ' - ' + self + ' - ' + args,
+            function () {
+              const subject = oneSubjectGenerator()
+              const contractFunction = common.createCandidateContractFunction()
+              const doctoredArgs = that.doctorArgs(
+                args,
+                contractFunction.bind(self)
+              )
+
+              let outcome
+              let metaError = false
+              try {
+                outcome = condition.apply()
+              } catch (ignore) {
+                // ConditionMetaError
+                metaError = true
+              }
+
+              return subject
+                .verifyPromise(contractFunction, condition, self, doctoredArgs)
+                .then(
+                  () => {
+                    outcome.must.be.truthy() // otherwise, we get an exception
+                    must(metaError).be.falsy()
+                  },
+                  exc => {
+                    if (metaError) {
+                      // noinspection JSUnresolvedFunction
+                      conditionMetaErrorCommon.expectProperties(
+                        exc,
+                        ConditionMetaError,
+                        contractFunction,
+                        condition,
+                        self,
+                        doctoredArgs
+                      )
+                    } else {
+                      // ConditionViolation
+                      must(outcome).be.falsy()
+                      const extraProperty = doctoredArgs[args.length] // might not exist
+                      that.expectProperties(
+                        exc,
+                        subject.constructor,
+                        contractFunction,
+                        condition,
+                        self,
+                        args,
+                        extraProperty
+                      )
+                    }
+                  }
+                )
+                .then(() => {
+                  must(condition.self).equal(self)
+                  condition.args.must.be.truthy()
+                  isArguments(condition.args)
+                  // doctoredArgs might be arguments, or Array
+                  Array.prototype.slice
+                    .call(doctoredArgs)
+                    .must.eql(Array.prototype.slice.call(condition.args))
+                  that.expectInvariants(subject)
+                })
+            }
+          )
+        })
+      })
+    })
+    verifyPromiseConditionCases.forEach(conditionGenerator => {
+      selfVerifyCases.forEach(selfGenerator => {
+        argsVerifyCases.forEach(argGenerator => {
+          const condition = conditionGenerator()
+          const self = selfGenerator()
+          const args = argGenerator()
+          it(
+            'works for Promise condition ' +
+              condition +
+              ' - ' +
+              self +
+              ' - ' +
+              args,
+            function () {
+              const subject = oneSubjectGenerator()
+              const contractFunction = common.createCandidateContractFunction()
+              const doctoredArgs = that.doctorArgs(
+                args,
+                contractFunction.bind(self)
+              )
+
+              return condition
+                .apply()
+                .then(outcome => {
+                  return subject
+                    .verifyPromise(
+                      contractFunction,
+                      condition,
+                      self,
+                      doctoredArgs
+                    )
+                    .then(
+                      () => {
+                        outcome.must.be.truthy() // otherwise, we get an exception
+                      },
+                      exc => {
+                        // ConditionViolation
+                        must(outcome).be.falsy()
+                        const extraProperty = doctoredArgs[args.length] // might not exist
+                        that.expectProperties(
+                          exc,
+                          subject.constructor,
+                          contractFunction,
+                          condition,
+                          self,
+                          args,
+                          extraProperty
+                        )
+                      }
+                    )
+                })
+                .catch(() => {
+                  return subject
+                    .verifyPromise(
+                      contractFunction,
+                      condition,
+                      self,
+                      doctoredArgs
+                    )
+                    .then(
+                      () => {
+                        false.must.be.true() // should not happen
+                      },
+                      exc => {
+                        // noinspection JSUnresolvedFunction
+                        conditionMetaErrorCommon.expectProperties(
+                          exc,
+                          ConditionMetaError,
+                          contractFunction,
+                          condition,
+                          self,
+                          doctoredArgs
+                        )
+                      }
+                    )
+                })
+                .then(() => {
+                  must(condition.self).equal(self)
+                  condition.args.must.be.truthy()
+                  isArguments(condition.args)
+                  // doctoredArgs might be arguments, or Array
+                  Array.prototype.slice
+                    .call(doctoredArgs)
+                    .must.eql(Array.prototype.slice.call(condition.args))
+                  that.expectInvariants(subject)
+                })
             }
           )
         })
@@ -403,7 +596,7 @@ function generatePrototypeMethodsDescriptions (
   })
 }
 
-// MUDO test verifyPromise and verifyAllPromise (now covered indirectly via PromiseContractFunctionTest)
+// MUDO test verifyAllPromise (now covered indirectly via PromiseContractFunctionTest)
 
 const test = {
   selfVerifyCases: selfVerifyCases,
