@@ -138,6 +138,33 @@ describe('IV/AbstractContract', function () {
     })
   })
 
+  const argsResult = 'a result'
+  const argsCallee = function () {}
+  const argsCase = ['lala', 'lulu', 4, argsResult, argsCallee]
+  function args () { return arguments }
+  const argsCases = [
+    {a: argsCase, d: 'array'},
+    {a: args.apply(null, argsCase), d: 'arguments'}
+  ]
+
+  describe('AbstractContract.outcome', function () {
+    argsCases.forEach(c => {
+      it(`returns the expected element for an ${c.d} argument`, function () {
+        const result = AbstractContract.outcome(c.a)
+        result.must.equal(argsResult)
+      })
+    })
+  })
+
+  describe('AbstractContract.callee', function () {
+    argsCases.forEach(c => {
+      it(`returns the expected element for an ${c.d} argument`, function () {
+        const result = AbstractContract.callee(c.a)
+        result.must.equal(argsCallee)
+      })
+    })
+  })
+
   describe('#AbstractContract()', function () {
     common.constructorPreCases.forEach(pre => {
       common.constructorPostCases.forEach(post => {
