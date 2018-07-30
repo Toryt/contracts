@@ -39,13 +39,10 @@ describe('javascript/Object', function () {
       const keys = Object.keys(o)
       keys.length.must.equal(nrOfProperties)
       const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
-      keyNumbers.reduce(
-        (previous, current) => {
-          current.must.equal(previous + 1)
-          return current
-        },
-        -1
-      )
+      keyNumbers.reduce((previous, current) => {
+        current.must.equal(previous + 1)
+        return current
+      }, -1)
     })
     it('does not return properties of the prototype', function () {
       const o = orderOfKeysCommon.prepareAnObjectWithAProto()
@@ -58,13 +55,10 @@ describe('javascript/Object', function () {
       const keys = Object.keys(orderOfKeysCommon.objectLiteral)
       keys.length.must.equal(5)
       const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
-      keyNumbers.reduce(
-        (previous, current) => {
-          current.must.equal(previous + 1)
-          return current
-        },
-        -1
-      )
+      keyNumbers.reduce((previous, current) => {
+        current.must.equal(previous + 1)
+        return current
+      }, -1)
     })
     it('should return all properties in the order they were defined in a JSON object', function () {
       // noinspection NodeModulesDependencies
@@ -73,13 +67,10 @@ describe('javascript/Object', function () {
       const keys = Object.keys(JSON.parse(json))
       keys.length.must.equal(3) // undefined and function not stringified
       const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
-      keyNumbers.reduce(
-        (previous, current) => {
-          current.must.equal(previous + 1)
-          return current
-        },
-        -1
-      )
+      keyNumbers.reduce((previous, current) => {
+        current.must.equal(previous + 1)
+        return current
+      }, -1)
     })
   })
 
@@ -88,20 +79,16 @@ describe('javascript/Object', function () {
 
     function defineAProp (obj) {
       // noinspection MagicNumberJS
-      Object.defineProperty(
-        obj,
-        propName,
-        {
-          configurable: true,
-          enumerable: true,
-          writable: false,
-          value: 42
-        }
-      )
+      Object.defineProperty(obj, propName, {
+        configurable: true,
+        enumerable: true,
+        writable: false,
+        value: 42
+      })
     }
 
     // noinspection JSPrimitiveTypeWrapperUsage
-    [
+    ;[
       undefined,
       null,
       4,
@@ -113,7 +100,9 @@ describe('javascript/Object', function () {
       false,
       {},
       /foo/,
-      function () { return 'This simulates a self' },
+      function () {
+        return 'This simulates a self'
+      },
       () => 'This simulates a self',
       [],
       new ReferenceError(),
@@ -127,10 +116,18 @@ describe('javascript/Object', function () {
       new Boolean(false)
     ].forEach(obj => {
       it(
-        'sets a property on ' + obj + ' if it is non-primitive, and fails to do so if it is primitive',
+        'sets a property on ' +
+          obj +
+          ' if it is non-primitive, and fails to do so if it is primitive',
         function () {
           const type = typeof obj
-          if (obj === null || type === 'undefined' || type === 'number' || type === 'boolean' || type === 'string') {
+          if (
+            obj === null ||
+            type === 'undefined' ||
+            type === 'number' ||
+            type === 'boolean' ||
+            type === 'string'
+          ) {
             defineAProp.bind(null, obj).must.throw(TypeError)
           } else {
             defineAProp(obj)
@@ -143,10 +140,10 @@ describe('javascript/Object', function () {
   })
 
   describe('Object.getOwnPropertyDescriptor()', function () {
-    const propName = 'aProperty';
+    const propName = 'aProperty'
 
     // noinspection JSPrimitiveTypeWrapperUsage
-    [
+    ;[
       undefined,
       null,
       4,
@@ -158,7 +155,9 @@ describe('javascript/Object', function () {
       false,
       {},
       /foo/,
-      function () { return 'This simulates a self' },
+      function () {
+        return 'This simulates a self'
+      },
       () => 'This simulates a self',
       [],
       new ReferenceError(),
@@ -173,10 +172,13 @@ describe('javascript/Object', function () {
     ].forEach(obj => {
       it(
         'gets a property from ' +
-        obj + ' if it is not null or undefined, and fails to do so if it is primitive',
+          obj +
+          ' if it is not null or undefined, and fails to do so if it is primitive',
         function () {
           if (obj === null || obj === undefined) {
-            Object.getOwnPropertyDescriptor.bind(null, obj, propName).must.throw(TypeError)
+            Object.getOwnPropertyDescriptor
+              .bind(null, obj, propName)
+              .must.throw(TypeError)
           } else {
             const result = Object.getOwnPropertyDescriptor(obj, propName)
             must(result).be.falsy()

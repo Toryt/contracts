@@ -32,7 +32,14 @@ function expectInvariants (subject) {
   subject.stack.must.contain(report.value(subject.result))
 }
 
-function expectConstructorPost (executionResult, contractFunction, condition, self, args, result) {
+function expectConstructorPost (
+  executionResult,
+  contractFunction,
+  condition,
+  self,
+  args,
+  result
+) {
   // noinspection JSUnresolvedVariable
   common.expectConstructorPost.apply(undefined, arguments)
   // noinspection JSUnresolvedVariable
@@ -47,7 +54,15 @@ function expectDetailsPost (subject, result) {
 }
 
 // noinspection ParameterNamingConventionJS
-function expectProperties (exception, Type, contractFunction, condition, self, args, result) {
+function expectProperties (
+  exception,
+  Type,
+  contractFunction,
+  condition,
+  self,
+  args,
+  result
+) {
   common.expectProperties.apply(undefined, arguments)
   // noinspection JSUnresolvedVariable
   exception.result.must.equal(result)

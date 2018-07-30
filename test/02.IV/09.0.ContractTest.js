@@ -39,7 +39,9 @@ describe('IV/Contract', function () {
       Contract.root.must.equal(AbstractContract.root)
       Contract.must.have.ownProperty('isAContractFunction')
       // noinspection JSUnresolvedVariable
-      Contract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
+      Contract.isAContractFunction.must.equal(
+        AbstractContract.isAContractFunction
+      )
       Contract.falseCondition.must.equal(AbstractContract.falseCondition)
       Contract.mustNotHappen.must.equal(AbstractContract.mustNotHappen)
       Contract.outcome.must.equal(AbstractContract.outcome)
@@ -55,18 +57,32 @@ describe('IV/Contract', function () {
       common.constructorPostCases.forEach(post => {
         // noinspection JSUnresolvedVariable
         common.constructorExceptionCases.forEach(exception => {
-          it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
-            const preConditions = pre()
-            const postConditions = post()
-            const exceptionConditions = exception()
-            const result = new Contract({
-              pre: preConditions,
-              post: postConditions,
-              exception: exceptionConditions
-            })
-            // noinspection JSUnresolvedFunction
-            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, stack.location(), result)
-          })
+          it(
+            'works for pre: ' +
+              pre +
+              ', post: ' +
+              post +
+              ', exception: ' +
+              exception,
+            function () {
+              const preConditions = pre()
+              const postConditions = post()
+              const exceptionConditions = exception()
+              const result = new Contract({
+                pre: preConditions,
+                post: postConditions,
+                exception: exceptionConditions
+              })
+              // noinspection JSUnresolvedFunction
+              common.expectConstructorPost(
+                preConditions,
+                postConditions,
+                exceptionConditions,
+                stack.location(),
+                result
+              )
+            }
+          )
         })
       })
     })
@@ -78,13 +94,18 @@ describe('IV/Contract', function () {
   common.generatePrototypeMethodsDescriptions(
     () => new Contract({}),
     testUtil
-      .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
+      .x(
+        common.constructorPreCases,
+        common.constructorPostCases,
+        common.constructorExceptionCases
+      )
       .map(parameters => ({
-        subject: () => new Contract({
-          pre: parameters[0](),
-          post: parameters[1](),
-          exception: parameters[2]()
-        }),
+        subject: () =>
+          new Contract({
+            pre: parameters[0](),
+            post: parameters[1](),
+            exception: parameters[2]()
+          }),
         description: parameters.join(' - ')
       }))
   )

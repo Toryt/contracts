@@ -30,14 +30,19 @@ describe('_private/report', function () {
   describe('#conciseCondition', function () {
     function isAConciseVersion (original, concise) {
       const split = ('' + concise).split(report.conciseSeparator)
-      const cleanOriginal = original.replace(/[\r\n]/g, ' ').replace(/\s\s+/g, ' ').trim()
+      const cleanOriginal = original
+        .replace(/[\r\n]/g, ' ')
+        .replace(/\s\s+/g, ' ')
+        .trim()
       let result
       if (split.length < 2) {
-        result = (cleanOriginal === concise)
+        result = cleanOriginal === concise
       } else {
         // > 2 is not supported right now, and will fail
-        result = cleanOriginal.indexOf(split[0]) === 0 &&
-                 cleanOriginal.indexOf(split[1]) === cleanOriginal.length - split[1].length
+        result =
+          cleanOriginal.indexOf(split[0]) === 0 &&
+          cleanOriginal.indexOf(split[1]) ===
+            cleanOriginal.length - split[1].length
       }
       return result
     }
@@ -53,7 +58,9 @@ describe('_private/report', function () {
     const prefix = 'This is a test prefix'
     const alternativeName = 'This is an alternative name'
     const namedStuff = stuff.generateMutableStuff()
-    namedStuff.forEach(ms => { property.setAndFreeze(ms.subject, 'name', alternativeName) })
+    namedStuff.forEach(ms => {
+      property.setAndFreeze(ms.subject, 'name', alternativeName)
+    })
 
     // noinspection FunctionNamingConventionJS
     function generateMultiLineAnonymousFunction () {
@@ -93,15 +100,23 @@ this function should have a name   ` // trim
     stuffToo.forEach(f => {
       const result = report.conciseCondition(prefix, f)
       if (!f || !f.name) {
-        it('returns the string representation with the prefix, ' +
-           'when there is no f, or it has no name, for ' + f, function () {
-          expectGeneralPostconditions(result, prefix + ' ' + f)
-        })
+        it(
+          'returns the string representation with the prefix, ' +
+            'when there is no f, or it has no name, for ' +
+            f,
+          function () {
+            expectGeneralPostconditions(result, prefix + ' ' + f)
+          }
+        )
       } else {
-        it('returns the name with the prefix, ' +
-           'when there is an f and it has a name, for ' + f, function () {
-          expectGeneralPostconditions(result, prefix + ' ' + f.name)
-        })
+        it(
+          'returns the name with the prefix, ' +
+            'when there is an f and it has a name, for ' +
+            f,
+          function () {
+            expectGeneralPostconditions(result, prefix + ' ' + f.name)
+          }
+        )
       }
     })
   })
@@ -114,44 +129,48 @@ this function should have a name   ` // trim
     function stackDoesNotContainToString () {
       return {
         stack: stackString,
-        toString: function () { return toStringString }
+        toString: function () {
+          return toStringString
+        }
       }
     }
 
     function stackDoesContainToString () {
       return {
         stack: toStringString + os.EOL + stackString,
-        toString: function () { return toStringString }
+        toString: function () {
+          return toStringString
+        }
       }
     }
 
     caseGenerators.push(stackDoesNotContainToString)
     caseGenerators.push(stackDoesContainToString)
-    caseGenerators = caseGenerators
-      .concat(
-        testUtil
-          .anyCasesGenerators('throw stack')
-          .map(ac =>
-            () => ({
-              stack: ac(),
-              toString: function () { return toStringString }
-            })
-          )
-      )
+    caseGenerators = caseGenerators.concat(
+      testUtil.anyCasesGenerators('throw stack').map(ac => () => ({
+        stack: ac(),
+        toString: function () {
+          return toStringString
+        }
+      }))
+    )
     caseGenerators.forEach(thrownGenerator => {
       const thrown = thrownGenerator()
-      it('returns the expected, normalized string representation for ' + thrown, function () {
-        const result = report.extensiveThrown(thrown)
-        result.must.be.a.string()
-        result.indexOf(report.value(thrown)).must.equal(0)
-        let stack = thrown && thrown.stack
-        if (stack) {
-          stack = os.EOL + stack
-          const expectedStart = result.length - stack.length
-          result.lastIndexOf(stack).must.equal(expectedStart)
+      it(
+        'returns the expected, normalized string representation for ' + thrown,
+        function () {
+          const result = report.extensiveThrown(thrown)
+          result.must.be.a.string()
+          result.indexOf(report.value(thrown)).must.equal(0)
+          let stack = thrown && thrown.stack
+          if (stack) {
+            stack = os.EOL + stack
+            const expectedStart = result.length - stack.length
+            result.lastIndexOf(stack).must.equal(expectedStart)
+          }
+          testUtil.log(result)
         }
-        testUtil.log(result)
-      })
+      )
     })
   })
 
@@ -197,16 +216,22 @@ this function should have a name   ` // trim
           result.must.equal('{global}')
         } else if (typeof s === 'string' || s instanceof String) {
           result.must.equal(`'${s}'`)
-        } else if (is.primitive(s) ||
-                   s instanceof Date ||
-                   s instanceof Error ||
-                   s instanceof Number ||
-                   s instanceof Boolean) {
+        } else if (
+          is.primitive(s) ||
+          s instanceof Date ||
+          s instanceof Error ||
+          s instanceof Number ||
+          s instanceof Boolean
+        ) {
           result.must.equal('' + s)
         } else if (typeof s === 'function') {
           result.must.equal(report.conciseCondition('', s))
         } else {
-          const expected = util.inspect(s, {depth: 0, maxArrayLength: 5, breakLength: 120})
+          const expected = util.inspect(s, {
+            depth: 0,
+            maxArrayLength: 5,
+            breakLength: 120
+          })
           result.must.equal(expected)
         }
       })

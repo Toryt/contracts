@@ -23,7 +23,9 @@ const testUtil = require('../_util/testUtil')
 describe('javascript/Function', function () {
   describe('#bind()', function () {
     it('keeps a call of a bound function with another this bound to the bound this', function () {
-      function testF () { return this.property }
+      function testF () {
+        return this.property
+      }
 
       const boundThisPropertyValue = 'bound this property value'
       const boundThis = {
@@ -39,10 +41,12 @@ describe('javascript/Function', function () {
       otherThisResult.must.equal(boundThisPropertyValue)
     })
     it('has no prototype', function () {
-      function testF (p) { return 'just a function that returns ' + p }
+      function testF (p) {
+        return 'just a function that returns ' + p
+      }
 
       testF.must.have.property('prototype')
-      const boundThis = {description: 'An object to bind to'}
+      const boundThis = { description: 'An object to bind to' }
       const boundP = 'a string parameter'
       const boundF = testF.bind(boundThis, boundP)
       boundF.must.not.have.property('prototype')
@@ -53,64 +57,68 @@ describe('javascript/Function', function () {
       boundF().must.endWith(boundP)
     })
 
-    const cases = [
-      {description: 'An object to bind to'},
-      undefined,
-      null
-    ]
+    const cases = [{ description: 'An object to bind to' }, undefined, null]
     cases.forEach(function (boundThis) {
-      it('can be used out of the box as a constructor, and has weird instanceof behavior, bound to ' + JSON.stringify(boundThis), function () {
-        // noinspection FunctionNamingConventionJS
-        function TestC (pA, pB) {
-          Object.getPrototypeOf(this).must.equal(TestC.prototype)
-          this.pA = pA
-          this.pB = pB
-        }
+      it(
+        'can be used out of the box as a constructor, and has weird instanceof behavior, bound to ' +
+          JSON.stringify(boundThis),
+        function () {
+          // noinspection FunctionNamingConventionJS
+          function TestC (pA, pB) {
+            Object.getPrototypeOf(this).must.equal(TestC.prototype)
+            this.pA = pA
+            this.pB = pB
+          }
 
-        const boundPA = 'a string parameter'
-        const boundPB = 'another string parameter'
+          const boundPA = 'a string parameter'
+          const boundPB = 'another string parameter'
 
-        TestC.must.have.property('prototype')
+          TestC.must.have.property('prototype')
 
-        const testCInstance = new TestC(boundPA, boundPB)
-        testCInstance.must.be.instanceof(TestC)
-        testCInstance.pA.must.equal(boundPA)
-        testCInstance.pB.must.equal(boundPB)
-        Object.getPrototypeOf(testCInstance).must.equal(TestC.prototype)
+          const testCInstance = new TestC(boundPA, boundPB)
+          testCInstance.must.be.instanceof(TestC)
+          testCInstance.pA.must.equal(boundPA)
+          testCInstance.pB.must.equal(boundPB)
+          Object.getPrototypeOf(testCInstance).must.equal(TestC.prototype)
 
-        // noinspection LocalVariableNamingConventionJS
-        const BoundC = TestC.bind(boundThis, boundPA)
-        testCInstance.must.be.instanceof(BoundC)
-        // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
-        BoundC.must.not.have.property('prototype')
-        Object.getPrototypeOf(testCInstance).must.not.equal(BoundC.prototype)
+          // noinspection LocalVariableNamingConventionJS
+          const BoundC = TestC.bind(boundThis, boundPA)
+          testCInstance.must.be.instanceof(BoundC)
+          // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
+          BoundC.must.not.have.property('prototype')
+          Object.getPrototypeOf(testCInstance).must.not.equal(BoundC.prototype)
 
-        const boundCInstance = new BoundC(boundPB)
-        /* NOTE This directly calls TestC, with a this with the TestC prototype, boundPA and boundPB. It is as if
+          const boundCInstance = new BoundC(boundPB)
+          /* NOTE This directly calls TestC, with a this with the TestC prototype, boundPA and boundPB. It is as if
                 BoundC does not exist. The new knows what to do. */
-        boundCInstance.must.be.instanceof(TestC)
-        boundCInstance.must.be.instanceof(BoundC)
-        boundCInstance.pA.must.equal(boundPA)
-        boundCInstance.pB.must.equal(boundPB)
-        boundCInstance.must.not.have.property('description')
-        Object.getPrototypeOf(boundCInstance).must.equal(TestC.prototype)
-        Object.getPrototypeOf(boundCInstance).must.not.equal(BoundC.prototype)
-      })
+          boundCInstance.must.be.instanceof(TestC)
+          boundCInstance.must.be.instanceof(BoundC)
+          boundCInstance.pA.must.equal(boundPA)
+          boundCInstance.pB.must.equal(boundPB)
+          boundCInstance.must.not.have.property('description')
+          Object.getPrototypeOf(boundCInstance).must.equal(TestC.prototype)
+          Object.getPrototypeOf(boundCInstance).must.not.equal(BoundC.prototype)
+        }
+      )
     })
   })
   describe('#prototype', function () {
     it('does not exist on the Function.prototype', function () {
       Function.prototype.must.not.have.property('prototype')
-    });
-    [
-      function simpleF () { return 'This is a very simple function.' }
+    })
+    ;[
+      function simpleF () {
+        return 'This is a very simple function.'
+      }
       // TODO support class construct
       // class SimpleClass {}
       /* MUDO getters and setters do not have a prototype!
          https://www.ecma-international.org/ecma-262/6.0/index.html#sec-method-definitions-runtime-semantics-propertydefinitionevaluation */
     ].forEach(function (f) {
       it('exists on function ' + f, function () {
-        function otherSimpleF () { return 'This is another very simple function.' }
+        function otherSimpleF () {
+          return 'This is another very simple function.'
+        }
 
         Object.getPrototypeOf(f).must.equal(Function.prototype)
         f.must.have.ownProperty('prototype')
@@ -127,27 +135,48 @@ describe('javascript/Function', function () {
         // noinspection JSPotentiallyInvalidConstructorUsage
         testUtil.log(JSON.stringify(f.prototype))
       })
-      it('cannot be deleted (not enumerable and not configurable) from function ' + f, function () {
-        testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
-        try {
-          delete f.prototype
-          true.must.false() // unreachable
-        } catch (err) {
-          err.must.be.an.instanceof(TypeError)
+      it(
+        'cannot be deleted (not enumerable and not configurable) from function ' +
+          f,
+        function () {
+          testUtil.log(
+            JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype'))
+          )
+          try {
+            delete f.prototype
+            true.must.false() // unreachable
+          } catch (err) {
+            err.must.be.an.instanceof(TypeError)
+          }
+          Object.getOwnPropertyDescriptor(f, 'prototype').must.be.an.object()
+          Object.getOwnPropertyDescriptor(
+            f,
+            'prototype'
+          ).enumerable.must.be.false()
+          Object.getOwnPropertyDescriptor(
+            f,
+            'prototype'
+          ).configurable.must.be.false()
+          testUtil.log(
+            JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype'))
+          )
         }
-        Object.getOwnPropertyDescriptor(f, 'prototype').must.be.an.object()
-        Object.getOwnPropertyDescriptor(f, 'prototype').enumerable.must.be.false()
-        Object.getOwnPropertyDescriptor(f, 'prototype').configurable.must.be.false()
-        testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
-      })
+      )
     })
     it('is writable for a simple function', function () {
-      function simpleF () { return 'This is a very simple function.' }
+      function simpleF () {
+        return 'This is a very simple function.'
+      }
 
       Object.getOwnPropertyDescriptor(simpleF, 'prototype').must.be.an.object()
-      Object.getOwnPropertyDescriptor(simpleF, 'prototype').writable.must.be.true()
-      testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, 'prototype')))
-      const newObject = {name: 'a new object'}
+      Object.getOwnPropertyDescriptor(
+        simpleF,
+        'prototype'
+      ).writable.must.be.true()
+      testUtil.log(
+        JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, 'prototype'))
+      )
+      const newObject = { name: 'a new object' }
       // noinspection JSPotentiallyInvalidConstructorUsage
       simpleF.prototype = newObject
       // noinspection JSPotentiallyInvalidConstructorUsage
@@ -187,8 +216,10 @@ describe('javascript/Function', function () {
     // });
   })
   describe('new', function () {
-    [
-      function simpleF () { return 'This is a very simple function.' }
+    ;[
+      function simpleF () {
+        return 'This is a very simple function.'
+      }
       // TODO support class construct
       // class SimpleClass {}
     ].forEach(function (C) {
@@ -230,7 +261,9 @@ describe('javascript/Function', function () {
       it('the name of an anonymous function is inferred, except on Edge', function () {
         const thisIsAFunction = function () {}
 
-        thisIsAFunction.name.must.equal(testUtil.environment === 'edge' ? '' : 'thisIsAFunction')
+        thisIsAFunction.name.must.equal(
+          testUtil.environment === 'edge' ? '' : 'thisIsAFunction'
+        )
       })
       it('the name of an arrow function is inferred, even on Edge', function () {
         const thisIsAFunction = () => null
@@ -245,17 +278,17 @@ describe('javascript/Function', function () {
     })
     describe('method', function () {
       it('the name of an anonymous function method is inferred', function () {
-        const obj = {thisIsAFunction: function () {}}
+        const obj = { thisIsAFunction: function () {} }
 
         obj.thisIsAFunction.name.must.equal('thisIsAFunction')
       })
       it('the name of an arrow function method is inferred', function () {
-        const obj = {thisIsAFunction: () => null}
+        const obj = { thisIsAFunction: () => null }
 
         obj.thisIsAFunction.name.must.equal('thisIsAFunction')
       })
       it('the name of a named function method is fixed', function () {
-        const obj = {thisIsAnotherFunction: function thisIsAFunction () {}}
+        const obj = { thisIsAnotherFunction: function thisIsAFunction () {} }
 
         obj.thisIsAnotherFunction.name.must.equal('thisIsAFunction')
       })
@@ -287,13 +320,13 @@ describe('javascript/Function', function () {
     })
     describe('inline', function () {
       it('the name of an anonymous function is the empty string', function () {
-        (function () {}).name.must.equal('')
+        ;(function () {}.name.must.equal(''))
       })
       it('the name of an arrow function is the empty string', function () {
-        (() => null).name.must.equal('')
+        ;(() => null).name.must.equal('')
       })
       it('the name of an named function is fixed', function () {
-        (function thisIsAFunction () {}).name.must.equal('thisIsAFunction')
+        ;(function thisIsAFunction () {}.name.must.equal('thisIsAFunction'))
       })
     })
   })

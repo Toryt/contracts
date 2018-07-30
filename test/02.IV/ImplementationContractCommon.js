@@ -34,8 +34,14 @@ function expectInvariants (subject) {
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
-  common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
+function generatePrototypeMethodsDescriptions (
+  oneSubjectGenerator,
+  allSubjectGenerators
+) {
+  common.generatePrototypeMethodsDescriptions(
+    oneSubjectGenerator,
+    allSubjectGenerators
+  )
   const self = this
 
   describe('#implementation', function () {

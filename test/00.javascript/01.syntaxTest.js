@@ -55,7 +55,7 @@ describe('javascript/syntax', function () {
         const current = orderOfKeysCommon.nFromRandomName(key)
         current.must.equal(previous + 1)
         // noinspection MagicNumberJS
-        previous = current === 9 ? 99 : (current === 109 ? 199 : current)
+        previous = current === 9 ? 99 : current === 109 ? 199 : current
       }
       // noinspection MagicNumberJS
       count.must.equal(30)
@@ -116,7 +116,7 @@ describe('javascript/syntax', function () {
 
   describe('#typeof', function () {
     // noinspection JSPrimitiveTypeWrapperUsage
-    [
+    ;[
       undefined,
       null,
       4,
@@ -169,7 +169,7 @@ describe('javascript/syntax', function () {
 
   describe('an array entry past the length of the array', function () {
     it('is undefined', function () {
-      const array = [1, '2', {three: 3}]
+      const array = [1, '2', { three: 3 }]
       const result = array[array.length]
       must(result).be.undefined()
     })
@@ -183,7 +183,9 @@ describe('javascript/syntax', function () {
 
       // noinspection FunctionNamingConventionJS
       function Derived () {}
-      Derived.prototype = Object.create(Base.prototype, {constructor: {value: 'First something else'}})
+      Derived.prototype = Object.create(Base.prototype, {
+        constructor: { value: 'First something else' }
+      })
 
       // noinspection FunctionNamingConventionJS
       function Unrelated () {}
@@ -191,10 +193,10 @@ describe('javascript/syntax', function () {
       const instance = new Derived()
 
       /* ;'s necessary with this strange syntax */
-      ; (instance instanceof Derived).must.be.true()
-      ; (instance instanceof Base).must.be.true()
-      ; (instance instanceof Unrelated).must.be.false()
-      ; (instance instanceof Object).must.be.true()
+      ;(instance instanceof Derived).must.be.true()
+      ;(instance instanceof Base).must.be.true()
+      ;(instance instanceof Unrelated).must.be.false()
+      ;(instance instanceof Object).must.be.true()
     })
     it('is not true for the prototype itself', function () {
       // noinspection FunctionNamingConventionJS
@@ -203,24 +205,26 @@ describe('javascript/syntax', function () {
 
       // noinspection FunctionNamingConventionJS
       function Derived () {}
-      Derived.prototype = Object.create(Base.prototype, {constructor: {value: 'First something else'}})
+      Derived.prototype = Object.create(Base.prototype, {
+        constructor: { value: 'First something else' }
+      })
 
       // noinspection FunctionNamingConventionJS
       function Unrelated () {}
 
-      (Derived.prototype instanceof Derived).must.be.false()
+      ;(Derived.prototype instanceof Derived).must.be.false()
       /* ;'s necessary with this strange syntax */
-      ; (Derived.prototype instanceof Base).must.be.true()
-      ; (Derived.prototype instanceof Unrelated).must.be.false()
-      ; (Derived.prototype instanceof Object).must.be.true()
-      ; (Base.prototype instanceof Derived).must.be.false()
-      ; (Base.prototype instanceof Base).must.be.false()
-      ; (Base.prototype instanceof Unrelated).must.be.false()
-      ; (Base.prototype instanceof Object).must.be.true()
-      ; (Unrelated.prototype instanceof Derived).must.be.false()
-      ; (Unrelated.prototype instanceof Base).must.be.false()
-      ; (Unrelated.prototype instanceof Unrelated).must.be.false()
-      ; (Unrelated.prototype instanceof Object).must.be.true()
+      ;(Derived.prototype instanceof Base).must.be.true()
+      ;(Derived.prototype instanceof Unrelated).must.be.false()
+      ;(Derived.prototype instanceof Object).must.be.true()
+      ;(Base.prototype instanceof Derived).must.be.false()
+      ;(Base.prototype instanceof Base).must.be.false()
+      ;(Base.prototype instanceof Unrelated).must.be.false()
+      ;(Base.prototype instanceof Object).must.be.true()
+      ;(Unrelated.prototype instanceof Derived).must.be.false()
+      ;(Unrelated.prototype instanceof Base).must.be.false()
+      ;(Unrelated.prototype instanceof Unrelated).must.be.false()
+      ;(Unrelated.prototype instanceof Object).must.be.true()
     })
   })
 })

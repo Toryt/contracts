@@ -60,7 +60,10 @@ function expectConstructorPost (result, message, rawStack) {
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+function generatePrototypeMethodsDescriptions (
+  oneSubjectGenerator,
+  allSubjectGenerators
+) {
   // NOP: no methods here
 }
 

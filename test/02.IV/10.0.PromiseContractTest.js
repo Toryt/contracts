@@ -26,11 +26,23 @@ const abstractContractCommon = require('./AbstractContractCommon')
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const Contract = require('../../lib/IV/Contract')
 
-function expectConstructorPost (pre, post, exception, fastException, location, result) {
+function expectConstructorPost (
+  pre,
+  post,
+  exception,
+  fastException,
+  location,
+  result
+) {
   // noinspection JSUnresolvedFunction
   common.expectConstructorPost(pre, post, exception, location, result)
   // noinspection JSUnresolvedFunction
-  common.expectArrayPost(result, fastException, 'fastException', '_fastException')
+  common.expectArrayPost(
+    result,
+    fastException,
+    'fastException',
+    '_fastException'
+  )
 }
 
 describe('IV/PromiseContract', function () {
@@ -46,7 +58,9 @@ describe('IV/PromiseContract', function () {
       PromiseContract.root.must.equal(AbstractContract.root)
       PromiseContract.must.have.ownProperty('isAContractFunction')
       // noinspection JSUnresolvedVariable
-      PromiseContract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
+      PromiseContract.isAContractFunction.must.equal(
+        AbstractContract.isAContractFunction
+      )
       PromiseContract.falseCondition.must.equal(AbstractContract.falseCondition)
       PromiseContract.mustNotHappen.must.equal(AbstractContract.mustNotHappen)
       PromiseContract.outcome.must.equal(AbstractContract.outcome)
@@ -63,20 +77,37 @@ describe('IV/PromiseContract', function () {
         common.constructorExceptionCases.forEach(exception => {
           // noinspection JSUnresolvedVariable
           common.constructorExceptionCases.forEach(fastException => {
-            it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception + ', fastException: ' + fastException, function () {
-              const preConditions = pre()
-              const postConditions = post()
-              const exceptionConditions = exception()
-              const fastExceptionConditions = fastException()
-              const result = new PromiseContract({
-                pre: preConditions,
-                post: postConditions,
-                fastException: fastExceptionConditions,
-                exception: exceptionConditions
-              })
-              // noinspection JSUnresolvedFunction
-              expectConstructorPost(preConditions, postConditions, exceptionConditions, fastExceptionConditions, stack.location(), result)
-            })
+            it(
+              'works for pre: ' +
+                pre +
+                ', post: ' +
+                post +
+                ', exception: ' +
+                exception +
+                ', fastException: ' +
+                fastException,
+              function () {
+                const preConditions = pre()
+                const postConditions = post()
+                const exceptionConditions = exception()
+                const fastExceptionConditions = fastException()
+                const result = new PromiseContract({
+                  pre: preConditions,
+                  post: postConditions,
+                  fastException: fastExceptionConditions,
+                  exception: exceptionConditions
+                })
+                // noinspection JSUnresolvedFunction
+                expectConstructorPost(
+                  preConditions,
+                  postConditions,
+                  exceptionConditions,
+                  fastExceptionConditions,
+                  stack.location(),
+                  result
+                )
+              }
+            )
           })
         })
       })
@@ -89,14 +120,20 @@ describe('IV/PromiseContract', function () {
   common.generatePrototypeMethodsDescriptions(
     () => new PromiseContract({}),
     testUtil
-      .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases, common.constructorExceptionCases)
+      .x(
+        common.constructorPreCases,
+        common.constructorPostCases,
+        common.constructorExceptionCases,
+        common.constructorExceptionCases
+      )
       .map(parameters => ({
-        subject: () => new PromiseContract({
-          pre: parameters[0](),
-          post: parameters[1](),
-          fastException: parameters[2](),
-          exception: parameters[3]()
-        }),
+        subject: () =>
+          new PromiseContract({
+            pre: parameters[0](),
+            post: parameters[1](),
+            fastException: parameters[2](),
+            exception: parameters[3]()
+          }),
         description: parameters.join(' - ')
       }))
   )

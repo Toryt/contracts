@@ -35,44 +35,76 @@ describe('IV/ConditionMetaError', function () {
 
   describe('#ConditionMetaError()', function () {
     common.errorCases.forEach(error => {
-      it('creates an instance with all toppings for ' + common.oneSelfCase + ' - ' + common.oneArgsCase + ' - ' + error, function () {
-        // noinspection JSUnresolvedFunction
-        const contractFunction = common.createCandidateContractFunction()
-        const rawStack = stack.raw()
-        // noinspection JSUnresolvedVariable
-        const result = new ConditionMetaError(contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, rawStack)
-        // noinspection JSUnresolvedVariable
-        common.expectConstructorPost(result, contractFunction, common.conditionCase, common.oneSelfCase, common.oneArgsCase, error, rawStack)
-        common.expectInvariants(result)
-        result.must.not.have.ownProperty('message')
-        result.must.not.have.ownProperty('stack')
-        // noinspection JSUnresolvedVariable
-        testUtil.log('result.stack:\n%s', result.stack)
-      })
+      it(
+        'creates an instance with all toppings for ' +
+          common.oneSelfCase +
+          ' - ' +
+          common.oneArgsCase +
+          ' - ' +
+          error,
+        function () {
+          // noinspection JSUnresolvedFunction
+          const contractFunction = common.createCandidateContractFunction()
+          const rawStack = stack.raw()
+          // noinspection JSUnresolvedVariable
+          const result = new ConditionMetaError(
+            contractFunction,
+            common.conditionCase,
+            common.oneSelfCase,
+            common.oneArgsCase,
+            error,
+            rawStack
+          )
+          // noinspection JSUnresolvedVariable
+          common.expectConstructorPost(
+            result,
+            contractFunction,
+            common.conditionCase,
+            common.oneSelfCase,
+            common.oneArgsCase,
+            error,
+            rawStack
+          )
+          common.expectInvariants(result)
+          result.must.not.have.ownProperty('message')
+          result.must.not.have.ownProperty('stack')
+          // noinspection JSUnresolvedVariable
+          testUtil.log('result.stack:\n%s', result.stack)
+        }
+      )
     })
   })
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
   common.generatePrototypeMethodsDescriptions(
-    () => new ConditionMetaError(
-      common.conditionCase,
-      null,
-      common.oneArgsCase,
-      common.errorCases[0],
-      stack.raw()
-    ),
+    () =>
+      new ConditionMetaError(
+        common.conditionCase,
+        null,
+        common.oneArgsCase,
+        common.errorCases[0],
+        stack.raw()
+      ),
     common.errorCases.map(errorCase => {
       // noinspection JSUnresolvedFunction, JSUnresolvedVariable
       return {
-        subject: () => new ConditionMetaError(
-          common.createCandidateContractFunction(),
-          common.conditionCase,
-          common.oneSelfCase,
-          common.oneArgsCase,
-          errorCase,
-          stack.raw()
-        ),
-        description: common.conditionCase + ' — ' + common.oneSelfCase + ' – ' + common.oneArgsCase + ' – ' + errorCase
+        subject: () =>
+          new ConditionMetaError(
+            common.createCandidateContractFunction(),
+            common.conditionCase,
+            common.oneSelfCase,
+            common.oneArgsCase,
+            errorCase,
+            stack.raw()
+          ),
+        description:
+          common.conditionCase +
+          ' — ' +
+          common.oneSelfCase +
+          ' – ' +
+          common.oneArgsCase +
+          ' – ' +
+          errorCase
       }
     })
   )

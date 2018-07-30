@@ -28,7 +28,9 @@ const abstractContractCommon = require('./AbstractContractCommon')
 const must = require('must')
 const os = require('os')
 
-const conditionCase = function () { return 'This simulates a condition' }
+const conditionCase = function () {
+  return 'This simulates a condition'
+}
 
 function generateMultiLineAnonFunction () {
   return function () {
@@ -70,13 +72,15 @@ let argsCases = [
   [],
   testUtil.anyCasesGenerators('arguments element').map(g => g())
 ]
-argsCases = argsCases.concat(argsCases.map(c => {
-  function asArgs (args) {
-    return arguments
-  }
+argsCases = argsCases.concat(
+  argsCases.map(c => {
+    function asArgs (args) {
+      return arguments
+    }
 
-  return asArgs.apply(undefined, c)
-}))
+    return asArgs.apply(undefined, c)
+  })
+)
 const oneArgsCase = argsCases[argsCases.length - 1]
 
 function expectInvariants (subject) {
@@ -84,23 +88,38 @@ function expectInvariants (subject) {
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
   // noinspection JSUnresolvedVariable
-  AbstractContract.isAGeneralContractFunction(subject.contractFunction).must.be.true()
+  AbstractContract.isAGeneralContractFunction(
+    subject.contractFunction
+  ).must.be.true()
   // noinspection JSUnresolvedVariable
   subject.condition.must.be.a.function()
   testUtil.expectOwnFrozenProperty(subject, 'condition')
   testUtil.expectOwnFrozenProperty(subject, 'self')
   testUtil.expectOwnFrozenProperty(subject, '_args')
-  testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'args', '_args')
+  testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(
+    subject,
+    'args',
+    '_args'
+  )
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'message')
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'stack')
   // noinspection JSUnresolvedVariable
   subject.message.must.contain(subject.contractFunction.name)
   // noinspection JSUnresolvedVariable
-  subject.message.must.contain(report.conciseCondition('condition', subject.condition))
+  subject.message.must.contain(
+    report.conciseCondition('condition', subject.condition)
+  )
 }
 
 // noinspection ParameterNamingConventionJS
-function expectProperties (exception, Type, contractFunction, condition, self, args) {
+function expectProperties (
+  exception,
+  Type,
+  contractFunction,
+  condition,
+  self,
+  args
+) {
   exception.must.be.an.error(Type)
   // noinspection JSUnresolvedVariable
   exception.contractFunction.must.equal(contractFunction)
@@ -110,9 +129,23 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
   exception.args.must.eql(Array.prototype.slice.call(args))
 }
 
-function expectConstructorPost (result, contractFunction, condition, self, args, rawStack) {
+function expectConstructorPost (
+  result,
+  contractFunction,
+  condition,
+  self,
+  args,
+  rawStack
+) {
   common.expectConstructorPost(result, result.message, rawStack)
-  expectProperties(result, ConditionError, contractFunction, condition, self, args)
+  expectProperties(
+    result,
+    ConditionError,
+    contractFunction,
+    condition,
+    self,
+    args
+  )
   Object.isExtensible(result).must.be.true()
 }
 
@@ -123,28 +156,36 @@ function expectDetailsPost (subject, result) {
   // noinspection JSUnresolvedVariable
   result.must.contain(os.EOL + subject.contractFunction.contract.location)
   result.must.contain(report.value(subject.self))
-  Array.prototype.forEach.call(
-    subject.args,
-    arg => { result.must.contain(report.value(arg)) }
-  )
+  Array.prototype.forEach.call(subject.args, arg => {
+    result.must.contain(report.value(arg))
+  })
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
-  common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
+function generatePrototypeMethodsDescriptions (
+  oneSubjectGenerator,
+  allSubjectGenerators
+) {
+  common.generatePrototypeMethodsDescriptions(
+    oneSubjectGenerator,
+    allSubjectGenerators
+  )
 
   const self = this
 
   describe('#getDetails()', function () {
     allSubjectGenerators.forEach(generator => {
-      it('returns the details as expected for ' + generator.description, function () {
-        const subject = generator.subject()
-        // noinspection JSUnresolvedFunction
-        const result = subject.getDetails()
-        testUtil.log(result)
-        self.expectDetailsPost(subject, result)
-        self.expectInvariants(subject)
-      })
+      it(
+        'returns the details as expected for ' + generator.description,
+        function () {
+          const subject = generator.subject()
+          // noinspection JSUnresolvedFunction
+          const result = subject.getDetails()
+          testUtil.log(result)
+          self.expectDetailsPost(subject, result)
+          self.expectInvariants(subject)
+        }
+      )
     })
   })
 }
@@ -159,7 +200,8 @@ const test = {
   expectDetailsPost: expectDetailsPost,
   expectInvariants: expectInvariants,
   generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
-  createCandidateContractFunction: abstractContractCommon.createCandidateContractFunction,
+  createCandidateContractFunction:
+    abstractContractCommon.createCandidateContractFunction,
   oneSelfCase: oneSelfCase,
   oneArgsCase: oneArgsCase
 }

@@ -31,14 +31,29 @@ function expectInvariants (subject) {
   subject.stack.must.contain(report.extensiveThrown(subject.exception))
 }
 
-function expectConstructorPost (executionResult, contractFunction, condition, self, args, exception) {
+function expectConstructorPost (
+  executionResult,
+  contractFunction,
+  condition,
+  self,
+  args,
+  exception
+) {
   // noinspection JSUnresolvedVariable
   common.expectConstructorPost.apply(undefined, arguments)
   must(executionResult.exception).equal(exception)
 }
 
 // noinspection ParameterNamingConventionJS
-function expectProperties (exception, Type, contractFunction, condition, self, args, thrownException) {
+function expectProperties (
+  exception,
+  Type,
+  contractFunction,
+  condition,
+  self,
+  args,
+  thrownException
+) {
   common.expectProperties.apply(undefined, arguments)
   exception.exception.must.equal(thrownException)
 }
@@ -53,7 +68,10 @@ const exceptionCaseGenerators = testUtil.anyCasesGenerators('exception')
 
 function doctorArgs (args, boundContractFunction, exception) {
   const doctored = Array.prototype.slice.call(args)
-  const e = arguments.length >= 3 ? exception : new Error('Dummy exception for ExceptionConditionViolation')
+  const e =
+    arguments.length >= 3
+      ? exception
+      : new Error('Dummy exception for ExceptionConditionViolation')
   doctored.push(e) // an exception
   doctored.push(boundContractFunction)
   return doctored

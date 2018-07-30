@@ -48,11 +48,11 @@ function prepareAnObjectWithAProto () {
 }
 
 const objectLiteral = {
-  'realFirst$$0$$': new Date(),
-  'first$$1$$': null,
-  'second$$2$$': 4,
-  'third$$3$$': undefined, // will not be stringified
-  'fourth$$4$$': function () {} // will not be stringified
+  realFirst$$0$$: new Date(),
+  first$$1$$: null,
+  second$$2$$: 4,
+  third$$3$$: undefined, // will not be stringified
+  fourth$$4$$: function () {} // will not be stringified
 }
 
 module.exports = {

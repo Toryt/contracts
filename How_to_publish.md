@@ -1,6 +1,6 @@
     jand@sovereign:contracts>npm adduser --scope=@toryt
     Username: jandockx
-    Password: 
+    Password:
     Email: (this IS public) jandockx@gmail.com
     Logged in as jandockx to scope @toryt on https://registry.npmjs.org/.
     jand@sovereign:contracts>npm publish --access public

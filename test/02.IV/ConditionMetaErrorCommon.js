@@ -38,8 +38,24 @@ function expectInvariants (subject) {
   subject.message.must.contain('(' + subject.error + ')')
 }
 
-function expectConstructorPost (result, contractFunction, condition, self, args, error, rawStack) {
-  common.expectConstructorPost.call(undefined, result, contractFunction, condition, self, args, rawStack)
+function expectConstructorPost (
+  result,
+  contractFunction,
+  condition,
+  self,
+  args,
+  error,
+  rawStack
+) {
+  common.expectConstructorPost.call(
+    undefined,
+    result,
+    contractFunction,
+    condition,
+    self,
+    args,
+    rawStack
+  )
   must(result.error).equal(error)
 }
 
@@ -65,7 +81,7 @@ const errorCases = [
   new String('lalala'),
   (() => arguments)(),
   {},
-  {a: 1, b: 'b', c: {}, d: {d1: undefined, d2: 'd2', d3: {d31: 31}}}
+  { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
 ]
 
 function expectDetailsPost (subject, result) {

@@ -23,8 +23,8 @@ const must = require('must')
 
 const message = 'A message'
 const env = testUtil.environment
-const isFF = (env === 'firefox')
-const isFFOrSafari = isFF || (env === 'safari')
+const isFF = env === 'firefox'
+const isFFOrSafari = isFF || env === 'safari'
 
 describe('javascript/Error', function () {
   describe('#message', function () {
@@ -75,8 +75,10 @@ describe('javascript/Error', function () {
   })
   describe('#stack', function () {
     it(
-      'has a stack, that is a string, that ' + (isFFOrSafari ? 'does not start' : 'starts') +
-       ' with the toString() on ' + env,
+      'has a stack, that is a string, that ' +
+        (isFFOrSafari ? 'does not start' : 'starts') +
+        ' with the toString() on ' +
+        env,
       function () {
         const subject = new Error(message)
         const stack = subject.stack
@@ -226,7 +228,9 @@ describe('javascript/Error', function () {
           lines.shift()
         }
         lines.forEach((l, i) => {
-          l.must[i >= 0 && i <= 2 ? 'to' : 'not'].contain('captureTheStackTrace')
+          l.must[i >= 0 && i <= 2 ? 'to' : 'not'].contain(
+            'captureTheStackTrace'
+          )
         })
       }
     })

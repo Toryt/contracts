@@ -27,7 +27,9 @@ const stuff = require('./_stuff')
 describe('_private/is', function () {
   describe('#arguments', function () {
     stuff.forEach(s => {
-      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
+      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${
+        s.subject
+      }`, function () {
         const result = is.functionArguments(s.subject)
         if (s.expected === 'arguments') {
           result.must.be.true()
@@ -40,21 +42,28 @@ describe('_private/is', function () {
 
   describe('#primitive()', function () {
     stuff.forEach(record => {
-      it('correctly decides whether the argument is a primitive for ' + record.subject, function () {
-        const result = is.primitive(record.subject)
-        result.must.be.a.boolean()
-        result.must.equal(record.isPrimitive)
-      })
+      it(
+        'correctly decides whether the argument is a primitive for ' +
+          record.subject,
+        function () {
+          const result = is.primitive(record.subject)
+          result.must.be.a.boolean()
+          result.must.equal(record.isPrimitive)
+        }
+      )
     })
   })
 
   describe('#stackLocation', function () {
-    stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
-      it(`says no to ${s}`, function () {
-        const result = is.stackLocation(s)
-        result.must.be.false()
+    stuff
+      .map(s => s.subject)
+      .filter(s => typeof s !== 'string')
+      .forEach(s => {
+        it(`says no to ${s}`, function () {
+          const result = is.stackLocation(s)
+          result.must.be.false()
+        })
       })
-    })
     it(`says no to ''`, function () {
       const result = is.stackLocation('')
       result.must.be.false()
@@ -66,13 +75,14 @@ describe('_private/is', function () {
     it(`says no to a multi-line string`, function () {
       const result = is.stackLocation(`this is a 
 multi-line
-string`
-      )
+string`)
       result.must.be.false()
     })
     it(`says yes to all lines of a stack trace`, function () {
       // sadly, also to the message
-      const error = new Error('This is an error to get a platform dependent stack')
+      const error = new Error(
+        'This is an error to get a platform dependent stack'
+      )
       const lines = error.stack.split(os.EOL)
       lines
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
@@ -86,12 +96,15 @@ string`
   })
 
   describe('#stack', function () {
-    stuff.map(s => s.subject).filter(s => typeof s !== 'string').forEach(s => {
-      it(`says no to ${s}`, function () {
-        const result = is.stack(s)
-        result.must.be.false()
+    stuff
+      .map(s => s.subject)
+      .filter(s => typeof s !== 'string')
+      .forEach(s => {
+        it(`says no to ${s}`, function () {
+          const result = is.stack(s)
+          result.must.be.false()
+        })
       })
-    })
     it(`says no to ''`, function () {
       const result = is.stack('')
       result.must.be.false()
@@ -112,8 +125,7 @@ string`
 multi-line
 string, with a
 
-blank line`
-      )
+blank line`)
       result.must.be.false()
     })
     it(`says yes to a stack trace`, function () {
@@ -139,86 +151,118 @@ blank line`
     const truths = [true, false]
     testUtil.x(truths, truths, truths).forEach(values => {
       const subject = {}
-      Object.defineProperty(
-        subject,
-        propName,
-        {
-          configurable: values[0],
-          enumerable: values[1],
-          writable: values[2],
-          value: propValue
-        }
-      )
-      if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
-        it('reports true if the property is an own property, ' +
-            'and it is enumerable, not configurable and not writable', function () {
-          const result = is.frozenOwnProperty(subject, propName)
-          result.must.be.truthy()
-        })
+      Object.defineProperty(subject, propName, {
+        configurable: values[0],
+        enumerable: values[1],
+        writable: values[2],
+        value: propValue
+      })
+      if (
+        !values[0] &&
+        values[1] &&
+        !values[2] &&
+        subject.hasOwnProperty(propName)
+      ) {
+        it(
+          'reports true if the property is an own property, ' +
+            'and it is enumerable, not configurable and not writable',
+          function () {
+            const result = is.frozenOwnProperty(subject, propName)
+            result.must.be.truthy()
+          }
+        )
       } else {
-        it('reports false if the property is an own property, and' +
-           ' enumerable === ' + values[1] +
-           ' configurable === ' + values[0] +
-           ' writable === ' + values[2], function () {
-          const result = is.frozenOwnProperty(subject, propName)
-          must(result).be.falsy()
-        })
+        it(
+          'reports false if the property is an own property, and' +
+            ' enumerable === ' +
+            values[1] +
+            ' configurable === ' +
+            values[0] +
+            ' writable === ' +
+            values[2],
+          function () {
+            const result = is.frozenOwnProperty(subject, propName)
+            must(result).be.falsy()
+          }
+        )
       }
       it('reports false if the property does not exist', function () {
-        const result = is.frozenOwnProperty(subject, 'some other, non-existing property name')
+        const result = is.frozenOwnProperty(
+          subject,
+          'some other, non-existing property name'
+        )
         must(result).be.falsy()
       })
       const specialized = {}
       Object.setPrototypeOf(specialized, subject)
       specialized[propName].must.equal(propValue) // check inheritance - test code validity
-      it('reports false if the property is not an own property, and' +
-         ' enumerable === ' + values[1] +
-         ' configurable === ' + values[0] +
-         ' writable === ' + values[2], function () {
-        const specializedResult = is.frozenOwnProperty(specialized, propName)
-        must(specializedResult).be.falsy()
-      })
+      it(
+        'reports false if the property is not an own property, and' +
+          ' enumerable === ' +
+          values[1] +
+          ' configurable === ' +
+          values[0] +
+          ' writable === ' +
+          values[2],
+        function () {
+          const specializedResult = is.frozenOwnProperty(specialized, propName)
+          must(specializedResult).be.falsy()
+        }
+      )
     })
     const notObjects = [0, false, '', 'lala']
     notObjects.forEach(notAnObject => {
       // cannot set a property on primitives
-      it('reports false if the first parameter is a primitive (' + typeof notAnObject + ')', function () {
-        const result = is.frozenOwnProperty(notAnObject, propName)
-        must(result).be.falsy()
-      })
+      it(
+        'reports false if the first parameter is a primitive (' +
+          typeof notAnObject +
+          ')',
+        function () {
+          const result = is.frozenOwnProperty(notAnObject, propName)
+          must(result).be.falsy()
+        }
+      )
     })
     const fCandidates = [undefined, function () {}]
     testUtil.x(truths, truths, fCandidates, fCandidates).forEach(values => {
       const subject = {}
-      Object.defineProperty(
-        subject,
-        propName,
-        {
-          configurable: values[0],
-          enumerable: values[1],
-          get: values[2],
-          set: values[3]
-        }
-      )
-      if (!values[0] &&
-          values[1] &&
-          typeof values[2] === 'function' &&
-          values[3] === undefined &&
-          subject.hasOwnProperty(propName)) {
-        it('reports true if the property is an own property, ' +
-           'and it is enumerable, and not configurable, has a getter, but not a setter', function () {
-          const result = is.frozenOwnProperty(subject, propName)
-          result.must.be.truthy()
-        })
+      Object.defineProperty(subject, propName, {
+        configurable: values[0],
+        enumerable: values[1],
+        get: values[2],
+        set: values[3]
+      })
+      if (
+        !values[0] &&
+        values[1] &&
+        typeof values[2] === 'function' &&
+        values[3] === undefined &&
+        subject.hasOwnProperty(propName)
+      ) {
+        it(
+          'reports true if the property is an own property, ' +
+            'and it is enumerable, and not configurable, has a getter, but not a setter',
+          function () {
+            const result = is.frozenOwnProperty(subject, propName)
+            result.must.be.truthy()
+          }
+        )
       } else {
-        it('reports false if the property is an own property,' +
-           ' enumerable === ' + values[1] +
-           ' configurable === ' + values[0] +
-           ' get === ' + values[2] +
-           ' set === ' + values[3], function () {
-          const result = is.frozenOwnProperty(subject, propName)
-          must(result).be.falsy()
-        })
+        it(
+          'reports false if the property is an own property,' +
+            ' enumerable === ' +
+            values[1] +
+            ' configurable === ' +
+            values[0] +
+            ' get === ' +
+            values[2] +
+            ' set === ' +
+            values[3],
+          function () {
+            const result = is.frozenOwnProperty(subject, propName)
+            must(result).be.falsy()
+          }
+        )
       }
     })
   })

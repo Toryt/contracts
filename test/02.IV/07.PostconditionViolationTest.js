@@ -42,32 +42,40 @@ describe('IV/PostconditionViolation', function () {
         common.resultCaseGenerators.forEach(resultCaseGenerator => {
           const self = selfCaseGenerator()
           const result = resultCaseGenerator()
-          it('creates an instance with all toppings for ' + self + ' - ' + args + ' - ' + result, function () {
-            // noinspection JSUnresolvedFunction
-            const contractFunction = common.createCandidateContractFunction()
-            const doctoredArgs = args.slice()
-            doctoredArgs.push(result)
-            doctoredArgs.push(contractFunction.bind(self))
-            // noinspection JSUnresolvedVariable
-            const creationResult = new PostconditionViolation(
-              contractFunction,
-              common.conditionCase,
-              self,
-              doctoredArgs
-            )
-            // noinspection JSUnresolvedVariable
-            common.expectConstructorPost(
-              creationResult,
-              contractFunction,
-              common.conditionCase,
-              self,
-              args,
-              result
-            )
-            common.expectInvariants(creationResult)
-            // noinspection JSUnresolvedVariable
-            testUtil.log('result.stack:\n%s', creationResult.stack)
-          })
+          it(
+            'creates an instance with all toppings for ' +
+              self +
+              ' - ' +
+              args +
+              ' - ' +
+              result,
+            function () {
+              // noinspection JSUnresolvedFunction
+              const contractFunction = common.createCandidateContractFunction()
+              const doctoredArgs = args.slice()
+              doctoredArgs.push(result)
+              doctoredArgs.push(contractFunction.bind(self))
+              // noinspection JSUnresolvedVariable
+              const creationResult = new PostconditionViolation(
+                contractFunction,
+                common.conditionCase,
+                self,
+                doctoredArgs
+              )
+              // noinspection JSUnresolvedVariable
+              common.expectConstructorPost(
+                creationResult,
+                contractFunction,
+                common.conditionCase,
+                self,
+                args,
+                result
+              )
+              common.expectInvariants(creationResult)
+              // noinspection JSUnresolvedVariable
+              testUtil.log('result.stack:\n%s', creationResult.stack)
+            }
+          )
         })
       })
     })
@@ -75,9 +83,28 @@ describe('IV/PostconditionViolation', function () {
 
   // noinspection JSUnresolvedVariable
   const cases = testUtil
-    .x(common.conditionCases, [() => common.oneSelfCase], [() => common.oneArgsCase], common.resultCaseGenerators)
-    .concat(testUtil.x([common.conditionCase], common.selfCaseGenerators, [() => common.oneArgsCase], [() => null]))
-    .concat(testUtil.x([common.conditionCase], [() => common.oneSelfCase], argsCases, [() => null]))
+    .x(
+      common.conditionCases,
+      [() => common.oneSelfCase],
+      [() => common.oneArgsCase],
+      common.resultCaseGenerators
+    )
+    .concat(
+      testUtil.x(
+        [common.conditionCase],
+        common.selfCaseGenerators,
+        [() => common.oneArgsCase],
+        [() => null]
+      )
+    )
+    .concat(
+      testUtil.x(
+        [common.conditionCase],
+        [() => common.oneSelfCase],
+        argsCases,
+        [() => null]
+      )
+    )
 
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
@@ -86,9 +113,17 @@ describe('IV/PostconditionViolation', function () {
       const contractFunction = common.createCandidateContractFunction()
       const self = null
       // noinspection JSUnresolvedVariable
-      const doctoredArgs = common.doctorArgs(common.argsCases[0], contractFunction.bind(self))
+      const doctoredArgs = common.doctorArgs(
+        common.argsCases[0],
+        contractFunction.bind(self)
+      )
       // noinspection JSUnresolvedVariable
-      return new PostconditionViolation(contractFunction, common.conditionCase, self, doctoredArgs)
+      return new PostconditionViolation(
+        contractFunction,
+        common.conditionCase,
+        self,
+        doctoredArgs
+      )
     },
     cases.map(parameters => {
       // noinspection JSUnresolvedFunction
@@ -96,10 +131,26 @@ describe('IV/PostconditionViolation', function () {
       return {
         subject: () => {
           const contractFunction = common.createCandidateContractFunction()
-          const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
-          return new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs)
+          const doctoredArgs = common.doctorArgs(
+            parameters[2],
+            contractFunction.bind(self),
+            parameters[3]()
+          )
+          return new PostconditionViolation(
+            contractFunction,
+            parameters[0],
+            self,
+            doctoredArgs
+          )
         },
-        description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
+        description:
+          parameters[0] +
+          ' — ' +
+          self +
+          ' – ' +
+          parameters[2] +
+          ' – ' +
+          parameters[3]
       }
     })
   )

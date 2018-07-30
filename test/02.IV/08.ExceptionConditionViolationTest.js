@@ -42,31 +42,39 @@ describe('IV/ExceptionConditionViolation', function () {
         common.exceptionCaseGenerators.forEach(exceptionCaseGenerator => {
           const self = selfCaseGenerator()
           const exception = exceptionCaseGenerator()
-          it('creates an instance with all toppings for ' + self + ' - ' + args + ' - ' + exception, function () {
-            // noinspection JSUnresolvedFunction
-            const contractFunction = common.createCandidateContractFunction()
-            const doctoredArgs = args.slice()
-            doctoredArgs.push(exception)
-            doctoredArgs.push(contractFunction.bind(self))
-            // noinspection JSUnresolvedVariable
-            const creationResult = new ExceptionConditionViolation(
-              contractFunction,
-              common.conditionCase,
-              self,
-              doctoredArgs
-            )
-            // noinspection JSUnresolvedVariable
-            common.expectConstructorPost(
-              creationResult,
-              contractFunction,
-              common.conditionCase,
-              self,
-              args,
-              exception
-            )
-            common.expectInvariants(creationResult)
-            testUtil.log('result.stack:\n%s', creationResult.stack)
-          })
+          it(
+            'creates an instance with all toppings for ' +
+              self +
+              ' - ' +
+              args +
+              ' - ' +
+              exception,
+            function () {
+              // noinspection JSUnresolvedFunction
+              const contractFunction = common.createCandidateContractFunction()
+              const doctoredArgs = args.slice()
+              doctoredArgs.push(exception)
+              doctoredArgs.push(contractFunction.bind(self))
+              // noinspection JSUnresolvedVariable
+              const creationResult = new ExceptionConditionViolation(
+                contractFunction,
+                common.conditionCase,
+                self,
+                doctoredArgs
+              )
+              // noinspection JSUnresolvedVariable
+              common.expectConstructorPost(
+                creationResult,
+                contractFunction,
+                common.conditionCase,
+                self,
+                args,
+                exception
+              )
+              common.expectInvariants(creationResult)
+              testUtil.log('result.stack:\n%s', creationResult.stack)
+            }
+          )
         })
       })
     })
@@ -74,9 +82,28 @@ describe('IV/ExceptionConditionViolation', function () {
 
   // noinspection JSUnresolvedVariable
   const cases = testUtil
-    .x(common.conditionCases, [() => common.oneSelfCase], [() => common.oneArgsCase], common.exceptionCaseGenerators)
-    .concat(testUtil.x([common.conditionCase], common.selfCaseGenerators, [() => common.oneArgsCase], [() => new Error('test error')]))
-    .concat(testUtil.x([common.conditionCase], [() => common.oneSelfCase], argsCases, [() => new Error('test error')]))
+    .x(
+      common.conditionCases,
+      [() => common.oneSelfCase],
+      [() => common.oneArgsCase],
+      common.exceptionCaseGenerators
+    )
+    .concat(
+      testUtil.x(
+        [common.conditionCase],
+        common.selfCaseGenerators,
+        [() => common.oneArgsCase],
+        [() => new Error('test error')]
+      )
+    )
+    .concat(
+      testUtil.x(
+        [common.conditionCase],
+        [() => common.oneSelfCase],
+        argsCases,
+        [() => new Error('test error')]
+      )
+    )
 
   // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
@@ -85,9 +112,17 @@ describe('IV/ExceptionConditionViolation', function () {
       const contractFunction = common.createCandidateContractFunction()
       const self = null
       // noinspection JSUnresolvedVariable
-      const doctoredArgs = common.doctorArgs(common.argsCases[0], contractFunction.bind(self))
+      const doctoredArgs = common.doctorArgs(
+        common.argsCases[0],
+        contractFunction.bind(self)
+      )
       // noinspection JSUnresolvedVariable
-      return new ExceptionConditionViolation(contractFunction, common.conditionCase, self, doctoredArgs)
+      return new ExceptionConditionViolation(
+        contractFunction,
+        common.conditionCase,
+        self,
+        doctoredArgs
+      )
     },
     cases.map(parameters => {
       const self = parameters[1]()
@@ -95,10 +130,26 @@ describe('IV/ExceptionConditionViolation', function () {
         subject: () => {
           // noinspection JSUnresolvedFunction
           const contractFunction = common.createCandidateContractFunction()
-          const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
-          return new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs)
+          const doctoredArgs = common.doctorArgs(
+            parameters[2],
+            contractFunction.bind(self),
+            parameters[3]()
+          )
+          return new ExceptionConditionViolation(
+            contractFunction,
+            parameters[0],
+            self,
+            doctoredArgs
+          )
         },
-        description: parameters[0] + ' — ' + self + ' – ' + parameters[2] + ' – ' + parameters[3]
+        description:
+          parameters[0] +
+          ' — ' +
+          self +
+          ' – ' +
+          parameters[2] +
+          ' – ' +
+          parameters[3]
       }
     })
   )

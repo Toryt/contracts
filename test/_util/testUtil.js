@@ -28,7 +28,11 @@ function x () {
     arguments,
     (acc, arrayI) => {
       const ret = []
-      acc.forEach(elementSoFar => { arrayI.forEach(elementOfI => { ret.push(elementSoFar.concat([elementOfI])) }) })
+      acc.forEach(elementSoFar => {
+        arrayI.forEach(elementOfI => {
+          ret.push(elementSoFar.concat([elementOfI]))
+        })
+      })
       return ret
     },
     [[]]
@@ -36,7 +40,10 @@ function x () {
 }
 
 function expectOwnFrozenProperty (subject, propertyName) {
-  const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
+  const propertyDescriptor = Object.getOwnPropertyDescriptor(
+    subject,
+    propertyName
+  )
   propertyDescriptor.must.be.truthy()
   propertyDescriptor.enumerable.must.be.true()
   propertyDescriptor.configurable.must.be.false()
@@ -56,13 +63,23 @@ function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
   if (Object.getOwnPropertyDescriptor(subject, propertyName)) {
     return subject
   }
-  return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName)
+  return prototypeThatHasOwnPropertyDescriptor(
+    Object.getPrototypeOf(subject),
+    propertyName
+  )
 }
 
 // noinspection FunctionNamingConventionJS
-function expectDerivedPropertyOnAPrototype (subject, propertyName, configurable) {
+function expectDerivedPropertyOnAPrototype (
+  subject,
+  propertyName,
+  configurable
+) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
-  const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, propertyName)
+  const propertyDescriptor = Object.getOwnPropertyDescriptor(
+    prototype,
+    propertyName
+  )
   propertyDescriptor.must.be.truthy()
   propertyDescriptor.enumerable.must.be.true()
   propertyDescriptor.configurable.must.equal(configurable)
@@ -87,7 +104,11 @@ function expectFrozenPropertyOnAPrototype (subject, propertyName) {
 }
 
 // noinspection FunctionNamingConventionJS
-function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (subject, propName, privatePropName) {
+function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (
+  subject,
+  propName,
+  privatePropName
+) {
   subject.must.have.ownProperty(privatePropName) // array not shared
   subject[privatePropName].must.be.an.array()
   this.expectOwnFrozenProperty(subject, privatePropName)
@@ -102,7 +123,9 @@ function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (subject, prop
 
 function expectToBeArrayOfFunctions (a) {
   a.must.be.an.array()
-  a.forEach(element => { element.must.be.a.function() })
+  a.forEach(element => {
+    element.must.be.a.function()
+  })
 }
 
 const doLog = false
@@ -126,7 +149,8 @@ function regExpEscape (s) {
 
 function propertyIsWritable (object, propertyName) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(object, propertyName)
-  const pd = prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
+  const pd =
+    prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
   return !pd || pd.writable
 }
 
@@ -144,7 +168,10 @@ function anyCasesGenerators (discriminator) {
     () => false,
     () => new Date(),
     () => /foo/,
-    () => function () { return 'this simulates a ' + discriminator },
+    () =>
+      function () {
+        return 'this simulates a ' + discriminator
+      },
     // eslint-disable-next-line
     () => new Number(42),
     // eslint-disable-next-line
@@ -153,7 +180,12 @@ function anyCasesGenerators (discriminator) {
     () => new String(discriminator + ' string'),
     () => arguments,
     () => ({}),
-    () => ({a: 1, b: 'b', c: {}, d: {d1: undefined, d2: 'd2', d3: {d31: 31}}}),
+    () => ({
+      a: 1,
+      b: 'b',
+      c: {},
+      d: { d1: undefined, d2: 'd2', d3: { d31: 31 } }
+    }),
     () => []
   ]
   const result = generators.slice()
@@ -165,7 +197,7 @@ function anyCasesGenerators (discriminator) {
 // noinspection OverlyComplexFunctionJS
 function environment () {
   // eslint-disable-next-line
-  if ((new Function('try {return this === global;}catch(e){return false;}'))()) {
+  if (new Function('try {return this === global;}catch(e){return false;}')()) {
     console.log('Node (no User Agent)')
     return 'node'
   }
@@ -187,17 +219,19 @@ function environment () {
   }
   // this no longer detects safari in v11
   // noinspection JSUnresolvedVariable
-  if (/constructor/i.test(window.HTMLElement) ||
-      (function (p) {
-        return p.toString() === '[object SafariRemoteNotification]'
-      })(
-        // eslint-disable-next-line
-        !window['safari'] || safari.pushNotification
-      )) {
+  if (
+    /constructor/i.test(window.HTMLElement) ||
+    (function (p) {
+      return p.toString() === '[object SafariRemoteNotification]'
+    })(
+      // eslint-disable-next-line
+      !window['safari'] || safari.pushNotification
+    )
+  ) {
     return 'safari'
   }
   // noinspection PointlessBooleanExpressionJS,JSUnresolvedVariable
-  if (/* @cc_on!@ */false || !!document.documentMode) {
+  if (/* @cc_on!@ */ false || !!document.documentMode) {
     return 'ie'
   }
   // noinspection JSUnresolvedVariable
@@ -225,23 +259,27 @@ function environment () {
     return 'blink'
   }
   // eslint-disable-next-line
-  if ((new Function('try {return this === window;}catch(e){ return false;}'))()) {
+  if (new Function('try {return this === window;}catch(e){ return false;}')()) {
     return 'browser'
   }
   return undefined
 }
 
 function trimLineAndColumnPattern (stackLine) {
-  return stackLine
-    // node, chrome
-    .replace(/:\d*:\d*\)$/, ')')
-    // other browsers
-    .replace(/:\d*:\d*$/, '')
+  return (
+    stackLine
+      // node, chrome
+      .replace(/:\d*:\d*\)$/, ')')
+      // other browsers
+      .replace(/:\d*:\d*$/, '')
+  )
 }
 
 function mustBeCallerLocation (actual, expected) {
   expected.must.be.a.string()
-  trimLineAndColumnPattern(expected).must.equal(trimLineAndColumnPattern(actual))
+  trimLineAndColumnPattern(expected).must.equal(
+    trimLineAndColumnPattern(actual)
+  )
 }
 
 const env = environment()

@@ -39,7 +39,9 @@ describe('IV/ContractError', function () {
     it('can get a message set', function () {
       const result = new ContractError(stack.raw())
       const message = 'another message'
-      property.frozenDerived(result, 'message', function () { return message })
+      property.frozenDerived(result, 'message', function () {
+        return message
+      })
       result.must.have.ownProperty('message')
       result.message.must.equal(message)
       common.expectInvariants(result)
@@ -48,9 +50,11 @@ describe('IV/ContractError', function () {
 
   common.generatePrototypeMethodsDescriptions(
     () => new ContractError(stack.raw()),
-    [{
-      subject: () => new ContractError(stack.raw()),
-      description: 'a contract error'
-    }]
+    [
+      {
+        subject: () => new ContractError(stack.raw()),
+        description: 'a contract error'
+      }
+    ]
   )
 })

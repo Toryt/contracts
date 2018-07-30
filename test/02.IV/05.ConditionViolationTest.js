@@ -38,41 +38,58 @@ describe('IV/ConditionViolation', function () {
       // noinspection JSUnresolvedVariable
       common.argsCases.forEach(args => {
         const self = selfCaseGenerator()
-        it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          // noinspection JSUnresolvedFunction
-          const contractFunction = common.createCandidateContractFunction()
-          // noinspection JSUnresolvedVariable
-          const result = new ConditionViolation(contractFunction, common.conditionCase, self, args)
-          // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
-          common.expectInvariants(result)
-          result.must.not.have.ownProperty('message')
-          result.must.not.have.ownProperty('stack')
-          testUtil.log('result.stack:\n%s', result.stack)
-        })
+        it(
+          'creates an instance with all toppings for ' + self + ' - ' + args,
+          function () {
+            // noinspection JSUnresolvedFunction
+            const contractFunction = common.createCandidateContractFunction()
+            // noinspection JSUnresolvedVariable
+            const result = new ConditionViolation(
+              contractFunction,
+              common.conditionCase,
+              self,
+              args
+            )
+            // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+            common.expectConstructorPost(
+              result,
+              contractFunction,
+              common.conditionCase,
+              self,
+              args
+            )
+            common.expectInvariants(result)
+            result.must.not.have.ownProperty('message')
+            result.must.not.have.ownProperty('stack')
+            testUtil.log('result.stack:\n%s', result.stack)
+          }
+        )
       })
     })
   })
 
   // noinspection JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
-    () => new ConditionViolation(common.createCandidateContractFunction(),
-      common.conditionCase,
-      null,
-      common.argsCases[0]
-    ),
+    () =>
+      new ConditionViolation(
+        common.createCandidateContractFunction(),
+        common.conditionCase,
+        null,
+        common.argsCases[0]
+      ),
     testUtil
       .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
       .map(parameters => {
         const self = parameters[1]()
         // noinspection JSUnresolvedFunction
         return {
-          subject: () => new ConditionViolation(
-            common.createCandidateContractFunction(),
-            parameters[0],
-            self,
-            parameters[2]
-          ),
+          subject: () =>
+            new ConditionViolation(
+              common.createCandidateContractFunction(),
+              parameters[0],
+              self,
+              parameters[2]
+            ),
           description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
         }
       })

@@ -38,40 +38,56 @@ describe('IV/PreconditionViolation', function () {
       // noinspection JSUnresolvedVariable
       common.argsCases.forEach(args => {
         const self = selfCaseGenerator()
-        it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          // noinspection JSUnresolvedFunction
-          const contractFunction = common.createCandidateContractFunction()
-          // noinspection JSUnresolvedVariable
-          const result = new PreconditionViolation(contractFunction, common.conditionCase, self, args)
-          // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
-          common.expectInvariants(result)
-          testUtil.log('result.stack:\n%s', result.stack)
-        })
+        it(
+          'creates an instance with all toppings for ' + self + ' - ' + args,
+          function () {
+            // noinspection JSUnresolvedFunction
+            const contractFunction = common.createCandidateContractFunction()
+            // noinspection JSUnresolvedVariable
+            const result = new PreconditionViolation(
+              contractFunction,
+              common.conditionCase,
+              self,
+              args
+            )
+            // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+            common.expectConstructorPost(
+              result,
+              contractFunction,
+              common.conditionCase,
+              self,
+              args
+            )
+            common.expectInvariants(result)
+            testUtil.log('result.stack:\n%s', result.stack)
+          }
+        )
       })
     })
   })
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
   common.generatePrototypeMethodsDescriptions(
-    () => new PreconditionViolation(
-      common.createCandidateContractFunction(),
-      common.conditionCase,
-      null,
-      common.argsCases[0]
-    ),
+    () =>
+      new PreconditionViolation(
+        common.createCandidateContractFunction(),
+        common.conditionCase,
+        null,
+        common.argsCases[0]
+      ),
     testUtil
       .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
       .map(parameters => {
         const self = parameters[1]()
         // noinspection JSUnresolvedFunction
         return {
-          subject: () => new PreconditionViolation(
-            common.createCandidateContractFunction(),
-            parameters[0],
-            self,
-            parameters[2]
-          ),
+          subject: () =>
+            new PreconditionViolation(
+              common.createCandidateContractFunction(),
+              parameters[0],
+              self,
+              parameters[2]
+            ),
           description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
         }
       })
