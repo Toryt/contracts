@@ -24,7 +24,6 @@ const stack = require('../../lib/_private/stack')
 const report = require('../../lib/_private/report')
 const common = require('./AbstractContractCommon')
 const must = require('must')
-const os = require('os')
 
 describe('IV/AbstractContract', function () {
   describe('AbstractContract', function () {
