@@ -249,12 +249,12 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
          In order:
          - sync
          - node 8
-         - headless chrome, chrome (x 3)
+         - headless chrome, chrome (x 4)
          - Firefox
          - Edge
          - node 6
        */
-        const expectReference = /callAndExpectRejection|anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
+        const expectReference = /callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
         stackLines[0].must.match(expectReference)
       }
     }
