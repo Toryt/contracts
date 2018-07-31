@@ -127,7 +127,7 @@ describe('IV/PromiseContractFunction', function () {
     if (n < 0) {
       return Promise.reject(new Error(positiveMessage))
     }
-    // we are obliged to throw an overflow message (but then the postcondition will fail)
+    // we are not obliged to throw an overflow message (but then the postcondition will fail)
     let count = 0
     let result = 0
     while (count < n) {
