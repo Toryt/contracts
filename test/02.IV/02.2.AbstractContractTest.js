@@ -128,6 +128,7 @@ describe('IV/AbstractContract', function () {
       const contract = new AbstractContract({})
       const implFunction = function () {}
       const location = stack.location()
+      must(implFunction.prototype).be.an.object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
       AbstractContract.bless(contractFunction, contract, implFunction, location)
       AbstractContract.isAContractFunction(contractFunction).must.be.true()
       testUtil.expectOwnFrozenProperty(contractFunction, 'contract')
