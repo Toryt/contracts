@@ -19,47 +19,57 @@ const capabilitiesBase = {
 
 const osVersion = {
   'OS X': 'High Sierra',
-  'Windows': '10'
+  Windows: '10'
 }
 
 /* We only test the last version of every combination, by not specifying any version.
    By running the tests every week, we stay compatible. */
 
+/* NOTE:
+    Safari eats stack traces in Web Driver mode (not when tested manually), and skips stack frames in general.
+    Safari on iOS does very weird things with sometimes not setting a prototype property on new (non arrow) functions,
+    or setting them 'late'. Some workarounds in tests are provided for this.
+
+    Firefox only works with with `--async-polling false`.
+    In general, runs on all browsers are more stable with `--async-polling false` (though a tad slower).
+
+    Edge has trouble with the contract function name (test workaround)
+ */
+
 const desktop = [
-  {browser: 'Chrome', os: 'OS X', os_version: 'High Sierra'}, // NOTE initially ok
-  {browser: 'Safari', os: 'OS X', os_version: 'High Sierra'}, // NOTE initially ok, with exception of stack trace being bogus in Web Driver mode, and skipping frames in general
-  {browser: 'Firefox', os: 'OS X', os_version: 'High Sierra'}, // NOTE initially ok, with `--async-polling false`
-  {browser: 'Chrome', os: 'Windows', os_version: '10'}, // NOTE initially ok
-  {browser: 'Edge', os: 'Windows', os_version: '10'}, // NOTE initially ok, with exception of contract function name (test workaround)
-  {browser: 'Firefox', os: 'Windows', os_version: '10'} // NOTE initially ok, with `--async-polling false`
-]
-  .map(d => ({
-    name: `${d.browser} - ${d.os}`,
-    capabilities: Object.assign(d, capabilitiesBase, {os_version: osVersion[d.os]})
-  }))
+  { browser: 'Chrome', os: 'OS X', os_version: 'High Sierra' },
+  { browser: 'Safari', os: 'OS X', os_version: 'High Sierra' },
+  { browser: 'Firefox', os: 'OS X', os_version: 'High Sierra' },
+  { browser: 'Chrome', os: 'Windows', os_version: '10' },
+  { browser: 'Edge', os: 'Windows', os_version: '10' },
+  { browser: 'Firefox', os: 'Windows', os_version: '10' }
+].map(d => ({
+  name: `${d.browser} - ${d.os}`,
+  capabilities: Object.assign(d, capabilitiesBase, {
+    os_version: osVersion[d.os]
+  })
+}))
 const mobile = [
-  'Samsung Galaxy S9', // NOTE initially ok
-  'Samsung Galaxy Note 4', // NOTE initially ok
-  'iPhone X', // NOTE initially ok, with exception of stack trace being bogus in Web Driver mode, and skipping frames in general
-  'iPad Pro' // NOTE initially ok, with exception of stack trace being bogus in Web Driver mode, and skipping frames in general
-].map(m => (
-  {
-    name: m,
-    capabilities: Object.assign(
-      {
-        device: m,
-        real_mobile: true
-      },
-      capabilitiesBase
-    )
-  }
-))
+  'Samsung Galaxy S9',
+  'Samsung Galaxy Note 4',
+  'iPhone X',
+  'iPad Pro'
+].map(m => ({
+  name: m,
+  capabilities: Object.assign(
+    {
+      device: m,
+      real_mobile: true
+    },
+    capabilitiesBase
+  )
+}))
 
 const definitions = desktop.concat(mobile)
 console.log(`${definitions.length}:`, definitions.map(d => d.name).join(', '))
 
 module.exports = {
-  hostname: "hub-cloud.browserstack.com",
+  hostname: 'hub-cloud.browserstack.com',
   port: 80,
   browsers: definitions
 }
