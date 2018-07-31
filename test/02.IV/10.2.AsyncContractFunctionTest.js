@@ -354,7 +354,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       exception,
       ExceptionConditionViolation,
       contractFunction,
-      contractFunction.contract.exception[0], // integer was programmed wrong
+      contractFunction.contract.exception[1], // message is unexpected
       self,
       [exceptionParameter],
       wrongException
