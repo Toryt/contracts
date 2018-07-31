@@ -111,6 +111,7 @@
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="ES6ModulesDependencies" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="EmptyCatchBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
@@ -292,6 +293,7 @@
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="JSUnresolvedFunction" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="JSUnusedGlobalSymbols" enabled="true" level="INFO" enabled_by_default="true" />
     <inspection_tool class="JSUnusedLocalSymbols" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="myIgnoreUnusedCatchParameters" value="false" />
@@ -342,6 +344,7 @@
     <inspection_tool class="NestingDepthJS" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="m_limit" value="3" />
     </inspection_tool>
+    <inspection_tool class="NodeModulesDependencies" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="NonBlockStatementBodyJS" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
