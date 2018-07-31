@@ -295,37 +295,6 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     ]
   })
 
-  async function failsOnMetaErrorFast ( // MUDO
-    self,
-    functionWithAMetaError,
-    conditionWithAMetaError,
-    extraArgs
-  ) {
-    const param = 'a parameter'
-    await callAndExpectRejection(
-      self,
-      functionWithAMetaError,
-      param,
-      exception => {
-        exception.must.be.an.instanceof(ConditionMetaError)
-        // noinspection JSUnresolvedVariable
-        exception.condition.must.equal(conditionWithAMetaError)
-        if (!self) {
-          must(exception.self).be.falsy()
-        } else {
-          exception.self.must.equal(self)
-        }
-        exception.args.length.must.equal(extraArgs ? extraArgs.length + 1 : 1)
-        exception.args[0].must.equal(param)
-        if (extraArgs) {
-          exception.args[1].must.equal(extraArgs[0])
-          AbstractContract.isAContractFunction(exception.args[2]).must.be.true()
-        }
-        exception.error.must.equal(intentionalError)
-      }
-    )
-  }
-
   async function failsOnMetaError (
     self,
     functionWithAMetaError,
@@ -648,7 +617,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     describe('meta-error', function () {
       it('fails with a meta-error when a precondition is kaput', async function () {
         // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-        await failsOnMetaErrorFast(
+        await failsOnMetaError(
           undefined,
           contractWithAFailingPre.implementation(() => resultWhenMetaError),
           contractWithAFailingPre.pre[0]
@@ -662,7 +631,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
           )
         }
         // noinspection JSUnresolvedVariable
-        await failsOnMetaErrorFast(
+        await failsOnMetaError(
           self,
           self.method,
           contractWithAFailingPre.pre[0]
