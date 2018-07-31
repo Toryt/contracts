@@ -599,8 +599,176 @@ function generatePrototypeMethodsDescriptions (
     })
   })
 
-  describe('#verifyAllPromise()', function () {
-    verifyAllConditionsCases.forEach(conditionsGenerator => {
+  const verifyAllPromiseConditionsCases = verifyAllConditionsCases.concat([
+    () => [
+      function f () {
+        f.self = this
+        f.args = arguments
+        return Promise.resolve(false)
+      }
+    ],
+    () => [
+      function f () {
+        f.self = this
+        f.args = arguments
+        return Promise.resolve(true)
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return Promise.resolve(true)
+      },
+      function f2 () {
+        f2.self = this
+        f2.args = arguments
+        return Promise.resolve(true)
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return Promise.resolve(true)
+      },
+      function f2 () {
+        f2.self = this
+        f2.args = arguments
+        return Promise.resolve(false)
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return Promise.resolve(true)
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return Promise.resolve(true)
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return Promise.reject(new Error('This condition fails with an error'))
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return Promise.resolve(true)
+      }
+    ],
+    // mixed
+    () => [
+      function f () {
+        f.self = this
+        f.args = arguments
+        return {}
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return true
+      },
+      function f2 () {
+        f2.self = this
+        f2.args = arguments
+        return Promise.resolve(true)
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return true
+      },
+      function f2 () {
+        f2.self = this
+        f2.args = arguments
+        return false
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return Promise.resolve(true)
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return true
+      },
+      function f2 () {
+        f2.self = this
+        f2.args = arguments
+        return Promise.resolve(false)
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return Promise.resolve(true)
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return true
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return Promise.reject(new Error('This condition fails with an error'))
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return true
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return Promise.resolve(true)
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        throw new Error('This condition fails with an error')
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return true
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return Promise.resolve(false)
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        throw new Error('This condition fails with an error')
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return true
+      }
+    ]
+  ])
+
+  describe.only('#verifyAllPromise()', function () {
+    verifyAllPromiseConditionsCases.forEach(conditionsGenerator => {
       selfVerifyCases.forEach(selfGenerator => {
         argsVerifyCases.forEach(argGenerator => {
           const conditions = conditionsGenerator()
@@ -621,76 +789,99 @@ function generatePrototypeMethodsDescriptions (
 
               let firstFailure
               let metaError = false
-              for (let i = 0; !firstFailure && i < conditions.length; i++) {
+
+              function determineExpected (i) {
+                if (i >= conditions.length) {
+                  return Promise.resolve()
+                }
+
                 try {
                   const outcome = conditions[i].apply()
+                  if (outcome instanceof Promise) {
+                    return outcome
+                      .then(result => {
+                        if (!result) {
+                          firstFailure = firstFailure || conditions[i]
+                        }
+                      })
+                      .catch(() => {
+                        metaError = true
+                        firstFailure = firstFailure || conditions[i]
+                      })
+                      .then(() => determineExpected(i + 1))
+                  }
                   if (!outcome) {
-                    firstFailure = conditions[i]
+                    firstFailure = firstFailure || conditions[i]
                   }
                 } catch (ignore) {
                   // ConditionMetaError
                   metaError = true
-                  firstFailure = conditions[i]
+                  firstFailure = firstFailure || conditions[i]
                 }
+                return determineExpected(i + 1)
               }
 
+              const expectedDetermined = determineExpected(0)
+
               // noinspection JSUnresolvedFunction
-              return subject
-                .verifyAllPromise(
-                  contractFunction,
-                  conditions,
-                  self,
-                  doctoredArgs
-                )
-                .then(
-                  () => {
-                    must(firstFailure).be.falsy() // any failure would give an exception
-                    must(metaError).be.falsy()
-                  },
-                  exc => {
-                    conditions.length.must.be.at.least(1) // otherwise, there can be no failure
-                    firstFailure.must.be.truthy() // metaError or a false condition
-                    if (metaError) {
-                      conditionMetaErrorCommon.expectProperties(
-                        exc,
-                        ConditionMetaError,
-                        contractFunction,
-                        firstFailure,
-                        self,
-                        doctoredArgs
-                      )
-                    } else {
-                      const extraProperty = doctoredArgs[args.length] // might not exist
-                      that.expectProperties(
-                        exc,
-                        subject.constructor,
-                        contractFunction,
-                        firstFailure,
-                        self,
-                        args,
-                        extraProperty
-                      )
+              return expectedDetermined.then(() =>
+                subject
+                  .verifyAllPromise(
+                    contractFunction,
+                    conditions,
+                    self,
+                    doctoredArgs
+                  )
+                  .then(
+                    () => {
+                      must(firstFailure).be.falsy() // any failure would give an exception
+                      must(metaError).be.falsy()
+                    },
+                    exc => {
+                      conditions.length.must.be.at.least(1) // otherwise, there can be no failure
+                      firstFailure.must.be.truthy() // metaError or a false condition
+                      if (metaError) {
+                        conditionMetaErrorCommon.expectProperties(
+                          exc,
+                          ConditionMetaError,
+                          contractFunction,
+                          firstFailure,
+                          self,
+                          doctoredArgs
+                        )
+                      } else {
+                        const extraProperty = doctoredArgs[args.length] // might not exist
+                        that.expectProperties(
+                          exc,
+                          subject.constructor,
+                          contractFunction,
+                          firstFailure,
+                          self,
+                          args,
+                          extraProperty
+                        )
+                      }
                     }
-                  }
-                )
-                .then(() => {
-                  // evaluates all conditions, also past first failure with, the given self and arguments
-                  conditions.forEach(c => {
-                    must(c.self).equal(self)
-                    const appliedArgs = c.args
-                    appliedArgs.must.be.truthy()
-                    isArguments(appliedArgs)
-                    if (!args) {
-                      appliedArgs.must.be.empty()
-                    } else {
-                      // doctoredArgs might be arguments, or Array
-                      Array.prototype.slice
-                        .call(doctoredArgs)
-                        .must.eql(Array.prototype.slice.call(appliedArgs))
-                    }
+                  )
+                  .then(() => {
+                    // evaluates all conditions, also past first failure with, the given self and arguments
+                    conditions.forEach(c => {
+                      must(c.self).equal(self)
+                      const appliedArgs = c.args
+                      appliedArgs.must.be.truthy()
+                      isArguments(appliedArgs)
+                      if (!args) {
+                        appliedArgs.must.be.empty()
+                      } else {
+                        // doctoredArgs might be arguments, or Array
+                        Array.prototype.slice
+                          .call(doctoredArgs)
+                          .must.eql(Array.prototype.slice.call(appliedArgs))
+                      }
+                    })
+                    that.expectInvariants(subject)
                   })
-                  that.expectInvariants(subject)
-                })
+              )
             }
           )
         })
