@@ -364,19 +364,20 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
   const argumentsOfWrongType = [undefined, null, 'bar']
   const self = {
     aProperty: 'a property value',
-    fibonacci: fibonacci.contract.implementation(function (n) {
-      const self = this
-      return n <= 1
-        ? Promise.resolve(n)
-        : Promise.all([self.fibonacci(n - 1), self.fibonacci(n - 2)]).then(
-          function (result) {
-            return result[0] + result[1]
-          }
-        )
+    fibonacci: fibonacci.contract.implementation(async function (n) {
+      if (n <= 1) {
+        return n
+      }
+      const results = await Promise.all([
+        this.fibonacci(n - 1),
+        this.fibonacci(n - 2)
+      ])
+      return results[0] + results[1]
     }),
-    fibonacciWrong: fibonacci.contract.implementation(function fWrong (n) {
-      return new Promise(resolve => {
-        setTimeout(() => {
+    fibonacciWrong: fibonacci.contract.implementation(async function fWrong (n) {
+      const thisSelf = this
+      return new Promise((resolve, reject) => {
+        setTimeout(async () => {
           // noinspection IfStatementWithTooManyBranchesJS
           if (n === 0) {
             resolve(0)
@@ -385,12 +386,15 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
           } else if (n === 4) {
             resolve(-3) // wrong!
           } else {
-            resolve(
-              Promise.all([
-                self.fibonacciWrong(n - 1),
-                self.fibonacciWrong(n - 2)
-              ]).then(results => results[0] + results[1])
-            )
+            try {
+              const results = await Promise.all([
+                thisSelf.fibonacciWrong(n - 1),
+                thisSelf.fibonacciWrong(n - 2)
+              ])
+              resolve(results[0] + results[1])
+            } catch (err) {
+              reject(err)
+            }
           }
         }, 0)
       })
@@ -411,7 +415,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     it(`self.fibonacci has the right name`, function () {
       testUtil.log(`self.fibonacci.name: ${self.fibonacci.name}`)
       self.fibonacci.name.must.contain(
-        `${AbstractContract.namePrefix} function (n) {`
+        `${AbstractContract.namePrefix} async function (n) {`
       )
     })
     it('fibonacciWrong has the right name', function () {
