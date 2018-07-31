@@ -436,7 +436,13 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
-        a.f.name.must.contain(`${AbstractContract.namePrefix} async n => {`)
+        if (testUtil.environment !== 'safari') {
+          a.f.name.must.contain(`${AbstractContract.namePrefix} async n => {`)
+        } else {
+          a.f.name.must.contain(
+            `${AbstractContract.namePrefix} async function n => {`
+          )
+        }
       })
     })
   })
