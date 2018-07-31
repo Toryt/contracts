@@ -197,8 +197,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     self,
     func,
     parameter,
-    expectException,
-    recursive
+    expectException
   ) {
     try {
       if (!self) {
@@ -246,22 +245,18 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       // since we cannot create a stack trace that points in the condition. The caused by probably will for meta errors,
       // but there is no such thing for pre-, post- or exception conditions.
       if (testUtil.environment !== 'safari') {
-        /* Because it is in the event loop; this is not our code; we have to show something, but for Promises, it is
-         largely irrelevant.
+        /* Because it is in the event loop sometimes; this is not our code; we have to show something, but for Promises,
+           it is largely irrelevant.
          In order:
+         - sync
          - node 8
          - headless chrome, chrome (x 3)
          - Firefox
          - Edge
          - node 6
        */
-        if (!recursive) {
-          stackLines[0].must.contain('callAndExpectRejection')
-        } else {
-          stackLines[0].must.contain(recursive)
-          stackLines[2].must.contain(recursive)
-          stackLines[4].must.contain('callAndExpectRejection')
-        }
+        const expectReference = /callAndExpectRejection|anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
+        stackLines[0].must.match(expectReference)
       }
     }
   }
@@ -742,8 +737,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
             undefined,
             fibonacciWrong,
             parameter,
-            expectPostProperties.bind(undefined, undefined, fibonacciWrong),
-            'fWrong'
+            expectPostProperties.bind(undefined, undefined, fibonacciWrong)
           )
         } finally {
           fibonacciWrong.contract.verifyPostconditions = false
@@ -757,8 +751,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
             self,
             self.fibonacciWrong,
             parameter,
-            expectPostProperties.bind(undefined, self, self.fibonacciWrong),
-            'fWrong'
+            expectPostProperties.bind(undefined, self, self.fibonacciWrong)
           )
         } finally {
           fibonacciWrong.contract.verifyPostconditions = false
