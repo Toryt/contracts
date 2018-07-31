@@ -180,14 +180,13 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
   )
 
   const defensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(
-    async n => {
+    async () => {
       throw wrongException // wrong
     }
   )
 
   const defensiveSumFastExcParameter = Math.PI
   const defensiveSumRejectParameter = -5
-  const fastExceptionParameter = -10
   const exceptionParameter = 5
 
   const resultWhenMetaError =
@@ -347,18 +346,6 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       self,
       [wrongParameter],
       wrongResult
-    )
-  }
-
-  function expectFastExceptionProperties (self, contractFunction, exception) {
-    exceptionConditionViolationCommon.expectProperties(
-      exception,
-      ExceptionConditionViolation,
-      contractFunction,
-      contractFunction.contract.fastException[0], // integer was programmed wrong
-      self,
-      [fastExceptionParameter],
-      wrongException
     )
   }
 
