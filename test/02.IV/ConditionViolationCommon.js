@@ -421,86 +421,90 @@ function generatePrototypeMethodsDescriptions (
     })
   })
 
-  describe('#verifyAll()', function () {
-    const conditionsCases = [
-      () => [],
-      () => [
-        function f () {
-          f.self = this
-          f.args = arguments
-          return false
-        }
-      ],
-      () => [
-        function f () {
-          f.self = this
-          f.args = arguments
-          return true
-        }
-      ],
-      () => [
-        function f () {
-          f.self = this
-          f.args = arguments
-          return {}
-        }
-      ],
-      () => [
-        function f1 () {
-          f1.self = this
-          f1.args = arguments
-          return true
-        },
-        function f2 () {
-          f2.self = this
-          f2.args = arguments
-          return true
-        }
-      ],
-      () => [
-        function f1 () {
-          f1.self = this
-          f1.args = arguments
-          return true
-        },
-        function f2 () {
-          f2.self = this
-          f2.args = arguments
-          return false
-        },
-        function f3 () {
-          f3.self = this
-          f3.args = arguments
-          return true
-        }
-      ],
-      () => [
-        function f1 () {
-          f1.self = this
-          f1.args = arguments
-          return true
-        },
-        function f3 () {
-          f3.self = this
-          f3.args = arguments
-          throw new Error('This condition fails with an error')
-        },
-        function f3 () {
-          f3.self = this
-          f3.args = arguments
-          return true
-        }
-      ]
+  const verifyAllConditionsCases = [
+    () => [],
+    () => [
+      function f () {
+        f.self = this
+        f.args = arguments
+        return false
+      }
+    ],
+    () => [
+      function f () {
+        f.self = this
+        f.args = arguments
+        return true
+      }
+    ],
+    () => [
+      function f () {
+        f.self = this
+        f.args = arguments
+        return {}
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return true
+      },
+      function f2 () {
+        f2.self = this
+        f2.args = arguments
+        return true
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return true
+      },
+      function f2 () {
+        f2.self = this
+        f2.args = arguments
+        return false
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return true
+      }
+    ],
+    () => [
+      function f1 () {
+        f1.self = this
+        f1.args = arguments
+        return true
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        throw new Error('This condition fails with an error')
+      },
+      function f3 () {
+        f3.self = this
+        f3.args = arguments
+        return true
+      }
     ]
+  ]
 
-    conditionsCases.forEach(conditionsGenerator => {
+  describe('#verifyAll()', function () {
+    verifyAllConditionsCases.forEach(conditionsGenerator => {
       selfVerifyCases.forEach(selfGenerator => {
         argsVerifyCases.forEach(argGenerator => {
           const conditions = conditionsGenerator()
           const self = selfGenerator()
           const args = argGenerator()
+          const conditionsRepr = conditions
+            .map(c => ('' + c).replace(/\s+/g, ' '))
+            .join(', ')
+          // noinspection FunctionTooLongJS
           it(
-            'works for ' + conditions + ' - ' + self + ' - ' + args,
+            'works for [' + conditionsRepr + '] - ' + self + ' - ' + args,
             function () {
               const subject = oneSubjectGenerator()
               const contractFunction = common.createCandidateContractFunction()
@@ -594,9 +598,106 @@ function generatePrototypeMethodsDescriptions (
       })
     })
   })
-}
 
-// MUDO test verifyAllPromise (now covered indirectly via PromiseContractFunctionTest)
+  describe('#verifyAllPromise()', function () {
+    verifyAllConditionsCases.forEach(conditionsGenerator => {
+      selfVerifyCases.forEach(selfGenerator => {
+        argsVerifyCases.forEach(argGenerator => {
+          const conditions = conditionsGenerator()
+          const self = selfGenerator()
+          const args = argGenerator()
+          const conditionsRepr = conditions
+            .map(c => ('' + c).replace(/\s+/g, ' '))
+            .join(', ')
+          it(
+            'works for [' + conditionsRepr + '] - ' + self + ' - ' + args,
+            function () {
+              const subject = oneSubjectGenerator()
+              const contractFunction = common.createCandidateContractFunction()
+              const doctoredArgs = that.doctorArgs(
+                args,
+                contractFunction.bind(self)
+              )
+
+              let firstFailure
+              let metaError = false
+              for (let i = 0; !firstFailure && i < conditions.length; i++) {
+                try {
+                  const outcome = conditions[i].apply()
+                  if (!outcome) {
+                    firstFailure = conditions[i]
+                  }
+                } catch (ignore) {
+                  // ConditionMetaError
+                  metaError = true
+                  firstFailure = conditions[i]
+                }
+              }
+
+              // noinspection JSUnresolvedFunction
+              return subject
+                .verifyAllPromise(
+                  contractFunction,
+                  conditions,
+                  self,
+                  doctoredArgs
+                )
+                .then(
+                  () => {
+                    must(firstFailure).be.falsy() // any failure would give an exception
+                    must(metaError).be.falsy()
+                  },
+                  exc => {
+                    conditions.length.must.be.at.least(1) // otherwise, there can be no failure
+                    firstFailure.must.be.truthy() // metaError or a false condition
+                    if (metaError) {
+                      conditionMetaErrorCommon.expectProperties(
+                        exc,
+                        ConditionMetaError,
+                        contractFunction,
+                        firstFailure,
+                        self,
+                        doctoredArgs
+                      )
+                    } else {
+                      const extraProperty = doctoredArgs[args.length] // might not exist
+                      that.expectProperties(
+                        exc,
+                        subject.constructor,
+                        contractFunction,
+                        firstFailure,
+                        self,
+                        args,
+                        extraProperty
+                      )
+                    }
+                  }
+                )
+                .then(() => {
+                  // evaluates all conditions, also past first failure with, the given self and arguments
+                  conditions.forEach(c => {
+                    must(c.self).equal(self)
+                    const appliedArgs = c.args
+                    appliedArgs.must.be.truthy()
+                    isArguments(appliedArgs)
+                    if (!args) {
+                      appliedArgs.must.be.empty()
+                    } else {
+                      // doctoredArgs might be arguments, or Array
+                      Array.prototype.slice
+                        .call(doctoredArgs)
+                        .must.eql(Array.prototype.slice.call(appliedArgs))
+                    }
+                  })
+                  that.expectInvariants(subject)
+                })
+            }
+          )
+        })
+      })
+    })
+  })
+}
 
 const test = {
   selfVerifyCases: selfVerifyCases,
