@@ -133,7 +133,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         return PromiseContract.outcome(arguments) instanceof Error
       },
       function () {
-        return [integerMessage, positiveMessage, overflowMessage].contains(
+        return [integerMessage, positiveMessage, overflowMessage].includes(
           PromiseContract.outcome(arguments).message
         )
       },
@@ -215,11 +215,13 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       const common =
         rejection instanceof ConditionMetaError
           ? conditionMetaErrorCommon
-          : rejection instanceof PostconditionViolation
-            ? postconditionViolationCommon
-            : rejection instanceof ExceptionConditionViolation
-              ? exceptionConditionViolationCommon
-              : null
+          : rejection instanceof PreconditionViolation
+            ? preconditionViolationCommon
+            : rejection instanceof PostconditionViolation
+              ? postconditionViolationCommon
+              : rejection instanceof ExceptionConditionViolation
+                ? exceptionConditionViolationCommon
+                : null
       common.must.be.truthy()
       common.expectInvariants(rejection)
       rejection.message.must.contain(func.name)
@@ -253,13 +255,12 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
          - Edge
          - node 6
        */
-        const expectReference = /anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
         if (!recursive) {
-          stackLines[0].must.match(expectReference) // because it is in the event loop; this is not our code
+          stackLines[0].must.contain('callAndExpectRejection')
         } else {
           stackLines[0].must.contain(recursive)
           stackLines[2].must.contain(recursive)
-          stackLines[4].must.contain('anonymous') // because it is in the event loop; this is not our code
+          stackLines[4].must.contain('callAndExpectRejection')
         }
       }
     }
@@ -549,10 +550,15 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     })
     it('works with a defensive function, rejection, testing conditions', async function () {
       defensiveIntegerSum.contract.verifyPostconditions = true
-      await defensiveIntegerSum(
-        defensiveSumFastExcParameter
-      ).must.reject.to.error(Error, integerMessage)
-      defensiveIntegerSum.contract.verifyPostconditions = false
+      try {
+        await defensiveIntegerSum(defensiveSumFastExcParameter)
+        false.must.be.true()
+      } catch (err) {
+        err.must.be.an.error()
+        err.message.must.contain(integerMessage)
+      } finally {
+        defensiveIntegerSum.contract.verifyPostconditions = false
+      }
     })
     it('works with a defensive method, rejection', async function () {
       await self
