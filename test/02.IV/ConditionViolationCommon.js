@@ -767,7 +767,7 @@ function generatePrototypeMethodsDescriptions (
     ]
   ])
 
-  describe.only('#verifyAllPromise()', function () {
+  describe('#verifyAllPromise()', function () {
     verifyAllPromiseConditionsCases.forEach(conditionsGenerator => {
       selfVerifyCases.forEach(selfGenerator => {
         argsVerifyCases.forEach(argGenerator => {
@@ -787,8 +787,8 @@ function generatePrototypeMethodsDescriptions (
                 contractFunction.bind(self)
               )
 
-              let firstFailure
-              let metaError = false
+              const failures = []
+              let metaErrorCondition = null // only 1 meta error per test case
 
               function determineExpected (i) {
                 if (i >= conditions.length) {
@@ -801,22 +801,22 @@ function generatePrototypeMethodsDescriptions (
                     return outcome
                       .then(result => {
                         if (!result) {
-                          firstFailure = firstFailure || conditions[i]
+                          failures.push(conditions[i])
                         }
                       })
                       .catch(() => {
-                        metaError = true
-                        firstFailure = firstFailure || conditions[i]
+                        metaErrorCondition = conditions[i]
+                        failures.push(conditions[i])
                       })
                       .then(() => determineExpected(i + 1))
                   }
                   if (!outcome) {
-                    firstFailure = firstFailure || conditions[i]
+                    failures.push(conditions[i])
                   }
                 } catch (ignore) {
                   // ConditionMetaError
-                  metaError = true
-                  firstFailure = firstFailure || conditions[i]
+                  metaErrorCondition = conditions[i]
+                  failures.push(conditions[i])
                 }
                 return determineExpected(i + 1)
               }
@@ -834,18 +834,18 @@ function generatePrototypeMethodsDescriptions (
                   )
                   .then(
                     () => {
-                      must(firstFailure).be.falsy() // any failure would give an exception
-                      must(metaError).be.falsy()
+                      failures.must.be.empty() // any failure would give an exception
+                      must(metaErrorCondition).be.falsy()
                     },
                     exc => {
                       conditions.length.must.be.at.least(1) // otherwise, there can be no failure
-                      firstFailure.must.be.truthy() // metaError or a false condition
-                      if (metaError) {
+                      failures.must.not.be.empty()
+                      if (metaErrorCondition) {
                         conditionMetaErrorCommon.expectProperties(
                           exc,
                           ConditionMetaError,
                           contractFunction,
-                          firstFailure,
+                          metaErrorCondition,
                           self,
                           doctoredArgs
                         )
@@ -855,7 +855,7 @@ function generatePrototypeMethodsDescriptions (
                           exc,
                           subject.constructor,
                           contractFunction,
-                          firstFailure,
+                          failures[0], // works in tests, but the order is really indeterminate
                           self,
                           args,
                           extraProperty
