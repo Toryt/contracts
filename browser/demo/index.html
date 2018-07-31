@@ -40,7 +40,8 @@
     try {
       sum(false)
     } catch (err) {
-      console.log(err)
+      console.error(err)
+      console.error(err.stack)
     }
   </script>
 </head>
