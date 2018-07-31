@@ -6,5 +6,4 @@ scripts
 test
 .min-wd.js
 .travis.yml
-bitbucket-pipelines.yml
 How_to_publish.md
