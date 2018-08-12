@@ -16,13 +16,9 @@
 
 'use strict'
 
-import { primitive as isPrimitive } from './is'
-import * as assert from 'assert'
+import { notEqual } from 'assert'
 
 export function setAndFreeze(obj: object, propName: string, value: any): void {
-  assert.ok(!isPrimitive(obj))
-  assert.equal(typeof propName, 'string')
-
   Object.defineProperty(obj, propName, {
     configurable: false,
     enumerable: true,
@@ -36,11 +32,6 @@ export function configurableDerived(
   propertyName: string,
   derivation: () => any
 ): void {
-  assert.ok(prototype)
-  assert.ok(!isPrimitive(prototype))
-  assert.equal(typeof propertyName, 'string')
-  assert.equal(typeof derivation, 'function')
-
   Object.defineProperty(prototype, propertyName, {
     configurable: true,
     enumerable: true,
@@ -54,11 +45,6 @@ export function frozenDerived(
   propertyName: string,
   derivation: () => any
 ): void {
-  assert.ok(prototype)
-  assert.ok(!isPrimitive(prototype))
-  assert.equal(typeof propertyName, 'string')
-  assert.equal(typeof derivation, 'function')
-
   Object.defineProperty(prototype, propertyName, {
     configurable: false,
     enumerable: true,
@@ -76,11 +62,7 @@ export function frozenReadOnlyArray(
   propertyName: string,
   privatePropName: string
 ): void {
-  assert.ok(prototype)
-  assert.ok(!isPrimitive(prototype))
-  assert.equal(typeof propertyName, 'string')
-  assert.equal(typeof privatePropName, 'string')
-  assert.notEqual(propertyName, privatePropName)
+  notEqual(propertyName, privatePropName)
 
   frozenDerived(prototype, propertyName, function(this: ArrayPropertyHolder) {
     return this[privatePropName].slice()
