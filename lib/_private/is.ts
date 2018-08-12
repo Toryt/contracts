@@ -14,8 +14,7 @@
   limitations under the License.
 */
 
-import * as os from 'os'
-import * as assert from 'assert'
+import { EOL } from 'os'
 
 const anArgumentsToString: string = (function() {
   return '' + arguments
@@ -44,9 +43,7 @@ export function primitive(p: any | null | undefined): boolean {
  * (Firefox), …
  */
 export function stackLocation(location: any | null | undefined): boolean {
-  return (
-    !!location && typeof location === 'string' && location.indexOf(os.EOL) < 0
-  )
+  return !!location && typeof location === 'string' && location.indexOf(EOL) < 0
 }
 
 /**
@@ -62,14 +59,11 @@ export function stack(stack: any | null | undefined): boolean {
   if (!stack || typeof stack !== 'string') {
     return false
   }
-  const lines: string[] = stack.split(os.EOL)
+  const lines: string[] = stack.split(EOL)
   return lines.length > 0 && lines.every(l => stackLocation(l))
 }
 
 export function frozenOwnProperty(obj: object, propName: string): boolean {
-  assert.notEqual(obj, null)
-  assert.notEqual(obj, undefined)
-
   const descriptor:
     | PropertyDescriptor
     | undefined = Object.getOwnPropertyDescriptor(obj, propName)
