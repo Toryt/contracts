@@ -17,8 +17,7 @@
 'use strict'
 
 import { inspect } from 'util'
-import { primitive as isPrimitive } from './is'
-import * as assert from 'assert'
+import { primitive } from './is'
 
 export const maxLengthOfConciseRepresentation: number = 80
 export const lengthOfEndConciseRepresentation: number = 15
@@ -28,8 +27,6 @@ export const conciseSeparator: string = ' … '
  * Returns a concise representation of <code>f</code> to be used in output.
  */
 export function conciseCondition(prefix: string, f: Function): string {
-  assert.equal(typeof prefix, 'string')
-
   let result: string = prefix + ' ' + ((f && f.name) || f)
   result = result.replace(/[\r\n]/g, ' ').replace(/\s\s+/g, ' ')
   if (maxLengthOfConciseRepresentation < result.length) {
@@ -70,7 +67,7 @@ export function value(v: any | null | undefined): string {
   } else if (typeof v === 'string' || v instanceof String) {
     return `'${v}'`
   } else if (
-    isPrimitive(v) ||
+    primitive(v) ||
     v instanceof Date ||
     v instanceof Error ||
     v instanceof Number ||
