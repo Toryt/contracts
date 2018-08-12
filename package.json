@@ -60,7 +60,8 @@
     "nyc": "^12.0.2",
     "prettier-standard": "^8.0.1",
     "standard": "^11.0.1",
-    "tldrlegal": "^1.0.6"
+    "tldrlegal": "^1.0.6",
+    "typescript": "^3.0.1"
   },
   "nyc": {
     "check-coverage": true,
