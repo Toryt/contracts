@@ -14,8 +14,6 @@
   limitations under the License.
 */
 
-'use strict'
-
 import { inspect } from 'util'
 import { primitive } from './is'
 

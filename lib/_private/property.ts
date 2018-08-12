@@ -14,8 +14,6 @@
   limitations under the License.
 */
 
-'use strict'
-
 import { notEqual } from 'assert'
 
 export function setAndFreeze(obj: object, propName: string, value: any): void {
