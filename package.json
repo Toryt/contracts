@@ -47,7 +47,9 @@
     "node": ">=6.14.3",
     "npm": ">=3.10.10"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/node": "^8.10.25"
+  },
   "devDependencies": {
     "browserify": "^16.2.2",
     "just.randomstring": "^0.1.1",

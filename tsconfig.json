@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "commonjs",
+    "declaration": true,
+    "allowJs": false,
+    "target": "es2018",
+    "strict": true
+  },
+  "include": [
+    "./lib/**/*"
+  ],
+  "compileOnSave": true
+}
