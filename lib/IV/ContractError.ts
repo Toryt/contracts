@@ -14,12 +14,10 @@
  limitations under the License.
  */
 
-'use strict'
-
-const is = require('../_private/is')
-const stack = require('../_private/stack')
-const property = require('../_private/property')
-const assert = require('assert')
+import { stack } from '../_private/is'
+import { raw as createRawStack } from '../_private/stack'
+import { setAndFreeze } from '../_private/property'
+import * as assert from 'assert'
 
 /* Custom Error types are notoriously difficult in JavaScript.
    See, e.g.,
@@ -62,7 +60,7 @@ const assert = require('assert')
    than where we create the custom error.
  */
 
-const message = 'abstract type'
+const message: string = 'abstract type'
 
 /**
  * ContractError is the general supertype of all errors thrown by Toryt Contracts.
@@ -79,26 +77,26 @@ const message = 'abstract type'
  *     string ": ", and `message`, and is followed by stack code references, that do no contain references
  *     to the inner workings of the Toryt Contracts library.</li>
  * </ul>
- *
- * @constructor
  */
-function ContractError (rawStack) {
-  assert(is.stack(rawStack), 'rawStack is a stack')
+export class ContractError extends Error {
+  constructor(rawStack: string) {
+    assert(stack(rawStack), 'rawStack is a stack')
 
-  property.setAndFreeze(this, '_rawStack', rawStack)
+    super()
+    this._rawStack = rawStack
+  }
+
+  // noinspection LocalVariableNamingConventionJS
+  protected readonly _rawStack: string
+
+  get stack(): string {
+    return `${this.name}: ${this.message}
+${this._rawStack}`
+  }
+
+  static message: string = message
 }
 
-ContractError.prototype = new Error()
-ContractError.prototype.constructor = ContractError
-property.setAndFreeze(ContractError.prototype, 'name', ContractError.name)
-property.setAndFreeze(ContractError.prototype, 'message', message)
-property.setAndFreeze(ContractError.prototype, '_rawStack', stack.raw())
-property.configurableDerived(ContractError.prototype, 'stack', function () {
-  // noinspection JSUnresolvedVariable
-  return `${this.name}: ${this.message}
-${this._rawStack}`
-})
-
-ContractError.message = message
-
-module.exports = ContractError
+setAndFreeze(ContractError.prototype, 'name', ContractError.name)
+setAndFreeze(ContractError.prototype, 'message', message)
+setAndFreeze(ContractError.prototype, '_rawStack', createRawStack())
