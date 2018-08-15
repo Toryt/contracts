@@ -78,7 +78,7 @@ const message: string = 'abstract type'
  *     to the inner workings of the Toryt Contracts library.</li>
  * </ul>
  */
-export class ContractError extends Error {
+export default class ContractError extends Error {
   constructor(rawStack: string) {
     assert(stack(rawStack), 'rawStack is a stack')
 
