@@ -390,6 +390,7 @@ export default class AbstractContract {
   readonly location: string | InternalLocation
   readonly abstract: () => never
 
+  // MUDO this does not generate the required code
   verify: boolean = true
   verifyPostconditions: boolean = false
 
