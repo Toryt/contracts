@@ -14,15 +14,14 @@
  limitations under the License.
  */
 
-'use strict'
-
-const report = require('../_private/report')
-const is = require('../_private/is')
-const property = require('../_private/property')
-const stack = require('../_private/stack')
-const ContractError = require('./ContractError')
-const AbstractContract = require('./AbstractContract')
-const assert = require('assert')
+import { conciseCondition, type, value } from '../_private/report'
+import { functionArguments, stack as isStack } from '../_private/is'
+import { setAndFreeze } from '../_private/property'
+import { raw as rawStack } from '../_private/stack'
+import ContractError from './ContractError'
+import AbstractContract from './AbstractContract'
+import { GeneralContractFunction } from './AbstractContract'
+import * as assert from 'assert'
 
 /**
  * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
@@ -102,76 +101,82 @@ const assert = require('assert')
  *     and by stack code references, that do not contain references to the inner workings of the Toryt
  *     Contracts library.</li>
  * </ul>
- *
- * @constructor
  */
-function ConditionError (contractFunction, condition, self, args, rawStack) {
-  assert(
-    AbstractContract.isAGeneralContractFunction(contractFunction),
-    'ConditionError: first argument is a general contract function'
-  )
-  assert.equal(
-    typeof condition,
-    'function',
-    'ConditionError: condition is a function'
-  )
-  assert(
-    is.functionArguments(args) || Array.isArray(args),
-    'ConditionError: args is arguments or array'
-  )
-  assert(is.stack(rawStack), 'ConditionError: rawStack is a stack')
+export default class ConditionError extends ContractError {
+  constructor(
+    contractFunction: GeneralContractFunction,
+    condition: () => boolean,
+    self: object,
+    args: any,
+    rawStack: string
+  ) {
+    assert(
+      AbstractContract.isAGeneralContractFunction(contractFunction),
+      'ConditionError: first argument is a general contract function'
+    )
+    assert(
+      functionArguments(args) || Array.isArray(args),
+      'ConditionError: args is arguments or array'
+    )
+    assert(isStack(rawStack), 'ConditionError: rawStack is a stack')
 
-  ContractError.call(this, rawStack)
-  property.setAndFreeze(this, 'contractFunction', contractFunction)
-  property.setAndFreeze(this, 'condition', condition)
-  property.setAndFreeze(this, 'self', self)
-  property.setAndFreeze(
-    this,
-    '_args',
-    Object.freeze(Array.prototype.slice.call(args))
-  )
-}
+    super(rawStack)
+    this.contractFunction = contractFunction
+    this.condition = condition
+    this.self = self
+    this._args = Object.freeze(Array.prototype.slice.call(args))
+  }
 
-ConditionError.prototype = new ContractError(stack.raw())
-ConditionError.prototype.constructor = ConditionError
-property.setAndFreeze(ConditionError.prototype, 'name', ConditionError.name)
-property.setAndFreeze(ConditionError.prototype, 'contractFunction', null)
-property.setAndFreeze(ConditionError.prototype, 'condition', null)
-property.setAndFreeze(ConditionError.prototype, 'self', null)
-property.setAndFreeze(ConditionError.prototype, '_args', null)
-property.frozenReadOnlyArray(ConditionError.prototype, 'args', '_args')
-property.frozenDerived(ConditionError.prototype, 'message', function () {
-  // noinspection JSUnresolvedVariable
-  const conditionRepresentation = report.conciseCondition(
-    'condition',
-    this.condition
-  )
-  // noinspection JSUnresolvedVariable
-  return `${conditionRepresentation} failed while ${this.contractFunction.name} was called`
-})
-property.setAndFreeze(ConditionError.prototype, 'getDetails', function () {
-  const argsList = Array.prototype.map.call(
-    this.args,
-    (arg, index) => `
-    ${index} (${report.type(arg)}): ${report.value(arg)}`
-  )
-  // noinspection JSUnresolvedVariable
-  return `contract:
+  readonly contractFunction: GeneralContractFunction
+  readonly condition: () => boolean
+  readonly self: object
+  // noinspection LocalVariableNamingConventionJS
+  readonly _args: Array<any>
+
+  get args() {
+    return this._args.slice()
+  }
+
+  get message() {
+    const conditionRepresentation: string = conciseCondition(
+      'condition',
+      this.condition
+    )
+    // noinspection JSUnresolvedVariable
+    return `${conditionRepresentation} failed while ${
+      this.contractFunction.name
+    } was called`
+  }
+
+  getDetails(): string {
+    const argsList = Array.prototype.map.call(
+      this.args,
+      (arg: any, index: number) => `
+    ${index} (${type(arg)}): ${value(arg)}`
+    )
+    // noinspection JSUnresolvedVariable
+    return `contract:
 ${this.contractFunction.contract.location}
 condition:
-    ${report.conciseCondition('', this.condition)}
+    ${conciseCondition('', this.condition)}
 contract function:
 ${this.contractFunction.location}
-this (${report.type(this.self)}):
-    ${report.value(this.self)}    
+this (${type(this.self)}):
+    ${value(this.self)}    
 arguments (${this.args.length}):${argsList}`
-})
-property.frozenDerived(ConditionError.prototype, 'stack', function () {
-  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
-  return `${this.name}: ${this.message}
+  }
+
+  get stack(): string {
+    return `${this.name}: ${this.message}
 ${this.getDetails()}    
 call stack:
-${this._rawStack}`
-})
+${super._rawStack}`
+  }
+}
 
-module.exports = ConditionError
+setAndFreeze(ConditionError.prototype, '_rawStack', rawStack())
+setAndFreeze(ConditionError.prototype, 'name', ConditionError.name)
+setAndFreeze(ConditionError.prototype, 'contractFunction', null)
+setAndFreeze(ConditionError.prototype, 'condition', null)
+setAndFreeze(ConditionError.prototype, 'self', null)
+setAndFreeze(ConditionError.prototype, '_args', null)
