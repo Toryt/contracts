@@ -5,10 +5,21 @@
     "declaration": true,
     "allowJs": false,
     "target": "es2018",
-    "strict": true
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitUseStrict": false,
+    "noUnusedParameters": false,
+    "allowUnreachableCode": false,
+    "noStrictGenericChecks": false,
+    "sourceMap": true
   },
   "include": [
-    "./lib/**/*"
+    "./lib/**/*",
+    "./test/**/*"
   ],
   "compileOnSave": true
 }

@@ -43,14 +43,16 @@ class InternalLocation {
 
 export type Location = string | InternalLocation
 
-export interface GeneralContractFunction extends Function {
+export interface GeneralContractFunction {
+  (): any // it is a function
+  // MUDO generics here!
   contract: AbstractContract
   location: Location
   implementation: Function
 }
 
 export interface ContractFunction extends GeneralContractFunction {
-  location: string
+  location: Location
 }
 
 // noinspection ParameterNamingConventionJS
@@ -161,7 +163,7 @@ export default class AbstractContract {
    *     </ul>
    *   </li>
    */
-  static isAGeneralContractFunction(f: any): boolean {
+  static isAGeneralContractFunction(f: any): f is GeneralContractFunction {
     // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
     // freeze it, and not guaranteed in all engines.
     // noinspection SuspiciousInstanceOfGuard
@@ -197,7 +199,7 @@ export default class AbstractContract {
    *     outside this library.</li>
    * </ul>
    */
-  static isAContractFunction(f: any): boolean {
+  static isAContractFunction(f: any): f is ContractFunction {
     return (
       this.isAGeneralContractFunction(f) &&
       f.contract instanceof this &&

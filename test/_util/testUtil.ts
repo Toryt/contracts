@@ -14,22 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-'use strict'
-
-const must = require('must')
-const os = require('os')
+import * as must from 'must'
+import { EOL } from 'os'
 
 // noinspection FunctionNamingConventionJS
-function x () {
-  if (arguments.length <= 0) {
+export function x(...args: any[][]): any[] {
+  if (args.length <= 0) {
     return []
   }
   return Array.prototype.reduce.call(
-    arguments,
-    (acc, arrayI) => {
-      const ret = []
-      acc.forEach(elementSoFar => {
-        arrayI.forEach(elementOfI => {
+    args,
+    (acc: any[][], arrayI: any[]) => {
+      const ret: any[][] = []
+      acc.forEach((elementSoFar: any[]): void => {
+        arrayI.forEach((elementOfI: any): void => {
           ret.push(elementSoFar.concat([elementOfI]))
         })
       })
@@ -39,16 +37,22 @@ function x () {
   )
 }
 
-function expectOwnFrozenProperty (subject, propertyName) {
-  const propertyDescriptor = Object.getOwnPropertyDescriptor(
-    subject,
-    propertyName
-  )
-  propertyDescriptor.must.be.truthy()
-  propertyDescriptor.enumerable.must.be.true()
-  propertyDescriptor.configurable.must.be.false()
-  propertyDescriptor.writable.must.be.false()
-  const failFunction = function () {
+export interface IndexedObject {
+  [index: string]: any
+}
+
+export function expectOwnFrozenProperty(
+  subject: IndexedObject,
+  propertyName: string
+): void {
+  const propertyDescriptor:
+    | PropertyDescriptor
+    | undefined = Object.getOwnPropertyDescriptor(subject, propertyName)
+  must(propertyDescriptor).be.truthy()
+  must(propertyDescriptor!.enumerable).must.be.true()
+  must(propertyDescriptor!.configurable).must.be.false()
+  must(propertyDescriptor!.writable).must.be.false()
+  const failFunction = function() {
     // noinspection MagicNumberJS
     subject[propertyName] = 42 + ' some outlandish other value'
   }
@@ -56,7 +60,10 @@ function expectOwnFrozenProperty (subject, propertyName) {
 }
 
 // noinspection FunctionNamingConventionJS
-function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
+export function prototypeThatHasOwnPropertyDescriptor(
+  subject: object | null,
+  propertyName: string
+): object | null {
   if (!subject) {
     return subject
   }
@@ -70,93 +77,111 @@ function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
 }
 
 // noinspection FunctionNamingConventionJS
-function expectDerivedPropertyOnAPrototype (
-  subject,
-  propertyName,
-  configurable
-) {
+export function expectDerivedPropertyOnAPrototype(
+  subject: object,
+  propertyName: string,
+  configurable: boolean
+): void {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
-  const propertyDescriptor = Object.getOwnPropertyDescriptor(
-    prototype,
-    propertyName
-  )
-  propertyDescriptor.must.be.truthy()
-  propertyDescriptor.enumerable.must.be.true()
-  propertyDescriptor.configurable.must.equal(configurable)
-  propertyDescriptor.must.not.have.property('writable')
-  propertyDescriptor.get.must.be.a.function()
-  must(propertyDescriptor.set).be.falsy()
+  const propertyDescriptor:
+    | PropertyDescriptor
+    | undefined = Object.getOwnPropertyDescriptor(prototype, propertyName)
+  must(propertyDescriptor).exist()
+  must(propertyDescriptor!.enumerable).be.true()
+  must(propertyDescriptor!.configurable).equal(configurable)
+  must(propertyDescriptor).not.have.property('writable')
+  must(propertyDescriptor!.get).be.a.function()
+  must(propertyDescriptor!.set).be.falsy()
 }
 
 // noinspection FunctionNamingConventionJS
-function expectConfigurableDerivedPropertyOnAPrototype (subject, propertyName) {
+export function expectConfigurableDerivedPropertyOnAPrototype(
+  subject: object,
+  propertyName: string
+): void {
   expectDerivedPropertyOnAPrototype(subject, propertyName, true)
 }
 
 // noinspection FunctionNamingConventionJS
-function expectFrozenDerivedPropertyOnAPrototype (subject, propertyName) {
+export function expectFrozenDerivedPropertyOnAPrototype(
+  subject: object,
+  propertyName: string
+): void {
   expectDerivedPropertyOnAPrototype(subject, propertyName, false)
 }
 
-function expectFrozenPropertyOnAPrototype (subject, propertyName) {
-  const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
-  expectOwnFrozenProperty(prototype, propertyName)
+export function expectFrozenPropertyOnAPrototype(
+  subject: object,
+  propertyName: string
+) {
+  const prototype: object | null = prototypeThatHasOwnPropertyDescriptor(
+    subject,
+    propertyName
+  )
+  must(prototype).exist()
+  expectOwnFrozenProperty(prototype!, propertyName)
 }
 
 // noinspection FunctionNamingConventionJS
-function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (
-  subject,
-  propName,
-  privatePropName
-) {
+export function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(
+  subject: IndexedObject,
+  propName: string,
+  privatePropName: string
+): void {
   subject.must.have.ownProperty(privatePropName) // array not shared
   subject[privatePropName].must.be.an.array()
-  this.expectOwnFrozenProperty(subject, privatePropName)
+  expectOwnFrozenProperty(subject, privatePropName)
   subject[propName].must.be.an.array()
-  this.expectFrozenDerivedPropertyOnAPrototype(subject, propName)
-  const failFunction = function () {
+  expectFrozenDerivedPropertyOnAPrototype(subject, propName)
+  const failFunction = function() {
     // noinspection MagicNumberJS
     subject[propName] = 42 + ' some outlandish other value'
   }
   failFunction.must.throw(TypeError)
 }
 
-function expectToBeArrayOfFunctions (a) {
+export function expectToBeArrayOfFunctions(a: Function[]) {
   a.must.be.an.array()
-  a.forEach(element => {
+  a.forEach((element: Function) => {
     element.must.be.a.function()
   })
 }
 
-const doLog = false
+const doLog: boolean = false
 
 // noinspection FunctionNamingConventionJS
-function log () {
+export function log(...args: any[]): void {
   if (doLog) {
-    console.log.apply(undefined, arguments)
+    console.log.apply(undefined, args)
     console.log()
   }
 }
 
-function showStack (exc) {
-  log('Exception stack%s---------------%s%s', os.EOL, os.EOL, exc.stack)
+export function showStack(exc: Error) {
+  log('Exception stack%s---------------%s%s', EOL, EOL, exc.stack)
 }
 
-function regExpEscape (s) {
+export function regExpEscape(s: string) {
   // http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
   return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-function propertyIsWritable (object, propertyName) {
-  const prototype = prototypeThatHasOwnPropertyDescriptor(object, propertyName)
-  const pd =
+export function propertyIsWritable(
+  object: object,
+  propertyName: string
+): boolean {
+  const prototype: object | null = prototypeThatHasOwnPropertyDescriptor(
+    object,
+    propertyName
+  )
+  const pd: PropertyDescriptor | null | undefined =
     prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
-  return !pd || pd.writable
+  return !pd || !!pd.writable
 }
 
-function anyCasesGenerators (discriminator) {
+export function anyCasesGenerators(discriminator: string): (() => any)[] {
   // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-  const generators = [
+  const generators: (() => any)[] = [
     () => new Error('This is a ' + discriminator + ' case'),
     () => undefined,
     () => null,
@@ -169,7 +194,7 @@ function anyCasesGenerators (discriminator) {
     () => new Date(),
     () => /foo/,
     () =>
-      function () {
+      function() {
         return 'this simulates a ' + discriminator
       },
     // eslint-disable-next-line
@@ -188,14 +213,46 @@ function anyCasesGenerators (discriminator) {
     }),
     () => []
   ]
-  const result = generators.slice()
-  result.push(() => generators.map(g => g()))
+  const result: (() => any)[] = generators.slice()
+  result.push(() => generators.map((g: () => any): any => g()))
   return result
 }
 
+export type Environment =
+  | 'node'
+  | 'opera'
+  | 'firefox'
+  | 'safari'
+  | 'ie'
+  | 'edge'
+  | 'chrome'
+  | 'headless-chrome'
+  | 'android'
+  | 'blink'
+  | 'browser'
+  | undefined
+
+interface EnvironmentWindow extends Window {
+  [index: string]: any
+}
+
+interface EnvironmentDocument extends Document {
+  [index: string]: any
+}
+
+declare global {
+  const opr: {
+    // noinspection SpellCheckingInspection
+    addons: any
+  }
+  // noinspection LocalVariableNamingConventionJS
+  const InstallTrigger: any
+  const safari: any
+}
+
 // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-// noinspection OverlyComplexFunctionJS
-function environment () {
+// noinspection OverlyComplexFunctionJS, FunctionTooLongJS
+export function environment(): Environment {
   // eslint-disable-next-line
   if (new Function('try {return this === global;}catch(e){return false;}')()) {
     console.log('Node (no User Agent)')
@@ -204,11 +261,12 @@ function environment () {
   // noinspection JSUnresolvedVariable
   const ua = navigator.userAgent
   console.log(`User Agent: "${ua}"`)
+  const environmentWindow: EnvironmentWindow = window
   // noinspection JSUnresolvedVariable
   if (
     // eslint-disable-next-line
-    (!!window.opr && !!opr.addons) ||
-    !!window.opera ||
+    (!!environmentWindow.opr && !!opr.addons) ||
+    !!environmentWindow.opera ||
     navigator.userAgent.indexOf(' OPR/') >= 0
   ) {
     return 'opera'
@@ -220,30 +278,33 @@ function environment () {
   // this no longer detects safari in v11
   // noinspection JSUnresolvedVariable
   if (
-    /constructor/i.test(window.HTMLElement) ||
-    (function (p) {
+    /constructor/i.test(environmentWindow.HTMLElement) ||
+    (function(p) {
       return p.toString() === '[object SafariRemoteNotification]'
     })(
       // eslint-disable-next-line
-      !window['safari'] || safari.pushNotification
+      !environmentWindow['safari'] || safari.pushNotification
     )
   ) {
     return 'safari'
   }
   // noinspection PointlessBooleanExpressionJS,JSUnresolvedVariable
-  if (/* @cc_on!@ */ false || !!document.documentMode) {
+  if (
+    /* @cc_on!@ */ false ||
+    !!(document as EnvironmentDocument).documentMode
+  ) {
     return 'ie'
   }
   // noinspection JSUnresolvedVariable
-  if (window.StyleMedia) {
+  if (environmentWindow.StyleMedia) {
     return 'edge'
   }
   // noinspection JSUnresolvedVariable
-  if (!!window.chrome && !!window.chrome.webstore) {
+  if (!!environmentWindow.chrome && !!environmentWindow.chrome.webstore) {
     return 'chrome'
   }
   // noinspection JSUnresolvedVariable
-  if (window.CSS) {
+  if (environmentWindow.CSS) {
     if (ua.indexOf('HeadlessChrome') >= 0) {
       return 'headless-chrome'
     }
@@ -265,7 +326,7 @@ function environment () {
   return undefined
 }
 
-function trimLineAndColumnPattern (stackLine) {
+export function trimLineAndColumnPattern(stackLine: string): string {
   return (
     stackLine
       // node, chrome
@@ -275,29 +336,12 @@ function trimLineAndColumnPattern (stackLine) {
   )
 }
 
-function mustBeCallerLocation (actual, expected) {
+export function mustBeCallerLocation(actual: string, expected: string): void {
   expected.must.be.a.string()
   trimLineAndColumnPattern(expected).must.equal(
     trimLineAndColumnPattern(actual)
   )
 }
 
-const env = environment()
+export const env: Environment = environment()
 console.log(`Detected environment "${env}"`)
-
-module.exports = {
-  x: x,
-  expectOwnFrozenProperty: expectOwnFrozenProperty,
-  expectConfigurableDerivedPropertyOnAPrototype: expectConfigurableDerivedPropertyOnAPrototype,
-  expectFrozenDerivedPropertyOnAPrototype: expectFrozenDerivedPropertyOnAPrototype,
-  expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
-  expectFrozenPropertyOnAPrototype: expectFrozenPropertyOnAPrototype,
-  expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
-  log: log,
-  showStack: showStack,
-  regExpEscape: regExpEscape,
-  propertyIsWritable: propertyIsWritable,
-  anyCasesGenerators: anyCasesGenerators,
-  environment: env,
-  mustBeCallerLocation: mustBeCallerLocation
-}

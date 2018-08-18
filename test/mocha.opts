@@ -1,6 +1,7 @@
 --require must
 --check-leaks
---reporter mocha-reporter
+--reporter spec
+--compilers ts:ts-node/register
 --globals __core-js_shared__
 --recursive
 

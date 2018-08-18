@@ -47,10 +47,10 @@
     "node": ">=6.14.3",
     "npm": ">=3.10.10"
   },
-  "dependencies": {
-    "@types/node": "^8.10.25"
-  },
   "devDependencies": {
+    "@types/node": "^8.10.25",
+    "@types/mocha": "^5.2.5",
+    "@types/sinon": "^5.0.1",
     "browserify": "^16.2.2",
     "just.randomstring": "^0.1.1",
     "legally": "^2.10.0",

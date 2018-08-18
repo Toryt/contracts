@@ -16,17 +16,17 @@
 
 /* eslint-env mocha */
 
-'use strict'
+const getGlobal: () => object = new Function('return this;') as () => object
 
-// eslint-disable-next-line
-const getGlobal = new Function('return this;')
+export type Stuff = { subject: any; expected: string; isPrimitive: boolean }
 
-function generateMutableStuff () {
+export function generateMutableStuff(): Stuff[] {
+  type Stuffy = { subject: any; expected: string }
   // noinspection JSPrimitiveTypeWrapperUsage
-  const result = [
+  const stuff: Stuffy[] = [
     { subject: { a: 4 }, expected: 'object' },
     { subject: [1, 2, 3], expected: 'array' },
-    { subject: function () {}, expected: 'function' },
+    { subject: function() {}, expected: 'function' },
     { subject: () => 0, expected: 'function' },
     { subject: new ReferenceError(), expected: 'error' },
     { subject: new Date(), expected: 'date' },
@@ -41,14 +41,18 @@ function generateMutableStuff () {
     { subject: new Boolean(true), expected: 'boolean' },
     { subject: arguments, expected: 'arguments' }
   ]
-  result.forEach(r => {
-    r.isPrimitive = false
-  })
-  return result
+  return stuff.map((s: Stuffy): Stuff => ({
+    subject: s.subject,
+    expected: s.expected,
+    isPrimitive: false
+  }))
 }
 
-// noinspection JSPrimitiveTypeWrapperUsage
-const stuff = [
+export interface StuffAndGenerator extends Array<Stuff> {
+  generateMutableStuff: () => Stuff[]
+}
+
+export const stuff: Stuff[] = [
   { subject: undefined, expected: 'undefined', isPrimitive: false },
   { subject: null, expected: 'null', isPrimitive: false },
   { subject: Math, expected: 'math', isPrimitive: false },
@@ -59,8 +63,4 @@ const stuff = [
   { subject: false, expected: 'boolean', isPrimitive: true },
   { subject: getGlobal(), expected: 'object', isPrimitive: false }
 ].concat(generateMutableStuff())
-
-// noinspection JSUndefinedPropertyAssignment
-stuff.generateMutableStuff = generateMutableStuff
-
-module.exports = stuff
+;(stuff as StuffAndGenerator).generateMutableStuff = generateMutableStuff
