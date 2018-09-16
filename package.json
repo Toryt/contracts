@@ -51,7 +51,7 @@
   "devDependencies": {
     "browserify": "^16.2.2",
     "just.randomstring": "^0.1.1",
-    "legally": "^2.10.0",
+    "legally": "^3.2.1",
     "mocha": "^5.2.0",
     "mocha-reporter": "^0.1.1",
     "mochify": "^5.8.0",
