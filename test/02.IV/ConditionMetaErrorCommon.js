@@ -79,7 +79,9 @@ const errorCases = [
   new Boolean(false),
   // eslint-disable-next-line no-new-wrappers
   new String('lalala'),
-  (() => arguments)(),
+  (function () {
+    return arguments
+  })(),
   {},
   { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
 ]
