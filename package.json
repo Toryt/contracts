@@ -49,7 +49,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "browserify": "^16.2.2",
+    "browserify": "^16.2.3",
     "just.randomstring": "^0.1.1",
     "legally": "^3.2.1",
     "mocha": "^5.2.0",
@@ -59,7 +59,7 @@
     "npm-check": "^5.7.1",
     "nyc": "^13.0.1",
     "prettier-standard": "^8.0.1",
-    "standard": "^11.0.1",
+    "standard": "^12.0.1",
     "tldrlegal": "^1.0.6"
   },
   "nyc": {
