@@ -30,6 +30,7 @@ console.log(`build: ${build}`)
 const capabilitiesBase = {
   project: 'Toryt contracts',
   build: build,
+  'browserstack.video': false,
   'browserstack.console': 'verbose',
   'browserstack.user': process.env.BROWSERSTACK_USERNAME,
   'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
