@@ -5,7 +5,7 @@
 
          This worked up until version 63.
 
-         Since Firefox 64, and with Safari 12 (the default on Mojave), we now get
+         Since Safari 12 (the default on Mojave), we now get
 
          POST /wd/hub/session/37637d38c9bda442465f1e454894638aca029384/execute
          Unexpected HTTP status: 404 Not Found
@@ -13,8 +13,11 @@
          Response Message:
             POST /session/37637d38c9bda442465f1e454894638aca029384/execute did not match a known command
 
+         We get the same problem with Firefox since Travis/654 d.d. 2018-12-29. Firefox 64 is being used since
+         Travis/651 (and worked once without the problem).
+
          To work around this for the time being,
-         - we stick to High Sierra for Safari
+         - we stick to High Sierra for Safari and Firefox
          - we stick to Firefox 63
 */
 
@@ -52,7 +55,7 @@ const osVersion = {
 const desktop = [
   { browser: 'Chrome', os: 'OS X' },
   { browser: 'Safari', os: 'OS X', os_version: 'High Sierra' }, // NOTE: see top
-  { browser: 'Firefox', browser_version: '63.0', os: 'OS X' },
+  { browser: 'Firefox', browser_version: '63.0', os: 'OS X', os_version: 'High Sierra' },
   { browser: 'Chrome', os: 'Windows' },
   { browser: 'Edge', os: 'Windows' },
   { browser: 'Firefox', browser_version: '63.0', os: 'Windows' }
