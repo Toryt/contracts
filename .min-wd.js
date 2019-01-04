@@ -4,9 +4,7 @@
          The solution is to call mochify with `--async-polling false`. */
 
 const travisBuild = process.env.TRAVIS_BUILD_NUMBER
-const build = travisBuild
-  ? `travis/${travisBuild.padStart(5, '0')}`
-  : `manual ${new Date().toISOString()}`
+const build = travisBuild ? `travis/${travisBuild.padStart(5, '0')}` : `manual ${new Date().toISOString()}`
 console.log(`build: ${build}`)
 
 const capabilitiesBase = {
@@ -49,12 +47,7 @@ const desktop = [
     os_version: osVersion[d.os]
   })
 }))
-const mobile = [
-  'Samsung Galaxy S9',
-  'Samsung Galaxy Note 4',
-  'iPhone X',
-  'iPad Pro'
-].map(m => ({
+const mobile = ['Samsung Galaxy S9', 'Samsung Galaxy Note 4', 'iPhone X', 'iPad Pro'].map(m => ({
   name: m,
   capabilities: Object.assign(
     {
