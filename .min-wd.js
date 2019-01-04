@@ -1,7 +1,22 @@
 /* Note: Firefox tests work up until version 58. After that, Selenium has a problem:
          POST /session/14641de4c7f12c2f9b2eaf307a0955edf23dc59b/timeouts/async_script did not match a known command
          No combination of browserstack.geckodriver and browserstack.selenium_version that worked was found.
-         The solution is to call mochify with `--async-polling false`. */
+         The solution is to call mochify with `--async-polling false`.
+
+         This worked up until version 63.
+
+         Since Firefox 64, and with Safari 12 (the default on Mojave), we now get
+
+         POST /wd/hub/session/37637d38c9bda442465f1e454894638aca029384/execute
+         Unexpected HTTP status: 404 Not Found
+         […]
+         Response Message:
+            POST /session/37637d38c9bda442465f1e454894638aca029384/execute did not match a known command
+
+         To work around this for the time being,
+         - we stick to High Sierra for Safari
+         - we stick to Firefox 63
+*/
 
 const travisBuild = process.env.TRAVIS_BUILD_NUMBER
 const build = travisBuild ? `travis/${travisBuild.padStart(5, '0')}` : `manual ${new Date().toISOString()}`
@@ -36,16 +51,21 @@ const osVersion = {
 
 const desktop = [
   { browser: 'Chrome', os: 'OS X' },
-  { browser: 'Safari', os: 'OS X' },
-  { browser: 'Firefox', os: 'OS X' },
+  { browser: 'Safari', os: 'OS X', os_version: 'High Sierra' }, // NOTE: see top
+  { browser: 'Firefox', browser_version: '63.0', os: 'OS X' },
   { browser: 'Chrome', os: 'Windows' },
   { browser: 'Edge', os: 'Windows' },
-  { browser: 'Firefox', os: 'Windows' }
+  { browser: 'Firefox', browser_version: '63.0', os: 'Windows' }
 ].map(d => ({
   name: `${d.browser} - ${d.os}`,
-  capabilities: Object.assign(d, capabilitiesBase, {
-    os_version: osVersion[d.os]
-  })
+  capabilities: Object.assign(
+    {},
+    capabilitiesBase,
+    {
+      os_version: osVersion[d.os]
+    },
+    d // overwrite general settings
+  )
 }))
 const mobile = ['Samsung Galaxy S9', 'Samsung Galaxy Note 4', 'iPhone X', 'iPad Pro'].map(m => ({
   name: m,
