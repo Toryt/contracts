@@ -57,11 +57,12 @@ const osVersion = {
 
 const desktop = [
   { browser: 'Chrome', os: 'OS X' },
-  { browser: 'Safari', os: 'OS X', os_version: 'High Sierra' }, // NOTE: see top
-  { browser: 'Firefox', browser_version: '63.0', os: 'OS X', os_version: 'High Sierra' },
+  { browser: 'Safari', os: 'OS X' },
+  { browser: 'Safari', os: 'OS X', os_version: 'High Sierra' },
+  { browser: 'Firefox', os: 'OS X' },
   { browser: 'Chrome', os: 'Windows' },
   { browser: 'Edge', os: 'Windows' },
-  { browser: 'Firefox', browser_version: '63.0', os: 'Windows' }
+  { browser: 'Firefox', os: 'Windows' }
 ].map(d => ({
   name: `${d.browser} - ${d.os}`,
   capabilities: Object.assign(
