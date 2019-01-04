@@ -40,10 +40,7 @@ function x () {
 }
 
 function expectOwnFrozenProperty (subject, propertyName) {
-  const propertyDescriptor = Object.getOwnPropertyDescriptor(
-    subject,
-    propertyName
-  )
+  const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
   propertyDescriptor.must.be.truthy()
   propertyDescriptor.enumerable.must.be.true()
   propertyDescriptor.configurable.must.be.false()
@@ -63,23 +60,13 @@ function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
   if (Object.getOwnPropertyDescriptor(subject, propertyName)) {
     return subject
   }
-  return prototypeThatHasOwnPropertyDescriptor(
-    Object.getPrototypeOf(subject),
-    propertyName
-  )
+  return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName)
 }
 
 // noinspection FunctionNamingConventionJS
-function expectDerivedPropertyOnAPrototype (
-  subject,
-  propertyName,
-  configurable
-) {
+function expectDerivedPropertyOnAPrototype (subject, propertyName, configurable) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
-  const propertyDescriptor = Object.getOwnPropertyDescriptor(
-    prototype,
-    propertyName
-  )
+  const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, propertyName)
   propertyDescriptor.must.be.truthy()
   propertyDescriptor.enumerable.must.be.true()
   propertyDescriptor.configurable.must.equal(configurable)
@@ -104,11 +91,7 @@ function expectFrozenPropertyOnAPrototype (subject, propertyName) {
 }
 
 // noinspection FunctionNamingConventionJS
-function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (
-  subject,
-  propName,
-  privatePropName
-) {
+function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (subject, propName, privatePropName) {
   subject.must.have.ownProperty(privatePropName) // array not shared
   subject[privatePropName].must.be.an.array()
   this.expectOwnFrozenProperty(subject, privatePropName)
@@ -149,8 +132,7 @@ function regExpEscape (s) {
 
 function propertyIsWritable (object, propertyName) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(object, propertyName)
-  const pd =
-    prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
+  const pd = prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
   return !pd || pd.writable
 }
 
@@ -277,9 +259,7 @@ function trimLineAndColumnPattern (stackLine) {
 
 function mustBeCallerLocation (actual, expected) {
   expected.must.be.a.string()
-  trimLineAndColumnPattern(expected).must.equal(
-    trimLineAndColumnPattern(actual)
-  )
+  trimLineAndColumnPattern(expected).must.equal(trimLineAndColumnPattern(actual))
 }
 
 const env = environment()
