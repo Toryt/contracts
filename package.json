@@ -54,7 +54,7 @@
     "legally": "^3.2.1",
     "mocha": "^5.2.0",
     "mocha-reporter": "^0.1.1",
-    "mochify": "^6.0.4",
+    "mochify": "^5.8.1",
     "must": "^0.13.4",
     "npm-check": "^5.7.1",
     "nyc": "^13.0.1",
