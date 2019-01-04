@@ -16,7 +16,7 @@ const capabilitiesBase = {
 }
 
 const osVersion = {
-  'OS X': 'High Sierra',
+  'OS X': 'Mojave',
   Windows: '10'
 }
 
