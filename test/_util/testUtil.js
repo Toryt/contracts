@@ -253,7 +253,7 @@ function environment () {
     if (ua.indexOf('Edge') >= 0) {
       return 'edge'
     }
-    if (ua.indexOf('Safari') >= 0) {
+    if (ua.indexOf('Safari/') >= 0 && ua.indexOf('Version/') >= 0) {
       return 'safari'
     }
     return 'blink'
