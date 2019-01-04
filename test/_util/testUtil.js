@@ -240,7 +240,7 @@ function environment () {
   }
   // noinspection JSUnresolvedVariable
   if (!!window.chrome && !!window.chrome.webstore) {
-    return 'chrome'
+    return 'chrome' // no longer matches since chrome 71
   }
   // noinspection JSUnresolvedVariable
   if (window.CSS) {
