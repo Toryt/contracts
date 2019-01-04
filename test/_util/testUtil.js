@@ -239,8 +239,8 @@ function environment () {
     return 'edge'
   }
   // noinspection JSUnresolvedVariable
-  if (!!window.chrome && !!window.chrome.webstore) {
-    return 'chrome' // no longer matches since chrome 71
+  if (window.chrome) {
+    return 'chrome'
   }
   // noinspection JSUnresolvedVariable
   if (window.CSS) {
