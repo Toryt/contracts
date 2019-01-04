@@ -74,7 +74,7 @@ const desktop = [
     d // overwrite general settings
   )
 }))
-const mobile = ['Samsung Galaxy S9', 'Samsung Galaxy Note 4', 'iPhone X', 'iPad Pro'].map(m => ({
+const mobile = ['Samsung Galaxy S9', 'Samsung Galaxy Note 4', 'iPhone X' /*, 'iPad Pro'*/].map(m => ({
   name: m,
   capabilities: Object.assign(
     {
