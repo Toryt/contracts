@@ -64,7 +64,7 @@ const desktop = [
   { browser: 'Edge', os: 'Windows' }
   // NOTE: see top { browser: 'Firefox', browser_version: '63.0', os: 'Windows' }
 ].map(d => ({
-  name: `${d.browser} - ${d.os}`,
+  name: `${d.browser} - ${d.os} ${d.os_version || osVersion[d.os]}`,
   capabilities: Object.assign(
     {},
     capabilitiesBase,
