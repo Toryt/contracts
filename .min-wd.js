@@ -16,9 +16,11 @@
          We get the same problem with Firefox since Travis/654 d.d. 2018-12-29. Firefox 64 is being used since
          Travis/651 (and worked once without the problem).
 
-         To work around this for the time being,
-         - we stick to High Sierra for Safari and Firefox
-         - we stick to Firefox 63
+         The logs say that both the last working and the first failing run use
+         - browserstack.geckodriver: 0.21.0,
+         - browserstack.selenium.jar.version: 3.11.0
+
+         So, there was no switch there either.
 */
 
 const travisBuild = process.env.TRAVIS_BUILD_NUMBER
