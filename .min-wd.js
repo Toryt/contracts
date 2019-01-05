@@ -5,7 +5,8 @@
 
          This worked up until version 63.
 
-         Since Firefox 64, and with Safari 12 (the default on Mojave), we now get
+         The last successful run was Travis/00651, d.d. 2018-12-22. Something changed at Browserstack that makes the run
+         fail for Firefox since Travis/654 d.d. 2018-12-29, both for High Sierra and Windows 10.
 
          POST /wd/hub/session/37637d38c9bda442465f1e454894638aca029384/execute
          Unexpected HTTP status: 404 Not Found
@@ -13,9 +14,14 @@
          Response Message:
             POST /session/37637d38c9bda442465f1e454894638aca029384/execute did not match a known command
 
+         We get the same problem with Firefox 63 and 64, and also on Mojave.
+         The same problem also occurs with Safari 12 on Mojave.
+
+         A simple 1-test demonstration is at tag `failure/firefox-browserstack-problem/Travis00666`, run Travis/00666.
+
          To work around this for the time being,
          - we stick to High Sierra for Safari
-         - we stick to Firefox 63
+         - we do not test on Firefox, until the issue is fixed.
 */
 
 const travisBuild = process.env.TRAVIS_BUILD_NUMBER
