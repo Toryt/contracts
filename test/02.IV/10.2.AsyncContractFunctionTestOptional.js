@@ -420,6 +420,8 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     })
     it("doesn't interfere when the implementation is correct too, testing conditions", async function () {
       // noinspection MagicNumberJS
+      this.timeout(5000)
+      // noinspection MagicNumberJS
       const oneHundred = 100
       defensiveIntegerSum.contract.verifyPostconditions = true
       // any exception will fail the test
