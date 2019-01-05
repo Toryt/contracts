@@ -228,9 +228,7 @@ describe('javascript/Error', function () {
           lines.shift()
         }
         lines.forEach((l, i) => {
-          l.must[i >= 0 && i <= 2 ? 'to' : 'not'].contain(
-            'captureTheStackTrace'
-          )
+          l.must[i >= 0 && i <= 2 ? 'to' : 'not'].contain('captureTheStackTrace')
         })
       }
     })

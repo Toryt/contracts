@@ -28,59 +28,29 @@ describe('IV/ConditionError', function () {
     common.selfCaseGenerators.forEach(selfCaseGenerator => {
       common.argsCases.forEach(args => {
         const self = selfCaseGenerator()
-        it(
-          'creates an instance with all toppings for ' + self + ' - ' + args,
-          function () {
-            const contractFunction = common.createCandidateContractFunction()
-            const rawStack = stack.raw()
-            const result = new ConditionError(
-              contractFunction,
-              common.conditionCase,
-              self,
-              args,
-              rawStack
-            )
-            common.expectConstructorPost(
-              result,
-              contractFunction,
-              common.conditionCase,
-              self,
-              args,
-              rawStack
-            )
-            common.expectInvariants(result)
-            result.must.not.have.ownProperty('message')
-            result.must.not.have.ownProperty('stack')
-            testUtil.log('result.stack:\n%s', result.stack)
-          }
-        )
+        it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
+          const contractFunction = common.createCandidateContractFunction()
+          const rawStack = stack.raw()
+          const result = new ConditionError(contractFunction, common.conditionCase, self, args, rawStack)
+          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, rawStack)
+          common.expectInvariants(result)
+          result.must.not.have.ownProperty('message')
+          result.must.not.have.ownProperty('stack')
+          testUtil.log('result.stack:\n%s', result.stack)
+        })
       })
     })
   })
 
   common.generatePrototypeMethodsDescriptions(
-    () =>
-      new ConditionError(
-        common.conditionCase,
-        null,
-        common.argsCases[0],
-        stack.raw()
-      ),
-    testUtil
-      .x(common.conditionCases, common.selfCaseGenerators, common.argsCases)
-      .map(parameters => {
-        const self = parameters[1]()
-        return {
-          subject: () =>
-            new ConditionError(
-              common.createCandidateContractFunction(),
-              parameters[0],
-              self,
-              parameters[2],
-              stack.raw()
-            ),
-          description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
-        }
-      })
+    () => new ConditionError(common.conditionCase, null, common.argsCases[0], stack.raw()),
+    testUtil.x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
+      const self = parameters[1]()
+      return {
+        subject: () =>
+          new ConditionError(common.createCandidateContractFunction(), parameters[0], self, parameters[2], stack.raw()),
+        description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
+      }
+    })
   )
 })

@@ -72,43 +72,15 @@ function expectInvariants (subject) {
 }
 
 // noinspection ParameterNamingConventionJS
-function expectProperties (
-  exception,
-  Type,
-  contractFunction,
-  condition,
-  self,
-  args
-) {
+function expectProperties (exception, Type, contractFunction, condition, self, args) {
   common.expectProperties.apply(undefined, arguments)
   exception.must.be.frozen()
 }
 
-function expectConstructorPost (
-  result,
-  contractFunction,
-  condition,
-  self,
-  args
-) {
+function expectConstructorPost (result, contractFunction, condition, self, args) {
   // noinspection JSUnresolvedVariable
-  common.expectConstructorPost(
-    result,
-    contractFunction,
-    condition,
-    self,
-    args,
-    result._rawStack
-  )
-  common.expectProperties.call(
-    undefined,
-    result,
-    ConditionViolation,
-    contractFunction,
-    condition,
-    self,
-    args
-  )
+  common.expectConstructorPost(result, contractFunction, condition, self, args, result._rawStack)
+  common.expectProperties.call(undefined, result, ConditionViolation, contractFunction, condition, self, args)
   // not frozen yet
 }
 
@@ -118,14 +90,8 @@ function doctorArgs (args, boundContractFunction) {
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (
-  oneSubjectGenerator,
-  allSubjectGenerators
-) {
-  common.generatePrototypeMethodsDescriptions(
-    oneSubjectGenerator,
-    allSubjectGenerators
-  )
+function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+  common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
   const that = this
 
@@ -190,64 +156,48 @@ function generatePrototypeMethodsDescriptions (
           const condition = conditionGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          it(
-            'works for ' + condition + ' - ' + self + ' - ' + args,
-            function () {
-              const subject = oneSubjectGenerator()
-              const contractFunction = common.createCandidateContractFunction()
-              const doctoredArgs = that.doctorArgs(
-                args,
-                contractFunction.bind(self)
-              )
-              let outcome
-              let metaError = false
-              try {
-                outcome = condition.apply()
-              } catch (ignore) {
-                // ConditionMetaError
-                metaError = true
-              }
-              try {
-                subject.verify(contractFunction, condition, self, doctoredArgs)
-                outcome.must.be.truthy() // otherwise, we get an exception
-                must(metaError).be.falsy()
-              } catch (exc) {
-                if (metaError) {
-                  // noinspection JSUnresolvedFunction
-                  conditionMetaErrorCommon.expectProperties(
-                    exc,
-                    ConditionMetaError,
-                    contractFunction,
-                    condition,
-                    self,
-                    doctoredArgs
-                  )
-                } else {
-                  // ConditionViolation
-                  must(outcome).be.falsy()
-                  const extraProperty = doctoredArgs[args.length] // might not exist
-                  that.expectProperties(
-                    exc,
-                    subject.constructor,
-                    contractFunction,
-                    condition,
-                    self,
-                    args,
-                    extraProperty
-                  )
-                }
-              } finally {
-                must(condition.self).equal(self)
-                condition.args.must.be.truthy()
-                isArguments(condition.args)
-                // doctoredArgs might be arguments, or Array
-                Array.prototype.slice
-                  .call(doctoredArgs)
-                  .must.eql(Array.prototype.slice.call(condition.args))
-                that.expectInvariants(subject)
-              }
+          it('works for ' + condition + ' - ' + self + ' - ' + args, function () {
+            const subject = oneSubjectGenerator()
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
+            let outcome
+            let metaError = false
+            try {
+              outcome = condition.apply()
+            } catch (ignore) {
+              // ConditionMetaError
+              metaError = true
             }
-          )
+            try {
+              subject.verify(contractFunction, condition, self, doctoredArgs)
+              outcome.must.be.truthy() // otherwise, we get an exception
+              must(metaError).be.falsy()
+            } catch (exc) {
+              if (metaError) {
+                // noinspection JSUnresolvedFunction
+                conditionMetaErrorCommon.expectProperties(
+                  exc,
+                  ConditionMetaError,
+                  contractFunction,
+                  condition,
+                  self,
+                  doctoredArgs
+                )
+              } else {
+                // ConditionViolation
+                must(outcome).be.falsy()
+                const extraProperty = doctoredArgs[args.length] // might not exist
+                that.expectProperties(exc, subject.constructor, contractFunction, condition, self, args, extraProperty)
+              }
+            } finally {
+              must(condition.self).equal(self)
+              condition.args.must.be.truthy()
+              isArguments(condition.args)
+              // doctoredArgs might be arguments, or Array
+              Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
+              that.expectInvariants(subject)
+            }
+          })
         })
       })
     })
@@ -260,71 +210,63 @@ function generatePrototypeMethodsDescriptions (
           const condition = conditionGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          it(
-            'works for ' + condition + ' - ' + self + ' - ' + args,
-            function () {
-              const subject = oneSubjectGenerator()
-              const contractFunction = common.createCandidateContractFunction()
-              const doctoredArgs = that.doctorArgs(
-                args,
-                contractFunction.bind(self)
-              )
+          it('works for ' + condition + ' - ' + self + ' - ' + args, function () {
+            const subject = oneSubjectGenerator()
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
 
-              let outcome
-              let metaError = false
-              try {
-                outcome = condition.apply()
-              } catch (ignore) {
-                // ConditionMetaError
-                metaError = true
-              }
-
-              return subject
-                .verifyPromise(contractFunction, condition, self, doctoredArgs)
-                .then(
-                  () => {
-                    outcome.must.be.truthy() // otherwise, we get an exception
-                    must(metaError).be.falsy()
-                  },
-                  exc => {
-                    if (metaError) {
-                      // noinspection JSUnresolvedFunction
-                      conditionMetaErrorCommon.expectProperties(
-                        exc,
-                        ConditionMetaError,
-                        contractFunction,
-                        condition,
-                        self,
-                        doctoredArgs
-                      )
-                    } else {
-                      // ConditionViolation
-                      must(outcome).be.falsy()
-                      const extraProperty = doctoredArgs[args.length] // might not exist
-                      that.expectProperties(
-                        exc,
-                        subject.constructor,
-                        contractFunction,
-                        condition,
-                        self,
-                        args,
-                        extraProperty
-                      )
-                    }
-                  }
-                )
-                .then(() => {
-                  must(condition.self).equal(self)
-                  condition.args.must.be.truthy()
-                  isArguments(condition.args)
-                  // doctoredArgs might be arguments, or Array
-                  Array.prototype.slice
-                    .call(doctoredArgs)
-                    .must.eql(Array.prototype.slice.call(condition.args))
-                  that.expectInvariants(subject)
-                })
+            let outcome
+            let metaError = false
+            try {
+              outcome = condition.apply()
+            } catch (ignore) {
+              // ConditionMetaError
+              metaError = true
             }
-          )
+
+            return subject
+              .verifyPromise(contractFunction, condition, self, doctoredArgs)
+              .then(
+                () => {
+                  outcome.must.be.truthy() // otherwise, we get an exception
+                  must(metaError).be.falsy()
+                },
+                exc => {
+                  if (metaError) {
+                    // noinspection JSUnresolvedFunction
+                    conditionMetaErrorCommon.expectProperties(
+                      exc,
+                      ConditionMetaError,
+                      contractFunction,
+                      condition,
+                      self,
+                      doctoredArgs
+                    )
+                  } else {
+                    // ConditionViolation
+                    must(outcome).be.falsy()
+                    const extraProperty = doctoredArgs[args.length] // might not exist
+                    that.expectProperties(
+                      exc,
+                      subject.constructor,
+                      contractFunction,
+                      condition,
+                      self,
+                      args,
+                      extraProperty
+                    )
+                  }
+                }
+              )
+              .then(() => {
+                must(condition.self).equal(self)
+                condition.args.must.be.truthy()
+                isArguments(condition.args)
+                // doctoredArgs might be arguments, or Array
+                Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
+                that.expectInvariants(subject)
+              })
+          })
         })
       })
     })
@@ -334,88 +276,61 @@ function generatePrototypeMethodsDescriptions (
           const condition = conditionGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          it(
-            'works for Promise condition ' +
-              condition +
-              ' - ' +
-              self +
-              ' - ' +
-              args,
-            function () {
-              const subject = oneSubjectGenerator()
-              const contractFunction = common.createCandidateContractFunction()
-              const doctoredArgs = that.doctorArgs(
-                args,
-                contractFunction.bind(self)
-              )
+          it('works for Promise condition ' + condition + ' - ' + self + ' - ' + args, function () {
+            const subject = oneSubjectGenerator()
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
 
-              return condition
-                .apply()
-                .then(outcome => {
-                  return subject
-                    .verifyPromise(
+            return condition
+              .apply()
+              .then(outcome => {
+                return subject.verifyPromise(contractFunction, condition, self, doctoredArgs).then(
+                  () => {
+                    outcome.must.be.truthy() // otherwise, we get an exception
+                  },
+                  exc => {
+                    // ConditionViolation
+                    must(outcome).be.falsy()
+                    const extraProperty = doctoredArgs[args.length] // might not exist
+                    that.expectProperties(
+                      exc,
+                      subject.constructor,
+                      contractFunction,
+                      condition,
+                      self,
+                      args,
+                      extraProperty
+                    )
+                  }
+                )
+              })
+              .catch(() => {
+                return subject.verifyPromise(contractFunction, condition, self, doctoredArgs).then(
+                  () => {
+                    false.must.be.true() // should not happen
+                  },
+                  exc => {
+                    // noinspection JSUnresolvedFunction
+                    conditionMetaErrorCommon.expectProperties(
+                      exc,
+                      ConditionMetaError,
                       contractFunction,
                       condition,
                       self,
                       doctoredArgs
                     )
-                    .then(
-                      () => {
-                        outcome.must.be.truthy() // otherwise, we get an exception
-                      },
-                      exc => {
-                        // ConditionViolation
-                        must(outcome).be.falsy()
-                        const extraProperty = doctoredArgs[args.length] // might not exist
-                        that.expectProperties(
-                          exc,
-                          subject.constructor,
-                          contractFunction,
-                          condition,
-                          self,
-                          args,
-                          extraProperty
-                        )
-                      }
-                    )
-                })
-                .catch(() => {
-                  return subject
-                    .verifyPromise(
-                      contractFunction,
-                      condition,
-                      self,
-                      doctoredArgs
-                    )
-                    .then(
-                      () => {
-                        false.must.be.true() // should not happen
-                      },
-                      exc => {
-                        // noinspection JSUnresolvedFunction
-                        conditionMetaErrorCommon.expectProperties(
-                          exc,
-                          ConditionMetaError,
-                          contractFunction,
-                          condition,
-                          self,
-                          doctoredArgs
-                        )
-                      }
-                    )
-                })
-                .then(() => {
-                  must(condition.self).equal(self)
-                  condition.args.must.be.truthy()
-                  isArguments(condition.args)
-                  // doctoredArgs might be arguments, or Array
-                  Array.prototype.slice
-                    .call(doctoredArgs)
-                    .must.eql(Array.prototype.slice.call(condition.args))
-                  that.expectInvariants(subject)
-                })
-            }
-          )
+                  }
+                )
+              })
+              .then(() => {
+                must(condition.self).equal(self)
+                condition.args.must.be.truthy()
+                isArguments(condition.args)
+                // doctoredArgs might be arguments, or Array
+                Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
+                that.expectInvariants(subject)
+              })
+          })
         })
       })
     })
@@ -499,101 +414,82 @@ function generatePrototypeMethodsDescriptions (
           const conditions = conditionsGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          const conditionsRepr = conditions
-            .map(c => ('' + c).replace(/\s+/g, ' '))
-            .join(', ')
+          const conditionsRepr = conditions.map(c => ('' + c).replace(/\s+/g, ' ')).join(', ')
           // noinspection FunctionTooLongJS
-          it(
-            'works for [' + conditionsRepr + '] - ' + self + ' - ' + args,
-            function () {
-              const subject = oneSubjectGenerator()
-              const contractFunction = common.createCandidateContractFunction()
-              const doctoredArgs = that.doctorArgs(
-                args,
-                contractFunction.bind(self)
-              )
+          it('works for [' + conditionsRepr + '] - ' + self + ' - ' + args, function () {
+            const subject = oneSubjectGenerator()
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
 
-              let firstFailure
-              let firstFailureIndex
-              let metaError = false
-              for (let i = 0; !firstFailure && i < conditions.length; i++) {
-                try {
-                  const outcome = conditions[i].apply()
-                  if (!outcome) {
-                    firstFailure = conditions[i]
-                    firstFailureIndex = i
-                  }
-                } catch (ignore) {
-                  // ConditionMetaError
-                  metaError = true
+            let firstFailure
+            let firstFailureIndex
+            let metaError = false
+            for (let i = 0; !firstFailure && i < conditions.length; i++) {
+              try {
+                const outcome = conditions[i].apply()
+                if (!outcome) {
                   firstFailure = conditions[i]
                   firstFailureIndex = i
                 }
+              } catch (ignore) {
+                // ConditionMetaError
+                metaError = true
+                firstFailure = conditions[i]
+                firstFailureIndex = i
               }
+            }
 
-              try {
-                // noinspection JSUnresolvedFunction
-                subject.verifyAll(
+            try {
+              // noinspection JSUnresolvedFunction
+              subject.verifyAll(contractFunction, conditions, self, doctoredArgs)
+              must(firstFailure).be.falsy() // any failure would give an exception
+              must(metaError).be.falsy()
+            } catch (exc) {
+              conditions.length.must.be.at.least(1) // otherwise, there can be no failure
+              firstFailure.must.be.truthy() // metaError or a false condition
+              if (metaError) {
+                conditionMetaErrorCommon.expectProperties(
+                  exc,
+                  ConditionMetaError,
                   contractFunction,
-                  conditions,
+                  firstFailure,
                   self,
                   doctoredArgs
                 )
-                must(firstFailure).be.falsy() // any failure would give an exception
-                must(metaError).be.falsy()
-              } catch (exc) {
-                conditions.length.must.be.at.least(1) // otherwise, there can be no failure
-                firstFailure.must.be.truthy() // metaError or a false condition
-                if (metaError) {
-                  conditionMetaErrorCommon.expectProperties(
-                    exc,
-                    ConditionMetaError,
-                    contractFunction,
-                    firstFailure,
-                    self,
-                    doctoredArgs
-                  )
-                } else {
-                  const extraProperty = doctoredArgs[args.length] // might not exist
-                  that.expectProperties(
-                    exc,
-                    subject.constructor,
-                    contractFunction,
-                    firstFailure,
-                    self,
-                    args,
-                    extraProperty
-                  )
-                }
-              } finally {
-                // evaluates all conditions up until the first failure with the given self and arguments
-                for (let j = 0; j <= firstFailureIndex; j++) {
-                  must(conditions[j].self).equal(self)
-                  const appliedArgs = conditions[j].args
-                  appliedArgs.must.be.truthy()
-                  isArguments(appliedArgs)
-                  if (!args) {
-                    appliedArgs.must.be.empty()
-                  } else {
-                    // doctoredArgs might be arguments, or Array
-                    Array.prototype.slice
-                      .call(doctoredArgs)
-                      .must.eql(Array.prototype.slice.call(appliedArgs))
-                  }
-                }
-                // does not evaluate conditions after the first failure
-                for (
-                  let j = firstFailureIndex + 1;
-                  j < conditions.length;
-                  j++
-                ) {
-                  must(conditions[j].self).be.falsy()
-                  must(conditions[j].args).be.falsy()
-                }
-                that.expectInvariants(subject)
+              } else {
+                const extraProperty = doctoredArgs[args.length] // might not exist
+                that.expectProperties(
+                  exc,
+                  subject.constructor,
+                  contractFunction,
+                  firstFailure,
+                  self,
+                  args,
+                  extraProperty
+                )
               }
+            } finally {
+              // evaluates all conditions up until the first failure with the given self and arguments
+              for (let j = 0; j <= firstFailureIndex; j++) {
+                must(conditions[j].self).equal(self)
+                const appliedArgs = conditions[j].args
+                appliedArgs.must.be.truthy()
+                isArguments(appliedArgs)
+                if (!args) {
+                  appliedArgs.must.be.empty()
+                } else {
+                  // doctoredArgs might be arguments, or Array
+                  Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(appliedArgs))
+                }
+              }
+              // does not evaluate conditions after the first failure
+              for (let j = firstFailureIndex + 1; j < conditions.length; j++) {
+                must(conditions[j].self).be.falsy()
+                must(conditions[j].args).be.falsy()
+              }
+              that.expectInvariants(subject)
             }
-          )
+          })
         })
       })
     })
@@ -774,116 +670,101 @@ function generatePrototypeMethodsDescriptions (
           const conditions = conditionsGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          const conditionsRepr = conditions
-            .map(c => ('' + c).replace(/\s+/g, ' '))
-            .join(', ')
-          it(
-            'works for [' + conditionsRepr + '] - ' + self + ' - ' + args,
-            function () {
-              const subject = oneSubjectGenerator()
-              const contractFunction = common.createCandidateContractFunction()
-              const doctoredArgs = that.doctorArgs(
-                args,
-                contractFunction.bind(self)
-              )
+          const conditionsRepr = conditions.map(c => ('' + c).replace(/\s+/g, ' ')).join(', ')
+          it('works for [' + conditionsRepr + '] - ' + self + ' - ' + args, function () {
+            const subject = oneSubjectGenerator()
+            const contractFunction = common.createCandidateContractFunction()
+            const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
 
-              const failures = []
-              let metaErrorCondition = null // only 1 meta error per test case
+            const failures = []
+            let metaErrorCondition = null // only 1 meta error per test case
 
-              function determineExpected (i) {
-                if (i >= conditions.length) {
-                  return Promise.resolve()
-                }
-
-                try {
-                  const outcome = conditions[i].apply()
-                  if (outcome instanceof Promise) {
-                    return outcome
-                      .then(result => {
-                        if (!result) {
-                          failures.push(conditions[i])
-                        }
-                      })
-                      .catch(() => {
-                        metaErrorCondition = conditions[i]
-                        failures.push(conditions[i])
-                      })
-                      .then(() => determineExpected(i + 1))
-                  }
-                  if (!outcome) {
-                    failures.push(conditions[i])
-                  }
-                } catch (ignore) {
-                  // ConditionMetaError
-                  metaErrorCondition = conditions[i]
-                  failures.push(conditions[i])
-                }
-                return determineExpected(i + 1)
+            function determineExpected (i) {
+              if (i >= conditions.length) {
+                return Promise.resolve()
               }
 
-              const expectedDetermined = determineExpected(0)
-
-              // noinspection JSUnresolvedFunction
-              return expectedDetermined.then(() =>
-                subject
-                  .verifyAllPromise(
-                    contractFunction,
-                    conditions,
-                    self,
-                    doctoredArgs
-                  )
-                  .then(
-                    () => {
-                      failures.must.be.empty() // any failure would give an exception
-                      must(metaErrorCondition).be.falsy()
-                    },
-                    exc => {
-                      conditions.length.must.be.at.least(1) // otherwise, there can be no failure
-                      failures.must.not.be.empty()
-                      if (metaErrorCondition) {
-                        conditionMetaErrorCommon.expectProperties(
-                          exc,
-                          ConditionMetaError,
-                          contractFunction,
-                          metaErrorCondition,
-                          self,
-                          doctoredArgs
-                        )
-                      } else {
-                        const extraProperty = doctoredArgs[args.length] // might not exist
-                        that.expectProperties(
-                          exc,
-                          subject.constructor,
-                          contractFunction,
-                          failures[0], // works in tests, but the order is really indeterminate
-                          self,
-                          args,
-                          extraProperty
-                        )
-                      }
-                    }
-                  )
-                  .then(() => {
-                    // evaluates all conditions, also past first failure with, the given self and arguments
-                    conditions.forEach(c => {
-                      must(c.self).equal(self)
-                      const appliedArgs = c.args
-                      appliedArgs.must.be.truthy()
-                      isArguments(appliedArgs)
-                      if (!args) {
-                        appliedArgs.must.be.empty()
-                      } else {
-                        // doctoredArgs might be arguments, or Array
-                        Array.prototype.slice
-                          .call(doctoredArgs)
-                          .must.eql(Array.prototype.slice.call(appliedArgs))
+              try {
+                const outcome = conditions[i].apply()
+                if (outcome instanceof Promise) {
+                  return outcome
+                    .then(result => {
+                      if (!result) {
+                        failures.push(conditions[i])
                       }
                     })
-                    that.expectInvariants(subject)
-                  })
-              )
+                    .catch(() => {
+                      metaErrorCondition = conditions[i]
+                      failures.push(conditions[i])
+                    })
+                    .then(() => determineExpected(i + 1))
+                }
+                if (!outcome) {
+                  failures.push(conditions[i])
+                }
+              } catch (ignore) {
+                // ConditionMetaError
+                metaErrorCondition = conditions[i]
+                failures.push(conditions[i])
+              }
+              return determineExpected(i + 1)
             }
-          )
+
+            const expectedDetermined = determineExpected(0)
+
+            // noinspection JSUnresolvedFunction
+            return expectedDetermined.then(() =>
+              subject
+                .verifyAllPromise(contractFunction, conditions, self, doctoredArgs)
+                .then(
+                  () => {
+                    failures.must.be.empty() // any failure would give an exception
+                    must(metaErrorCondition).be.falsy()
+                  },
+                  exc => {
+                    conditions.length.must.be.at.least(1) // otherwise, there can be no failure
+                    failures.must.not.be.empty()
+                    if (metaErrorCondition) {
+                      conditionMetaErrorCommon.expectProperties(
+                        exc,
+                        ConditionMetaError,
+                        contractFunction,
+                        metaErrorCondition,
+                        self,
+                        doctoredArgs
+                      )
+                    } else {
+                      const extraProperty = doctoredArgs[args.length] // might not exist
+                      that.expectProperties(
+                        exc,
+                        subject.constructor,
+                        contractFunction,
+                        failures[0], // works in tests, but the order is really indeterminate
+                        self,
+                        args,
+                        extraProperty
+                      )
+                    }
+                  }
+                )
+                .then(() => {
+                  // evaluates all conditions, also past first failure with, the given self and arguments
+                  conditions.forEach(c => {
+                    must(c.self).equal(self)
+                    const appliedArgs = c.args
+                    appliedArgs.must.be.truthy()
+                    isArguments(appliedArgs)
+                    if (!args) {
+                      appliedArgs.must.be.empty()
+                    } else {
+                      // doctoredArgs might be arguments, or Array
+                      Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(appliedArgs))
+                    }
+                  })
+                  that.expectInvariants(subject)
+                })
+            )
+          })
         })
       })
     })

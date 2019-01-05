@@ -26,23 +26,11 @@ const abstractContractCommon = require('./AbstractContractCommon')
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const Contract = require('../../lib/IV/Contract')
 
-function expectConstructorPost (
-  pre,
-  post,
-  exception,
-  fastException,
-  location,
-  result
-) {
+function expectConstructorPost (pre, post, exception, fastException, location, result) {
   // noinspection JSUnresolvedFunction
   common.expectConstructorPost(pre, post, exception, location, result)
   // noinspection JSUnresolvedFunction
-  common.expectArrayPost(
-    result,
-    fastException,
-    'fastException',
-    '_fastException'
-  )
+  common.expectArrayPost(result, fastException, 'fastException', '_fastException')
 }
 
 describe('IV/PromiseContract', function () {
@@ -58,9 +46,7 @@ describe('IV/PromiseContract', function () {
       PromiseContract.root.must.equal(AbstractContract.root)
       PromiseContract.must.have.ownProperty('isAContractFunction')
       // noinspection JSUnresolvedVariable
-      PromiseContract.isAContractFunction.must.equal(
-        AbstractContract.isAContractFunction
-      )
+      PromiseContract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
       PromiseContract.falseCondition.must.equal(AbstractContract.falseCondition)
       PromiseContract.mustNotHappen.must.equal(AbstractContract.mustNotHappen)
       PromiseContract.outcome.must.equal(AbstractContract.outcome)

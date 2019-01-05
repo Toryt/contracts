@@ -115,27 +115,16 @@ describe('javascript/Object', function () {
       // eslint-disable-next-line
       new Boolean(false)
     ].forEach(obj => {
-      it(
-        'sets a property on ' +
-          obj +
-          ' if it is non-primitive, and fails to do so if it is primitive',
-        function () {
-          const type = typeof obj
-          if (
-            obj === null ||
-            type === 'undefined' ||
-            type === 'number' ||
-            type === 'boolean' ||
-            type === 'string'
-          ) {
-            defineAProp.bind(null, obj).must.throw(TypeError)
-          } else {
-            defineAProp(obj)
-            obj.must.have.ownProperty(propName)
-            delete obj[propName] // cleanup
-          }
+      it('sets a property on ' + obj + ' if it is non-primitive, and fails to do so if it is primitive', function () {
+        const type = typeof obj
+        if (obj === null || type === 'undefined' || type === 'number' || type === 'boolean' || type === 'string') {
+          defineAProp.bind(null, obj).must.throw(TypeError)
+        } else {
+          defineAProp(obj)
+          obj.must.have.ownProperty(propName)
+          delete obj[propName] // cleanup
         }
-      )
+      })
     })
   })
 
@@ -171,14 +160,10 @@ describe('javascript/Object', function () {
       new Boolean(false)
     ].forEach(obj => {
       it(
-        'gets a property from ' +
-          obj +
-          ' if it is not null or undefined, and fails to do so if it is primitive',
+        'gets a property from ' + obj + ' if it is not null or undefined, and fails to do so if it is primitive',
         function () {
           if (obj === null || obj === undefined) {
-            Object.getOwnPropertyDescriptor
-              .bind(null, obj, propName)
-              .must.throw(TypeError)
+            Object.getOwnPropertyDescriptor.bind(null, obj, propName).must.throw(TypeError)
           } else {
             const result = Object.getOwnPropertyDescriptor(obj, propName)
             must(result).be.falsy()

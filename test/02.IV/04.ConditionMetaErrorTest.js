@@ -36,12 +36,7 @@ describe('IV/ConditionMetaError', function () {
   describe('#ConditionMetaError()', function () {
     common.errorCases.forEach(error => {
       it(
-        'creates an instance with all toppings for ' +
-          common.oneSelfCase +
-          ' - ' +
-          common.oneArgsCase +
-          ' - ' +
-          error,
+        'creates an instance with all toppings for ' + common.oneSelfCase + ' - ' + common.oneArgsCase + ' - ' + error,
         function () {
           // noinspection JSUnresolvedFunction
           const contractFunction = common.createCandidateContractFunction()
@@ -77,14 +72,7 @@ describe('IV/ConditionMetaError', function () {
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
   common.generatePrototypeMethodsDescriptions(
-    () =>
-      new ConditionMetaError(
-        common.conditionCase,
-        null,
-        common.oneArgsCase,
-        common.errorCases[0],
-        stack.raw()
-      ),
+    () => new ConditionMetaError(common.conditionCase, null, common.oneArgsCase, common.errorCases[0], stack.raw()),
     common.errorCases.map(errorCase => {
       // noinspection JSUnresolvedFunction, JSUnresolvedVariable
       return {
@@ -97,14 +85,7 @@ describe('IV/ConditionMetaError', function () {
             errorCase,
             stack.raw()
           ),
-        description:
-          common.conditionCase +
-          ' — ' +
-          common.oneSelfCase +
-          ' – ' +
-          common.oneArgsCase +
-          ' – ' +
-          errorCase
+        description: common.conditionCase + ' — ' + common.oneSelfCase + ' – ' + common.oneArgsCase + ' – ' + errorCase
       }
     })
   )

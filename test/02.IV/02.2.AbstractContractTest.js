@@ -45,9 +45,7 @@ describe('IV/AbstractContract', function () {
       AbstractContract.must.have.ownProperty('mustNotHappen')
       AbstractContract.mustNotHappen.must.be.an.array()
       AbstractContract.mustNotHappen.must.have.length(1)
-      AbstractContract.mustNotHappen[0].must.equal(
-        AbstractContract.falseCondition
-      )
+      AbstractContract.mustNotHappen[0].must.equal(AbstractContract.falseCondition)
       AbstractContract.must.have.ownProperty('outcome')
       AbstractContract.outcome.must.be.a.function()
       AbstractContract.must.have.ownProperty('callee')
@@ -93,10 +91,7 @@ describe('IV/AbstractContract', function () {
   })
 
   describe('AbstractContract.isAGeneralizedContractFunction', function () {
-    common.generateIAGCFTests(
-      AbstractContract,
-      AbstractContract.isAGeneralContractFunction
-    )
+    common.generateIAGCFTests(AbstractContract, AbstractContract.isAGeneralContractFunction)
     common.thingsThatAreNotAFunctionNorAContract
       .filter(v => !!v)
       .concat(['    at', 'at /', {}, AbstractContract.internalLocation])
@@ -106,15 +101,8 @@ describe('IV/AbstractContract', function () {
             v +
             ', and all 3 properties are frozen, and it has the expected name',
           function () {
-            const candidate = common.createCandidateContractFunction(
-              AbstractContract,
-              null,
-              'location',
-              v
-            )
-            AbstractContract.isAGeneralContractFunction(
-              candidate
-            ).must.be.truthy()
+            const candidate = common.createCandidateContractFunction(AbstractContract, null, 'location', v)
+            AbstractContract.isAGeneralContractFunction(candidate).must.be.truthy()
           }
         )
       })
@@ -142,10 +130,7 @@ describe('IV/AbstractContract', function () {
       testUtil.expectFrozenDerivedPropertyOnAPrototype(contractFunction, 'name')
       contractFunction.must.have.ownProperty('name')
       contractFunction.name.must.equal(
-        report.conciseCondition(
-          AbstractContract.namePrefix,
-          contractFunction.implementation
-        )
+        report.conciseCondition(AbstractContract.namePrefix, contractFunction.implementation)
       )
     })
   })
@@ -163,10 +148,7 @@ describe('IV/AbstractContract', function () {
   function args () {
     return arguments
   }
-  const argsCases = [
-    { a: argsCase, d: 'array' },
-    { a: args.apply(null, argsCase), d: 'arguments' }
-  ]
+  const argsCases = [{ a: argsCase, d: 'array' }, { a: args.apply(null, argsCase), d: 'arguments' }]
 
   describe('AbstractContract.outcome', function () {
     argsCases.forEach(c => {
@@ -190,31 +172,17 @@ describe('IV/AbstractContract', function () {
     common.constructorPreCases.forEach(pre => {
       common.constructorPostCases.forEach(post => {
         common.constructorExceptionCases.forEach(exception => {
-          it(
-            'works for pre: ' +
-              pre +
-              ', post: ' +
-              post +
-              ', exception: ' +
-              exception,
-            function () {
-              const preConditions = pre()
-              const postConditions = post()
-              const exceptionConditions = exception()
-              const result = new AbstractContract({
-                pre: preConditions,
-                post: postConditions,
-                exception: exceptionConditions
-              })
-              common.expectConstructorPost(
-                preConditions,
-                postConditions,
-                exceptionConditions,
-                stack.location(),
-                result
-              )
-            }
-          )
+          it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
+            const preConditions = pre()
+            const postConditions = post()
+            const exceptionConditions = exception()
+            const result = new AbstractContract({
+              pre: preConditions,
+              post: postConditions,
+              exception: exceptionConditions
+            })
+            common.expectConstructorPost(preConditions, postConditions, exceptionConditions, stack.location(), result)
+          })
         })
       })
     })
@@ -223,11 +191,7 @@ describe('IV/AbstractContract', function () {
   common.generatePrototypeMethodsDescriptions(
     () => new AbstractContract({}),
     testUtil
-      .x(
-        common.constructorPreCases,
-        common.constructorPostCases,
-        common.constructorExceptionCases
-      )
+      .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
       .map(parameters => ({
         subject: () =>
           new AbstractContract({

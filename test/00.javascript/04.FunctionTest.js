@@ -135,33 +135,19 @@ describe('javascript/Function', function () {
         // noinspection JSPotentiallyInvalidConstructorUsage
         testUtil.log(JSON.stringify(f.prototype))
       })
-      it(
-        'cannot be deleted (not enumerable and not configurable) from function ' +
-          f,
-        function () {
-          testUtil.log(
-            JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype'))
-          )
-          try {
-            delete f.prototype
-            true.must.false() // unreachable
-          } catch (err) {
-            err.must.be.an.instanceof(TypeError)
-          }
-          Object.getOwnPropertyDescriptor(f, 'prototype').must.be.an.object()
-          Object.getOwnPropertyDescriptor(
-            f,
-            'prototype'
-          ).enumerable.must.be.false()
-          Object.getOwnPropertyDescriptor(
-            f,
-            'prototype'
-          ).configurable.must.be.false()
-          testUtil.log(
-            JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype'))
-          )
+      it('cannot be deleted (not enumerable and not configurable) from function ' + f, function () {
+        testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
+        try {
+          delete f.prototype
+          true.must.false() // unreachable
+        } catch (err) {
+          err.must.be.an.instanceof(TypeError)
         }
-      )
+        Object.getOwnPropertyDescriptor(f, 'prototype').must.be.an.object()
+        Object.getOwnPropertyDescriptor(f, 'prototype').enumerable.must.be.false()
+        Object.getOwnPropertyDescriptor(f, 'prototype').configurable.must.be.false()
+        testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
+      })
     })
     it('is writable for a simple function', function () {
       function simpleF () {
@@ -169,13 +155,8 @@ describe('javascript/Function', function () {
       }
 
       Object.getOwnPropertyDescriptor(simpleF, 'prototype').must.be.an.object()
-      Object.getOwnPropertyDescriptor(
-        simpleF,
-        'prototype'
-      ).writable.must.be.true()
-      testUtil.log(
-        JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, 'prototype'))
-      )
+      Object.getOwnPropertyDescriptor(simpleF, 'prototype').writable.must.be.true()
+      testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, 'prototype')))
       const newObject = { name: 'a new object' }
       // noinspection JSPotentiallyInvalidConstructorUsage
       simpleF.prototype = newObject
@@ -261,9 +242,7 @@ describe('javascript/Function', function () {
       it('the name of an anonymous function is inferred, except on Edge', function () {
         const thisIsAFunction = function () {}
 
-        thisIsAFunction.name.must.equal(
-          testUtil.environment === 'edge' ? '' : 'thisIsAFunction'
-        )
+        thisIsAFunction.name.must.equal(testUtil.environment === 'edge' ? '' : 'thisIsAFunction')
       })
       it('the name of an arrow function is inferred, even on Edge', function () {
         const thisIsAFunction = () => null

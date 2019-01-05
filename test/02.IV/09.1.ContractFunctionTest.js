@@ -186,45 +186,34 @@ describe('IV/ContractFunction', function () {
     return result
   })
 
-  const fastDefensiveIntegerSum = defensiveIntegerSum.contract.implementation(
-    function (n) {
-      if (!Number.isInteger(n)) {
-        throw new Error(integerMessage)
-      }
-      if (n < 0) {
-        throw new Error(positiveMessage)
-      }
-      return n * (n + 1) / 2
+  const fastDefensiveIntegerSum = defensiveIntegerSum.contract.implementation(function (n) {
+    if (!Number.isInteger(n)) {
+      throw new Error(integerMessage)
     }
-  )
+    if (n < 0) {
+      throw new Error(positiveMessage)
+    }
+    return n * (n + 1) / 2
+  })
 
   const wrongException = new Error(integerMessage) // will be thrown in error
 
-  const fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(
-    function (n) {
-      if (Number.isInteger(n)) {
-        throw wrongException
-      } // wrong
-      if (n < 0) {
-        throw new Error(positiveMessage)
-      }
-      return n * (n + 1) / 2
+  const fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(function (n) {
+    if (Number.isInteger(n)) {
+      throw wrongException
+    } // wrong
+    if (n < 0) {
+      throw new Error(positiveMessage)
     }
-  )
+    return n * (n + 1) / 2
+  })
 
   const negativeParameter = -10
   const nonIntegerParameter = Math.PI
 
-  const resultWhenMetaError =
-    'This is the result or exception when we get a meta error'
+  const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
-  function callAndExpectException (
-    self,
-    func,
-    parameter,
-    expectException,
-    recursive
-  ) {
+  function callAndExpectException (self, func, parameter, expectException, recursive) {
     // eslint-disable-next-line no-unused-vars
     let result
     let endsNominally = false
@@ -246,9 +235,7 @@ describe('IV/ContractFunction', function () {
             ? preconditionViolationCommon
             : exception instanceof PostconditionViolation
               ? postconditionViolationCommon
-              : exception instanceof ExceptionConditionViolation
-                ? exceptionConditionViolationCommon
-                : null
+              : exception instanceof ExceptionConditionViolation ? exceptionConditionViolationCommon : null
       common.must.be.truthy()
       common.expectInvariants(exception)
       exception.message.must.contain(func.name)
@@ -285,28 +272,20 @@ describe('IV/ContractFunction', function () {
     endsNominally.must.be.false()
   }
 
-  function failsOnPreconditionViolation (
-    self,
-    func,
-    parameter,
-    violatedCondition
-  ) {
-    it(
-      'fails when a precondition is violated - ' + self + ' - ' + parameter,
-      function () {
-        callAndExpectException(self, func, parameter, exception => {
-          exception.must.be.an.instanceof(PreconditionViolation)
-          // noinspection JSUnresolvedVariable
-          exception.condition.must.equal(violatedCondition)
-          if (!self) {
-            must(exception.self).be.falsy()
-          } else {
-            exception.self.must.equal(self)
-          }
-          must(exception.args[0]).equal(parameter)
-        })
-      }
-    )
+  function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
+    it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
+      callAndExpectException(self, func, parameter, exception => {
+        exception.must.be.an.instanceof(PreconditionViolation)
+        // noinspection JSUnresolvedVariable
+        exception.condition.must.equal(violatedCondition)
+        if (!self) {
+          must(exception.self).be.falsy()
+        } else {
+          exception.self.must.equal(self)
+        }
+        must(exception.args[0]).equal(parameter)
+      })
+    })
   }
 
   const intentionalError = new Error('This condition intentionally fails.')
@@ -319,12 +298,7 @@ describe('IV/ContractFunction', function () {
     ]
   })
 
-  function failsOnMetaError (
-    self,
-    functionWithAMetaError,
-    conditionWithAMetaError,
-    extraArgs
-  ) {
+  function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectException(self, functionWithAMetaError, param, exception => {
       exception.must.be.an.instanceof(ConditionMetaError)
@@ -397,9 +371,7 @@ describe('IV/ContractFunction', function () {
     it('fibonacci has the right name', function () {
       fibonacciImpl.name.must.equal('fibonacciImpl')
       testUtil.log(`fibonacci.name: %s`, fibonacci.name)
-      fibonacci.name.must.equal(
-        `${AbstractContract.namePrefix} ${fibonacciImpl.name}`
-      )
+      fibonacci.name.must.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
     it('fibonacciWrong has the right name', function () {
       testUtil.log(`fibonacciWrong.name: %s`, fibonacciWrong.name)
@@ -407,9 +379,7 @@ describe('IV/ContractFunction', function () {
     })
     it('self.fibonacciWrong has the right name', function () {
       testUtil.log(`self.fibonacciWrong.name: %s`, self.fibonacciWrong.name)
-      self.fibonacciWrong.name.must.equal(
-        `${AbstractContract.namePrefix} fWrong`
-      )
+      self.fibonacciWrong.name.must.equal(`${AbstractContract.namePrefix} fWrong`)
     })
     const anonymousContractFunctions = [
       { name: 'factorial', f: factorial },
@@ -474,16 +444,12 @@ describe('IV/ContractFunction', function () {
     })
     it('works with a defensive function', function () {
       fastDefensiveIntegerSum.contract.verifyPostconditions = true
-      fastDefensiveIntegerSum
-        .bind(undefined, negativeParameter)
-        .must.throw(Error, positiveMessage)
+      fastDefensiveIntegerSum.bind(undefined, negativeParameter).must.throw(Error, positiveMessage)
       fastDefensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive method', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
-      self.defensiveIntegerSum
-        .bind(self, nonIntegerParameter)
-        .must.throw(Error, integerMessage)
+      self.defensiveIntegerSum.bind(self, nonIntegerParameter).must.throw(Error, integerMessage)
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
 
@@ -508,9 +474,7 @@ describe('IV/ContractFunction', function () {
     // noinspection ParameterNamingConventionJS
     function expectConstructorToWork (PersonImplementation, doBind) {
       // noinspection LocalVariableNamingConventionJS, JSUnresolvedFunction
-      let ContractPerson = PersonConstructorContract.implementation(
-        PersonImplementation
-      )
+      let ContractPerson = PersonConstructorContract.implementation(PersonImplementation)
       if (doBind) {
         ContractPerson = ContractPerson.bind(undefined)
       }
@@ -530,17 +494,11 @@ describe('IV/ContractFunction', function () {
       }
       PersonImplementation.must.have.property('prototype')
       PersonImplementation.prototype.must.have.property('constructor')
-      PersonImplementation.prototype.constructor.must.equal(
-        PersonImplementation
-      )
+      PersonImplementation.prototype.constructor.must.equal(PersonImplementation)
       PersonImplementation.prototype._name = null
-      property.frozenDerived(
-        PersonImplementation.prototype,
-        'name',
-        function () {
-          return this._name
-        }
-      )
+      property.frozenDerived(PersonImplementation.prototype, 'name', function () {
+        return this._name
+      })
 
       expectConstructorToWork(PersonImplementation)
     })
@@ -551,17 +509,11 @@ describe('IV/ContractFunction', function () {
       }
       PersonImplementation.must.have.property('prototype')
       PersonImplementation.prototype.must.have.property('constructor')
-      PersonImplementation.prototype.constructor.must.equal(
-        PersonImplementation
-      )
+      PersonImplementation.prototype.constructor.must.equal(PersonImplementation)
       PersonImplementation.prototype._name = null
-      property.frozenDerived(
-        PersonImplementation.prototype,
-        'name',
-        function () {
-          return this._name
-        }
-      )
+      property.frozenDerived(PersonImplementation.prototype, 'name', function () {
+        return this._name
+      })
 
       expectConstructorToWork(PersonImplementation, true)
     })
@@ -584,33 +536,13 @@ describe('IV/ContractFunction', function () {
   describe('precondition', function () {
     describe('violation', function () {
       argumentsOfWrongType.forEach(wrongArg => {
-        failsOnPreconditionViolation(
-          undefined,
-          fibonacci,
-          wrongArg,
-          fibonacci.contract.pre[0]
-        )
+        failsOnPreconditionViolation(undefined, fibonacci, wrongArg, fibonacci.contract.pre[0])
       })
-      failsOnPreconditionViolation(
-        undefined,
-        fibonacci,
-        -5,
-        fibonacci.contract.pre[1]
-      )
+      failsOnPreconditionViolation(undefined, fibonacci, -5, fibonacci.contract.pre[1])
       argumentsOfWrongType.forEach(wrongArg => {
-        failsOnPreconditionViolation(
-          self,
-          self.fibonacci,
-          wrongArg,
-          fibonacci.contract.pre[0]
-        )
+        failsOnPreconditionViolation(self, self.fibonacci, wrongArg, fibonacci.contract.pre[0])
       })
-      failsOnPreconditionViolation(
-        self,
-        self.fibonacci,
-        -5,
-        fibonacci.contract.pre[1]
-      )
+      failsOnPreconditionViolation(self, self.fibonacci, -5, fibonacci.contract.pre[1])
       it('does not fail on a precondition violation when verify is false', function () {
         fibonacci.contract.verify = false
         // eslint-disable-next-line
@@ -722,19 +654,15 @@ describe('IV/ContractFunction', function () {
       })
       it('fails with a meta-error when a postcondition is kaput', function () {
         // noinspection JSUnresolvedFunction
-        const implementation = contractWithAFailingPost.implementation(
-          function () {
-            return resultWhenMetaError
-          }
-        )
+        const implementation = contractWithAFailingPost.implementation(function () {
+          return resultWhenMetaError
+        })
         implementation.contract.verifyPostconditions = true
         // noinspection JSUnresolvedVariable
-        failsOnMetaError(
-          undefined,
-          implementation,
-          contractWithAFailingPost.post[0],
-          [resultWhenMetaError, implementation]
-        )
+        failsOnMetaError(undefined, implementation, contractWithAFailingPost.post[0], [
+          resultWhenMetaError,
+          implementation
+        ])
       })
       it('fails with a meta-error when a postcondition is kaput when it is a method', function () {
         // noinspection JSUnresolvedFunction
@@ -779,11 +707,7 @@ describe('IV/ContractFunction', function () {
           undefined,
           fastDefensiveIntegerSumWrong,
           wrongParameter,
-          expectExceptionProperties.bind(
-            undefined,
-            undefined,
-            fastDefensiveIntegerSumWrong
-          )
+          expectExceptionProperties.bind(undefined, undefined, fastDefensiveIntegerSumWrong)
         )
         fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
       })
@@ -793,11 +717,7 @@ describe('IV/ContractFunction', function () {
           self,
           self.fastDefensiveIntegerSumWrong,
           wrongParameter,
-          expectExceptionProperties.bind(
-            undefined,
-            self,
-            self.fastDefensiveIntegerSumWrong
-          )
+          expectExceptionProperties.bind(undefined, self, self.fastDefensiveIntegerSumWrong)
         )
         self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
       })
@@ -837,49 +757,39 @@ describe('IV/ContractFunction', function () {
       const anExceptedException = 'This exception is expected.'
       it('fails with a meta-error when an exception condition is kaput', function () {
         // noinspection JSUnresolvedFunction
-        const implementation = contractWithAFailingExceptionCondition.implementation(
-          function () {
-            throw anExceptedException
-          }
-        )
+        const implementation = contractWithAFailingExceptionCondition.implementation(function () {
+          throw anExceptedException
+        })
         implementation.contract.verifyPostconditions = true
         // noinspection JSUnresolvedVariable
-        failsOnMetaError(
-          undefined,
-          implementation,
-          contractWithAFailingExceptionCondition.exception[0],
-          [anExceptedException, implementation]
-        )
+        failsOnMetaError(undefined, implementation, contractWithAFailingExceptionCondition.exception[0], [
+          anExceptedException,
+          implementation
+        ])
       })
       it('fails with a meta-error when an exception condition is kaput when it is a method', function () {
         // noinspection JSUnresolvedFunction
         const self = {
-          method: contractWithAFailingExceptionCondition.implementation(
-            function () {
-              throw anExceptedException
-            }
-          )
+          method: contractWithAFailingExceptionCondition.implementation(function () {
+            throw anExceptedException
+          })
         }
         self.method.contract.verifyPostconditions = true
 
         // noinspection JSUnresolvedVariable
-        failsOnMetaError(
-          self,
-          self.method,
-          contractWithAFailingExceptionCondition.exception[0],
-          [anExceptedException, self.method.bind(self)]
-        )
+        failsOnMetaError(self, self.method, contractWithAFailingExceptionCondition.exception[0], [
+          anExceptedException,
+          self.method.bind(self)
+        ])
       })
       it('does not fail when a exception condition is kaput when verify is false', function () {
         contractWithAFailingExceptionCondition.verify = false
         contractWithAFailingExceptionCondition.verifyPostconditions = true
         try {
           // eslint-disable-next-line
-          const ignore = contractWithAFailingExceptionCondition.implementation(
-            function () {
-              throw anExceptedException
-            }
-          )()
+          const ignore = contractWithAFailingExceptionCondition.implementation(function() {
+            throw anExceptedException
+          })()
           contractWithAFailingExceptionCondition.verifyPostconditions = false
           contractWithAFailingExceptionCondition.verify = true
           true.must.be.false()
@@ -890,11 +800,9 @@ describe('IV/ContractFunction', function () {
       it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
         try {
           // eslint-disable-next-line
-          const ignore = contractWithAFailingExceptionCondition.implementation(
-            function () {
-              throw anExceptedException
-            }
-          )()
+          const ignore = contractWithAFailingExceptionCondition.implementation(function() {
+            throw anExceptedException
+          })()
           true.must.be.false()
         } catch (err) {
           err.must.equal(anExceptedException)
