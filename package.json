@@ -17,7 +17,6 @@
     "wd": "mochify --wd --wd-file .min-wd.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "format": "prettier-standard \"**/*.{js,md,json}\"",
     "preversion": "npm run test",
-    "postinstall": "npm run update_credits",
     "update_credits": "credits . --reporter markdown > CREDITS.md",
     "upgrade": "rm -Rf node_modules package-lock.json && npm install && npm test"
   },
