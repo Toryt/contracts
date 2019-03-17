@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)](https://travis-ci.org/Toryt/contracts)
 [![codecov](https://codecov.io/gh/Toryt/contracts/branch/master/graph/badge.svg)](https://codecov.io/gh/Toryt/contracts)
-[![npm version](http://img.shields.io/npm/v/@toryt/contracts-iv.svg?style=flat)](https://npmjs.org/package/@toryt/contracts-iv "View this project on npm")
+[![npm version](http://img.shields.io/npm/v/@toryt/contracts-iv.svg?style=flat)](https://npmjs.org/package/@toryt/contracts-iv 'View this project on npm')
 ![semver stability](https://img.shields.io/dependabot/semver/Toryt/contracts-iv.svg)
 ![downloads](https://img.shields.io/npm/dt/@toryt/contracts-iv.svg)
 ![dependencies](https://img.shields.io/david/Toryt/contracts.svg)
@@ -25,19 +25,19 @@ to create a browser distribution.
 
 ## Tested
 
-* on Mac, during development, with Node 8
-* on Linux, with, via [Travis] ![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)
+- on Mac, during development, with Node 8
+- on Linux, with, via [Travis] ![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)
   (https://travis-ci.org/Toryt/contracts), with
-  * Node 6
-  * Node 8
-  * Node 10
-* on browsers, with [Browserstack] ![Browserstack logo] and `mochify`,
-  * on the 'latest' versions of Chrome, Firefox, Safari, and Edge, on
-    * Windows 10
-    * macOS High Sierra
-  * on the 'latest' versions of the default browser, on
-    * the 'latest' version of iOS
-    * the 'latest' version of Android
+  - Node 6
+  - Node 8
+  - Node 10
+- on browsers, with [Browserstack] ![Browserstack logo] and `mochify`,
+  - on the 'latest' versions of Chrome, Firefox, Safari, and Edge, on
+    - Windows 10
+    - macOS High Sierra
+  - on the 'latest' versions of the default browser, on
+    - the 'latest' version of iOS
+    - the 'latest' version of Android
 
 ## Browsers
 
@@ -58,61 +58,62 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
 
 ## Versions
 
-* I
-  * I/1.0 : First release, minimally functional, Mac - node
-  * I/2.0 : Use it in web projects, Mac
-  * I/2.1 : Use it with node on linux ([Travis])
-  * I/2.2 : Now also tests with [Intern] on node, on Mac and Linux. [Intern] is preferred over Mocha. This version only
+- I
+  - I/1.0 : First release, minimally functional, Mac - node
+  - I/2.0 : Use it in web projects, Mac
+  - I/2.1 : Use it with node on linux ([Travis])
+  - I/2.2 : Now also tests with [Intern] on node, on Mac and Linux. [Intern] is preferred over Mocha. This version only
     changes private code, test code, and build setup.
-  * I/2.3 : Cleanup, renaming, administration, license, fixing warnings
-  * I/2.4 : Now also tests with [Intern] on Mac on Chrome, Safari, Firefox (3 failures, waiting for april version 53)
-  * I/2.5 : Fix in behavior and test of util.browserModuleLocation
-  * I/1.2.5 : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
-* II
-  * II/1.0 : First release on npm. The code is functional on node, and there is no need to wait for browser validation
+  - I/2.3 : Cleanup, renaming, administration, license, fixing warnings
+  - I/2.4 : Now also tests with [Intern] on Mac on Chrome, Safari, Firefox (3 failures, waiting for april version 53)
+  - I/2.5 : Fix in behavior and test of util.browserModuleLocation
+  - I/1.2.5 : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
+- II
+  - II/1.0 : First release on npm. The code is functional on node, and there is no need to wait for browser validation
     to start using it on node.
-  * II/1.1 : Use scope in package name
-  * II/1.2 : Cosmetic changes
-  * II/2.1.3 : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
-* III
-  * III/3.0.0 : Now also supports contracts for (classic) constructors. In general, the prototype of an implementation
+  - II/1.1 : Use scope in package name
+  - II/1.2 : Cosmetic changes
+  - II/2.1.3 : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
+- III
+  - III/3.0.0 : Now also supports contracts for (classic) constructors. In general, the prototype of an implementation
     is "forwarded" to the contract function. The ECMAScript2015 "class" construct is not yet supported (a "class"
     generated constructor cannot be `call`ed or `apply`ed). This is an incompatible change, since we now require more of
     a general contract function. Also, from now on, we will use versioning differently. Since npm insists on semantic
     versioning, the major version number will be the arabic numeral of the roman mark version. We now use `yarn`, but
     that is optional.
-  * III/3.0.1 : Relax a test to support use of '(<anonymous)' in node 8.4
-  * III/3.1.0 : Works on Windows (node 8 and Chrome tested)
-  * III/3.1.1 : Update dependencies
-* IV
-  * IV/4.0.0:
-    * CI is realised completely, with automated tests for LTS Node versions and all major browsers on all major
+  - III/3.0.1 : Relax a test to support use of '(<anonymous)' in node 8.4
+  - III/3.1.0 : Works on Windows (node 8 and Chrome tested)
+  - III/3.1.1 : Update dependencies
+- IV
+  - IV/4.0.0:
+    - CI is realised completely, with automated tests for LTS Node versions and all major browsers on all major
       platforms. We no longer use Bitbucket or Bitbucket Pipelines. Everything is done with GitHub, [travis], and
       [browserstack]
-    * dropped direct support for older JS and browsers - now geared toward Node 6 and higher; use `browserify` to
+    - dropped direct support for older JS and browsers - now geared toward Node 6 and higher; use `browserify` to
       support browsers
-    * fixed display name
-    * support arrow functions
-    * By default, only preconditions are tested. Postcondition testing must be enabled, for all contracts, a particular
+    - fixed display name
+    - support arrow functions
+    - By default, only preconditions are tested. Postcondition testing must be enabled, for all contracts, a particular
       contract, or 1 implementation, by setting `contract.verifyPostconditions = true`. All testing can be disabled by
       setting `contract.verify = false`.
-    * Support `Promise` and `async` functions through `PromiseContract` (with `Contract.Promise` as alias)
+    - Support `Promise` and `async` functions through `PromiseContract` (with `Contract.Promise` as alias)
 
 ## TODO
 
-* IV
-  * IV/4.0.1: jsdoc
-  * IV/4.0.2: Documentation
-  * IV/4.1.0: extend function contracts - specialization / generalization
-  * IV/4.2.0: type conditions ('interfaces')
-  * IV/4.3.0: support `class`
-* V
-  * V/5.0.0: change to Joi-like conditions (conditions-per-argument)
-  * V/5.1.0: old-support
-  * V/5.2.0: test support Mocha
+- IV
+  - IV/4.0.1: jsdoc
+  - IV/4.0.2: Documentation
+  - IV/4.1.0: extend function contracts - specialization / generalization
+  - IV/4.2.0: type conditions ('interfaces')
+  - IV/4.3.0: support `class`
+- V
+  - V/5.0.0: change to Joi-like conditions (conditions-per-argument)
+  - V/5.1.0: old-support
+  - V/5.2.0: test support Mocha
 
 [intern]: https://theintern.github.io
 [travis]: https://travis-ci.org/Toryt/contracts
 [browserstack]: https://www.browserstack.com/
 [browserstack logo]: https://www.browserstack.com/images/mail/browserstack-logo-footer.png
-[browserstack status]: https://www.browserstack.com/automate/badge.svg?badge_key=aEZaaFphdUw4L0p1Wk1RZHRhdGk5OEFlYmlsVlVtWDgwb2JTT1R2WnRBST0tLWVaamdQdWszYzFwbXNad2Mrd1JuaFE9PQ==--02f4bb9220a2c3ad513a12c26c9a45345584f230
+[browserstack status]:
+  https://www.browserstack.com/automate/badge.svg?badge_key=aEZaaFphdUw4L0p1Wk1RZHRhdGk5OEFlYmlsVlVtWDgwb2JTT1R2WnRBST0tLWVaamdQdWszYzFwbXNad2Mrd1JuaFE9PQ==--02f4bb9220a2c3ad513a12c26c9a45345584f230
