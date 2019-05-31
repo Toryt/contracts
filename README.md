@@ -28,9 +28,9 @@ to create a browser distribution.
 - on Mac, during development, with Node 8
 - on Linux, with, via [Travis] ![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)
   (https://travis-ci.org/Toryt/contracts), with
-  - Node 6
   - Node 8
   - Node 10
+  - Node 12
 - on browsers, with [Browserstack] ![Browserstack logo] and `mochify`,
   - on the 'latest' versions of Chrome, Firefox, Safari, and Edge, on
     - Windows 10
