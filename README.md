@@ -104,8 +104,9 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
 
 - IV
   - IV/4.0.2: fix bug with circular structures in this (and other arguments) with util.inspect
-  - IV/4.0.3: jsdoc
-  - IV/4.0.4: Documentation
+  - IV/4.0.3: fix bug with async functions in Node 12 (a similar issue as with 4.0.1)
+  - IV/4.0.4: jsdoc
+  - IV/4.0.5: Documentation
   - IV/4.1.0: extend function contracts - specialization / generalization
   - IV/4.2.0: type conditions ('interfaces')
   - IV/4.3.0: support `class`

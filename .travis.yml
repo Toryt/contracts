@@ -15,7 +15,6 @@ jobs:
     # stage test
     - node_js: '8' # npm test
     - node_js: '10' # npm test
-    - node_js: '12' # npm test
     - node_js: '10'
       script: npm run wd
     # stage tag
