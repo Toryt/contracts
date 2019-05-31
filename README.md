@@ -97,12 +97,15 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
       contract, or 1 implementation, by setting `contract.verifyPostconditions = true`. All testing can be disabled by
       setting `contract.verify = false`.
     - Support `Promise` and `async` functions through `PromiseContract` (with `Contract.Promise` as alias)
+  - IV/4.0.1:
+    - fix issue with stack trace of condition errors in Chrome ≥ v73
 
 ## TODO
 
 - IV
-  - IV/4.0.1: jsdoc
-  - IV/4.0.2: Documentation
+  - IV/4.0.2: fix bug with circular structures in this (and other arguments) with util.inspect
+  - IV/4.0.3: jsdoc
+  - IV/4.0.4: Documentation
   - IV/4.1.0: extend function contracts - specialization / generalization
   - IV/4.2.0: type conditions ('interfaces')
   - IV/4.3.0: support `class`
