@@ -8,3 +8,7 @@ test
 .travis.yml
 How_to_publish.md
 contracts.js
+.editorconfig
+.eslintignore
+.nvmrc
+.prettierrc.yaml
