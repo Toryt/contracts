@@ -252,13 +252,14 @@ describe('IV/PromiseContractFunction', function () {
           /* Because it is in the event loop; this is not our code; we have to show something, but for Promises, it is
              largely irrelevant.
              In order:
+             - chrome since v73 for Promise resolutions
              - node 8
              - headless chrome, chrome (x 3)
              - Firefox
              - Edge
              - node 6
            */
-          const expectReference = /anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
+          const expectReference = /\[\[internal]]|anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
           if (!recursive) {
             stackLines[0].must.match(expectReference) // because it is in the event loop; this is not our code
           } else {

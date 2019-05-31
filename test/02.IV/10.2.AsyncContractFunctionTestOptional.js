@@ -226,6 +226,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         /* Because it is in the event loop sometimes; this is not our code; we have to show something, but for Promises,
            it is largely irrelevant.
          In order:
+         - chrome since v73 for Promise resolutions
          - sync
          - node 8
          - headless chrome, chrome (x 4)
@@ -233,7 +234,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
          - Edge
          - node 6
        */
-        const expectReference = /callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
+        const expectReference = /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
         stackLines[0].must.match(expectReference)
       }
     }
