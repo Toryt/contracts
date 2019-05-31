@@ -114,7 +114,6 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
   - V/5.1.0: old-support
   - V/5.2.0: test support Mocha
 
-[intern]: https://theintern.github.io
 [travis]: https://travis-ci.org/Toryt/contracts
 [browserstack]: https://www.browserstack.com/
 [browserstack logo]: https://www.browserstack.com/images/mail/browserstack-logo-footer.png
