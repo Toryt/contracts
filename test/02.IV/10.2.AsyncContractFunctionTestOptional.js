@@ -194,11 +194,14 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       const common =
         rejection instanceof ConditionMetaError
           ? conditionMetaErrorCommon
-          : rejection instanceof PreconditionViolation
+          : /* prettier-ignore */ rejection instanceof PreconditionViolation
+            // resolves infighting between prettier and standard
             ? preconditionViolationCommon
             : rejection instanceof PostconditionViolation
               ? postconditionViolationCommon
-              : rejection instanceof ExceptionConditionViolation ? exceptionConditionViolationCommon : null
+              : rejection instanceof ExceptionConditionViolation
+                ? exceptionConditionViolationCommon
+                : null
       common.must.be.truthy()
       common.expectInvariants(rejection)
       rejection.message.must.contain(func.name)

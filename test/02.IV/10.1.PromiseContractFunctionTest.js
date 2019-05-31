@@ -161,11 +161,14 @@ describe('IV/PromiseContractFunction', function () {
       const common =
         exception instanceof ConditionMetaError
           ? conditionMetaErrorCommon
-          : exception instanceof PreconditionViolation
+          : /* prettier-ignore */ exception instanceof PreconditionViolation
+            // resolves infighting between prettier and standard
             ? preconditionViolationCommon
             : exception instanceof PostconditionViolation
               ? postconditionViolationCommon
-              : exception instanceof ExceptionConditionViolation ? exceptionConditionViolationCommon : null
+              : exception instanceof ExceptionConditionViolation
+                ? exceptionConditionViolationCommon
+                : null
       common.must.be.truthy()
       common.expectInvariants(exception)
       exception.message.must.contain(func.name)
@@ -222,9 +225,12 @@ describe('IV/PromiseContractFunction', function () {
         const common =
           rejection instanceof ConditionMetaError
             ? conditionMetaErrorCommon
-            : rejection instanceof PostconditionViolation
+            : /* prettier-ignore */ rejection instanceof PostconditionViolation
+              // resolves infighting between prettier and standard
               ? postconditionViolationCommon
-              : rejection instanceof ExceptionConditionViolation ? exceptionConditionViolationCommon : null
+              : rejection instanceof ExceptionConditionViolation
+                ? exceptionConditionViolationCommon
+                : null
         common.must.be.truthy()
         common.expectInvariants(rejection)
         rejection.message.must.contain(func.name)

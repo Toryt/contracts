@@ -187,11 +187,14 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       const common =
         exception instanceof ConditionMetaError
           ? conditionMetaErrorCommon
-          : exception instanceof PreconditionViolation
+          : /* prettier-ignore */ exception instanceof PreconditionViolation
+            // resolves infighting between prettier and standard
             ? preconditionViolationCommon
             : exception instanceof PostconditionViolation
               ? postconditionViolationCommon
-              : exception instanceof ExceptionConditionViolation ? exceptionConditionViolationCommon : null
+              : exception instanceof ExceptionConditionViolation
+                ? exceptionConditionViolationCommon
+                : null
       common.must.be.truthy()
       common.expectInvariants(exception)
       exception.message.must.contain(func.name)
