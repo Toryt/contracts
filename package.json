@@ -19,7 +19,7 @@
     "preversion": "npm run test",
     "update_credits": "credits . --reporter markdown > CREDITS.md",
     "upgrade": "rm -Rf node_modules package-lock.json && npm install && npm test",
-    "jsdoc": "jsdoc lib/**/*.js"
+    "jsdoc": "jsdoc2md lib/**/*.js > API.md"
   },
   "repository": {
     "type": "git",
@@ -55,7 +55,7 @@
   "devDependencies": {
     "browserify": "^16.2.3",
     "credits-cli": "^3.1.0",
-    "jsdoc": "^3.6.2",
+    "jsdoc-to-markdown": "^5.0.0",
     "just.randomstring": "^0.1.1",
     "legally": "^3.2.1",
     "mocha": "^6.0.1",
