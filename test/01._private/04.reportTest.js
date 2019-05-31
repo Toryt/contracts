@@ -41,8 +41,7 @@ describe('_private/report', function () {
         // > 2 is not supported right now, and will fail
         result =
           cleanOriginal.indexOf(split[0]) === 0 &&
-          cleanOriginal.indexOf(split[1]) ===
-            cleanOriginal.length - split[1].length
+          cleanOriginal.indexOf(split[1]) === cleanOriginal.length - split[1].length
       }
       return result
     }
@@ -100,23 +99,13 @@ this function should have a name   ` // trim
     stuffToo.forEach(f => {
       const result = report.conciseCondition(prefix, f)
       if (!f || !f.name) {
-        it(
-          'returns the string representation with the prefix, ' +
-            'when there is no f, or it has no name, for ' +
-            f,
-          function () {
-            expectGeneralPostconditions(result, prefix + ' ' + f)
-          }
-        )
+        it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${f}`, function () {
+          expectGeneralPostconditions(result, prefix + ' ' + f)
+        })
       } else {
-        it(
-          'returns the name with the prefix, ' +
-            'when there is an f and it has a name, for ' +
-            f,
-          function () {
-            expectGeneralPostconditions(result, prefix + ' ' + f.name)
-          }
-        )
+        it(`returns the name with the prefix, when there is an f and it has a name, for ${f}`, function () {
+          expectGeneralPostconditions(result, prefix + ' ' + f.name)
+        })
       }
     })
   })
@@ -156,85 +145,86 @@ this function should have a name   ` // trim
     )
     caseGenerators.forEach(thrownGenerator => {
       const thrown = thrownGenerator()
-      it(
-        'returns the expected, normalized string representation for ' + thrown,
-        function () {
-          const result = report.extensiveThrown(thrown)
-          result.must.be.a.string()
-          result.indexOf(report.value(thrown)).must.equal(0)
-          let stack = thrown && thrown.stack
-          if (stack) {
-            stack = os.EOL + stack
-            const expectedStart = result.length - stack.length
-            result.lastIndexOf(stack).must.equal(expectedStart)
-          }
-          testUtil.log(result)
+      it(`returns the expected, normalized string representation for ${thrown}`, function () {
+        const result = report.extensiveThrown(thrown)
+        result.must.be.a.string()
+        result.indexOf(report.value(thrown)).must.equal(0)
+        let stack = thrown && thrown.stack
+        if (stack) {
+          stack = os.EOL + stack
+          const expectedStart = result.length - stack.length
+          result.lastIndexOf(stack).must.equal(expectedStart)
         }
-      )
+        testUtil.log(result)
+      })
     })
   })
 
   describe('#type', function () {
-    stuff.map(s => s.subject).forEach(s => {
-      it(`returns a string that is expected for ${s}`, function () {
-        const result = report.type(s)
-        testUtil.log(result)
-        result.must.be.a.string()
-        result.must.not.equal('')
-        // noinspection IfStatementWithTooManyBranchesJS
-        if (s === null) {
-          result.must.equal('null')
-        } else if (typeof s === 'object') {
+    stuff
+      .map(s => s.subject)
+      .forEach(s => {
+        it(`returns a string that is expected for ${s}`, function () {
+          const result = report.type(s)
+          testUtil.log(result)
+          result.must.be.a.string()
+          result.must.not.equal('')
           // noinspection IfStatementWithTooManyBranchesJS
-          if (s === Math) {
-            result.must.equal('Math')
-          } else if (s === JSON) {
-            result.must.equal('JSON')
-          } else if (Array.isArray(s)) {
-            result.must.equal('Array')
-          } else if (s.toString().indexOf('Arguments') >= 0) {
-            result.must.equal('arguments')
+          if (s === null) {
+            result.must.equal('null')
+          } else if (typeof s === 'object') {
+            // noinspection IfStatementWithTooManyBranchesJS
+            if (s === Math) {
+              result.must.equal('Math')
+            } else if (s === JSON) {
+              result.must.equal('JSON')
+            } else if (Array.isArray(s)) {
+              result.must.equal('Array')
+            } else if (s.toString().indexOf('Arguments') >= 0) {
+              result.must.equal('arguments')
+            } else {
+              result.must.equal(s.constructor.name)
+            }
           } else {
-            result.must.equal(s.constructor.name)
+            result.must.equal(typeof s)
           }
-        } else {
-          result.must.equal(typeof s)
-        }
+        })
       })
-    })
   })
 
   describe('#value', function () {
-    stuff.map(s => s.subject).forEach(s => {
-      it(`returns a string that is expected for ${s}`, function () {
-        const result = report.value(s)
-        testUtil.log(result)
-        result.must.be.a.string()
-        result.must.not.equal('')
-        // noinspection IfStatementWithTooManyBranchesJS
-        if (s === global) {
-          result.must.equal('{global}')
-        } else if (typeof s === 'string' || s instanceof String) {
-          result.must.equal(`'${s}'`)
-        } else if (
-          is.primitive(s) ||
-          s instanceof Date ||
-          s instanceof Error ||
-          s instanceof Number ||
-          s instanceof Boolean
-        ) {
-          result.must.equal('' + s)
-        } else if (typeof s === 'function') {
-          result.must.equal(report.conciseCondition('', s))
-        } else {
-          const expected = util.inspect(s, {
-            depth: 0,
-            maxArrayLength: 5,
-            breakLength: 120
-          })
-          result.must.equal(expected)
-        }
+    stuff
+      .map(s => s.subject)
+      .forEach(s => {
+        it(`returns a string that is expected for ${s}`, function () {
+          const result = report.value(s)
+          testUtil.log(result)
+          result.must.be.a.string()
+          result.must.not.equal('')
+          // noinspection IfStatementWithTooManyBranchesJS
+          if (s === global) {
+            result.must.equal('{global}')
+          } else if (typeof s === 'string' || s instanceof String) {
+            result.must.equal(`'${s}'`)
+          } else if (
+            is.primitive(s) ||
+            s instanceof Date ||
+            s instanceof Error ||
+            s instanceof Number ||
+            s instanceof Boolean
+          ) {
+            result.must.equal('' + s)
+          } else if (typeof s === 'function') {
+            result.must.equal(report.conciseCondition('', s))
+          } else {
+            const expected = util.inspect(s, {
+              depth: 0,
+              maxArrayLength: 5,
+              breakLength: 120
+            })
+            result.must.equal(expected)
+          }
+        })
       })
-    })
   })
 })

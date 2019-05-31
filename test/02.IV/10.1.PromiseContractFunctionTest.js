@@ -45,8 +45,8 @@ describe('IV/PromiseContractFunction', function () {
     return n <= 1
       ? Promise.resolve(n)
       : Promise.all([fibonacci(n - 1), fibonacci(n - 2)]).then(function (result) {
-        return result[0] + result[1]
-      })
+          return result[0] + result[1]
+        })
   }
 
   // noinspection JSUnresolvedFunction
@@ -128,7 +128,7 @@ describe('IV/PromiseContractFunction', function () {
     if (n >= 0) {
       return Promise.reject(wrongException)
     } // wrong
-    return Promise.resolve(n * (n + 1) / 2)
+    return Promise.resolve((n * (n + 1)) / 2)
   })
 
   const defensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(n => {
@@ -395,8 +395,8 @@ describe('IV/PromiseContractFunction', function () {
       return n <= 1
         ? Promise.resolve(n)
         : Promise.all([self.fibonacci(n - 1), self.fibonacci(n - 2)]).then(function (result) {
-          return result[0] + result[1]
-        })
+            return result[0] + result[1]
+          })
     }),
     fibonacciWrong: fibonacci.contract.implementation(function fWrong (n) {
       return new Promise(resolve => {

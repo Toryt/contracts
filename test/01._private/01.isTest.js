@@ -27,9 +27,7 @@ const stuff = require('./_stuff')
 describe('_private/is', function () {
   describe('#arguments', function () {
     stuff.forEach(s => {
-      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${
-        s.subject
-      }`, function () {
+      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
         const result = is.functionArguments(s.subject)
         if (s.expected === 'arguments') {
           result.must.be.true()
@@ -42,15 +40,11 @@ describe('_private/is', function () {
 
   describe('#primitive()', function () {
     stuff.forEach(record => {
-      it(
-        'correctly decides whether the argument is a primitive for ' +
-          record.subject,
-        function () {
-          const result = is.primitive(record.subject)
-          result.must.be.a.boolean()
-          result.must.equal(record.isPrimitive)
-        }
-      )
+      it(`correctly decides whether the argument is a primitive for ${record.subject}`, function () {
+        const result = is.primitive(record.subject)
+        result.must.be.a.boolean()
+        result.must.equal(record.isPrimitive)
+      })
     })
   })
 
@@ -80,9 +74,7 @@ string`)
     })
     it(`says yes to all lines of a stack trace`, function () {
       // sadly, also to the message
-      const error = new Error(
-        'This is an error to get a platform dependent stack'
-      )
+      const error = new Error('This is an error to get a platform dependent stack')
       const lines = error.stack.split(os.EOL)
       lines
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
@@ -157,12 +149,7 @@ blank line`)
         writable: values[2],
         value: propValue
       })
-      if (
-        !values[0] &&
-        values[1] &&
-        !values[2] &&
-        subject.hasOwnProperty(propName)
-      ) {
+      if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
         it(
           'reports true if the property is an own property, ' +
             'and it is enumerable, not configurable and not writable',
@@ -187,10 +174,7 @@ blank line`)
         )
       }
       it('reports false if the property does not exist', function () {
-        const result = is.frozenOwnProperty(
-          subject,
-          'some other, non-existing property name'
-        )
+        const result = is.frozenOwnProperty(subject, 'some other, non-existing property name')
         must(result).be.falsy()
       })
       const specialized = {}
@@ -213,15 +197,10 @@ blank line`)
     const notObjects = [0, false, '', 'lala']
     notObjects.forEach(notAnObject => {
       // cannot set a property on primitives
-      it(
-        'reports false if the first parameter is a primitive (' +
-          typeof notAnObject +
-          ')',
-        function () {
-          const result = is.frozenOwnProperty(notAnObject, propName)
-          must(result).be.falsy()
-        }
-      )
+      it(`reports false if the first parameter is a primitive (${typeof notAnObject})`, function () {
+        const result = is.frozenOwnProperty(notAnObject, propName)
+        must(result).be.falsy()
+      })
     })
     const fCandidates = [undefined, function () {}]
     testUtil.x(truths, truths, fCandidates, fCandidates).forEach(values => {
@@ -240,8 +219,8 @@ blank line`)
         subject.hasOwnProperty(propName)
       ) {
         it(
-          'reports true if the property is an own property, ' +
-            'and it is enumerable, and not configurable, has a getter, but not a setter',
+          'reports true if the property is an own property, and it is enumerable, and not configurable, has a ' +
+            'getter, but not a setter',
           function () {
             const result = is.frozenOwnProperty(subject, propName)
             result.must.be.truthy()

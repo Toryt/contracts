@@ -148,7 +148,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     if (n < 0) {
       throw new Error(positiveMessage)
     }
-    return n * (n + 1) / 2
+    return (n * (n + 1)) / 2
   })
 
   const wrongException = new Error(integerMessage) // will be thrown in error
@@ -160,7 +160,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     if (n < 0) {
       throw new Error(positiveMessage)
     }
-    return n * (n + 1) / 2
+    return (n * (n + 1)) / 2
   })
 
   const negativeParameter = -10
@@ -583,7 +583,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         contractWithAFailingExceptionCondition.verifyPostconditions = true
         try {
           // eslint-disable-next-line
-          const ignore = contractWithAFailingExceptionCondition.implementation(function() {
+          const ignore = contractWithAFailingExceptionCondition.implementation(function () {
             throw anExceptedException
           })()
           contractWithAFailingExceptionCondition.verifyPostconditions = false
@@ -596,7 +596,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
         try {
           // eslint-disable-next-line
-          const ignore = contractWithAFailingExceptionCondition.implementation(function() {
+          const ignore = contractWithAFailingExceptionCondition.implementation(function () {
             throw anExceptedException
           })()
           true.must.be.false()

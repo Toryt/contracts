@@ -54,22 +54,10 @@ describe('_private/property', function () {
         return this.expectedOfGetter
       }
 
-      property.configurableDerived(
-        Object.getPrototypeOf(subject),
-        propertyName,
-        getter
-      )
-      Object.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(subject),
-        propertyName
-      ).must.be.an.object()
-      must(
-        Object.getOwnPropertyDescriptor(subject, propertyName)
-      ).be.undefined()
-      testUtil.expectConfigurableDerivedPropertyOnAPrototype(
-        subject,
-        propertyName
-      )
+      property.configurableDerived(Object.getPrototypeOf(subject), propertyName, getter)
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
+      must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
+      testUtil.expectConfigurableDerivedPropertyOnAPrototype(subject, propertyName)
       subject[propertyName].must.equal(subject.expectedOfGetter)
     })
   })
@@ -87,18 +75,9 @@ describe('_private/property', function () {
         return this.expectedOfGetter
       }
 
-      property.frozenDerived(
-        Object.getPrototypeOf(subject),
-        propertyName,
-        getter
-      )
-      Object.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(subject),
-        propertyName
-      ).must.be.an.object()
-      must(
-        Object.getOwnPropertyDescriptor(subject, propertyName)
-      ).be.undefined()
+      property.frozenDerived(Object.getPrototypeOf(subject), propertyName, getter)
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
+      must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
       testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, propertyName)
       subject[propertyName].must.equal(subject.expectedOfGetter)
     })
@@ -112,16 +91,8 @@ describe('_private/property', function () {
       const privatePropertyName = '_' + propertyName
       const array = [1, 2, 3]
       property.setAndFreeze(subject, privatePropertyName, array)
-      property.frozenReadOnlyArray(
-        Object.getPrototypeOf(subject),
-        propertyName,
-        privatePropertyName
-      )
-      testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(
-        subject,
-        propertyName,
-        privatePropertyName
-      )
+      property.frozenReadOnlyArray(Object.getPrototypeOf(subject), propertyName, privatePropertyName)
+      testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propertyName, privatePropertyName)
       subject[propertyName].must.not.equal(array)
       subject[propertyName].must.eql(array)
     })

@@ -226,7 +226,7 @@ function generateIAGCFTests (ContractConstructor, isAXXXContractFunction) {
     })
   })
   ;['contract', 'implementation', 'location', 'bind'].forEach(doNotFreezeProperty => {
-    it('says no if the ' + doNotFreezeProperty + ' property is not frozen', function () {
+    it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
       const candidate = createCandidateContractFunction(ContractConstructor, doNotFreezeProperty)
       must(isAXXXContractFunction.call(ContractConstructor, candidate)).be.falsy()
     })
@@ -270,17 +270,19 @@ function generateConstructorMethodsDescriptions (ContractConstructor) {
       .filter(t => !t || typeof t !== 'string' || t.indexOf(os.EOL) >= 0)
       .concat([{}, AbstractContract.internalLocation])
       .forEach(v => {
-        it('says no if the location is not a location outside this library but ' + v, function () {
+        it(`says no if the location is not a location outside this library but ${v}`, function () {
           const candidate = createCandidateContractFunction(null, 'location', v)
           must(AbstractContract.isAContractFunction(candidate)).be.falsy()
         })
       })
-    notAFunctionNorAContract.filter(v => !v).forEach(v => {
-      it('says no if the location is not truthy but ' + v, function () {
-        const candidate = createCandidateContractFunction(ContractConstructor, null, 'location', v)
-        must(ContractConstructor.isAContractFunction(candidate)).be.falsy()
+    notAFunctionNorAContract
+      .filter(v => !v)
+      .forEach(v => {
+        it(`says no if the location is not truthy but ${v}`, function () {
+          const candidate = createCandidateContractFunction(ContractConstructor, null, 'location', v)
+          must(ContractConstructor.isAContractFunction(candidate)).be.falsy()
+        })
       })
-    })
   })
 }
 
@@ -296,7 +298,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       self.expectInvariants(subject)
     })
     notAFunctionNorAContract.concat(['function() {}']).forEach(function (thing) {
-      it('says no if the argument is not a general contract function but ' + thing, function () {
+      it(`says no if the argument is not a general contract function but ${thing}`, function () {
         const subject = oneSubjectGenerator()
         subject.isImplementedBy(thing).must.be.falsy()
         self.expectInvariants(subject)

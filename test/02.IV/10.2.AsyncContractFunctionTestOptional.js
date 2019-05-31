@@ -165,7 +165,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     if (n >= 0) {
       throw wrongException
     } // wrong
-    return n * (n + 1) / 2
+    return (n * (n + 1)) / 2
   })
 
   const defensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(async () => {
