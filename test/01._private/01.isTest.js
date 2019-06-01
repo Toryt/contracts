@@ -30,7 +30,7 @@ describe('_private/is', function () {
       it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
         const result = is.functionArguments(s.subject)
         if (s.expected === 'arguments') {
-          result.must.be.true()
+          result.should.be.true()
         } else {
           must(result).be.falsy()
         }
@@ -43,7 +43,7 @@ describe('_private/is', function () {
       it(`correctly decides whether the argument is a primitive for ${record.subject}`, function () {
         const result = is.primitive(record.subject)
         result.must.be.a.boolean()
-        result.must.equal(record.isPrimitive)
+        result.should.equal(record.isPrimitive)
       })
     })
   })
@@ -64,7 +64,7 @@ describe('_private/is', function () {
     })
     it(`says yes to 'abc'`, function () {
       const result = is.stackLocation('abc')
-      result.must.be.true()
+      result.should.be.true()
     })
     it(`says no to a multi-line string`, function () {
       const result = is.stackLocation(`this is a 
@@ -82,7 +82,7 @@ string`)
         .forEach(line => {
           const result = is.stackLocation(line)
           testUtil.log(`${result}: ${line}`)
-          result.must.be.true()
+          result.should.be.true()
         })
     })
   })
@@ -103,14 +103,14 @@ string`)
     })
     it(`says yes to 'abc'`, function () {
       const result = is.stack('abc')
-      result.must.be.true()
+      result.should.be.true()
     })
     it(`says yes to a multi-line string`, function () {
       const candidate = `this is a 
 multi-line
 string`
       const result = is.stack(candidate)
-      result.must.be.true()
+      result.should.be.true()
     })
     it(`says no to a multi-line string with a blank line`, function () {
       const result = is.stack(`this is a 
@@ -133,7 +133,7 @@ blank line`)
       testUtil.log('rawStack:')
       testUtil.log(`▷${rawStack}◁`)
       const result = is.stack(rawStack)
-      result.must.be.true()
+      result.should.be.true()
     })
   })
 
@@ -179,7 +179,7 @@ blank line`)
       })
       const specialized = {}
       Object.setPrototypeOf(specialized, subject)
-      specialized[propName].must.equal(propValue) // check inheritance - test code validity
+      specialized[propName].should.equal(propValue) // check inheritance - test code validity
       it(
         'reports false if the property is not an own property, and' +
           ' enumerable === ' +

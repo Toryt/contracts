@@ -26,18 +26,18 @@ function expectInvariants (subject) {
   subject.must.be.an.instanceof(AbstractError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'name')
-  subject.name.must.equal(AbstractError.name)
+  subject.name.should.equal(AbstractError.name)
   testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
-  Object.getPrototypeOf(subject).name.must.equal(AbstractError.name)
+  Object.getPrototypeOf(subject).name.should.equal(AbstractError.name)
   testUtil.expectOwnFrozenProperty(subject, 'message')
-  subject.message.must.equal(AbstractError.message)
+  subject.message.should.equal(AbstractError.message)
   testUtil.expectOwnFrozenProperty(AbstractError.prototype, 'message')
-  Object.getPrototypeOf(subject).message.must.equal(AbstractError.message)
+  Object.getPrototypeOf(subject).message.should.equal(AbstractError.message)
 }
 
 function expectConstructorPost (result, message, contract, rawStack) {
   common.expectConstructorPost(result, message, rawStack)
-  result.contract.must.equal(contract)
+  result.contract.should.equal(contract)
 }
 
 // noinspection FunctionNamingConventionJS

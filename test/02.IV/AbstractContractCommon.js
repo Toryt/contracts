@@ -111,13 +111,13 @@ function expectInvariants (/* AbstractContract */ subject) {
   testUtil.expectOwnFrozenProperty(subject, 'location')
   // noinspection JSUnresolvedVariable
   const location = subject.location
-  ;(location === AbstractContract.internalLocation || is.stackLocation(location)).must.be.true()
+  ;(location === AbstractContract.internalLocation || is.stackLocation(location)).should.be.true()
   testUtil.expectOwnFrozenProperty(subject, 'abstract')
   // noinspection JSUnresolvedVariable
   const abstract = subject.abstract
-  AbstractContract.isAGeneralContractFunction(abstract).must.be.true()
-  abstract.location.must.equal(location)
-  subject.isImplementedBy(abstract).must.be.true()
+  AbstractContract.isAGeneralContractFunction(abstract).should.be.true()
+  abstract.location.should.equal(location)
+  subject.isImplementedBy(abstract).should.be.true()
   abstract.must.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message)
   try {
     abstract()

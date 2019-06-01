@@ -29,22 +29,22 @@ const PromiseContract = require('../../lib/IV/PromiseContract')
 describe('IV/Contract', function () {
   describe('Contract', function () {
     it('has the expected properties', function () {
-      Contract.must.have.ownProperty('prototype')
+      Contract.should.have.ownProperty('prototype')
       // noinspection JSUnresolvedVariable
       abstractContractCommon.expectInvariants(Contract.prototype)
       // noinspection JSUnresolvedVariable
-      Contract.prototype.implementation.must.be.a.function()
-      Contract.must.have.ownProperty('root')
+      Contract.prototype.implementation.should.be.a.Function()
+      Contract.should.have.ownProperty('root')
       // noinspection JSUnresolvedVariable
-      Contract.root.must.equal(AbstractContract.root)
-      Contract.must.have.ownProperty('isAContractFunction')
+      Contract.root.should.equal(AbstractContract.root)
+      Contract.should.have.ownProperty('isAContractFunction')
       // noinspection JSUnresolvedVariable
-      Contract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
-      Contract.falseCondition.must.equal(AbstractContract.falseCondition)
-      Contract.mustNotHappen.must.equal(AbstractContract.mustNotHappen)
-      Contract.outcome.must.equal(AbstractContract.outcome)
-      Contract.callee.must.equal(AbstractContract.callee)
-      Contract.Promise.must.equal(PromiseContract)
+      Contract.isAContractFunction.should.equal(AbstractContract.isAContractFunction)
+      Contract.falseCondition.should.equal(AbstractContract.falseCondition)
+      Contract.mustNotHappen.should.equal(AbstractContract.mustNotHappen)
+      Contract.outcome.should.equal(AbstractContract.outcome)
+      Contract.callee.should.equal(AbstractContract.callee)
+      Contract.Promise.should.equal(PromiseContract)
     })
   })
 

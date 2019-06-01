@@ -42,10 +42,10 @@ describe('javascript/syntax', function () {
       for (let key in o) {
         count++
         const current = orderOfKeysCommon.nFromRandomName(key)
-        current.must.equal(previous + 1)
+        current.should.equal(previous + 1)
         previous = current
       }
-      count.must.equal(nrOfProperties)
+      count.should.equal(nrOfProperties)
     })
     it('should return all properties in the order they were defined, but those of the prototype last', function () {
       const o = orderOfKeysCommon.prepareAnObjectWithAProto()
@@ -54,12 +54,12 @@ describe('javascript/syntax', function () {
       for (const key in o) {
         count++
         const current = orderOfKeysCommon.nFromRandomName(key)
-        current.must.equal(previous + 1)
+        current.should.equal(previous + 1)
         // noinspection MagicNumberJS
         previous = current === 9 ? 99 : current === 109 ? 199 : current
       }
       // noinspection MagicNumberJS
-      count.must.equal(30)
+      count.should.equal(30)
     })
     it('should return all properties in the order they were defined in a literal', function () {
       let count = 0
@@ -67,10 +67,10 @@ describe('javascript/syntax', function () {
       for (const key in orderOfKeysCommon.objectLiteral) {
         count++
         const current = orderOfKeysCommon.nFromRandomName(key)
-        current.must.equal(previous + 1)
+        current.should.equal(previous + 1)
         previous = current
       }
-      count.must.equal(5)
+      count.should.equal(5)
     })
     it('should return all properties in the order they were defined in a JSON object', function () {
       const json = JSON.stringify(orderOfKeysCommon.objectLiteral)
@@ -79,10 +79,10 @@ describe('javascript/syntax', function () {
       for (const key in JSON.parse(json)) {
         count++
         const current = orderOfKeysCommon.nFromRandomName(key)
-        current.must.equal(previous + 1)
+        current.should.equal(previous + 1)
         previous = current
       }
-      count.must.equal(3) // undefined and function not stringified
+      count.should.equal(3) // undefined and function not stringified
     })
   })
 
@@ -137,7 +137,7 @@ describe('javascript/syntax', function () {
         err.must.be.an.error(TypeError)
       }
 
-      thrown.must.be.true()
+      thrown.should.be.true()
     })
   })
 
@@ -167,10 +167,10 @@ describe('javascript/syntax', function () {
       const instance = new Derived()
 
       /* ;'s necessary with this strange syntax */
-      ;(instance instanceof Derived).must.be.true()
-      ;(instance instanceof Base).must.be.true()
+      ;(instance instanceof Derived).should.be.true()
+      ;(instance instanceof Base).should.be.true()
       ;(instance instanceof Unrelated).must.be.false()
-      ;(instance instanceof Object).must.be.true()
+      ;(instance instanceof Object).should.be.true()
     })
     it('is not true for the prototype itself', function () {
       // noinspection FunctionNamingConventionJS
@@ -188,17 +188,17 @@ describe('javascript/syntax', function () {
 
       ;(Derived.prototype instanceof Derived).must.be.false()
       /* ;'s necessary with this strange syntax */
-      ;(Derived.prototype instanceof Base).must.be.true()
+      ;(Derived.prototype instanceof Base).should.be.true()
       ;(Derived.prototype instanceof Unrelated).must.be.false()
-      ;(Derived.prototype instanceof Object).must.be.true()
+      ;(Derived.prototype instanceof Object).should.be.true()
       ;(Base.prototype instanceof Derived).must.be.false()
       ;(Base.prototype instanceof Base).must.be.false()
       ;(Base.prototype instanceof Unrelated).must.be.false()
-      ;(Base.prototype instanceof Object).must.be.true()
+      ;(Base.prototype instanceof Object).should.be.true()
       ;(Unrelated.prototype instanceof Derived).must.be.false()
       ;(Unrelated.prototype instanceof Base).must.be.false()
       ;(Unrelated.prototype instanceof Unrelated).must.be.false()
-      ;(Unrelated.prototype instanceof Object).must.be.true()
+      ;(Unrelated.prototype instanceof Object).should.be.true()
     })
   })
 })

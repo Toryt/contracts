@@ -50,7 +50,7 @@ function expectDetailsPost (subject, result) {
 function expectProperties (exception, Type, contractFunction, condition, self, args, result) {
   common.expectProperties.apply(undefined, arguments)
   // noinspection JSUnresolvedVariable
-  exception.result.must.equal(result)
+  exception.result.should.equal(result)
 }
 
 const resultCaseGenerators = testUtil.anyCasesGenerators('result')

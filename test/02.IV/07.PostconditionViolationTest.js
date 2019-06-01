@@ -29,7 +29,7 @@ describe('IV/PostconditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
-      PostconditionViolation.prototype.condition.must.be.a.function()
+      PostconditionViolation.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
       PostconditionViolation.prototype.condition.must.not.throw()
     })

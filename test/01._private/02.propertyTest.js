@@ -30,7 +30,7 @@ describe('_private/property', function () {
       const propertyValue = 'a new value'
       property.setAndFreeze(subject, propertyName, propertyValue)
       testUtil.expectOwnFrozenProperty(subject, propertyName)
-      subject[propertyName].must.equal(propertyValue)
+      subject[propertyName].should.equal(propertyValue)
     })
     it('sets a property, without a value, and freezes it', function () {
       const subject = { a: 4 }
@@ -55,10 +55,10 @@ describe('_private/property', function () {
       }
 
       property.configurableDerived(Object.getPrototypeOf(subject), propertyName, getter)
-      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).should.be.an.Object()
       must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
       testUtil.expectConfigurableDerivedPropertyOnAPrototype(subject, propertyName)
-      subject[propertyName].must.equal(subject.expectedOfGetter)
+      subject[propertyName].should.equal(subject.expectedOfGetter)
     })
   })
 
@@ -76,10 +76,10 @@ describe('_private/property', function () {
       }
 
       property.frozenDerived(Object.getPrototypeOf(subject), propertyName, getter)
-      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).must.be.an.object()
+      Object.getOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName).should.be.an.Object()
       must(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
       testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, propertyName)
-      subject[propertyName].must.equal(subject.expectedOfGetter)
+      subject[propertyName].should.equal(subject.expectedOfGetter)
     })
   })
 

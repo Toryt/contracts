@@ -29,7 +29,7 @@ describe('IV/ExceptionConditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
-      ExceptionConditionViolation.prototype.condition.must.be.a.function()
+      ExceptionConditionViolation.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
       ExceptionConditionViolation.prototype.condition.must.not.throw()
     })

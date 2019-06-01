@@ -30,7 +30,7 @@ describe('javascript/Promise', function () {
         throw fastException
       })
       promise.catch(err => {
-        err.must.equal(fastException)
+        err.should.equal(fastException)
       })
     })
     it('can be produced with a Promise function', function () {
