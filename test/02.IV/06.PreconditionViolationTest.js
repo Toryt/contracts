@@ -28,7 +28,7 @@ describe('IV/PreconditionViolation', function () {
       // noinspection JSUnresolvedVariable
       PreconditionViolation.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
-      PreconditionViolation.prototype.condition.must.not.throw()
+      PreconditionViolation.prototype.condition.should.not.throw()
     })
   })
 

@@ -102,9 +102,9 @@ describe('_private/stack', function () {
       result.should.be.a.String()
       result.should.not.contain('[[internal]]')
       const lines = result.split(stackEOL)
-      lines.length.must.be.at.least(1)
+      lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
-        lines.length.must.be.at.least(5)
+        lines.length.should.be.greaterThanOrEqual(5)
         lines[0].must.contain('aFifthFunction')
         lines[1].must.contain('aFourthFunction')
         lines[2].must.contain('aThirdFunction')
@@ -152,9 +152,9 @@ describe('_private/stack', function () {
       result.should.not.contain('skip')
       result.should.not.contain('[[internal]]')
       const lines = result.split(stackEOL)
-      lines.length.must.be.at.least(1)
+      lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
-        lines.length.must.be.at.least(5)
+        lines.length.should.be.greaterThanOrEqual(5)
         lines[0].must.contain('aFifthFunction')
         lines[1].must.contain('aFourthFunction')
         lines[2].must.contain('aThirdFunction')

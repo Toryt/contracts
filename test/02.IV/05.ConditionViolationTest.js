@@ -28,7 +28,7 @@ describe('IV/ConditionViolation', function () {
       // noinspection JSUnresolvedVariable
       ConditionViolation.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
-      ConditionViolation.prototype.condition.must.not.throw()
+      ConditionViolation.prototype.condition.should.not.throw()
     })
   })
 

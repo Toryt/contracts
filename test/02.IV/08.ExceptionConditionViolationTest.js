@@ -31,7 +31,7 @@ describe('IV/ExceptionConditionViolation', function () {
       // noinspection JSUnresolvedVariable
       ExceptionConditionViolation.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
-      ExceptionConditionViolation.prototype.condition.must.not.throw()
+      ExceptionConditionViolation.prototype.condition.should.not.throw()
     })
   })
 
