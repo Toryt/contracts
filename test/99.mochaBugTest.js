@@ -29,7 +29,18 @@ describe('mocha this', function () {
   })
 
   it('works when a precondition violation occurs when a function is called with a mocha fixture as this', function () {
-    this.subject()
+    try {
+      this.subject()
+      true.should.be.false()
+    } catch (err) {
+      // logging the error produces the same problem, because console.log uses util.inspect too
+      console.log('' + err)
+      const stack = err.stack
+      console.log(stack)
+      stack.should.match(/𝕋⚖️ \[\[failed to represent the value]]/)
+      stack.should.match(/\(Converting circular structure to JSON\)/)
+      console.log()
+    }
   })
 })
 
