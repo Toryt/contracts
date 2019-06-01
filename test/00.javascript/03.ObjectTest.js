@@ -76,6 +76,8 @@ describe('javascript/Object', function () {
 
   describe('Object.defineProperty()', function () {
     const propName = 'aProperty'
+    // noinspection MagicNumberJS
+    const value = 42
 
     function defineAProp (obj) {
       // noinspection MagicNumberJS
@@ -83,7 +85,7 @@ describe('javascript/Object', function () {
         configurable: true,
         enumerable: true,
         writable: false,
-        value: 42
+        value
       })
     }
 
@@ -121,7 +123,13 @@ describe('javascript/Object', function () {
           defineAProp.bind(null, obj).must.throw(TypeError)
         } else {
           defineAProp(obj)
-          obj.must.have.ownProperty(propName)
+          if (obj instanceof Number || obj instanceof String || obj instanceof Boolean) {
+            // should unwraps wrapper types
+            obj[propName].should.equal(value)
+            Object.getOwnPropertyDescriptor(obj, propName).should.be.an.Object()
+          } else {
+            obj.should.have.ownProperty(propName)
+          }
           delete obj[propName] // cleanup
         }
       })
