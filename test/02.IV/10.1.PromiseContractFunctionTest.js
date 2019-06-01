@@ -268,7 +268,7 @@ describe('IV/PromiseContractFunction', function () {
            */
           const expectReference = /\[\[internal]]|anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
           if (!recursive) {
-            stackLines[0].must.match(expectReference) // because it is in the event loop; this is not our code
+            stackLines[0].should.match(expectReference) // because it is in the event loop; this is not our code
           } else {
             stackLines[0].should.containEql(recursive)
             stackLines[2].should.containEql(recursive)

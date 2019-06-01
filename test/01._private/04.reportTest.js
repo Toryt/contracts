@@ -49,9 +49,9 @@ describe('_private/report', function () {
 
     function expectGeneralPostconditions (result, expected) {
       testUtil.log('result: %s', result)
-      result.must.not.contain(eol.n)
-      result.must.not.contain(eol.rn)
-      result.length.must.be.at.most(report.maxLengthOfConciseRepresentation)
+      result.should.not.containEql(eol.n)
+      result.should.not.containEql(eol.rn)
+      result.length.should.be.lessThanOrEqual(report.maxLengthOfConciseRepresentation)
       result.trim().should.equal(result)
       isAConciseVersion(expected, result).should.be.ok()
     }

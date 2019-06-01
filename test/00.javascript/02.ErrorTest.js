@@ -87,7 +87,7 @@ describe('javascript/Error', function () {
         stack.should.be.ok() // not supported in old IE
         stack.should.be.a.String()
         if (isFFOrSafari) {
-          stack.must.not.contain(subject.toString())
+          stack.should.not.containEql(subject.toString())
         } else {
           stack.indexOf(subject.toString()).should.equal(0)
         }
@@ -216,8 +216,8 @@ describe('javascript/Error', function () {
       } catch (err2) {
         testUtil.log('err.stack: %s', err2.stack)
         err2.stack.should.be.ok()
-        err2.stack.must.not.contain('createAnError')
-        err2.stack.must.not.contain('throwAnError')
+        err2.stack.should.not.containEql('createAnError')
+        err2.stack.should.not.containEql('throwAnError')
         err2.stack.should.containEql('captureTheStackTrace1')
         err2.stack.should.containEql('captureTheStackTrace2')
         err2.stack.should.containEql('captureTheStackTrace3')

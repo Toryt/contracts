@@ -44,7 +44,7 @@ describe('IV/AbstractContract', function () {
       AbstractContract.falseCondition.should.be.a.Function()
       AbstractContract.should.have.ownProperty('mustNotHappen')
       AbstractContract.mustNotHappen.should.be.an.Array()
-      AbstractContract.mustNotHappen.must.have.length(1)
+      AbstractContract.mustNotHappen.should.have.length(1)
       AbstractContract.mustNotHappen[0].should.equal(AbstractContract.falseCondition)
       AbstractContract.should.have.ownProperty('outcome')
       AbstractContract.outcome.should.be.a.Function()
@@ -55,7 +55,7 @@ describe('IV/AbstractContract', function () {
       AbstractContract.root.should.be.an.instanceof(AbstractContract)
       const root = AbstractContract.root
       common.expectInvariants(root)
-      root.pre.must.have.length(1)
+      root.pre.should.have.length(1)
       root.pre[0].should.equal(AbstractContract.falseCondition)
       root.post.should.be.empty()
       root.exception.should.be.empty()

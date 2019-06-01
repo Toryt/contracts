@@ -27,7 +27,7 @@ function expectStackInvariants (subject) {
   const stack = subject.stack
   stack.should.be.a.String()
   const startOfStack = subject.name + ': ' + subject.message + stackEOL
-  stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
+  stack.should.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
   const restOfStack = stack
     .replace(startOfStack, '')
     .split(stackEOL)

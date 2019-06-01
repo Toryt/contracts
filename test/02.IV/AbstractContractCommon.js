@@ -300,7 +300,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
     notAFunctionNorAContract.concat(['function() {}']).forEach(function (thing) {
       it(`says no if the argument is not a general contract function but ${thing}`, function () {
         const subject = oneSubjectGenerator()
-        subject.isImplementedBy(thing).must.be.falsy()
+        subject.isImplementedBy(thing).should.not.be.ok()
         self.expectInvariants(subject)
       })
     })
@@ -308,7 +308,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const subject = oneSubjectGenerator()
       const otherContract = oneSubjectGenerator()
       const f = createCandidateContractFunction(null, null, 'contract', otherContract)
-      subject.isImplementedBy(f).must.be.falsy()
+      subject.isImplementedBy(f).should.not.be.ok()
       self.expectInvariants(subject)
     })
   })
