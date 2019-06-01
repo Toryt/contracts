@@ -141,4 +141,14 @@ describe('mocha this', function () {
  * So, these are 2 separate issues, one in IntelliJ, and one in mocha reporter, both falling back to JSON.stringify
  * problems with circular data structures. For intellij, in there own code. For mocha reporter, in the error that is
  * represented, deep down in node_modules/format-error/index.js, line 36, `makeSimple`.
+ *
+ * The format-error problem is known, and will not be fixed (2014!):
+ * https://github.com/EndangeredMassa/format-error/issues/2
+ *
+ * Created an issue:
+ * https://github.com/Wizcorp/mocha-reporter/issues/5
+ *
+ * The JetBrains issue seems not known.
+ * Created an issue:
+ * https://youtrack.jetbrains.com/issue/WEB-39186
  */
