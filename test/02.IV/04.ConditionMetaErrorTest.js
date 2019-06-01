@@ -27,7 +27,7 @@ describe('IV/ConditionMetaError', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
-      ConditionMetaError.prototype.condition.must.be.a.function()
+      ConditionMetaError.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
       ConditionMetaError.prototype.condition.must.not.throw()
     })

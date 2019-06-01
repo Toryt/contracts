@@ -42,8 +42,8 @@ describe('IV/ContractError', function () {
       property.frozenDerived(result, 'message', function () {
         return message
       })
-      result.must.have.ownProperty('message')
-      result.message.must.equal(message)
+      result.should.have.ownProperty('message')
+      result.message.should.equal(message)
       common.expectInvariants(result)
     })
   })

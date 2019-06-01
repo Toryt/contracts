@@ -36,21 +36,21 @@ function expectConstructorPost (pre, post, exception, fastException, location, r
 describe('IV/PromiseContract', function () {
   describe('PromiseContract', function () {
     it('has the expected properties', function () {
-      PromiseContract.must.have.ownProperty('prototype')
+      PromiseContract.should.have.ownProperty('prototype')
       // noinspection JSUnresolvedVariable
       abstractContractCommon.expectInvariants(PromiseContract.prototype)
       // noinspection JSUnresolvedVariable
-      PromiseContract.prototype.implementation.must.be.a.function()
-      PromiseContract.must.have.ownProperty('root')
+      PromiseContract.prototype.implementation.should.be.a.Function()
+      PromiseContract.should.have.ownProperty('root')
       // noinspection JSUnresolvedVariable
-      PromiseContract.root.must.equal(AbstractContract.root)
-      PromiseContract.must.have.ownProperty('isAContractFunction')
+      PromiseContract.root.should.equal(AbstractContract.root)
+      PromiseContract.should.have.ownProperty('isAContractFunction')
       // noinspection JSUnresolvedVariable
-      PromiseContract.isAContractFunction.must.equal(AbstractContract.isAContractFunction)
-      PromiseContract.falseCondition.must.equal(AbstractContract.falseCondition)
-      PromiseContract.mustNotHappen.must.equal(AbstractContract.mustNotHappen)
-      PromiseContract.outcome.must.equal(AbstractContract.outcome)
-      PromiseContract.callee.must.equal(AbstractContract.callee)
+      PromiseContract.isAContractFunction.should.equal(AbstractContract.isAContractFunction)
+      PromiseContract.falseCondition.should.equal(AbstractContract.falseCondition)
+      PromiseContract.mustNotHappen.should.equal(AbstractContract.mustNotHappen)
+      PromiseContract.outcome.should.equal(AbstractContract.outcome)
+      PromiseContract.callee.should.equal(AbstractContract.callee)
     })
   })
 

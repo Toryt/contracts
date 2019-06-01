@@ -26,7 +26,7 @@ describe('IV/PreconditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
-      PreconditionViolation.prototype.condition.must.be.a.function()
+      PreconditionViolation.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
       PreconditionViolation.prototype.condition.must.not.throw()
     })

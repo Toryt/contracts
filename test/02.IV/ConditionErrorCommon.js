@@ -85,9 +85,9 @@ function expectInvariants (subject) {
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
   // noinspection JSUnresolvedVariable
-  AbstractContract.isAGeneralContractFunction(subject.contractFunction).must.be.true()
+  AbstractContract.isAGeneralContractFunction(subject.contractFunction).should.be.true()
   // noinspection JSUnresolvedVariable
-  subject.condition.must.be.a.function()
+  subject.condition.should.be.a.Function()
   testUtil.expectOwnFrozenProperty(subject, 'condition')
   testUtil.expectOwnFrozenProperty(subject, 'self')
   testUtil.expectOwnFrozenProperty(subject, '_args')
@@ -104,9 +104,9 @@ function expectInvariants (subject) {
 function expectProperties (exception, Type, contractFunction, condition, self, args) {
   exception.must.be.an.error(Type)
   // noinspection JSUnresolvedVariable
-  exception.contractFunction.must.equal(contractFunction)
+  exception.contractFunction.should.equal(contractFunction)
   // noinspection JSUnresolvedVariable
-  exception.condition.must.equal(condition)
+  exception.condition.should.equal(condition)
   must(exception.self).equal(self)
   exception.args.must.eql(Array.prototype.slice.call(args))
 }
@@ -114,11 +114,11 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
 function expectConstructorPost (result, contractFunction, condition, self, args, rawStack) {
   common.expectConstructorPost(result, result.message, rawStack)
   expectProperties(result, ConditionError, contractFunction, condition, self, args)
-  Object.isExtensible(result).must.be.true()
+  Object.isExtensible(result).should.be.true()
 }
 
 function expectDetailsPost (subject, result) {
-  result.must.be.a.string()
+  result.should.be.a.String()
   // noinspection JSUnresolvedVariable
   result.must.contain(report.conciseCondition('', subject.condition))
   // noinspection JSUnresolvedVariable

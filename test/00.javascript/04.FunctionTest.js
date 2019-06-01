@@ -32,13 +32,13 @@ describe('javascript/Function', function () {
         property: boundThisPropertyValue
       }
       const boundF = testF.bind(boundThis)
-      boundF().must.equal(boundThisPropertyValue)
+      boundF().should.equal(boundThisPropertyValue)
       const otherThisPropertyValue = 'other this property value'
       const otherThis = {
         property: otherThisPropertyValue
       }
       const otherThisResult = boundF.call(otherThis)
-      otherThisResult.must.equal(boundThisPropertyValue)
+      otherThisResult.should.equal(boundThisPropertyValue)
     })
     it('has no prototype', function () {
       function testF (p) {
@@ -65,7 +65,7 @@ describe('javascript/Function', function () {
         function () {
           // noinspection FunctionNamingConventionJS
           function TestC (pA, pB) {
-            Object.getPrototypeOf(this).must.equal(TestC.prototype)
+            Object.getPrototypeOf(this).should.equal(TestC.prototype)
             this.pA = pA
             this.pB = pB
           }
@@ -77,9 +77,9 @@ describe('javascript/Function', function () {
 
           const testCInstance = new TestC(boundPA, boundPB)
           testCInstance.must.be.instanceof(TestC)
-          testCInstance.pA.must.equal(boundPA)
-          testCInstance.pB.must.equal(boundPB)
-          Object.getPrototypeOf(testCInstance).must.equal(TestC.prototype)
+          testCInstance.pA.should.equal(boundPA)
+          testCInstance.pB.should.equal(boundPB)
+          Object.getPrototypeOf(testCInstance).should.equal(TestC.prototype)
 
           // noinspection LocalVariableNamingConventionJS
           const BoundC = TestC.bind(boundThis, boundPA)
@@ -93,10 +93,10 @@ describe('javascript/Function', function () {
                 BoundC does not exist. The new knows what to do. */
           boundCInstance.must.be.instanceof(TestC)
           boundCInstance.must.be.instanceof(BoundC)
-          boundCInstance.pA.must.equal(boundPA)
-          boundCInstance.pB.must.equal(boundPB)
+          boundCInstance.pA.should.equal(boundPA)
+          boundCInstance.pB.should.equal(boundPB)
           boundCInstance.must.not.have.property('description')
-          Object.getPrototypeOf(boundCInstance).must.equal(TestC.prototype)
+          Object.getPrototypeOf(boundCInstance).should.equal(TestC.prototype)
           Object.getPrototypeOf(boundCInstance).must.not.equal(BoundC.prototype)
         }
       )
@@ -120,18 +120,18 @@ describe('javascript/Function', function () {
           return 'This is another very simple function.'
         }
 
-        Object.getPrototypeOf(f).must.equal(Function.prototype)
-        f.must.have.ownProperty('prototype')
-        f.prototype.must.be.an.object()
+        Object.getPrototypeOf(f).should.equal(Function.prototype)
+        f.should.have.ownProperty('prototype')
+        f.prototype.should.be.an.Object()
         f.prototype.must.be.an.instanceof(Object)
         // noinspection JSPotentiallyInvalidConstructorUsage
-        Object.getPrototypeOf(f.prototype).must.equal(Object.prototype)
+        Object.getPrototypeOf(f.prototype).should.equal(Object.prototype)
         f.prototype.must.not.equal(Function.prototype)
         f.prototype.must.not.equal(Function.prototype.prototype)
         // noinspection JSPotentiallyInvalidConstructorUsage
         f.prototype.must.not.equal(otherSimpleF.prototype)
-        f.prototype.must.have.ownProperty('constructor')
-        f.prototype.constructor.must.equal(f)
+        f.prototype.should.have.ownProperty('constructor')
+        f.prototype.constructor.should.equal(f)
         // noinspection JSPotentiallyInvalidConstructorUsage
         testUtil.log(JSON.stringify(f.prototype))
       })
@@ -143,7 +143,7 @@ describe('javascript/Function', function () {
         } catch (err) {
           err.must.be.an.instanceof(TypeError)
         }
-        Object.getOwnPropertyDescriptor(f, 'prototype').must.be.an.object()
+        Object.getOwnPropertyDescriptor(f, 'prototype').should.be.an.Object()
         Object.getOwnPropertyDescriptor(f, 'prototype').enumerable.must.be.false()
         Object.getOwnPropertyDescriptor(f, 'prototype').configurable.must.be.false()
         testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
@@ -154,19 +154,19 @@ describe('javascript/Function', function () {
         return 'This is a very simple function.'
       }
 
-      Object.getOwnPropertyDescriptor(simpleF, 'prototype').must.be.an.object()
-      Object.getOwnPropertyDescriptor(simpleF, 'prototype').writable.must.be.true()
+      Object.getOwnPropertyDescriptor(simpleF, 'prototype').should.be.an.Object()
+      Object.getOwnPropertyDescriptor(simpleF, 'prototype').writable.should.be.true()
       testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(simpleF, 'prototype')))
       const newObject = { name: 'a new object' }
       // noinspection JSPotentiallyInvalidConstructorUsage
       simpleF.prototype = newObject
       // noinspection JSPotentiallyInvalidConstructorUsage
-      simpleF.prototype.must.equal(newObject)
+      simpleF.prototype.should.equal(newObject)
     })
     it('does not exist by default on an arrow function', function () {
       const arrow = () => 'This is a very simple arrow function.'
 
-      Object.getPrototypeOf(arrow).must.equal(Function.prototype)
+      Object.getPrototypeOf(arrow).should.equal(Function.prototype)
       arrow.must.not.have.property('prototype')
     })
     it('can be created on an arrow function (but that makes no sense)', function () {
@@ -176,9 +176,9 @@ describe('javascript/Function', function () {
         constructor: arrow
       }
       arrow.prototype = p
-      Object.getPrototypeOf(arrow).must.equal(Function.prototype)
-      arrow.prototype.must.equal(p)
-      arrow.prototype.constructor.must.equal(arrow)
+      Object.getPrototypeOf(arrow).should.equal(Function.prototype)
+      arrow.prototype.should.equal(p)
+      arrow.prototype.constructor.should.equal(arrow)
     })
     // TODO support class construct
     // it("is not writable for a class", function() {
@@ -206,9 +206,9 @@ describe('javascript/Function', function () {
     ].forEach(function (C) {
       it('can be used as a constructor ' + C, function () {
         const result = new C()
-        result.must.be.an.object()
+        result.should.be.an.Object()
         result.must.be.an.instanceOf(C)
-        Object.getPrototypeOf(result).must.equal(C.prototype)
+        Object.getPrototypeOf(result).should.equal(C.prototype)
         testUtil.log(JSON.stringify(result))
       })
     })
@@ -220,9 +220,9 @@ describe('javascript/Function', function () {
         constructor: Arrow
       }
       Arrow.prototype = p
-      Object.getPrototypeOf(Arrow).must.equal(Function.prototype)
-      Arrow.prototype.must.equal(p)
-      Arrow.prototype.constructor.must.equal(Arrow)
+      Object.getPrototypeOf(Arrow).should.equal(Function.prototype)
+      Arrow.prototype.should.equal(p)
+      Arrow.prototype.constructor.should.equal(Arrow)
 
       try {
         const obj = new Arrow()
@@ -237,61 +237,61 @@ describe('javascript/Function', function () {
       it('the name of a function is explicit', function () {
         function thisIsAFunction () {}
 
-        thisIsAFunction.name.must.equal('thisIsAFunction')
+        thisIsAFunction.name.should.equal('thisIsAFunction')
       })
       it('the name of an anonymous function is inferred, except on Edge', function () {
         const thisIsAFunction = function () {}
 
-        thisIsAFunction.name.must.equal(testUtil.environment === 'edge' ? '' : 'thisIsAFunction')
+        thisIsAFunction.name.should.equal(testUtil.environment === 'edge' ? '' : 'thisIsAFunction')
       })
       it('the name of an arrow function is inferred, even on Edge', function () {
         const thisIsAFunction = () => null
 
-        thisIsAFunction.name.must.equal('thisIsAFunction')
+        thisIsAFunction.name.should.equal('thisIsAFunction')
       })
       it('the name of a named function is fixed', function () {
         const thisIsAnotherFunction = function thisIsAFunction () {}
 
-        thisIsAnotherFunction.name.must.equal('thisIsAFunction')
+        thisIsAnotherFunction.name.should.equal('thisIsAFunction')
       })
     })
     describe('method', function () {
       it('the name of an anonymous function method is inferred', function () {
         const obj = { thisIsAFunction: function () {} }
 
-        obj.thisIsAFunction.name.must.equal('thisIsAFunction')
+        obj.thisIsAFunction.name.should.equal('thisIsAFunction')
       })
       it('the name of an arrow function method is inferred', function () {
         const obj = { thisIsAFunction: () => null }
 
-        obj.thisIsAFunction.name.must.equal('thisIsAFunction')
+        obj.thisIsAFunction.name.should.equal('thisIsAFunction')
       })
       it('the name of a named function method is fixed', function () {
         const obj = { thisIsAnotherFunction: function thisIsAFunction () {} }
 
-        obj.thisIsAnotherFunction.name.must.equal('thisIsAFunction')
+        obj.thisIsAnotherFunction.name.should.equal('thisIsAFunction')
       })
     })
     describe('argument', function () {
       it('the name of an anonymous function argument is the empty string', function () {
         function test (f) {
-          f.name.must.be.a.string()
-          f.name.must.equal('')
+          f.name.should.be.a.String()
+          f.name.should.equal('')
         }
 
         test(function () {})
       })
       it('the name of an arrow function argument is the empty string', function () {
         function test (f) {
-          f.name.must.be.a.string()
-          f.name.must.equal('')
+          f.name.should.be.a.String()
+          f.name.should.equal('')
         }
 
         test(() => null)
       })
       it('the name of an named function argument is fixed', function () {
         function test (f) {
-          f.name.must.equal('thisIsAFunction')
+          f.name.should.equal('thisIsAFunction')
         }
 
         test(function thisIsAFunction () {})
@@ -299,13 +299,13 @@ describe('javascript/Function', function () {
     })
     describe('inline', function () {
       it('the name of an anonymous function is the empty string', function () {
-        ;(function () {}.name.must.equal(''))
+        ;(function () {}.name.should.equal(''))
       })
       it('the name of an arrow function is the empty string', function () {
-        ;(() => null).name.must.equal('')
+        ;(() => null).name.should.equal('')
       })
       it('the name of an named function is fixed', function () {
-        ;(function thisIsAFunction () {}.name.must.equal('thisIsAFunction'))
+        ;(function thisIsAFunction () {}.name.should.equal('thisIsAFunction'))
       })
     })
   })

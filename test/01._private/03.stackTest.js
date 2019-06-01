@@ -21,8 +21,7 @@
 const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-const cases = require('../_cases')
-const stackEOL = require('../../lib/_private/eol').stack
+const os = require('os')
 
 describe('_private/stack', function () {
   describe('#location', function () {
@@ -37,14 +36,14 @@ describe('_private/stack', function () {
 
       const result = aFirstFunction()
       testUtil.log(result)
-      result.must.be.a.string()
+      result.should.be.a.String()
       // must be a single line with any EOL
-      result.split(cases.rnEOL).length.must.equal(1)
-      result.split(cases.nEOL).length.must.equal(1)
+      result.split(cases.rnEOL).length.should.equal(1)
+      result.split(cases.nEOL).length.should.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
-      is.stackLocation(result).must.be.true()
+      is.stackLocation(result).should.be.true()
     })
     it('returns the expected line 2 deep', function () {
       function aFirstFunction () {
@@ -65,14 +64,14 @@ describe('_private/stack', function () {
 
       const result = aFirstFunction()
       testUtil.log(result)
-      result.must.be.a.string()
+      result.should.be.a.String()
       // must be a single line with any EOL
-      result.split(cases.rnEOL).length.must.equal(1)
-      result.split(cases.nEOL).length.must.equal(1)
+      result.split(cases.rnEOL).length.should.equal(1)
+      result.split(cases.nEOL).length.should.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
-      is.stackLocation(result).must.be.true()
+      is.stackLocation(result).should.be.true()
     })
   })
 
@@ -100,8 +99,8 @@ describe('_private/stack', function () {
 
       const result = aFirstFunction()
       testUtil.log(result)
-      result.must.be.a.string()
-      result.must.not.contain('[[internal]]')
+      result.should.be.a.String()
+      result.should.not.contain('[[internal]]')
       const lines = result.split(stackEOL)
       lines.length.must.be.at.least(1)
       if (testUtil.environment !== 'safari') {
@@ -112,7 +111,7 @@ describe('_private/stack', function () {
         lines[3].must.contain('aSecondFunction')
         lines[4].must.contain('aFirstFunction')
       }
-      is.stack(result).must.be.true()
+      is.stack(result).should.be.true()
     })
     it('returns the expected stack. 2 deep', function () {
       function skipTwo (skip) {
@@ -149,9 +148,9 @@ describe('_private/stack', function () {
 
       const result = aFirstFunction()
       testUtil.log(result)
-      result.must.be.a.string()
-      result.must.not.contain('skip')
-      result.must.not.contain('[[internal]]')
+      result.should.be.a.String()
+      result.should.not.contain('skip')
+      result.should.not.contain('[[internal]]')
       const lines = result.split(stackEOL)
       lines.length.must.be.at.least(1)
       if (testUtil.environment !== 'safari') {
@@ -162,14 +161,14 @@ describe('_private/stack', function () {
         lines[3].must.contain('aSecondFunction')
         lines[4].must.contain('aFirstFunction')
       }
-      is.stack(result).must.be.true()
+      is.stack(result).should.be.true()
     })
   })
 
   describe('skipsForEach', function () {
     it('return the expected value for this platform', function () {
       testUtil.log('stack.skipsForEach:', stack.skipsForEach)
-      stack.skipsForEach.must.equal(testUtil.environment === 'firefox')
+      stack.skipsForEach.should.equal(testUtil.environment === 'firefox')
     })
   })
 })

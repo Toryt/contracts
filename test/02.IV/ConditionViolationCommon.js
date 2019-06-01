@@ -27,7 +27,7 @@ const must = require('must')
 
 function isArguments (o) {
   const str = '' + o
-  str.must.equal('[object Arguments]')
+  str.should.equal('[object Arguments]')
 }
 
 const selfVerifyCases = [
@@ -65,10 +65,10 @@ function expectInvariants (subject) {
   subject.must.be.an.instanceof(ConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectFrozenPropertyOnAPrototype(subject, 'verify')
-  subject.verify.must.be.a.function()
+  subject.verify.should.be.a.Function()
   testUtil.expectFrozenPropertyOnAPrototype(subject, 'verifyAll')
   // noinspection JSUnresolvedVariable
-  subject.verifyAll.must.be.a.function()
+  subject.verifyAll.should.be.a.Function()
 }
 
 // noinspection ParameterNamingConventionJS
@@ -307,7 +307,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               .catch(() => {
                 return subject.verifyPromise(contractFunction, condition, self, doctoredArgs).then(
                   () => {
-                    false.must.be.true() // should not happen
+                    false.should.be.true() // should not happen
                   },
                   exc => {
                     // noinspection JSUnresolvedFunction

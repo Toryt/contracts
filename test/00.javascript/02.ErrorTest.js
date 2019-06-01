@@ -31,14 +31,14 @@ describe('javascript/Error', function () {
     it('has the expected message', function () {
       const subject = new Error(message)
       testUtil.log('message: %s', subject.message)
-      subject.message.must.equal(message)
+      subject.message.should.equal(message)
     })
   })
   describe('#name', function () {
     it('has the expected name', function () {
       const subject = new Error(message)
       testUtil.log('name: %s', subject.name)
-      subject.name.must.equal('Error')
+      subject.name.should.equal('Error')
     })
   })
   describe('#toString()', function () {
@@ -46,8 +46,8 @@ describe('javascript/Error', function () {
       const subject = new Error(message)
       const result = subject.toString()
       testUtil.log('toString(): %s', result)
-      result.must.be.a.string()
-      result.must.equal('Error: ' + message)
+      result.should.be.a.String()
+      result.should.equal('Error: ' + message)
     })
   })
   describe('#fileName', function () {
@@ -85,11 +85,11 @@ describe('javascript/Error', function () {
         testUtil.log('stack: %s', subject.stack)
         // noinspection BadExpressionStatementJS,JSHint
         stack.must.be.truthy() // not supported in old IE
-        stack.must.be.a.string()
+        stack.should.be.a.String()
         if (isFFOrSafari) {
           stack.must.not.contain(subject.toString())
         } else {
-          stack.indexOf(subject.toString()).must.equal(0)
+          stack.indexOf(subject.toString()).should.equal(0)
         }
       }
     )
@@ -111,7 +111,7 @@ describe('javascript/Error', function () {
       } catch (err) {
         const stack = err.stack
         stack.must.be.truthy()
-        stack.must.be.a.string()
+        stack.should.be.a.String()
         testUtil.log('err.stack: %s', stack)
         stack.must.contain('throwAnError')
         if (testUtil.environment !== 'edge') {

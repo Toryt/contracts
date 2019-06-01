@@ -238,11 +238,11 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       callAndExpectException(self, func, parameter, exception => {
         exception.must.be.an.instanceof(PreconditionViolation)
         // noinspection JSUnresolvedVariable
-        exception.condition.must.equal(violatedCondition)
+        exception.condition.should.equal(violatedCondition)
         if (!self) {
           must(exception.self).be.falsy()
         } else {
-          exception.self.must.equal(self)
+          exception.self.should.equal(self)
         }
         must(exception.args[0]).equal(parameter)
       })
@@ -258,19 +258,19 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     callAndExpectException(self, functionWithAMetaError, param, exception => {
       exception.must.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
-      exception.condition.must.equal(conditionWithAMetaError)
+      exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
         must(exception.self).be.falsy()
       } else {
-        exception.self.must.equal(self)
+        exception.self.should.equal(self)
       }
-      exception.args.length.must.equal(extraArgs ? extraArgs.length + 1 : 1)
-      exception.args[0].must.equal(param)
+      exception.args.length.should.equal(extraArgs ? extraArgs.length + 1 : 1)
+      exception.args[0].should.equal(param)
       if (extraArgs) {
-        exception.args[1].must.equal(extraArgs[0])
-        AbstractContract.isAContractFunction(exception.args[2]).must.be.true()
+        exception.args[1].should.equal(extraArgs[0])
+        AbstractContract.isAContractFunction(exception.args[2]).should.be.true()
       }
-      exception.error.must.equal(cases.intentionalError)
+      exception.error.should.equal(cases.intentionalError)
     })
   }
 
@@ -311,9 +311,9 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
 
   describe('#name', function () {
     it('fibonacci has the right name', function () {
-      fibonacciImpl.name.must.equal('fibonacciImpl')
+      fibonacciImpl.name.should.equal('fibonacciImpl')
       testUtil.log(`fibonacci.name: %s`, fibonacci.name)
-      fibonacci.name.must.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
+      fibonacci.name.should.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
     const anonymousContractFunctions = [
       { name: 'fibonacciWrong', f: fibonacciWrong },
@@ -414,7 +414,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         contractWithAFailingPre.verify = false
         const result = contractWithAFailingPre.implementation(() => expectedResult)()
         contractWithAFailingPre.verify = true
-        result.must.equal(expectedResult)
+        result.should.equal(expectedResult)
       })
     })
   })
@@ -449,12 +449,12 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         const result = fibonacciWrong(wrongParameter)
         fibonacciWrong.contract.verifyPostconditions = false
         fibonacciWrong.contract.verify = true
-        result.must.equal(wrongResult)
+        result.should.equal(wrongResult)
       })
       it('does not fail when a simple postcondition is violated when verifyPostcondition is false', function () {
         // eslint-disable-next-line
         const result = fibonacciWrong(wrongParameter)
-        result.must.equal(wrongResult)
+        result.should.equal(wrongResult)
       })
     })
     describe('meta-error', function () {
@@ -492,14 +492,14 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         const result = contractWithAFailingPost.implementation(() => expectedResult)()
         contractWithAFailingPre.verifyPostconditions = false
         contractWithAFailingPre.verify = true
-        result.must.equal(expectedResult)
+        result.should.equal(expectedResult)
       })
       it('does not fail when a postcondition is kaput when verifyPostcondition is false', function () {
         const expectedResult = 'expected result'
         const result = contractWithAFailingPost.implementation(function () {
           return expectedResult
         })()
-        result.must.equal(expectedResult)
+        result.should.equal(expectedResult)
       })
     })
   })
@@ -533,7 +533,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
           true.must.be.false()
         } catch (err) {
-          err.must.equal(wrongException)
+          err.should.equal(wrongException)
         } finally {
           fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
           fastDefensiveIntegerSumWrong.contract.verify = true
@@ -545,7 +545,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
           true.must.be.false()
         } catch (err) {
-          err.must.equal(wrongException)
+          err.should.equal(wrongException)
         }
       })
     })
@@ -580,7 +580,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           contractWithAFailingExceptionCondition.verify = true
           true.must.be.false()
         } catch (err) {
-          err.must.equal(anExceptedException)
+          err.should.equal(anExceptedException)
         }
       })
       it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
@@ -591,7 +591,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           })()
           true.must.be.false()
         } catch (err) {
-          err.must.equal(anExceptedException)
+          err.should.equal(anExceptedException)
         }
       })
     })

@@ -40,7 +40,7 @@ function expectConstructorPost (executionResult, contractFunction, condition, se
 // noinspection ParameterNamingConventionJS
 function expectProperties (exception, Type, contractFunction, condition, self, args, thrownException) {
   common.expectProperties.apply(undefined, arguments)
-  exception.exception.must.equal(thrownException)
+  exception.exception.should.equal(thrownException)
 }
 
 function expectDetailsPost (subject, result) {

@@ -52,7 +52,7 @@ describe('_private/report', function () {
       result.must.not.contain(eol.n)
       result.must.not.contain(eol.rn)
       result.length.must.be.at.most(report.maxLengthOfConciseRepresentation)
-      result.trim().must.equal(result)
+      result.trim().should.equal(result)
       isAConciseVersion(expected, result).must.be.truthy()
     }
 
@@ -149,13 +149,13 @@ this function should have a name   ` // trim
       const thrown = thrownGenerator()
       it(`returns the expected, normalized string representation for ${thrown}`, function () {
         const result = report.extensiveThrown(thrown)
-        result.must.be.a.string()
-        result.indexOf(report.value(thrown)).must.equal(0)
+        result.should.be.a.String()
+        result.indexOf(report.value(thrown)).should.equal(0)
         let stack = thrown && thrown.stack
         if (stack) {
           stack = eol.stack + stack
           const expectedStart = result.length - stack.length
-          result.lastIndexOf(stack).must.equal(expectedStart)
+          result.lastIndexOf(stack).should.equal(expectedStart)
         }
         testUtil.log(result)
       })
@@ -169,26 +169,26 @@ this function should have a name   ` // trim
         it(`returns a string that is expected for ${s}`, function () {
           const result = report.type(s)
           testUtil.log(result)
-          result.must.be.a.string()
+          result.should.be.a.String()
           result.must.not.equal('')
           // noinspection IfStatementWithTooManyBranchesJS
           if (s === null) {
-            result.must.equal('null')
+            result.should.equal('null')
           } else if (typeof s === 'object') {
             // noinspection IfStatementWithTooManyBranchesJS
             if (s === Math) {
-              result.must.equal('Math')
+              result.should.equal('Math')
             } else if (s === JSON) {
-              result.must.equal('JSON')
+              result.should.equal('JSON')
             } else if (Array.isArray(s)) {
-              result.must.equal('Array')
+              result.should.equal('Array')
             } else if (s.toString().indexOf('Arguments') >= 0) {
-              result.must.equal('arguments')
+              result.should.equal('arguments')
             } else {
-              result.must.equal(s.constructor.name)
+              result.should.equal(s.constructor.name)
             }
           } else {
-            result.must.equal(typeof s)
+            result.should.equal(typeof s)
           }
         })
       })
@@ -201,13 +201,13 @@ this function should have a name   ` // trim
         it(`returns a string that is expected for ${s}`, function () {
           const result = report.value(s)
           testUtil.log(result)
-          result.must.be.a.string()
+          result.should.be.a.String()
           result.must.not.equal('')
           // noinspection IfStatementWithTooManyBranchesJS
           if (s === global) {
-            result.must.equal('{global}')
+            result.should.equal('{global}')
           } else if (typeof s === 'string' || s instanceof String) {
-            result.must.equal(`'${s}'`)
+            result.should.equal(`'${s}'`)
           } else if (
             is.primitive(s) ||
             s instanceof Date ||
@@ -215,16 +215,16 @@ this function should have a name   ` // trim
             s instanceof Number ||
             s instanceof Boolean
           ) {
-            result.must.equal('' + s)
+            result.should.equal('' + s)
           } else if (typeof s === 'function') {
-            result.must.equal(report.conciseCondition('', s))
+            result.should.equal(report.conciseCondition('', s))
           } else {
             const expected = util.inspect(s, {
               depth: 0,
               maxArrayLength: 5,
               breakLength: 120
             })
-            result.must.equal(expected)
+            result.should.equal(expected)
           }
         })
       })

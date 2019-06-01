@@ -25,7 +25,7 @@ const stackEOL = require('../../lib/_private/eol').stack
 
 function expectStackInvariants (subject) {
   const stack = subject.stack
-  stack.must.be.a.string()
+  stack.should.be.a.String()
   const startOfStack = subject.name + ': ' + subject.message + stackEOL
   stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
   const restOfStack = stack
@@ -34,7 +34,7 @@ function expectStackInvariants (subject) {
     // remove empty lines that may occur in 'caused by' in Safari when used via Web Driver
     .filter(l => !!l)
     .join(stackEOL)
-  is.stack(restOfStack).must.be.true()
+  is.stack(restOfStack).should.be.true()
   // noinspection JSUnresolvedVariable
   restOfStack.must.contain(subject._rawStack)
 }
@@ -42,21 +42,21 @@ function expectStackInvariants (subject) {
 function expectInvariants (subject) {
   subject.must.be.an.instanceof(ContractError)
   testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
-  subject.name.must.be.a.string()
-  subject.name.must.equal(subject.constructor.name)
+  subject.name.should.be.a.String()
+  subject.name.should.equal(subject.constructor.name)
   testUtil.expectOwnFrozenProperty(ContractError.prototype, 'message')
-  subject.message.must.be.a.string()
+  subject.message.should.be.a.String()
   testUtil.expectOwnFrozenProperty(subject, '_rawStack')
   // noinspection JSUnresolvedVariable
-  is.stack(subject._rawStack).must.be.true()
+  is.stack(subject._rawStack).should.be.true()
   expectStackInvariants(subject)
 }
 
 function expectConstructorPost (result, message, rawStack) {
-  Object.isExtensible(result).must.be.true()
-  result.name.must.equal(result.constructor.name)
-  result.message.must.equal(message)
-  result._rawStack.must.equal(rawStack)
+  Object.isExtensible(result).should.be.true()
+  result.name.should.equal(result.constructor.name)
+  result.message.should.equal(message)
+  result._rawStack.should.equal(rawStack)
 }
 
 // noinspection FunctionNamingConventionJS

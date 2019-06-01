@@ -37,10 +37,10 @@ describe('javascript/Object', function () {
       const nrOfProperties = 10000
       const o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties)
       const keys = Object.keys(o)
-      keys.length.must.equal(nrOfProperties)
+      keys.length.should.equal(nrOfProperties)
       const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
       keyNumbers.reduce((previous, current) => {
-        current.must.equal(previous + 1)
+        current.should.equal(previous + 1)
         return current
       }, -1)
     })
@@ -49,14 +49,14 @@ describe('javascript/Object', function () {
       const keys = Object.keys(o)
       // noinspection MagicNumberJS
       keys.length.must.not.equal(30)
-      keys.length.must.equal(10)
+      keys.length.should.equal(10)
     })
     it('should return all properties in the order they were defined in a literal', function () {
       const keys = Object.keys(orderOfKeysCommon.objectLiteral)
-      keys.length.must.equal(5)
+      keys.length.should.equal(5)
       const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
       keyNumbers.reduce((previous, current) => {
-        current.must.equal(previous + 1)
+        current.should.equal(previous + 1)
         return current
       }, -1)
     })
@@ -65,10 +65,10 @@ describe('javascript/Object', function () {
       const json = JSON.stringify(orderOfKeysCommon.objectLiteral)
       // noinspection NodeModulesDependencies
       const keys = Object.keys(JSON.parse(json))
-      keys.length.must.equal(3) // undefined and function not stringified
+      keys.length.should.equal(3) // undefined and function not stringified
       const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
       keyNumbers.reduce((previous, current) => {
-        current.must.equal(previous + 1)
+        current.should.equal(previous + 1)
         return current
       }, -1)
     })
