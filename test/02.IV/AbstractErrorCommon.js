@@ -23,7 +23,7 @@ const testUtil = require('../_util/testUtil')
 const common = require('./ContractErrorCommon')
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(AbstractError)
+  subject.should.be.an.instanceof(AbstractError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'name')
   subject.name.should.equal(AbstractError.name)

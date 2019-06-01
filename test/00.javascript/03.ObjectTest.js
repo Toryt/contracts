@@ -48,7 +48,7 @@ describe('javascript/Object', function () {
       const o = orderOfKeysCommon.prepareAnObjectWithAProto()
       const keys = Object.keys(o)
       // noinspection MagicNumberJS
-      keys.length.must.not.equal(30)
+      keys.length.should.not.equal(30)
       keys.length.should.equal(10)
     })
     it('should return all properties in the order they were defined in a literal', function () {
@@ -120,7 +120,7 @@ describe('javascript/Object', function () {
       it('sets a property on ' + obj + ' if it is non-primitive, and fails to do so if it is primitive', function () {
         const type = typeof obj
         if (obj === null || type === 'undefined' || type === 'number' || type === 'boolean' || type === 'string') {
-          defineAProp.bind(null, obj).must.throw(TypeError)
+          defineAProp.bind(null, obj).should.throw(TypeError)
         } else {
           defineAProp(obj)
           if (obj instanceof Number || obj instanceof String || obj instanceof Boolean) {
@@ -171,7 +171,7 @@ describe('javascript/Object', function () {
         'gets a property from ' + obj + ' if it is not null or undefined, and fails to do so if it is primitive',
         function () {
           if (obj === null || obj === undefined) {
-            Object.getOwnPropertyDescriptor.bind(null, obj, propName).must.throw(TypeError)
+            Object.getOwnPropertyDescriptor.bind(null, obj, propName).should.throw(TypeError)
           } else {
             const result = Object.getOwnPropertyDescriptor(obj, propName)
             must(result).be.falsy()

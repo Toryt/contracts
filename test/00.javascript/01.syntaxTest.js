@@ -20,6 +20,7 @@
 
 const testUtil = require('../_util/testUtil')
 const must = require('must')
+const should = require('should')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
 const cases = require('../_cases')
 
@@ -91,7 +92,12 @@ describe('javascript/syntax', function () {
       throw toThrow
     }
 
-    thrower.must.throw(toThrow)
+    try {
+      thrower()
+      true.should.be.false()
+    } catch (err) {
+      should(err).equal(toThrow)
+    }
   }
 
   describe('#throw', function () {
@@ -126,7 +132,7 @@ describe('javascript/syntax', function () {
   describe('string', function () {
     it('cannot take properties', function () {
       const subject = 'This is a string'
-      subject.must.not.have.property('name')
+      subject.should.not.have.property('name')
       const name = 'This is a name'
       let thrown = false
       try {
@@ -134,7 +140,7 @@ describe('javascript/syntax', function () {
         subject.name = name
       } catch (err) {
         thrown = true
-        err.must.be.an.error(TypeError)
+        err.should.be.an.instanceof(TypeError)
       }
 
       thrown.should.be.true()

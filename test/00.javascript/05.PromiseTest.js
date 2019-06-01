@@ -41,7 +41,7 @@ describe('javascript/Promise', function () {
         return Promise.resolve(true)
       }
 
-      promiseFunction.bind(null, true).must.throw(fastException)
+      promiseFunction.bind(null, true).should.throw(fastException)
     })
   })
 })

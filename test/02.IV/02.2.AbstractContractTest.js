@@ -52,7 +52,7 @@ describe('IV/AbstractContract', function () {
       AbstractContract.callee.should.be.a.Function()
 
       AbstractContract.should.have.ownProperty('root')
-      AbstractContract.root.must.be.an.instanceof(AbstractContract)
+      AbstractContract.root.should.be.an.instanceof(AbstractContract)
       const root = AbstractContract.root
       common.expectInvariants(root)
       root.pre.must.have.length(1)
@@ -62,7 +62,7 @@ describe('IV/AbstractContract', function () {
       root.location.should.equal(AbstractContract.internalLocation)
       AbstractContract.should.have.ownProperty('AbstractError')
       AbstractContract.AbstractError.should.be.a.Function()
-      AbstractContract.AbstractError.prototype.must.be.an.instanceof(Error)
+      AbstractContract.AbstractError.prototype.should.be.an.instanceof(Error)
       AbstractContract.should.have.ownProperty('prototype')
       AbstractContract.prototype.should.be.an.Object()
       const prototype = AbstractContract.prototype

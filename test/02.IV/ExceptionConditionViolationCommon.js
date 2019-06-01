@@ -25,7 +25,7 @@ const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViol
 const must = require('must')
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(ExceptionConditionViolation)
+  subject.should.be.an.instanceof(ExceptionConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'exception')
   subject.stack.must.contain(report.extensiveThrown(subject.exception))

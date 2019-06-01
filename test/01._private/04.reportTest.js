@@ -170,7 +170,7 @@ this function should have a name   ` // trim
           const result = report.type(s)
           testUtil.log(result)
           result.should.be.a.String()
-          result.must.not.equal('')
+          result.should.not.equal('')
           // noinspection IfStatementWithTooManyBranchesJS
           if (s === null) {
             result.should.equal('null')
@@ -202,7 +202,7 @@ this function should have a name   ` // trim
           const result = report.value(s)
           testUtil.log(result)
           result.should.be.a.String()
-          result.must.not.equal('')
+          result.should.not.equal('')
           // noinspection IfStatementWithTooManyBranchesJS
           if (s === global) {
             result.should.equal('{global}')

@@ -40,7 +40,7 @@ function expectStackInvariants (subject) {
 }
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(ContractError)
+  subject.should.be.an.instanceof(ContractError)
   testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
   subject.name.should.be.a.String()
   subject.name.should.equal(subject.constructor.name)

@@ -281,7 +281,7 @@ describe('IV/PromiseContractFunction', function () {
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
       callAndExpectFastException(self, func, parameter, exception => {
-        exception.must.be.an.instanceof(PreconditionViolation)
+        exception.should.be.an.instanceof(PreconditionViolation)
         // noinspection JSUnresolvedVariable
         exception.condition.should.equal(violatedCondition)
         if (!self) {
@@ -301,7 +301,7 @@ describe('IV/PromiseContractFunction', function () {
   function failsOnMetaErrorFast (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectFastException(self, functionWithAMetaError, param, exception => {
-      exception.must.be.an.instanceof(ConditionMetaError)
+      exception.should.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
@@ -322,7 +322,7 @@ describe('IV/PromiseContractFunction', function () {
   function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     return callAndExpectRejection(self, functionWithAMetaError, param, exception => {
-      exception.must.be.an.instanceof(ConditionMetaError)
+      exception.should.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
@@ -517,19 +517,19 @@ describe('IV/PromiseContractFunction', function () {
       })
     })
     it('works with a defensive function, fast exception', function () {
-      defensiveIntegerSum.bind(undefined, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
+      defensiveIntegerSum.bind(undefined, defensiveSumFastExcParameter).should.throw(Error, { message: integerMessage })
     })
     it('works with a defensive function, fast exception, testing conditions', function () {
       defensiveIntegerSum.contract.verifyPostconditions = true
-      defensiveIntegerSum.bind(undefined, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
+      defensiveIntegerSum.bind(undefined, defensiveSumFastExcParameter).should.throw(Error, { message: integerMessage })
       defensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive method, fast exception', function () {
-      self.defensiveIntegerSum.bind(self, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
+      self.defensiveIntegerSum.bind(self, defensiveSumFastExcParameter).should.throw(Error, { message: integerMessage })
     })
     it('works with a defensive method, fast exception, testing conditions', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
-      self.defensiveIntegerSum.bind(self, defensiveSumFastExcParameter).must.throw(Error, integerMessage)
+      self.defensiveIntegerSum.bind(self, defensiveSumFastExcParameter).should.throw(Error, { message: integerMessage })
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive function, rejecting', function () {
