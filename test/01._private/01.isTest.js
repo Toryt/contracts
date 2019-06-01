@@ -42,7 +42,7 @@ describe('_private/is', function () {
     stuff.forEach(record => {
       it(`correctly decides whether the argument is a primitive for ${record.subject}`, function () {
         const result = is.primitive(record.subject)
-        result.must.be.a.boolean()
+        result.should.be.a.Boolean()
         result.should.equal(record.isPrimitive)
       })
     })

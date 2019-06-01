@@ -239,7 +239,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
          - node 6
        */
         const expectReference = /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
-        stackLines[0].must.match(expectReference)
+        stackLines[0].should.match(expectReference)
       }
     }
   }
