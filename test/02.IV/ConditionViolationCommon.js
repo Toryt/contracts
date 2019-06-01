@@ -23,7 +23,7 @@ const common = require('./ConditionErrorCommon')
 const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
 const ConditionViolation = require('../../lib/IV/ConditionViolation')
 const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon')
-const must = require('must')
+const should = require('should')
 
 function isArguments (o) {
   const str = '' + o
@@ -171,7 +171,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             try {
               subject.verify(contractFunction, condition, self, doctoredArgs)
               outcome.should.be.ok() // otherwise, we get an exception
-              must(metaError).be.falsy()
+              should(metaError).not.be.ok()
             } catch (exc) {
               if (metaError) {
                 // noinspection JSUnresolvedFunction
@@ -185,12 +185,12 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 )
               } else {
                 // ConditionViolation
-                must(outcome).be.falsy()
+                should(outcome).not.be.ok()
                 const extraProperty = doctoredArgs[args.length] // might not exist
                 that.expectProperties(exc, subject.constructor, contractFunction, condition, self, args, extraProperty)
               }
             } finally {
-              must(condition.self).equal(self)
+              should(condition.self).equal(self)
               condition.args.should.be.ok()
               isArguments(condition.args)
               // doctoredArgs might be arguments, or Array
@@ -229,7 +229,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               .then(
                 () => {
                   outcome.should.be.ok() // otherwise, we get an exception
-                  must(metaError).be.falsy()
+                  should(metaError).not.be.ok()
                 },
                 exc => {
                   if (metaError) {
@@ -244,7 +244,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                     )
                   } else {
                     // ConditionViolation
-                    must(outcome).be.falsy()
+                    should(outcome).not.be.ok()
                     const extraProperty = doctoredArgs[args.length] // might not exist
                     that.expectProperties(
                       exc,
@@ -259,7 +259,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 }
               )
               .then(() => {
-                must(condition.self).equal(self)
+                should(condition.self).equal(self)
                 condition.args.should.be.ok()
                 isArguments(condition.args)
                 // doctoredArgs might be arguments, or Array
@@ -290,7 +290,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                   },
                   exc => {
                     // ConditionViolation
-                    must(outcome).be.falsy()
+                    should(outcome).not.be.ok()
                     const extraProperty = doctoredArgs[args.length] // might not exist
                     that.expectProperties(
                       exc,
@@ -323,7 +323,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 )
               })
               .then(() => {
-                must(condition.self).equal(self)
+                should(condition.self).equal(self)
                 condition.args.should.be.ok()
                 isArguments(condition.args)
                 // doctoredArgs might be arguments, or Array
@@ -442,8 +442,8 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             try {
               // noinspection JSUnresolvedFunction
               subject.verifyAll(contractFunction, conditions, self, doctoredArgs)
-              must(firstFailure).be.falsy() // any failure would give an exception
-              must(metaError).be.falsy()
+              should(firstFailure).not.be.ok() // any failure would give an exception
+              should(metaError).not.be.ok()
             } catch (exc) {
               conditions.length.should.be.greaterThanOrEqual(1) // otherwise, there can be no failure
               firstFailure.should.be.ok() // metaError or a false condition
@@ -471,7 +471,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             } finally {
               // evaluates all conditions up until the first failure with the given self and arguments
               for (let j = 0; j <= firstFailureIndex; j++) {
-                must(conditions[j].self).equal(self)
+                should(conditions[j].self).equal(self)
                 const appliedArgs = conditions[j].args
                 appliedArgs.should.be.ok()
                 isArguments(appliedArgs)
@@ -484,8 +484,8 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               }
               // does not evaluate conditions after the first failure
               for (let j = firstFailureIndex + 1; j < conditions.length; j++) {
-                must(conditions[j].self).be.falsy()
-                must(conditions[j].args).be.falsy()
+                should(conditions[j].self).not.be.ok()
+                should(conditions[j].args).not.be.ok()
               }
               that.expectInvariants(subject)
             }
@@ -719,7 +719,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 .then(
                   () => {
                     failures.should.be.empty() // any failure would give an exception
-                    must(metaErrorCondition).be.falsy()
+                    should(metaErrorCondition).not.be.ok()
                   },
                   exc => {
                     conditions.length.should.be.greaterThanOrEqual(1) // otherwise, there can be no failure
@@ -750,7 +750,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 .then(() => {
                   // evaluates all conditions, also past first failure with, the given self and arguments
                   conditions.forEach(c => {
-                    must(c.self).equal(self)
+                    should(c.self).equal(self)
                     const appliedArgs = c.args
                     appliedArgs.should.be.ok()
                     isArguments(appliedArgs)

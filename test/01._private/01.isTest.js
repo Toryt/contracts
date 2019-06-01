@@ -20,7 +20,7 @@
 
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-const must = require('must')
+const should = require('should')
 const os = require('os')
 const stuff = require('./_stuff')
 
@@ -32,7 +32,7 @@ describe('_private/is', function () {
         if (s.expected === 'arguments') {
           result.should.be.true()
         } else {
-          must(result).be.falsy()
+          should(result).not.be.ok()
         }
       })
     })
@@ -169,13 +169,13 @@ blank line`)
             values[2],
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            must(result).be.falsy()
+            should(result).not.be.ok()
           }
         )
       }
       it('reports false if the property does not exist', function () {
         const result = is.frozenOwnProperty(subject, 'some other, non-existing property name')
-        must(result).be.falsy()
+        should(result).not.be.ok()
       })
       const specialized = {}
       Object.setPrototypeOf(specialized, subject)
@@ -190,7 +190,7 @@ blank line`)
           values[2],
         function () {
           const specializedResult = is.frozenOwnProperty(specialized, propName)
-          must(specializedResult).be.falsy()
+          should(specializedResult).not.be.ok()
         }
       )
     })
@@ -199,7 +199,7 @@ blank line`)
       // cannot set a property on primitives
       it(`reports false if the first parameter is a primitive (${typeof notAnObject})`, function () {
         const result = is.frozenOwnProperty(notAnObject, propName)
-        must(result).be.falsy()
+        should(result).not.be.ok()
       })
     })
     const fCandidates = [undefined, function () {}]
@@ -239,7 +239,7 @@ blank line`)
             values[3],
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            must(result).be.falsy()
+            should(result).not.be.ok()
           }
         )
       }
