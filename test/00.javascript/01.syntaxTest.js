@@ -21,6 +21,7 @@
 const testUtil = require('../_util/testUtil')
 const must = require('must')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
+const cases = require('../_cases')
 
 describe('javascript/syntax', function () {
   describe('#for-in', function () {
@@ -115,34 +116,7 @@ describe('javascript/syntax', function () {
   })
 
   describe('#typeof', function () {
-    // noinspection JSPrimitiveTypeWrapperUsage
-    ;[
-      undefined,
-      null,
-      4,
-      -1,
-      '',
-      'A string',
-      new Date(),
-      true,
-      false,
-      {},
-      /foo/,
-      function () {},
-      () => '',
-      [],
-      new ReferenceError(),
-      Math,
-      JSON,
-      // eslint-disable-next-line
-      new Number(4),
-      // eslint-disable-next-line
-      new String('abc'),
-      // eslint-disable-next-line
-      new Boolean(false),
-      Object,
-      arguments
-    ].forEach(function (a) {
+    cases.any.forEach(function (a) {
       it('reports the typeof ' + a, function () {
         testUtil.log(a + ': ' + typeof a)
       })
