@@ -56,12 +56,12 @@ describe('_private/is', function () {
       .forEach(s => {
         it(`says no to ${s}`, function () {
           const result = is.stackLocation(s)
-          result.must.be.false()
+          result.should.be.false()
         })
       })
     it(`says no to ''`, function () {
       const result = is.stackLocation('')
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to 'abc'`, function () {
       const result = is.stackLocation('abc')
@@ -71,13 +71,13 @@ describe('_private/is', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stackLocation('this is a' + eol.n + 'multi-line' + eol.n + 'string')
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says no to a multi-line string with \\r\\n as EOL`, function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stackLocation('this is a' + eol.rn + 'multi-line' + eol.rn + 'string')
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to all lines of a stack trace`, function () {
       // sadly, also to the message
@@ -101,12 +101,12 @@ describe('_private/is', function () {
       .forEach(s => {
         it(`says no to ${s}`, function () {
           const result = is.stack(s)
-          result.must.be.false()
+          result.should.be.false()
         })
       })
     it(`says no to ''`, function () {
       const result = is.stack('')
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to 'abc'`, function () {
       const result = is.stack('abc')
@@ -124,7 +124,7 @@ describe('_private/is', function () {
       // on Windows
       const candidate = 'this is a' + cases.notStackEOL + 'multi-line' + cases.notStackEOL + 'string'
       const result = is.stack(candidate)
-      result.must.be.true()
+      result.should.be.true()
     })
     it(`says no to a multi-line string with a blank line with eol.stack`, function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
@@ -132,7 +132,7 @@ describe('_private/is', function () {
       const result = is.stack(
         'this is a' + eol.stack + 'multi-line' + eol.stack + 'string, with a' + eol.stack + eol.stack + 'blank line'
       )
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to a multi-line string with a blank line with other EOL (looks like a single line)`, function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
@@ -148,7 +148,7 @@ describe('_private/is', function () {
           'blank line'
       )
       // with the other EOL, it looks like a single line, which is a good stack
-      result.must.be.true()
+      result.should.be.true()
     })
     it(`says yes to a stack trace`, function () {
       const message = 'This is an error to get a platform dependent stack'
@@ -185,7 +185,7 @@ describe('_private/is', function () {
             'and it is enumerable, not configurable and not writable',
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            result.must.be.truthy()
+            result.should.be.ok()
           }
         )
       } else {
@@ -253,7 +253,7 @@ describe('_private/is', function () {
             'getter, but not a setter',
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            result.must.be.truthy()
+            result.should.be.ok()
           }
         )
       } else {

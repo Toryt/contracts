@@ -84,7 +84,7 @@ describe('javascript/Error', function () {
         const stack = subject.stack
         testUtil.log('stack: %s', subject.stack)
         // noinspection BadExpressionStatementJS,JSHint
-        stack.must.be.truthy() // not supported in old IE
+        stack.should.be.ok() // not supported in old IE
         stack.should.be.a.String()
         if (isFFOrSafari) {
           stack.must.not.contain(subject.toString())
@@ -110,7 +110,7 @@ describe('javascript/Error', function () {
         throwAnError()
       } catch (err) {
         const stack = err.stack
-        stack.must.be.truthy()
+        stack.should.be.ok()
         stack.should.be.a.String()
         testUtil.log('err.stack: %s', stack)
         stack.must.contain('throwAnError')
@@ -163,7 +163,7 @@ describe('javascript/Error', function () {
         throwAnError()
       } catch (err) {
         testUtil.log('err.stack: %s', err.stack)
-        err.stack.must.be.truthy()
+        err.stack.should.be.ok()
         err.stack.must.contain('createAnError')
         // and be on the first line
         const lines = err.stack.split('\n')
@@ -215,7 +215,7 @@ describe('javascript/Error', function () {
         }
       } catch (err2) {
         testUtil.log('err.stack: %s', err2.stack)
-        err2.stack.must.be.truthy()
+        err2.stack.should.be.ok()
         err2.stack.must.not.contain('createAnError')
         err2.stack.must.not.contain('throwAnError')
         err2.stack.must.contain('captureTheStackTrace1')

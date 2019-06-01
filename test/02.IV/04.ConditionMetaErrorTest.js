@@ -61,8 +61,8 @@ describe('IV/ConditionMetaError', function () {
             rawStack
           )
           common.expectInvariants(result)
-          result.must.not.have.ownProperty('message')
-          result.must.not.have.ownProperty('stack')
+          result.should.not.have.ownProperty('message')
+          result.should.not.have.ownProperty('stack')
           // noinspection JSUnresolvedVariable
           testUtil.log('result.stack:\n%s', result.stack)
         }

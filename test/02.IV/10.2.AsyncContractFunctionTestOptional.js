@@ -188,10 +188,10 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         // noinspection JSUnusedAssignment
         await func.call(self, parameter)
       }
-      true.must.be.false()
+      true.should.be.false()
     } catch (rejection) {
       testUtil.log('' + rejection)
-      rejection.must.be.truthy()
+      rejection.should.be.ok()
       const common =
         rejection instanceof ConditionMetaError
           ? conditionMetaErrorCommon
@@ -203,7 +203,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
               : rejection instanceof ExceptionConditionViolation
                 ? exceptionConditionViolationCommon
                 : null
-      common.must.be.truthy()
+      common.should.be.ok()
       common.expectInvariants(rejection)
       rejection.message.must.contain(func.name)
       const stack = rejection.stack
@@ -478,7 +478,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     it('works with a defensive function, rejecting', async function () {
       try {
         await defensiveIntegerSum(defensiveSumRejectParameter)
-        true.must.be.false()
+        true.should.be.false()
       } catch (err) {
         err.must.be.an.error(Error, positiveMessage)
       }
@@ -487,7 +487,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       defensiveIntegerSum.contract.verifyPostconditions = true
       try {
         await defensiveIntegerSum(defensiveSumRejectParameter)
-        true.must.be.false()
+        true.should.be.false()
       } catch (err) {
         testUtil.log(err)
         err.must.be.error(Error, positiveMessage)
@@ -498,7 +498,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     it('works with a defensive method, rejecting', async function () {
       try {
         await self.defensiveIntegerSum(defensiveSumRejectParameter)
-        true.must.be.false()
+        true.should.be.false()
       } catch (err) {
         err.must.be.error(Error, positiveMessage)
       }
@@ -507,7 +507,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
       try {
         await self.defensiveIntegerSum(defensiveSumRejectParameter)
-        true.must.be.false()
+        true.should.be.false()
       } catch (err) {
         testUtil.log(err)
         err.must.be.error(Error, positiveMessage)
@@ -772,7 +772,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         defensiveIntegerSumWrong.contract.verifyPostconditions = true
         try {
           await defensiveIntegerSumWrong(exceptionParameter)
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(wrongException)
         } finally {
@@ -783,7 +783,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       it('does not fail when a simple exception condition is violated when verifyPostcondition is false', async function () {
         try {
           await defensiveIntegerSumWrong(exceptionParameter)
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(wrongException)
         }
@@ -829,7 +829,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
           await contractWithAFailingExceptionCondition.implementation(async () => {
             throw anExceptedException
           })()
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           contractWithAFailingExceptionCondition.verifyPostconditions = false
           contractWithAFailingExceptionCondition.verify = true
@@ -841,7 +841,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
           await contractWithAFailingExceptionCondition.implementation(async () => {
             throw anExceptedException
           })()
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           contractWithAFailingExceptionCondition.verifyPostconditions = false
           contractWithAFailingExceptionCondition.verify = true

@@ -184,7 +184,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       endsNominally = true
     } catch (exception) {
       testUtil.log(exception)
-      exception.must.be.truthy()
+      exception.should.be.ok()
       const common =
         exception instanceof ConditionMetaError
           ? conditionMetaErrorCommon
@@ -196,7 +196,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
               : exception instanceof ExceptionConditionViolation
                 ? exceptionConditionViolationCommon
                 : null
-      common.must.be.truthy()
+      common.should.be.ok()
       common.expectInvariants(exception)
       exception.message.must.contain(func.name)
       const stack = exception.stack
@@ -230,7 +230,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         }
       }
     }
-    endsNominally.must.be.false()
+    endsNominally.should.be.false()
   }
 
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
@@ -531,7 +531,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         try {
           // eslint-disable-next-line
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(wrongException)
         } finally {
@@ -543,7 +543,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         try {
           // eslint-disable-next-line
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(wrongException)
         }
@@ -578,7 +578,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           })()
           contractWithAFailingExceptionCondition.verifyPostconditions = false
           contractWithAFailingExceptionCondition.verify = true
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(anExceptedException)
         }
@@ -589,7 +589,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           const ignore = contractWithAFailingExceptionCondition.implementation(function () {
             throw anExceptedException
           })()
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(anExceptedException)
         }

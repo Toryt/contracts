@@ -228,7 +228,7 @@ describe('IV/ContractFunction', function () {
       }
       endsNominally = true
     } catch (exception) {
-      exception.must.be.truthy()
+      exception.should.be.ok()
       const common =
         exception instanceof ConditionMetaError
           ? conditionMetaErrorCommon
@@ -240,7 +240,7 @@ describe('IV/ContractFunction', function () {
               : exception instanceof ExceptionConditionViolation
                 ? exceptionConditionViolationCommon
                 : null
-      common.must.be.truthy()
+      common.should.be.ok()
       common.expectInvariants(exception)
       exception.message.must.contain(func.name)
       const stack = exception.stack
@@ -273,7 +273,7 @@ describe('IV/ContractFunction', function () {
         }
       }
     }
-    endsNominally.must.be.false()
+    endsNominally.should.be.false()
   }
 
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
@@ -478,7 +478,7 @@ describe('IV/ContractFunction', function () {
       }
       const caseName = 'Jim'
       const result = new ContractPerson(caseName)
-      result.must.be.truthy()
+      result.should.be.ok()
       result.must.be.instanceof(ContractPerson)
       result.must.be.instanceof(PersonImplementation)
       result.should.have.ownProperty('_name')
@@ -490,8 +490,8 @@ describe('IV/ContractFunction', function () {
       const PersonImplementation = function (name) {
         this._name = name
       }
-      PersonImplementation.must.have.property('prototype')
-      PersonImplementation.prototype.must.have.property('constructor')
+      PersonImplementation.should.have.property('prototype')
+      PersonImplementation.prototype.should.have.property('constructor')
       PersonImplementation.prototype.constructor.should.equal(PersonImplementation)
       PersonImplementation.prototype._name = null
       property.frozenDerived(PersonImplementation.prototype, 'name', function () {
@@ -505,8 +505,8 @@ describe('IV/ContractFunction', function () {
       const PersonImplementation = function (name) {
         this._name = name
       }
-      PersonImplementation.must.have.property('prototype')
-      PersonImplementation.prototype.must.have.property('constructor')
+      PersonImplementation.should.have.property('prototype')
+      PersonImplementation.prototype.should.have.property('constructor')
       PersonImplementation.prototype.constructor.should.equal(PersonImplementation)
       PersonImplementation.prototype._name = null
       property.frozenDerived(PersonImplementation.prototype, 'name', function () {
@@ -721,7 +721,7 @@ describe('IV/ContractFunction', function () {
         try {
           // eslint-disable-next-line
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(wrongException)
         } finally {
@@ -733,7 +733,7 @@ describe('IV/ContractFunction', function () {
         try {
           // eslint-disable-next-line
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(wrongException)
         }
@@ -782,7 +782,7 @@ describe('IV/ContractFunction', function () {
           })()
           contractWithAFailingExceptionCondition.verifyPostconditions = false
           contractWithAFailingExceptionCondition.verify = true
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(anExceptedException)
         }
@@ -793,7 +793,7 @@ describe('IV/ContractFunction', function () {
           const ignore = contractWithAFailingExceptionCondition.implementation(function () {
             throw anExceptedException
           })()
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(anExceptedException)
         }
