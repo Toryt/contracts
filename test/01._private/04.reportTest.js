@@ -231,19 +231,30 @@ this function should have a name   ` // trim
       before(function () {
         // poor man's stub, without sinon
         this.utilInspect = util.inspect
-        util.inspect = function () {
-          throw cases.intentionalError
+        this.error = null
+        util.inspect = () => {
+          throw this.error
         }
       })
       after(function () {
         util.inspect = this.utilInspect
       })
-      it('returns a message when util.inspect fails', function () {
+      it('returns a message when util.inspect fails with an error with a message', function () {
+        this.error = cases.intentionalError
         const v = {} // an object triggers the interesting branch
         const result = report.value(v)
         testUtil.log(result)
         result.should.match(/𝕋⚖️ \[\[failed to represent the value]] /)
         result.should.endWith(`(${cases.intentionalError.message})`)
+        testUtil.log()
+      })
+      it('returns a message when util.inspect fails with an error without a message', function () {
+        this.error = new Error()
+        const v = {} // an object triggers the interesting branch
+        const result = report.value(v)
+        testUtil.log(result)
+        result.should.match(/𝕋⚖️ \[\[failed to represent the value]] /)
+        result.should.endWith(`(${this.error})`)
         testUtil.log()
       })
     })
