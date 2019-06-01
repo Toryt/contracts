@@ -1,4 +1,5 @@
 --require must
+--require should
 --check-leaks
 --reporter mocha-reporter
 --globals __core-js_shared__
