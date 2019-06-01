@@ -29,7 +29,7 @@ describe('IV/ConditionMetaError', function () {
       // noinspection JSUnresolvedVariable
       ConditionMetaError.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
-      ConditionMetaError.prototype.condition.must.not.throw()
+      ConditionMetaError.prototype.condition.should.not.throw()
     })
   })
 

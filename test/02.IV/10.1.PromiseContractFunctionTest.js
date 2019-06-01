@@ -179,9 +179,9 @@ describe('IV/PromiseContractFunction', function () {
       expectException(exception)
       const stackLines = stack.split(os.EOL)
       const callStackLine = stackLines.indexOf('call stack:')
-      callStackLine.must.be.at.least(0)
+      callStackLine.should.be.greaterThanOrEqual(0)
       stackLines.splice(0, callStackLine + 1)
-      stackLines.length.must.be.at.least(1)
+      stackLines.length.should.be.greaterThanOrEqual(1)
       // For post- and exception conditions, we expect the top of the stack trace to be the contract function (it is at
       // fault).  For preconditions, we expect the top of the stack trace to be where we called the contract function,
       // but then we have no report of the implementation that was called in the report. The top will point to the line
@@ -241,9 +241,9 @@ describe('IV/PromiseContractFunction', function () {
         expectException(rejection)
         const stackLines = stack.split(os.EOL)
         const callStackLine = stackLines.indexOf('call stack:')
-        callStackLine.must.be.at.least(0)
+        callStackLine.should.be.greaterThanOrEqual(0)
         stackLines.splice(0, callStackLine + 1)
-        stackLines.length.must.be.at.least(1)
+        stackLines.length.should.be.greaterThanOrEqual(1)
         // For post- and exception conditions, we expect the top of the stack trace to be the contract function (it is at
         // fault).  For preconditions, we expect the top of the stack trace to be where we called the contract function,
         // but then we have no report of the implementation that was called in the report. The top will point to the line

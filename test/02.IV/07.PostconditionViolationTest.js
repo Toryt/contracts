@@ -31,7 +31,7 @@ describe('IV/PostconditionViolation', function () {
       // noinspection JSUnresolvedVariable
       PostconditionViolation.prototype.condition.should.be.a.Function()
       // noinspection JSUnresolvedVariable
-      PostconditionViolation.prototype.condition.must.not.throw()
+      PostconditionViolation.prototype.condition.should.not.throw()
     })
   })
 

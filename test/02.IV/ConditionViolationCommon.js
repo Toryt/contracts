@@ -445,7 +445,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               must(firstFailure).be.falsy() // any failure would give an exception
               must(metaError).be.falsy()
             } catch (exc) {
-              conditions.length.must.be.at.least(1) // otherwise, there can be no failure
+              conditions.length.should.be.greaterThanOrEqual(1) // otherwise, there can be no failure
               firstFailure.should.be.ok() // metaError or a false condition
               if (metaError) {
                 conditionMetaErrorCommon.expectProperties(
@@ -722,7 +722,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                     must(metaErrorCondition).be.falsy()
                   },
                   exc => {
-                    conditions.length.must.be.at.least(1) // otherwise, there can be no failure
+                    conditions.length.should.be.greaterThanOrEqual(1) // otherwise, there can be no failure
                     failures.should.not.be.empty()
                     if (metaErrorCondition) {
                       conditionMetaErrorCommon.expectProperties(

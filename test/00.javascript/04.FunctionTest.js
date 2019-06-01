@@ -139,8 +139,9 @@ describe('javascript/Function', function () {
         testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
         try {
           delete f.prototype
-          true.must.false() // unreachable
+          true.should.be.false() // unreachable
         } catch (err) {
+          err.should.be.an.Error()
           err.should.be.an.instanceof(TypeError)
         }
         Object.getOwnPropertyDescriptor(f, 'prototype').should.be.an.Object()
@@ -226,7 +227,7 @@ describe('javascript/Function', function () {
 
       try {
         const obj = new Arrow()
-        obj.must.not.be.an.object() // unreachable
+        obj.should.not.be.an.Object() // unreachable
       } catch (err) {
         err.should.be.an.Error()
         err.should.be.instanceof(TypeError)
