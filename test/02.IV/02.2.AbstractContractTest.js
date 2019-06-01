@@ -39,7 +39,7 @@ describe('IV/AbstractContract', function () {
       AbstractContract.bless.should.be.a.Function()
       AbstractContract.should.have.ownProperty('internalLocation')
       AbstractContract.internalLocation.should.be.an.Object()
-      ;('' + AbstractContract.internalLocation).must.be.equal('INTERNAL')
+      ;('' + AbstractContract.internalLocation).should.be.equal('INTERNAL')
       AbstractContract.should.have.ownProperty('falseCondition')
       AbstractContract.falseCondition.should.be.a.Function()
       AbstractContract.should.have.ownProperty('mustNotHappen')

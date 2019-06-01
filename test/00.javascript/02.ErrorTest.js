@@ -136,15 +136,15 @@ describe('javascript/Error', function () {
         lines.forEach((l, i) => {
           if (testUtil.environment === 'edge') {
             // Edge restarts stack trace on throw
-            l.must[i === 0 ? 'to' : 'not'].contain('throwAnError')
+            l.should[i === 0 ? 'it' : 'not'].containEql('throwAnError')
           } else {
-            l.must[i === 0 ? 'to' : 'not'].contain('createAnErrorOne')
+            l.should[i === 0 ? 'it' : 'not'].containEql('createAnErrorOne')
             if (testUtil.environment === 'safari') {
               // Safari EATS stack frames
-              l.must[i === 1 ? 'to' : 'not'].contain('throwAnError')
+              l.should[i === 1 ? 'it' : 'not'].containEql('throwAnError')
             } else {
-              l.must[i === 1 ? 'to' : 'not'].contain('createAnErrorTwo')
-              l.must[i === 2 ? 'to' : 'not'].contain('throwAnError')
+              l.should[i === 1 ? 'it' : 'not'].containEql('createAnErrorTwo')
+              l.should[i === 2 ? 'it' : 'not'].containEql('throwAnError')
             }
           }
         })
@@ -181,9 +181,9 @@ describe('javascript/Error', function () {
           lines.shift()
         }
         lines.forEach((l, i) => {
-          l.must[i === 0 ? 'to' : 'not'].contain('createAnErrorOne')
-          l.must[i === 1 ? 'to' : 'not'].contain('createAnErrorTwo')
-          l.must[i === 2 ? 'to' : 'not'].contain('throwAnError')
+          l.should[i === 0 ? 'it' : 'not'].containEql('createAnErrorOne')
+          l.should[i === 1 ? 'it' : 'not'].containEql('createAnErrorTwo')
+          l.should[i === 2 ? 'it' : 'not'].containEql('throwAnError')
         })
       }
     })
@@ -237,7 +237,7 @@ describe('javascript/Error', function () {
           lines.shift()
         }
         lines.forEach((l, i) => {
-          l.must[i >= 0 && i <= 2 ? 'to' : 'not'].contain('captureTheStackTrace')
+          l.should[i >= 0 && i <= 2 ? 'it' : 'not'].containEql('captureTheStackTrace')
         })
       }
     })

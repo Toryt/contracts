@@ -453,7 +453,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive function, rejection', async function () {
-      await defensiveIntegerSum(defensiveSumFastExcParameter).must.reject.to.error(Error, integerMessage)
+      await defensiveIntegerSum(defensiveSumFastExcParameter).should.be.rejectedWith(Error, { message: integerMessage })
     })
     it('works with a defensive function, rejection, testing conditions', async function () {
       defensiveIntegerSum.contract.verifyPostconditions = true
@@ -468,11 +468,15 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       }
     })
     it('works with a defensive method, rejection', async function () {
-      await self.defensiveIntegerSum(defensiveSumFastExcParameter).must.reject.to.error(Error, integerMessage)
+      await self
+        .defensiveIntegerSum(defensiveSumFastExcParameter)
+        .should.be.rejectedWith(Error, { message: integerMessage })
     })
     it('works with a defensive method, rejection, testing conditions', async function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
-      await self.defensiveIntegerSum(defensiveSumFastExcParameter).must.reject.to.error(Error, integerMessage)
+      await self
+        .defensiveIntegerSum(defensiveSumFastExcParameter)
+        .should.be.rejectedWith(Error, { message: integerMessage })
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive function, rejecting', async function () {

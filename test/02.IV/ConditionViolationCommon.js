@@ -74,7 +74,7 @@ function expectInvariants (subject) {
 // noinspection ParameterNamingConventionJS
 function expectProperties (exception, Type, contractFunction, condition, self, args) {
   common.expectProperties.apply(undefined, arguments)
-  exception.must.be.frozen()
+  Object.isFrozen(exception).should.be.true()
 }
 
 function expectConstructorPost (result, contractFunction, condition, self, args) {

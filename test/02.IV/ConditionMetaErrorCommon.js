@@ -27,7 +27,7 @@ const should = require('should')
 function expectInvariants (subject) {
   subject.should.be.an.instanceof(ConditionMetaError)
   if (subject.error) {
-    subject.error.must.be.frozen()
+    Object.isFrozen(subject.error).should.be.true()
   }
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'error')
