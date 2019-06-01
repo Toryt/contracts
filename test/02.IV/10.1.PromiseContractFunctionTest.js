@@ -538,7 +538,8 @@ describe('IV/PromiseContractFunction', function () {
           true.should.be.false()
         },
         err => {
-          err.must.be.error(Error, positiveMessage)
+          err.should.be.an.Error()
+          err.message.should.equal(positiveMessage)
         }
       )
     })
@@ -552,7 +553,8 @@ describe('IV/PromiseContractFunction', function () {
         err => {
           defensiveIntegerSum.contract.verifyPostconditions = false
           testUtil.log(err)
-          err.must.be.error(Error, positiveMessage)
+          err.should.be.an.Error()
+          err.message.should.equal(positiveMessage)
         }
       )
     })
@@ -562,7 +564,8 @@ describe('IV/PromiseContractFunction', function () {
           true.should.be.false()
         },
         err => {
-          err.must.be.error(Error, positiveMessage)
+          err.should.be.an.Error()
+          err.message.should.equal(positiveMessage)
         }
       )
     })
@@ -576,7 +579,8 @@ describe('IV/PromiseContractFunction', function () {
         err => {
           defensiveIntegerSum.contract.verifyPostconditions = false
           testUtil.log(err)
-          err.must.be.error(Error, positiveMessage)
+          err.should.be.an.Error()
+          err.message.should.equal(positiveMessage)
         }
       )
     })
