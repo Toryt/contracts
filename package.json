@@ -19,7 +19,7 @@
     "preversion": "npm run test",
     "update_credits": "credits . --reporter markdown > CREDITS.md",
     "upgrade": "rm -Rf node_modules package-lock.json && npm install && npm test",
-    "jsdoc": "jsdoc lib/**/*.js"
+    "jsdoc": "jsdoc -c jsdoc.json"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,21 @@
+{
+  "plugins": ["plugins/markdown", "plugins/underscore"],
+  "source": {
+    "include": ["lib"],
+    "includePattern": ".+\\.js"
+  },
+  "tags": {
+    "allowUnknownTags": false,
+    "dictionaries": ["jsdoc"]
+  },
+  "templates": { "default": { "outputSourceFiles": false } },
+  "opts": {
+    "encoding": "utf8",
+    "destination": "./jsdoc/",
+    "recurse": true,
+    "pedantic": true,
+    "readme": "README.md",
+    "verbose": false
+  },
+  "markdown": { "idInHeadings": true }
+}

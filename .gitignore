@@ -104,3 +104,4 @@ node_modules
 coverage
 contracts.js
 browser/test/suite.js
+jsdoc
