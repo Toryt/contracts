@@ -29,17 +29,24 @@ describe('mocha this', function () {
   })
 
   it('works when a precondition violation occurs when a function is called with a mocha fixture as this', function () {
-    try {
-      this.subject()
-      true.should.be.false()
-    } catch (err) {
-      // logging the error produces the same problem, because console.log uses util.inspect too
-      console.log('' + err)
-      const stack = err.stack
-      console.log(stack)
-      stack.should.match(/𝕋⚖️ \[\[failed to represent the value]]/)
-      stack.should.match(/\(Converting circular structure to JSON\)/)
-      console.log()
+    // noinspection JSUnresolvedVariable
+    if (this.test.intellij_test_node) {
+      try {
+        this.subject()
+        true.should.be.false()
+      } catch (err) {
+        // logging the error produces the same problem, because console.log uses util.inspect too
+        console.log('' + err)
+        const details = err.getDetails()
+        console.log(details)
+        details.should.match(/𝕋⚖️ \[\[failed to represent the value]]/)
+        details.should.match(/\(Converting circular structure to JSON\)/)
+        console.log()
+      }
+    } else {
+      console.log(
+        'skipping a test that verifies the workaround to a bug that only occurs in IntelliJ or with mocha-reporter'
+      )
     }
   })
 })
