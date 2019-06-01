@@ -123,9 +123,9 @@ function expectInvariants (/* AbstractContract */ subject) {
     abstract()
   } catch (err) {
     const stack = err.stack
-    stack.must.contain(AbstractContract.AbstractError.message)
-    stack.must.contain(AbstractContract.AbstractError.name)
-    stack.split(eol.stack)[0].must.contain('abstract')
+    stack.should.containEql(AbstractContract.AbstractError.message)
+    stack.should.containEql(AbstractContract.AbstractError.name)
+    stack.split(eol.stack)[0].should.containEql('abstract')
     testUtil.log(stack)
   }
 }

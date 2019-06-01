@@ -198,9 +198,9 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
                 : null
       common.should.be.ok()
       common.expectInvariants(exception)
-      exception.message.must.contain(func.name)
+      exception.message.should.containEql(func.name)
       const stack = exception.stack
-      stack.must.contain(func.name)
+      stack.should.containEql(func.name)
       testUtil.showStack(exception)
       testUtil.showStack(exception)
       expectException(exception)
@@ -222,11 +222,11 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       // but there is no such thing for pre-, post- or exception conditions.
       if (testUtil.environment !== 'safari') {
         if (!recursive) {
-          stackLines[0].must.contain('callAndExpectException')
+          stackLines[0].should.containEql('callAndExpectException')
         } else {
-          stackLines[0].must.contain(recursive)
-          stackLines[2].must.contain(recursive)
-          stackLines[4].must.contain('callAndExpectException')
+          stackLines[0].should.containEql(recursive)
+          stackLines[2].should.containEql(recursive)
+          stackLines[4].should.containEql('callAndExpectException')
         }
       }
     }
@@ -333,7 +333,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
-        a.f.name.must.contain(`${AbstractContract.namePrefix} n => {`)
+        a.f.name.should.containEql(`${AbstractContract.namePrefix} n => {`)
       })
     })
   })

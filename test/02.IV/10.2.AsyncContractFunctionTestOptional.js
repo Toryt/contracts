@@ -205,9 +205,9 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
                 : null
       common.should.be.ok()
       common.expectInvariants(rejection)
-      rejection.message.must.contain(func.name)
+      rejection.message.should.containEql(func.name)
       const stack = rejection.stack
-      stack.must.contain(func.name)
+      stack.should.containEql(func.name)
       testUtil.showStack(rejection)
       expectException(rejection)
       const stackLines = stack.split(stackEOL)
@@ -366,7 +366,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     })
     it(`self.fibonacci has the right name`, function () {
       testUtil.log(`self.fibonacci.name: ${self.fibonacci.name}`)
-      self.fibonacci.name.must.contain(`${AbstractContract.namePrefix} async function (n) {`)
+      self.fibonacci.name.should.containEql(`${AbstractContract.namePrefix} async function (n) {`)
     })
     it('fibonacciWrong has the right name', function () {
       testUtil.log(`fibonacciWrong.name: %s`, fibonacciWrong.name)
@@ -389,9 +389,9 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
         if (testUtil.environment !== 'safari') {
-          a.f.name.must.contain(`${AbstractContract.namePrefix} async n => {`)
+          a.f.name.should.containEql(`${AbstractContract.namePrefix} async n => {`)
         } else {
-          a.f.name.must.contain(`${AbstractContract.namePrefix} async function n => {`)
+          a.f.name.should.containEql(`${AbstractContract.namePrefix} async function n => {`)
         }
       })
     })
@@ -462,7 +462,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         false.should.be.true()
       } catch (err) {
         err.should.be.an.Error()
-        err.message.must.contain(integerMessage)
+        err.message.should.containEql(integerMessage)
       } finally {
         defensiveIntegerSum.contract.verifyPostconditions = false
       }

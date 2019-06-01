@@ -113,10 +113,10 @@ describe('javascript/Error', function () {
         stack.should.be.ok()
         stack.should.be.a.String()
         testUtil.log('err.stack: %s', stack)
-        stack.must.contain('throwAnError')
+        stack.should.containEql('throwAnError')
         if (testUtil.environment !== 'edge') {
           // Edge restarts stack trace on throw
-          stack.must.contain('createAnError')
+          stack.should.containEql('createAnError')
         }
         // and be on the first line
         const lines = err.stack.split('\n')
@@ -164,7 +164,7 @@ describe('javascript/Error', function () {
       } catch (err) {
         testUtil.log('err.stack: %s', err.stack)
         err.stack.should.be.ok()
-        err.stack.must.contain('createAnError')
+        err.stack.should.containEql('createAnError')
         // and be on the first line
         const lines = err.stack.split('\n')
         if (lines[0] === err.toString()) {
@@ -218,9 +218,9 @@ describe('javascript/Error', function () {
         err2.stack.should.be.ok()
         err2.stack.must.not.contain('createAnError')
         err2.stack.must.not.contain('throwAnError')
-        err2.stack.must.contain('captureTheStackTrace1')
-        err2.stack.must.contain('captureTheStackTrace2')
-        err2.stack.must.contain('captureTheStackTrace3')
+        err2.stack.should.containEql('captureTheStackTrace1')
+        err2.stack.should.containEql('captureTheStackTrace2')
+        err2.stack.should.containEql('captureTheStackTrace3')
         // and be on the first line
         const lines = err2.stack.split('\n')
         if (lines[0] === err2.toString()) {

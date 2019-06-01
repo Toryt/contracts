@@ -28,7 +28,7 @@ function expectInvariants (subject) {
   subject.should.be.an.instanceof(ExceptionConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'exception')
-  subject.stack.must.contain(report.extensiveThrown(subject.exception))
+  subject.stack.should.containEql(report.extensiveThrown(subject.exception))
 }
 
 function expectConstructorPost (executionResult, contractFunction, condition, self, args, exception) {
@@ -46,7 +46,7 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
 function expectDetailsPost (subject, result) {
   // noinspection JSUnresolvedFunction
   common.expectDetailsPost(subject, result)
-  result.must.contain(subject.exception)
+  result.should.containEql(subject.exception)
 }
 
 const exceptionCaseGenerators = testUtil.anyCasesGenerators('exception')
