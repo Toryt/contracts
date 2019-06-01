@@ -48,4 +48,6 @@ const any = [
   })()
 ]
 
-module.exports = { any }
+const intentionalError = new Error('This condition intentionally fails.')
+
+module.exports = { any, intentionalError }

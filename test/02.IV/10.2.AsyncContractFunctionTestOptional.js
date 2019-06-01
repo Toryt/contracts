@@ -31,6 +31,7 @@ const postconditionViolationCommon = require('./PostconditionViolationCommon')
 const exceptionConditionViolationCommon = require('./ExceptionConditionViolationCommon')
 const must = require('must')
 const os = require('os')
+const cases = require('../_cases')
 
 /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
    specific for ContractFunction: we test extensively whether the contract function works as expected here.
@@ -259,12 +260,10 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     })
   }
 
-  const intentionalError = new Error('This condition intentionally fails.')
-
   const contractWithAFailingPre = new PromiseContract({
     pre: [
       function () {
-        throw intentionalError
+        throw cases.intentionalError
       }
     ]
   })
@@ -286,7 +285,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         exception.args[1].must.equal(extraArgs[0])
         AbstractContract.isAContractFunction(exception.args[2]).must.be.true()
       }
-      exception.error.must.equal(intentionalError)
+      exception.error.must.equal(cases.intentionalError)
     })
   }
 
@@ -654,7 +653,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         const contractWithAFailingPost = new PromiseContract({
           post: [
             () => {
-              throw intentionalError
+              throw cases.intentionalError
             }
           ]
         })
@@ -702,7 +701,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         const contractWithARejectingPost = new PromiseContract({
           post: [
             async () => {
-              throw intentionalError
+              throw cases.intentionalError
             }
           ]
         })
@@ -807,7 +806,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       const contractWithAFailingExceptionCondition = new PromiseContract({
         exception: [
           () => {
-            throw intentionalError
+            throw cases.intentionalError
           }
         ]
       })
