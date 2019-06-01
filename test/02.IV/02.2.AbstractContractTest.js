@@ -102,7 +102,7 @@ describe('IV/AbstractContract', function () {
             ', and all 3 properties are frozen, and it has the expected name',
           function () {
             const candidate = common.createCandidateContractFunction(AbstractContract, null, 'location', v)
-            AbstractContract.isAGeneralContractFunction(candidate).must.be.truthy()
+            AbstractContract.isAGeneralContractFunction(candidate).should.be.ok()
           }
         )
       })
@@ -138,7 +138,7 @@ describe('IV/AbstractContract', function () {
   describe('AbstractContract.falseCondition', function () {
     it('always returns false', function () {
       const result = AbstractContract.falseCondition()
-      result.must.be.false()
+      result.should.be.false()
     })
   })
 

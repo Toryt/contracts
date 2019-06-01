@@ -55,12 +55,12 @@ describe('_private/is', function () {
       .forEach(s => {
         it(`says no to ${s}`, function () {
           const result = is.stackLocation(s)
-          result.must.be.false()
+          result.should.be.false()
         })
       })
     it(`says no to ''`, function () {
       const result = is.stackLocation('')
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to 'abc'`, function () {
       const result = is.stackLocation('abc')
@@ -70,7 +70,7 @@ describe('_private/is', function () {
       const result = is.stackLocation(`this is a 
 multi-line
 string`)
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to all lines of a stack trace`, function () {
       // sadly, also to the message
@@ -94,12 +94,12 @@ string`)
       .forEach(s => {
         it(`says no to ${s}`, function () {
           const result = is.stack(s)
-          result.must.be.false()
+          result.should.be.false()
         })
       })
     it(`says no to ''`, function () {
       const result = is.stack('')
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to 'abc'`, function () {
       const result = is.stack('abc')
@@ -118,7 +118,7 @@ multi-line
 string, with a
 
 blank line`)
-      result.must.be.false()
+      result.should.be.false()
     })
     it(`says yes to a stack trace`, function () {
       const message = 'This is an error to get a platform dependent stack'
@@ -155,7 +155,7 @@ blank line`)
             'and it is enumerable, not configurable and not writable',
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            result.must.be.truthy()
+            result.should.be.ok()
           }
         )
       } else {
@@ -223,7 +223,7 @@ blank line`)
             'getter, but not a setter',
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            result.must.be.truthy()
+            result.should.be.ok()
           }
         )
       } else {

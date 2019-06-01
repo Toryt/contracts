@@ -95,7 +95,7 @@ describe('IV/Contract', function () {
       const contract = new PromiseContract({})
       const contractFunction = contract.implementation(() => {})
       const result = Contract.isAContractFunction(contractFunction)
-      result.must.be.false()
+      result.should.be.false()
     })
   })
 })

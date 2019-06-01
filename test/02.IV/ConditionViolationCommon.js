@@ -170,7 +170,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             }
             try {
               subject.verify(contractFunction, condition, self, doctoredArgs)
-              outcome.must.be.truthy() // otherwise, we get an exception
+              outcome.should.be.ok() // otherwise, we get an exception
               must(metaError).be.falsy()
             } catch (exc) {
               if (metaError) {
@@ -191,7 +191,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               }
             } finally {
               must(condition.self).equal(self)
-              condition.args.must.be.truthy()
+              condition.args.should.be.ok()
               isArguments(condition.args)
               // doctoredArgs might be arguments, or Array
               Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
@@ -228,7 +228,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               .verifyPromise(contractFunction, condition, self, doctoredArgs)
               .then(
                 () => {
-                  outcome.must.be.truthy() // otherwise, we get an exception
+                  outcome.should.be.ok() // otherwise, we get an exception
                   must(metaError).be.falsy()
                 },
                 exc => {
@@ -260,7 +260,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               )
               .then(() => {
                 must(condition.self).equal(self)
-                condition.args.must.be.truthy()
+                condition.args.should.be.ok()
                 isArguments(condition.args)
                 // doctoredArgs might be arguments, or Array
                 Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
@@ -286,7 +286,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               .then(outcome => {
                 return subject.verifyPromise(contractFunction, condition, self, doctoredArgs).then(
                   () => {
-                    outcome.must.be.truthy() // otherwise, we get an exception
+                    outcome.should.be.ok() // otherwise, we get an exception
                   },
                   exc => {
                     // ConditionViolation
@@ -324,7 +324,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               })
               .then(() => {
                 must(condition.self).equal(self)
-                condition.args.must.be.truthy()
+                condition.args.should.be.ok()
                 isArguments(condition.args)
                 // doctoredArgs might be arguments, or Array
                 Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
@@ -446,7 +446,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               must(metaError).be.falsy()
             } catch (exc) {
               conditions.length.must.be.at.least(1) // otherwise, there can be no failure
-              firstFailure.must.be.truthy() // metaError or a false condition
+              firstFailure.should.be.ok() // metaError or a false condition
               if (metaError) {
                 conditionMetaErrorCommon.expectProperties(
                   exc,
@@ -473,7 +473,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               for (let j = 0; j <= firstFailureIndex; j++) {
                 must(conditions[j].self).equal(self)
                 const appliedArgs = conditions[j].args
-                appliedArgs.must.be.truthy()
+                appliedArgs.should.be.ok()
                 isArguments(appliedArgs)
                 if (!args) {
                   appliedArgs.must.be.empty()
@@ -752,7 +752,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                   conditions.forEach(c => {
                     must(c.self).equal(self)
                     const appliedArgs = c.args
-                    appliedArgs.must.be.truthy()
+                    appliedArgs.should.be.ok()
                     isArguments(appliedArgs)
                     if (!args) {
                       appliedArgs.must.be.empty()

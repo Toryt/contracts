@@ -169,7 +169,7 @@ describe('javascript/syntax', function () {
       /* ;'s necessary with this strange syntax */
       ;(instance instanceof Derived).should.be.true()
       ;(instance instanceof Base).should.be.true()
-      ;(instance instanceof Unrelated).must.be.false()
+      ;(instance instanceof Unrelated).should.be.false()
       ;(instance instanceof Object).should.be.true()
     })
     it('is not true for the prototype itself', function () {
@@ -186,18 +186,18 @@ describe('javascript/syntax', function () {
       // noinspection FunctionNamingConventionJS
       function Unrelated () {}
 
-      ;(Derived.prototype instanceof Derived).must.be.false()
+      ;(Derived.prototype instanceof Derived).should.be.false()
       /* ;'s necessary with this strange syntax */
       ;(Derived.prototype instanceof Base).should.be.true()
-      ;(Derived.prototype instanceof Unrelated).must.be.false()
+      ;(Derived.prototype instanceof Unrelated).should.be.false()
       ;(Derived.prototype instanceof Object).should.be.true()
-      ;(Base.prototype instanceof Derived).must.be.false()
-      ;(Base.prototype instanceof Base).must.be.false()
-      ;(Base.prototype instanceof Unrelated).must.be.false()
+      ;(Base.prototype instanceof Derived).should.be.false()
+      ;(Base.prototype instanceof Base).should.be.false()
+      ;(Base.prototype instanceof Unrelated).should.be.false()
       ;(Base.prototype instanceof Object).should.be.true()
-      ;(Unrelated.prototype instanceof Derived).must.be.false()
-      ;(Unrelated.prototype instanceof Base).must.be.false()
-      ;(Unrelated.prototype instanceof Unrelated).must.be.false()
+      ;(Unrelated.prototype instanceof Derived).should.be.false()
+      ;(Unrelated.prototype instanceof Base).should.be.false()
+      ;(Unrelated.prototype instanceof Unrelated).should.be.false()
       ;(Unrelated.prototype instanceof Object).should.be.true()
     })
   })

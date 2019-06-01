@@ -216,7 +216,7 @@ function generateIAGCFTests (ContractConstructor, isAXXXContractFunction) {
       'properties are frozen, and it has the expected name',
     function () {
       const candidate = createCandidateContractFunction(ContractConstructor)
-      isAXXXContractFunction.call(ContractConstructor, candidate).must.be.truthy()
+      isAXXXContractFunction.call(ContractConstructor, candidate).should.be.ok()
     }
   )
 
@@ -294,7 +294,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
     it('says yes if the argument is a general contract function for the contract', function () {
       const subject = oneSubjectGenerator()
       const f = createCandidateContractFunction(subject.constructor, null, 'contract', subject)
-      subject.isImplementedBy(f).must.be.truthy()
+      subject.isImplementedBy(f).should.be.ok()
       self.expectInvariants(subject)
     })
     notAFunctionNorAContract.concat(['function() {}']).forEach(function (thing) {

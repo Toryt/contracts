@@ -45,7 +45,7 @@ describe('javascript/Function', function () {
         return 'just a function that returns ' + p
       }
 
-      testF.must.have.property('prototype')
+      testF.should.have.property('prototype')
       const boundThis = { description: 'An object to bind to' }
       const boundP = 'a string parameter'
       const boundF = testF.bind(boundThis, boundP)
@@ -73,7 +73,7 @@ describe('javascript/Function', function () {
           const boundPA = 'a string parameter'
           const boundPB = 'another string parameter'
 
-          TestC.must.have.property('prototype')
+          TestC.should.have.property('prototype')
 
           const testCInstance = new TestC(boundPA, boundPB)
           testCInstance.must.be.instanceof(TestC)
@@ -144,8 +144,8 @@ describe('javascript/Function', function () {
           err.must.be.an.instanceof(TypeError)
         }
         Object.getOwnPropertyDescriptor(f, 'prototype').should.be.an.Object()
-        Object.getOwnPropertyDescriptor(f, 'prototype').enumerable.must.be.false()
-        Object.getOwnPropertyDescriptor(f, 'prototype').configurable.must.be.false()
+        Object.getOwnPropertyDescriptor(f, 'prototype').enumerable.should.be.false()
+        Object.getOwnPropertyDescriptor(f, 'prototype').configurable.should.be.false()
         testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(f, 'prototype')))
       })
     })

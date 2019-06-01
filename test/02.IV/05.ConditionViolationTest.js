@@ -46,8 +46,8 @@ describe('IV/ConditionViolation', function () {
           // noinspection JSUnresolvedFunction, JSUnresolvedVariable
           common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
           common.expectInvariants(result)
-          result.must.not.have.ownProperty('message')
-          result.must.not.have.ownProperty('stack')
+          result.should.not.have.ownProperty('message')
+          result.should.not.have.ownProperty('stack')
           testUtil.log('result.stack:\n%s', result.stack)
         })
       })

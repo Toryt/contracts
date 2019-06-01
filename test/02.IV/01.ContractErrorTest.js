@@ -33,7 +33,7 @@ describe('IV/ContractError', function () {
       testUtil.log('result.toString():\n%s', result.toString())
       common.expectConstructorPost(result, ContractError.message, rawStack)
       common.expectInvariants(result)
-      result.must.not.have.ownProperty('message')
+      result.should.not.have.ownProperty('message')
       testUtil.log('result.stack:\n%s', result.stack)
     })
     it('can get a message set', function () {

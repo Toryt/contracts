@@ -52,7 +52,7 @@ describe('_private/report', function () {
       result.must.not.contain(os.EOL)
       result.length.must.be.at.most(report.maxLengthOfConciseRepresentation)
       result.trim().should.equal(result)
-      isAConciseVersion(expected, result).must.be.truthy()
+      isAConciseVersion(expected, result).should.be.ok()
     }
 
     const prefix = 'This is a test prefix'

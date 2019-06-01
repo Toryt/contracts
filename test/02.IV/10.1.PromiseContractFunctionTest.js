@@ -158,7 +158,7 @@ describe('IV/PromiseContractFunction', function () {
       endsNominally = true
     } catch (exception) {
       testUtil.log('' + exception)
-      exception.must.be.truthy()
+      exception.should.be.ok()
       const common =
         exception instanceof ConditionMetaError
           ? conditionMetaErrorCommon
@@ -170,7 +170,7 @@ describe('IV/PromiseContractFunction', function () {
               : exception instanceof ExceptionConditionViolation
                 ? exceptionConditionViolationCommon
                 : null
-      common.must.be.truthy()
+      common.should.be.ok()
       common.expectInvariants(exception)
       exception.message.must.contain(func.name)
       const stack = exception.stack
@@ -203,7 +203,7 @@ describe('IV/PromiseContractFunction', function () {
         }
       }
     }
-    endsNominally.must.be.false()
+    endsNominally.should.be.false()
   }
 
   function callAndExpectRejection (self, func, parameter, expectException, recursive) {
@@ -218,11 +218,11 @@ describe('IV/PromiseContractFunction', function () {
     }
     return promise
       .then(() => {
-        true.must.be.false()
+        true.should.be.false()
       })
       .catch(rejection => {
         testUtil.log('' + rejection)
-        rejection.must.be.truthy()
+        rejection.should.be.ok()
         const common =
           rejection instanceof ConditionMetaError
             ? conditionMetaErrorCommon
@@ -232,7 +232,7 @@ describe('IV/PromiseContractFunction', function () {
               : rejection instanceof ExceptionConditionViolation
                 ? exceptionConditionViolationCommon
                 : null
-        common.must.be.truthy()
+        common.should.be.ok()
         common.expectInvariants(rejection)
         rejection.message.must.contain(func.name)
         const stack = rejection.stack
@@ -535,7 +535,7 @@ describe('IV/PromiseContractFunction', function () {
     it('works with a defensive function, rejecting', function () {
       return defensiveIntegerSum(defensiveSumRejectParameter).then(
         () => {
-          true.must.be.false()
+          true.should.be.false()
         },
         err => {
           err.must.be.error(Error, positiveMessage)
@@ -547,7 +547,7 @@ describe('IV/PromiseContractFunction', function () {
       return defensiveIntegerSum(defensiveSumRejectParameter).then(
         () => {
           defensiveIntegerSum.contract.verifyPostconditions = false
-          true.must.be.false()
+          true.should.be.false()
         },
         err => {
           defensiveIntegerSum.contract.verifyPostconditions = false
@@ -559,7 +559,7 @@ describe('IV/PromiseContractFunction', function () {
     it('works with a defensive method, rejecting', function () {
       return self.defensiveIntegerSum(defensiveSumRejectParameter).then(
         () => {
-          true.must.be.false()
+          true.should.be.false()
         },
         err => {
           err.must.be.error(Error, positiveMessage)
@@ -571,7 +571,7 @@ describe('IV/PromiseContractFunction', function () {
       return self.defensiveIntegerSum(defensiveSumRejectParameter).then(
         () => {
           defensiveIntegerSum.contract.verifyPostconditions = false
-          true.must.be.false()
+          true.should.be.false()
         },
         err => {
           defensiveIntegerSum.contract.verifyPostconditions = false
@@ -862,12 +862,12 @@ describe('IV/PromiseContractFunction', function () {
             .catch(() => {
               fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
               fastDefensiveIntegerSumWrong.contract.verify = true
-              true.must.be.false()
+              true.should.be.false()
             })
             .then(() => {
               fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
               fastDefensiveIntegerSumWrong.contract.verify = true
-              true.must.be.false()
+              true.should.be.false()
             })
         } catch (err) {
           fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
@@ -879,10 +879,10 @@ describe('IV/PromiseContractFunction', function () {
         try {
           return fastDefensiveIntegerSumWrong(fastExceptionParameter)
             .catch(() => {
-              true.must.be.false()
+              true.should.be.false()
             })
             .then(() => {
-              true.must.be.false()
+              true.should.be.false()
             })
         } catch (err) {
           err.should.equal(wrongException)
@@ -934,7 +934,7 @@ describe('IV/PromiseContractFunction', function () {
           })()
           contractWithAFailingFastExceptionCondition.verifyPostconditions = false
           contractWithAFailingFastExceptionCondition.verify = true
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           contractWithAFailingFastExceptionCondition.verifyPostconditions = false
           contractWithAFailingFastExceptionCondition.verify = true
@@ -947,7 +947,7 @@ describe('IV/PromiseContractFunction', function () {
           const ignore = contractWithAFailingFastExceptionCondition.implementation(() => {
             throw anExceptedException
           })()
-          true.must.be.false()
+          true.should.be.false()
         } catch (err) {
           err.should.equal(anExceptedException)
         }
@@ -994,7 +994,7 @@ describe('IV/PromiseContractFunction', function () {
           () => {
             defensiveIntegerSumWrong.contract.verifyPostconditions = false
             defensiveIntegerSumWrong.contract.verify = true
-            true.must.be.false()
+            true.should.be.false()
           },
           err => {
             defensiveIntegerSumWrong.contract.verifyPostconditions = false
@@ -1006,7 +1006,7 @@ describe('IV/PromiseContractFunction', function () {
       it('does not fail when a simple exception condition is violated when verifyPostcondition is false', function () {
         return defensiveIntegerSumWrong(exceptionParameter).then(
           () => {
-            true.must.be.false()
+            true.should.be.false()
           },
           err => {
             err.should.equal(wrongException)
@@ -1051,7 +1051,7 @@ describe('IV/PromiseContractFunction', function () {
         return contractWithAFailingExceptionCondition
           .implementation(() => Promise.reject(anExceptedException))()
           .then(() => {
-            true.must.be.false()
+            true.should.be.false()
           })
           .catch(err => {
             contractWithAFailingExceptionCondition.verifyPostconditions = false
@@ -1063,7 +1063,7 @@ describe('IV/PromiseContractFunction', function () {
         return contractWithAFailingExceptionCondition
           .implementation(() => Promise.reject(anExceptedException))()
           .then(() => {
-            true.must.be.false()
+            true.should.be.false()
           })
           .catch(err => {
             contractWithAFailingExceptionCondition.verifyPostconditions = false
