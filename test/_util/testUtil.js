@@ -16,7 +16,7 @@ limitations under the License.
 
 'use strict'
 
-const must = require('must')
+const should = require('should')
 const os = require('os')
 
 // noinspection FunctionNamingConventionJS
@@ -41,15 +41,15 @@ function x () {
 
 function expectOwnFrozenProperty (subject, propertyName) {
   const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
-  propertyDescriptor.must.be.truthy()
-  propertyDescriptor.enumerable.must.be.true()
-  propertyDescriptor.configurable.must.be.false()
-  propertyDescriptor.writable.must.be.false()
+  propertyDescriptor.should.be.ok()
+  propertyDescriptor.enumerable.should.be.true()
+  propertyDescriptor.configurable.should.be.false()
+  propertyDescriptor.writable.should.be.false()
   const failFunction = function () {
     // noinspection MagicNumberJS
     subject[propertyName] = 42 + ' some outlandish other value'
   }
-  failFunction.must.throw(TypeError)
+  failFunction.should.throw(TypeError)
 }
 
 // noinspection FunctionNamingConventionJS
@@ -67,12 +67,12 @@ function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
 function expectDerivedPropertyOnAPrototype (subject, propertyName, configurable) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
   const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, propertyName)
-  propertyDescriptor.must.be.truthy()
-  propertyDescriptor.enumerable.must.be.true()
-  propertyDescriptor.configurable.must.equal(configurable)
-  propertyDescriptor.must.not.have.property('writable')
-  propertyDescriptor.get.must.be.a.function()
-  must(propertyDescriptor.set).be.falsy()
+  propertyDescriptor.should.be.ok()
+  propertyDescriptor.enumerable.should.be.true()
+  propertyDescriptor.configurable.should.equal(configurable)
+  propertyDescriptor.should.not.have.property('writable')
+  propertyDescriptor.get.should.be.a.Function()
+  should(propertyDescriptor.set).not.be.ok()
 }
 
 // noinspection FunctionNamingConventionJS
@@ -92,22 +92,22 @@ function expectFrozenPropertyOnAPrototype (subject, propertyName) {
 
 // noinspection FunctionNamingConventionJS
 function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (subject, propName, privatePropName) {
-  subject.must.have.ownProperty(privatePropName) // array not shared
-  subject[privatePropName].must.be.an.array()
+  subject.should.have.ownProperty(privatePropName) // array not shared
+  subject[privatePropName].should.be.an.Array()
   this.expectOwnFrozenProperty(subject, privatePropName)
-  subject[propName].must.be.an.array()
+  subject[propName].should.be.an.Array()
   this.expectFrozenDerivedPropertyOnAPrototype(subject, propName)
   const failFunction = function () {
     // noinspection MagicNumberJS
     subject[propName] = 42 + ' some outlandish other value'
   }
-  failFunction.must.throw(TypeError)
+  failFunction.should.throw(TypeError)
 }
 
 function expectToBeArrayOfFunctions (a) {
-  a.must.be.an.array()
+  a.should.be.an.Array()
   a.forEach(element => {
-    element.must.be.a.function()
+    element.should.be.a.Function()
   })
 }
 
@@ -258,8 +258,8 @@ function trimLineAndColumnPattern (stackLine) {
 }
 
 function mustBeCallerLocation (actual, expected) {
-  expected.must.be.a.string()
-  trimLineAndColumnPattern(expected).must.equal(trimLineAndColumnPattern(actual))
+  expected.should.be.a.String()
+  trimLineAndColumnPattern(expected).should.equal(trimLineAndColumnPattern(actual))
 }
 
 const env = environment()
