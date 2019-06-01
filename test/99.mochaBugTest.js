@@ -137,4 +137,8 @@ describe('mocha this', function () {
  *
  * Mocha is ok
  * mocha-reporter has a bug
+ *
+ * So, these are 2 separate issues, one in IntelliJ, and one in mocha reporter, both falling back to JSON.stringify
+ * problems with circular data structures. For intellij, in there own code. For mocha reporter, in the error that is
+ * represented, deep down in node_modules/format-error/index.js, line 36, `makeSimple`.
  */
