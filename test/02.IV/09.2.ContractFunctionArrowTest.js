@@ -250,11 +250,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   }
 
   const contractWithAFailingPre = new Contract({
-    pre: [
-      () => {
-        throw cases.intentionalError
-      }
-    ]
+    pre: [cases.intentionallyFailingArrow]
   })
 
   function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
@@ -463,11 +459,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     })
     describe('meta-error', function () {
       const contractWithAFailingPost = new Contract({
-        post: [
-          () => {
-            throw cases.intentionalError
-          }
-        ]
+        post: [cases.intentionallyFailingArrow]
       })
 
       it('fails with a meta-error when a postcondition is kaput', function () {
@@ -560,11 +552,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
       const contractWithAFailingExceptionCondition = new Contract({
-        exception: [
-          () => {
-            throw cases.intentionalError
-          }
-        ]
+        exception: [cases.intentionallyFailingArrow]
       })
 
       const anExceptedException = 'This exception is expected.'

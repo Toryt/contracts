@@ -293,11 +293,7 @@ describe('IV/ContractFunction', function () {
   }
 
   const contractWithAFailingPre = new Contract({
-    pre: [
-      function () {
-        throw cases.intentionalError
-      }
-    ]
+    pre: [cases.intentionallyFailingFunction]
   })
 
   function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
@@ -648,11 +644,7 @@ describe('IV/ContractFunction', function () {
     })
     describe('meta-error', function () {
       const contractWithAFailingPost = new Contract({
-        post: [
-          function () {
-            throw cases.intentionalError
-          }
-        ]
+        post: [cases.intentionallyFailingFunction]
       })
       it('fails with a meta-error when a postcondition is kaput', function () {
         // noinspection JSUnresolvedFunction
@@ -750,11 +742,7 @@ describe('IV/ContractFunction', function () {
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
       const contractWithAFailingExceptionCondition = new Contract({
-        exception: [
-          function () {
-            throw cases.intentionalError
-          }
-        ]
+        exception: [cases.intentionallyFailingFunction]
       })
       const anExceptedException = 'This exception is expected.'
       it('fails with a meta-error when an exception condition is kaput', function () {

@@ -50,4 +50,28 @@ const any = [
 
 const intentionalError = new Error('This condition intentionally fails.')
 
-module.exports = { any, intentionalError }
+function intentionallyFailingFunction () {
+  throw intentionalError
+}
+
+const intentionallyFailingArrow = () => {
+  throw intentionalError
+}
+
+const intentionallyFailingAsyncArrow = async () => {
+  throw intentionalError
+}
+
+const intentionallyRejectedPromise = Promise.reject(intentionalError)
+
+const intentionallyRejectingArrow = () => intentionallyRejectedPromise
+
+module.exports = {
+  any,
+  intentionalError,
+  intentionallyFailingFunction,
+  intentionallyFailingArrow,
+  intentionallyFailingAsyncArrow,
+  intentionallyRejectedPromise,
+  intentionallyRejectingArrow
+}

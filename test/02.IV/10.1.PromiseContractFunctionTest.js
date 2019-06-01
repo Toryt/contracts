@@ -295,11 +295,7 @@ describe('IV/PromiseContractFunction', function () {
   }
 
   const contractWithAFailingPre = new PromiseContract({
-    pre: [
-      function () {
-        throw cases.intentionalError
-      }
-    ]
+    pre: [cases.intentionallyFailingFunction]
   })
 
   function failsOnMetaErrorFast (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
@@ -734,11 +730,7 @@ describe('IV/PromiseContractFunction', function () {
     describe('meta-error', function () {
       describe('fast', function () {
         const contractWithAFailingPost = new PromiseContract({
-          post: [
-            () => {
-              throw cases.intentionalError
-            }
-          ]
+          post: [cases.intentionallyFailingArrow]
         })
 
         it('fails with a meta-error when a postcondition is kaput', function () {
@@ -788,7 +780,7 @@ describe('IV/PromiseContractFunction', function () {
 
       describe('reject', function () {
         const contractWithARejectingPost = new PromiseContract({
-          post: [() => Promise.reject(cases.intentionalError)]
+          post: [cases.intentionallyRejectingArrow]
         })
 
         it('fails with a meta-error when a postcondition is kaput', function () {
@@ -900,11 +892,7 @@ describe('IV/PromiseContractFunction', function () {
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
       const contractWithAFailingFastExceptionCondition = new PromiseContract({
-        fastException: [
-          () => {
-            throw cases.intentionalError
-          }
-        ]
+        fastException: [cases.intentionallyFailingArrow]
       })
 
       it('fails with a meta-error when a fast exception condition is kaput', function () {
@@ -1029,11 +1017,7 @@ describe('IV/PromiseContractFunction', function () {
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
       const contractWithAFailingExceptionCondition = new PromiseContract({
-        exception: [
-          () => {
-            throw cases.intentionalError
-          }
-        ]
+        exception: [cases.intentionallyFailingArrow]
       })
 
       it('fails with a meta-error when an exception condition is kaput', function () {

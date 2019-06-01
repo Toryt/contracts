@@ -261,11 +261,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
   }
 
   const contractWithAFailingPre = new PromiseContract({
-    pre: [
-      function () {
-        throw cases.intentionalError
-      }
-    ]
+    pre: [cases.intentionallyFailingFunction]
   })
 
   async function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
@@ -651,11 +647,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     describe('meta-error', function () {
       describe('fast', function () {
         const contractWithAFailingPost = new PromiseContract({
-          post: [
-            () => {
-              throw cases.intentionalError
-            }
-          ]
+          post: [cases.intentionallyFailingArrow]
         })
 
         it('fails with a meta-error when a postcondition is kaput', async function () {
@@ -699,11 +691,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
 
       describe('reject', function () {
         const contractWithARejectingPost = new PromiseContract({
-          post: [
-            async () => {
-              throw cases.intentionalError
-            }
-          ]
+          post: [cases.intentionallyFailingAsyncArrow]
         })
 
         it('fails with a meta-error when a postcondition is kaput', async function () {
@@ -804,11 +792,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
       const contractWithAFailingExceptionCondition = new PromiseContract({
-        exception: [
-          () => {
-            throw cases.intentionalError
-          }
-        ]
+        exception: [cases.intentionallyFailingArrow]
       })
 
       it('fails with a meta-error when an exception condition is kaput', async function () {
