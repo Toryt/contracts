@@ -24,8 +24,8 @@ const stack = require('../../lib/_private/stack')
 const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
-const eol = require('../../lib/_private/eol')
-const must = require('must')
+const stackEOL = require('../../lib/_private/eol').stack
+const should = require('should')
 
 const someConditions = [
   function () {
@@ -222,13 +222,13 @@ function generateIAGCFTests (ContractConstructor, isAXXXContractFunction) {
 
   notAFunctionNorAContract.forEach(thing => {
     it('says no if the argument is not a function, but ' + thing, function () {
-      must(isAXXXContractFunction.call(ContractConstructor, thing)).be.falsy()
+      should(isAXXXContractFunction.call(ContractConstructor, thing)).not.be.ok()
     })
   })
   ;['contract', 'implementation', 'location', 'bind'].forEach(doNotFreezeProperty => {
     it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
       const candidate = createCandidateContractFunction(ContractConstructor, doNotFreezeProperty)
-      must(isAXXXContractFunction.call(ContractConstructor, candidate)).be.falsy()
+      should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
     })
   })
   ;[
@@ -256,7 +256,7 @@ function generateIAGCFTests (ContractConstructor, isAXXXContractFunction) {
     notAFunctionNorAContract.concat(aCase.extra).forEach(v => {
       it('says no if the ' + aCase.propertyName + ' is not ' + aCase.expected + ' but ' + v, function () {
         const candidate = createCandidateContractFunction(ContractConstructor, null, aCase.propertyName, v)
-        must(isAXXXContractFunction.call(ContractConstructor, candidate)).be.falsy()
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
       })
     })
   })
@@ -272,7 +272,7 @@ function generateConstructorMethodsDescriptions (ContractConstructor) {
       .forEach(v => {
         it(`says no if the location is not a location outside this library but ${v}`, function () {
           const candidate = createCandidateContractFunction(null, 'location', v)
-          must(AbstractContract.isAContractFunction(candidate)).be.falsy()
+          should(AbstractContract.isAContractFunction(candidate)).not.be.ok()
         })
       })
     notAFunctionNorAContract
@@ -280,7 +280,7 @@ function generateConstructorMethodsDescriptions (ContractConstructor) {
       .forEach(v => {
         it(`says no if the location is not truthy but ${v}`, function () {
           const candidate = createCandidateContractFunction(ContractConstructor, null, 'location', v)
-          must(ContractConstructor.isAContractFunction(candidate)).be.falsy()
+          should(ContractConstructor.isAContractFunction(candidate)).not.be.ok()
         })
       })
   })

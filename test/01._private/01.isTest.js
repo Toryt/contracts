@@ -20,7 +20,7 @@
 
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-const must = require('must')
+const should = require('should')
 const stuff = require('./_stuff')
 const eol = require('../../lib/_private/eol')
 const cases = require('../_cases')
@@ -33,7 +33,7 @@ describe('_private/is', function () {
         if (s.expected === 'arguments') {
           result.should.be.true()
         } else {
-          must(result).be.falsy()
+          should(result).not.be.ok()
         }
       })
     })
@@ -199,13 +199,13 @@ describe('_private/is', function () {
             values[2],
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            must(result).be.falsy()
+            should(result).not.be.ok()
           }
         )
       }
       it('reports false if the property does not exist', function () {
         const result = is.frozenOwnProperty(subject, 'some other, non-existing property name')
-        must(result).be.falsy()
+        should(result).not.be.ok()
       })
       const specialized = {}
       Object.setPrototypeOf(specialized, subject)
@@ -220,7 +220,7 @@ describe('_private/is', function () {
           values[2],
         function () {
           const specializedResult = is.frozenOwnProperty(specialized, propName)
-          must(specializedResult).be.falsy()
+          should(specializedResult).not.be.ok()
         }
       )
     })
@@ -229,7 +229,7 @@ describe('_private/is', function () {
       // cannot set a property on primitives
       it(`reports false if the first parameter is a primitive (${typeof notAnObject})`, function () {
         const result = is.frozenOwnProperty(notAnObject, propName)
-        must(result).be.falsy()
+        should(result).not.be.ok()
       })
     })
     const fCandidates = [undefined, function () {}]
@@ -269,7 +269,7 @@ describe('_private/is', function () {
             values[3],
           function () {
             const result = is.frozenOwnProperty(subject, propName)
-            must(result).be.falsy()
+            should(result).not.be.ok()
           }
         )
       }

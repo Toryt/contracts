@@ -18,7 +18,7 @@
 
 'use strict'
 
-const must = require('must')
+const should = require('should')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
 
 describe('javascript/Object', function () {
@@ -174,7 +174,7 @@ describe('javascript/Object', function () {
             Object.getOwnPropertyDescriptor.bind(null, obj, propName).should.throw(TypeError)
           } else {
             const result = Object.getOwnPropertyDescriptor(obj, propName)
-            must(result).be.falsy()
+            should(result).not.be.ok()
           }
         }
       )

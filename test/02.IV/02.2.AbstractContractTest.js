@@ -23,7 +23,7 @@ const testUtil = require('../_util/testUtil')
 const stack = require('../../lib/_private/stack')
 const report = require('../../lib/_private/report')
 const common = require('./AbstractContractCommon')
-const must = require('must')
+const should = require('should')
 
 describe('IV/AbstractContract', function () {
   describe('AbstractContract', function () {
@@ -66,13 +66,13 @@ describe('IV/AbstractContract', function () {
       AbstractContract.should.have.ownProperty('prototype')
       AbstractContract.prototype.should.be.an.Object()
       const prototype = AbstractContract.prototype
-      must(prototype._pre).be.null()
-      must(prototype._post).be.null()
-      must(prototype._exception).be.null()
+      should(prototype._pre).be.null()
+      should(prototype._post).be.null()
+      should(prototype._exception).be.null()
       // noinspection JSUnresolvedVariable
       prototype.location.should.equal(AbstractContract.internalLocation)
       // noinspection JSUnresolvedVariable
-      must(prototype.abstract).be.null()
+      should(prototype.abstract).be.null()
       prototype.isImplementedBy.should.be.a.Function()
     })
   })
@@ -116,7 +116,7 @@ describe('IV/AbstractContract', function () {
       const contract = new AbstractContract({})
       const implFunction = function () {}
       const location = stack.location()
-      must(implFunction.prototype).be.an.object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
+      should(implFunction.prototype).be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
       AbstractContract.bless(contractFunction, contract, implFunction, location)
       AbstractContract.isAContractFunction(contractFunction).should.be.true()
       testUtil.expectOwnFrozenProperty(contractFunction, 'contract')

@@ -19,7 +19,6 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const must = require('must')
 const should = require('should')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
 const cases = require('../_cases')
@@ -151,7 +150,7 @@ describe('javascript/syntax', function () {
     it('is undefined', function () {
       const array = [1, '2', { three: 3 }]
       const result = array[array.length]
-      must(result).be.undefined()
+      should(result).be.undefined()
     })
   })
 

@@ -25,7 +25,7 @@ const common = require('./ContractErrorCommon')
 const ConditionError = require('../../lib/IV/ConditionError')
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const abstractContractCommon = require('./AbstractContractCommon')
-const must = require('must')
+const should = require('should')
 const stackEol = require('../../lib/_private/eol').stack
 
 const conditionCase = function () {
@@ -108,7 +108,7 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
   exception.contractFunction.should.equal(contractFunction)
   // noinspection JSUnresolvedVariable
   exception.condition.should.equal(condition)
-  must(exception.self).equal(self)
+  should(exception.self).equal(self)
   exception.args.should.eql(Array.prototype.slice.call(args))
 }
 

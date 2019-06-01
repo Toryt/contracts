@@ -19,7 +19,7 @@
 'use strict'
 
 const testUtil = require('../_util/testUtil')
-const must = require('must')
+const should = require('should')
 
 const message = 'A message'
 const env = testUtil.environment
@@ -50,18 +50,27 @@ describe('javascript/Error', function () {
       result.should.equal('Error: ' + message)
     })
   })
+
+  function okForFF (s) {
+    if (isFF) {
+      should(s).be.ok()
+    } else {
+      should(s).not.be.ok()
+    }
+  }
+
   describe('#fileName', function () {
     it('has ' + (isFF ? 'a' : 'no') + ' file name in ' + env, function () {
       const subject = new Error(message)
       testUtil.log('fileName: %s', subject.fileName)
-      must(subject.fileName).be[isFF ? 'truthy' : 'falsy']() // not supported in node
+      okForFF(subject.fileName) // not supported in node
     })
   })
   describe('#lineNumber', function () {
     it('has ' + (isFF ? 'a' : 'no') + ' line number in ' + env, function () {
       const subject = new Error(message)
       testUtil.log('lineNumber: %s', subject.lineNumber)
-      must(subject.lineNumber).be[isFF ? 'truthy' : 'falsy']() // not supported in node
+      okForFF(subject.lineNumber) // not supported in node
     })
   })
   describe('#columnNumber', function () {
@@ -69,8 +78,8 @@ describe('javascript/Error', function () {
       const subject = new Error(message)
       // noinspection JSUnresolvedVariable
       testUtil.log('columnNumber: %s', subject.columnNumber)
+      okForFF(subject.columnNumber) // not supported in node
       // noinspection JSUnresolvedVariable
-      must(subject.columnNumber).be[isFF ? 'truthy' : 'falsy']() // not supported in node
     })
   })
   describe('#stack', function () {

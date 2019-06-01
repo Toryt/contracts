@@ -22,7 +22,7 @@ const testUtil = require('../_util/testUtil')
 const report = require('../../lib/_private/report')
 const common = require('./ConditionViolationCommon')
 const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViolation')
-const must = require('must')
+const should = require('should')
 
 function expectInvariants (subject) {
   subject.should.be.an.instanceof(ExceptionConditionViolation)
@@ -34,7 +34,7 @@ function expectInvariants (subject) {
 function expectConstructorPost (executionResult, contractFunction, condition, self, args, exception) {
   // noinspection JSUnresolvedVariable
   common.expectConstructorPost.apply(undefined, arguments)
-  must(executionResult.exception).equal(exception)
+  should(executionResult.exception).equal(exception)
 }
 
 // noinspection ParameterNamingConventionJS

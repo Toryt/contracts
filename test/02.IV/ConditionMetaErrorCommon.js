@@ -22,7 +22,7 @@ const testUtil = require('../_util/testUtil')
 const report = require('../../lib/_private/report')
 const common = require('./ConditionErrorCommon')
 const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
-const must = require('must')
+const should = require('should')
 
 function expectInvariants (subject) {
   subject.should.be.an.instanceof(ConditionMetaError)
@@ -40,7 +40,7 @@ function expectInvariants (subject) {
 
 function expectConstructorPost (result, contractFunction, condition, self, args, error, rawStack) {
   common.expectConstructorPost.call(undefined, result, contractFunction, condition, self, args, rawStack)
-  must(result.error).equal(error)
+  should(result.error).equal(error)
 }
 
 // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint

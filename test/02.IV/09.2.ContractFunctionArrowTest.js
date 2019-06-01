@@ -29,7 +29,7 @@ const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon')
 const preconditionViolationCommon = require('./PreconditionViolationCommon')
 const postconditionViolationCommon = require('./PostconditionViolationCommon')
 const exceptionConditionViolationCommon = require('./ExceptionConditionViolationCommon')
-const must = require('must')
+const should = require('should')
 const stackEOL = require('../../lib/_private/eol').stack
 const cases = require('../_cases')
 
@@ -240,11 +240,11 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         // noinspection JSUnresolvedVariable
         exception.condition.should.equal(violatedCondition)
         if (!self) {
-          must(exception.self).be.falsy()
+          should(exception.self).not.be.ok()
         } else {
           exception.self.should.equal(self)
         }
-        must(exception.args[0]).equal(parameter)
+        should(exception.args[0]).equal(parameter)
       })
     })
   }
@@ -260,7 +260,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
-        must(exception.self).be.falsy()
+        should(exception.self).not.be.ok()
       } else {
         exception.self.should.equal(self)
       }
