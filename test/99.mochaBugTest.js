@@ -131,4 +131,10 @@ describe('mocha this', function () {
     1) works when a precondition violation occurs when a function is called with a mocha fixture as this
     *
  * Why is there an 'UnhandledPromiseRejectionWarning:'? There is nothing async here?!?!
+ *
+ * That was a false positive! Node detects our intentionallyRejectedPromise cases as a dangling rejection! Just by
+ * being there.
+ *
+ * Mocha is ok
+ * mocha-reporter has a bug
  */

@@ -63,6 +63,9 @@ const intentionallyFailingAsyncArrow = async () => {
 }
 
 const intentionallyRejectedPromise = Promise.reject(intentionalError)
+/* Note detects this as an UnhandledPromiseRejectionWarning, although we do nothing with it. The following code works
+   around the confusing warning. */
+intentionallyRejectedPromise.catch(ignore => {})
 
 const intentionallyRejectingArrow = () => intentionallyRejectedPromise
 
