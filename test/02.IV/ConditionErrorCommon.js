@@ -109,7 +109,7 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
   // noinspection JSUnresolvedVariable
   exception.condition.should.equal(condition)
   must(exception.self).equal(self)
-  exception.args.must.eql(Array.prototype.slice.call(args))
+  exception.args.should.eql(Array.prototype.slice.call(args))
 }
 
 function expectConstructorPost (result, contractFunction, condition, self, args, rawStack) {

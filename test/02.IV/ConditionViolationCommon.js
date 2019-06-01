@@ -194,7 +194,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
               condition.args.should.be.ok()
               isArguments(condition.args)
               // doctoredArgs might be arguments, or Array
-              Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
+              Array.prototype.slice.call(doctoredArgs).should.eql(Array.prototype.slice.call(condition.args))
               that.expectInvariants(subject)
             }
           })
@@ -263,7 +263,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 condition.args.should.be.ok()
                 isArguments(condition.args)
                 // doctoredArgs might be arguments, or Array
-                Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
+                Array.prototype.slice.call(doctoredArgs).should.eql(Array.prototype.slice.call(condition.args))
                 that.expectInvariants(subject)
               })
           })
@@ -327,7 +327,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 condition.args.should.be.ok()
                 isArguments(condition.args)
                 // doctoredArgs might be arguments, or Array
-                Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(condition.args))
+                Array.prototype.slice.call(doctoredArgs).should.eql(Array.prototype.slice.call(condition.args))
                 that.expectInvariants(subject)
               })
           })
@@ -476,10 +476,10 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 appliedArgs.should.be.ok()
                 isArguments(appliedArgs)
                 if (!args) {
-                  appliedArgs.must.be.empty()
+                  appliedArgs.should.be.empty()
                 } else {
                   // doctoredArgs might be arguments, or Array
-                  Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(appliedArgs))
+                  Array.prototype.slice.call(doctoredArgs).should.eql(Array.prototype.slice.call(appliedArgs))
                 }
               }
               // does not evaluate conditions after the first failure
@@ -718,12 +718,12 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 .verifyAllPromise(contractFunction, conditions, self, doctoredArgs)
                 .then(
                   () => {
-                    failures.must.be.empty() // any failure would give an exception
+                    failures.should.be.empty() // any failure would give an exception
                     must(metaErrorCondition).be.falsy()
                   },
                   exc => {
                     conditions.length.must.be.at.least(1) // otherwise, there can be no failure
-                    failures.must.not.be.empty()
+                    failures.should.not.be.empty()
                     if (metaErrorCondition) {
                       conditionMetaErrorCommon.expectProperties(
                         exc,
@@ -755,10 +755,10 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                     appliedArgs.should.be.ok()
                     isArguments(appliedArgs)
                     if (!args) {
-                      appliedArgs.must.be.empty()
+                      appliedArgs.should.be.empty()
                     } else {
                       // doctoredArgs might be arguments, or Array
-                      Array.prototype.slice.call(doctoredArgs).must.eql(Array.prototype.slice.call(appliedArgs))
+                      Array.prototype.slice.call(doctoredArgs).should.eql(Array.prototype.slice.call(appliedArgs))
                     }
                   })
                   that.expectInvariants(subject)
