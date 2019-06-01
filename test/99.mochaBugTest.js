@@ -20,6 +20,7 @@
 
 const Contract = require('../lib/IV/Contract')
 const cases = require('./_cases')
+const testUtil = require('./_util/testUtil')
 
 const contract = new Contract({ pre: [cases.intentionallyFailingFunction] })
 
@@ -36,15 +37,15 @@ describe('mocha this', function () {
         true.should.be.false()
       } catch (err) {
         // logging the error produces the same problem, because console.log uses util.inspect too
-        console.log('' + err)
+        testUtil.log('' + err)
         const details = err.getDetails()
-        console.log(details)
+        testUtil.log(details)
         details.should.match(/𝕋⚖️ \[\[failed to represent the value]]/)
         details.should.match(/\(Converting circular structure to JSON\)/)
-        console.log()
+        testUtil.log()
       }
     } else {
-      console.log(
+      testUtil.log(
         'skipping a test that verifies the workaround to a bug that only occurs in IntelliJ or with mocha-reporter'
       )
     }
