@@ -62,7 +62,7 @@ const argsVerifyCases = [
 ]
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(ConditionViolation)
+  subject.should.be.an.instanceof(ConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectFrozenPropertyOnAPrototype(subject, 'verify')
   subject.verify.should.be.a.Function()

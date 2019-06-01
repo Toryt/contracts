@@ -22,7 +22,7 @@ const common = require('./ConditionViolationCommon')
 const PreconditionViolation = require('../../lib/IV/PreconditionViolation')
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(PreconditionViolation)
+  subject.should.be.an.instanceof(PreconditionViolation)
   common.expectInvariants(subject)
 }
 

@@ -236,7 +236,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
       callAndExpectException(self, func, parameter, exception => {
-        exception.must.be.an.instanceof(PreconditionViolation)
+        exception.should.be.an.instanceof(PreconditionViolation)
         // noinspection JSUnresolvedVariable
         exception.condition.should.equal(violatedCondition)
         if (!self) {
@@ -256,7 +256,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectException(self, functionWithAMetaError, param, exception => {
-      exception.must.be.an.instanceof(ConditionMetaError)
+      exception.should.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
@@ -372,10 +372,10 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       const ignore = self.defensiveIntegerSum(5)
     })
     it('works with a defensive function', function () {
-      fastDefensiveIntegerSum.bind(undefined, negativeParameter).must.throw(Error, positiveMessage)
+      fastDefensiveIntegerSum.bind(undefined, negativeParameter).should.throw(Error, { message: positiveMessage })
     })
     it('works with a defensive method', function () {
-      self.defensiveIntegerSum.bind(self, nonIntegerParameter).must.throw(Error, integerMessage)
+      self.defensiveIntegerSum.bind(self, nonIntegerParameter).should.throw(Error, { message: integerMessage })
     })
   })
   describe('precondition', function () {

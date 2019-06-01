@@ -98,7 +98,7 @@ const constructorExceptionCases = [
 const location = os.EOL + '    at /'
 
 function expectInvariants (/* AbstractContract */ subject) {
-  subject.must.be.an.instanceof(AbstractContract)
+  subject.should.be.an.instanceof(AbstractContract)
   testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
   // noinspection JSUnresolvedVariable
   testUtil.expectToBeArrayOfFunctions(subject.pre)
@@ -118,7 +118,7 @@ function expectInvariants (/* AbstractContract */ subject) {
   AbstractContract.isAGeneralContractFunction(abstract).should.be.true()
   abstract.location.should.equal(location)
   subject.isImplementedBy(abstract).should.be.true()
-  abstract.must.throw(AbstractContract.AbstractError, AbstractContract.AbstractError.message)
+  abstract.should.throw(AbstractContract.AbstractError, { message: AbstractContract.AbstractError.message })
   try {
     abstract()
   } catch (err) {
@@ -139,11 +139,11 @@ function expectArrayPost (result, array, propName, privatePropName) {
       result[propName].must.be.empty()
     }
   } else {
-    result[privatePropName].must.not.equal(array) // it must be copy, don't share the array
-    result[privatePropName].must.eql(array)
+    result[privatePropName].should.not.equal(array) // it must be copy, don't share the array
+    result[privatePropName].should.eql(array)
     Object.isFrozen(result[privatePropName])
-    result[propName].must.eql(array)
-    result[propName].must.not.equal(result[privatePropName]) // it must be copy, don't share the array
+    result[propName].should.eql(array)
+    result[propName].should.not.equal(result[privatePropName]) // it must be copy, don't share the array
   }
 }
 

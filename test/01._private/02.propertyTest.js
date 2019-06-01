@@ -93,7 +93,7 @@ describe('_private/property', function () {
       property.setAndFreeze(subject, privatePropertyName, array)
       property.frozenReadOnlyArray(Object.getPrototypeOf(subject), propertyName, privatePropertyName)
       testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propertyName, privatePropertyName)
-      subject[propertyName].must.not.equal(array)
+      subject[propertyName].should.not.equal(array)
       subject[propertyName].must.eql(array)
     })
   })

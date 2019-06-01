@@ -247,7 +247,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, async function () {
       await callAndExpectRejection(self, func, parameter, exception => {
-        exception.must.be.an.instanceof(PreconditionViolation)
+        exception.should.be.an.instanceof(PreconditionViolation)
         // noinspection JSUnresolvedVariable
         exception.condition.should.equal(violatedCondition)
         if (!self) {
@@ -267,7 +267,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
   async function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     await callAndExpectRejection(self, functionWithAMetaError, param, exception => {
-      exception.must.be.an.instanceof(ConditionMetaError)
+      exception.should.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
@@ -461,7 +461,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         await defensiveIntegerSum(defensiveSumFastExcParameter)
         false.should.be.true()
       } catch (err) {
-        err.must.be.an.error()
+        err.should.be.an.Error()
         err.message.must.contain(integerMessage)
       } finally {
         defensiveIntegerSum.contract.verifyPostconditions = false
@@ -480,7 +480,8 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         await defensiveIntegerSum(defensiveSumRejectParameter)
         true.should.be.false()
       } catch (err) {
-        err.must.be.an.error(Error, positiveMessage)
+        err.should.be.an.Error()
+        err.message.should.equal(positiveMessage)
       }
     })
     it('works with a defensive function, rejecting, testing conditions', async function () {
@@ -490,7 +491,8 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         true.should.be.false()
       } catch (err) {
         testUtil.log(err)
-        err.must.be.error(Error, positiveMessage)
+        err.should.be.an.Error()
+        err.message.should.equal(positiveMessage)
       } finally {
         defensiveIntegerSum.contract.verifyPostconditions = false
       }
@@ -500,7 +502,8 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         await self.defensiveIntegerSum(defensiveSumRejectParameter)
         true.should.be.false()
       } catch (err) {
-        err.must.be.error(Error, positiveMessage)
+        err.should.be.an.Error()
+        err.message.should.equal(positiveMessage)
       }
     })
     it('works with a defensive method, rejecting, testing conditions', async function () {
@@ -510,7 +513,8 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
         true.should.be.false()
       } catch (err) {
         testUtil.log(err)
-        err.must.be.error(Error, positiveMessage)
+        err.should.be.an.Error()
+        err.message.should.equal(positiveMessage)
       } finally {
         defensiveIntegerSum.contract.verifyPostconditions = false
       }

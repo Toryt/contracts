@@ -49,12 +49,12 @@ describe('javascript/Function', function () {
       const boundThis = { description: 'An object to bind to' }
       const boundP = 'a string parameter'
       const boundF = testF.bind(boundThis, boundP)
-      boundF.must.not.have.property('prototype')
+      boundF.should.not.have.property('prototype')
       /* https://www.ecma-international.org/ecma-262/6.0/index.html#sec-function.prototype.bind
          NOTE 1 Function objects created using Function.prototype.bind are exotic objects.
          They also do not have a prototype property.
        */
-      boundF().must.endWith(boundP)
+      boundF().should.endWith(boundP)
     })
 
     const cases = [{ description: 'An object to bind to' }, undefined, null]
@@ -76,35 +76,35 @@ describe('javascript/Function', function () {
           TestC.should.have.property('prototype')
 
           const testCInstance = new TestC(boundPA, boundPB)
-          testCInstance.must.be.instanceof(TestC)
+          testCInstance.should.be.instanceof(TestC)
           testCInstance.pA.should.equal(boundPA)
           testCInstance.pB.should.equal(boundPB)
           Object.getPrototypeOf(testCInstance).should.equal(TestC.prototype)
 
           // noinspection LocalVariableNamingConventionJS
           const BoundC = TestC.bind(boundThis, boundPA)
-          testCInstance.must.be.instanceof(BoundC)
+          testCInstance.should.be.instanceof(BoundC)
           // NOTE ^^ THIS IS AMAZING!!! BoundC did not exist yet when testCInstance was created!
-          BoundC.must.not.have.property('prototype')
-          Object.getPrototypeOf(testCInstance).must.not.equal(BoundC.prototype)
+          BoundC.should.not.have.property('prototype')
+          Object.getPrototypeOf(testCInstance).should.not.equal(BoundC.prototype)
 
           const boundCInstance = new BoundC(boundPB)
           /* NOTE This directly calls TestC, with a this with the TestC prototype, boundPA and boundPB. It is as if
                 BoundC does not exist. The new knows what to do. */
-          boundCInstance.must.be.instanceof(TestC)
-          boundCInstance.must.be.instanceof(BoundC)
+          boundCInstance.should.be.instanceof(TestC)
+          boundCInstance.should.be.instanceof(BoundC)
           boundCInstance.pA.should.equal(boundPA)
           boundCInstance.pB.should.equal(boundPB)
-          boundCInstance.must.not.have.property('description')
+          boundCInstance.should.not.have.property('description')
           Object.getPrototypeOf(boundCInstance).should.equal(TestC.prototype)
-          Object.getPrototypeOf(boundCInstance).must.not.equal(BoundC.prototype)
+          Object.getPrototypeOf(boundCInstance).should.not.equal(BoundC.prototype)
         }
       )
     })
   })
   describe('#prototype', function () {
     it('does not exist on the Function.prototype', function () {
-      Function.prototype.must.not.have.property('prototype')
+      Function.prototype.should.not.have.property('prototype')
     })
     ;[
       function simpleF () {
@@ -123,13 +123,13 @@ describe('javascript/Function', function () {
         Object.getPrototypeOf(f).should.equal(Function.prototype)
         f.should.have.ownProperty('prototype')
         f.prototype.should.be.an.Object()
-        f.prototype.must.be.an.instanceof(Object)
+        f.prototype.should.be.an.instanceof(Object)
         // noinspection JSPotentiallyInvalidConstructorUsage
         Object.getPrototypeOf(f.prototype).should.equal(Object.prototype)
-        f.prototype.must.not.equal(Function.prototype)
-        f.prototype.must.not.equal(Function.prototype.prototype)
+        f.prototype.should.not.equal(Function.prototype)
+        f.prototype.should.not.equal(Function.prototype.prototype)
         // noinspection JSPotentiallyInvalidConstructorUsage
-        f.prototype.must.not.equal(otherSimpleF.prototype)
+        f.prototype.should.not.equal(otherSimpleF.prototype)
         f.prototype.should.have.ownProperty('constructor')
         f.prototype.constructor.should.equal(f)
         // noinspection JSPotentiallyInvalidConstructorUsage
@@ -141,7 +141,7 @@ describe('javascript/Function', function () {
           delete f.prototype
           true.must.false() // unreachable
         } catch (err) {
-          err.must.be.an.instanceof(TypeError)
+          err.should.be.an.instanceof(TypeError)
         }
         Object.getOwnPropertyDescriptor(f, 'prototype').should.be.an.Object()
         Object.getOwnPropertyDescriptor(f, 'prototype').enumerable.should.be.false()
@@ -167,7 +167,7 @@ describe('javascript/Function', function () {
       const arrow = () => 'This is a very simple arrow function.'
 
       Object.getPrototypeOf(arrow).should.equal(Function.prototype)
-      arrow.must.not.have.property('prototype')
+      arrow.should.not.have.property('prototype')
     })
     it('can be created on an arrow function (but that makes no sense)', function () {
       const arrow = () => 'This is a very simple arrow function.'
@@ -207,7 +207,7 @@ describe('javascript/Function', function () {
       it('can be used as a constructor ' + C, function () {
         const result = new C()
         result.should.be.an.Object()
-        result.must.be.an.instanceOf(C)
+        result.should.be.an.instanceof(C)
         Object.getPrototypeOf(result).should.equal(C.prototype)
         testUtil.log(JSON.stringify(result))
       })
@@ -228,7 +228,8 @@ describe('javascript/Function', function () {
         const obj = new Arrow()
         obj.must.not.be.an.object() // unreachable
       } catch (err) {
-        err.must.be.an.error(TypeError)
+        err.should.be.an.Error()
+        err.should.be.instanceof(TypeError)
       }
     })
   })

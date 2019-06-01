@@ -25,7 +25,7 @@ const PostconditionViolation = require('../../lib/IV/PostconditionViolation')
 const must = require('must')
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(PostconditionViolation)
+  subject.should.be.an.instanceof(PostconditionViolation)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'result')
   // noinspection JSUnresolvedVariable

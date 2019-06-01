@@ -25,7 +25,7 @@ const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
 const must = require('must')
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(ConditionMetaError)
+  subject.should.be.an.instanceof(ConditionMetaError)
   if (subject.error) {
     subject.error.must.be.frozen()
   }

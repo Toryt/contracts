@@ -62,7 +62,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const result = subject.implementation(impl)
       const result2 = subject.implementation(impl)
       expectPost(subject, impl, stack.location(), result2)
-      result2.must.not.equal(result)
+      result2.should.not.equal(result)
     })
 
     it('returns a different Contract function with a different implementation', function () {
@@ -72,8 +72,8 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       const result = subject.implementation(impl)
       const result2 = subject.implementation(impl2)
       expectPost(subject, impl2, stack.location(), result2)
-      result2.must.not.equal(result)
-      result2.implementation.must.not.equal(result.implementation)
+      result2.should.not.equal(result)
+      result2.implementation.should.not.equal(result.implementation)
     })
   })
 }

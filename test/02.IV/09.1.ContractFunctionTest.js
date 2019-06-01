@@ -279,7 +279,7 @@ describe('IV/ContractFunction', function () {
   function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
       callAndExpectException(self, func, parameter, exception => {
-        exception.must.be.an.instanceof(PreconditionViolation)
+        exception.should.be.an.instanceof(PreconditionViolation)
         // noinspection JSUnresolvedVariable
         exception.condition.should.equal(violatedCondition)
         if (!self) {
@@ -299,7 +299,7 @@ describe('IV/ContractFunction', function () {
   function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectException(self, functionWithAMetaError, param, exception => {
-      exception.must.be.an.instanceof(ConditionMetaError)
+      exception.should.be.an.instanceof(ConditionMetaError)
       // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
@@ -442,12 +442,12 @@ describe('IV/ContractFunction', function () {
     })
     it('works with a defensive function', function () {
       fastDefensiveIntegerSum.contract.verifyPostconditions = true
-      fastDefensiveIntegerSum.bind(undefined, negativeParameter).must.throw(Error, positiveMessage)
+      fastDefensiveIntegerSum.bind(undefined, negativeParameter).should.throw(Error, { message: positiveMessage })
       fastDefensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive method', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
-      self.defensiveIntegerSum.bind(self, nonIntegerParameter).must.throw(Error, integerMessage)
+      self.defensiveIntegerSum.bind(self, nonIntegerParameter).should.throw(Error, { message: integerMessage })
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
 
@@ -479,8 +479,8 @@ describe('IV/ContractFunction', function () {
       const caseName = 'Jim'
       const result = new ContractPerson(caseName)
       result.should.be.ok()
-      result.must.be.instanceof(ContractPerson)
-      result.must.be.instanceof(PersonImplementation)
+      result.should.be.instanceof(ContractPerson)
+      result.should.be.instanceof(PersonImplementation)
       result.should.have.ownProperty('_name')
       result.name.should.equal(caseName)
     }

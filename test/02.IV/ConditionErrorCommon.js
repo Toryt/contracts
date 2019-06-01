@@ -81,7 +81,7 @@ argsCases = argsCases.concat(
 const oneArgsCase = argsCases[argsCases.length - 1]
 
 function expectInvariants (subject) {
-  subject.must.be.an.instanceof(ConditionError)
+  subject.should.be.an.instanceof(ConditionError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
   // noinspection JSUnresolvedVariable
@@ -102,7 +102,8 @@ function expectInvariants (subject) {
 
 // noinspection ParameterNamingConventionJS
 function expectProperties (exception, Type, contractFunction, condition, self, args) {
-  exception.must.be.an.error(Type)
+  exception.should.be.an.Error()
+  exception.should.be.instanceof(Type)
   // noinspection JSUnresolvedVariable
   exception.contractFunction.should.equal(contractFunction)
   // noinspection JSUnresolvedVariable
