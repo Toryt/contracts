@@ -25,6 +25,7 @@ const testUtil = require('../_util/testUtil')
 const os = require('os')
 const util = require('util')
 const stuff = require('./_stuff')
+const cases = require('../_cases')
 
 describe('_private/report', function () {
   describe('#conciseCondition', function () {
@@ -226,5 +227,25 @@ this function should have a name   ` // trim
           }
         })
       })
+    describe('failing util.inspect', function () {
+      before(function () {
+        // poor man's stub, without sinon
+        this.utilInspect = util.inspect
+        util.inspect = function () {
+          throw cases.intentionalError
+        }
+      })
+      after(function () {
+        util.inspect = this.utilInspect
+      })
+      it('returns a message when util.inspect fails', function () {
+        const v = {} // an object triggers the interesting branch
+        const result = report.value(v)
+        testUtil.log(result)
+        result.should.match(/𝕋⚖️ \[\[failed to represent the value]] /)
+        result.should.endWith(`(${cases.intentionalError.message})`)
+        testUtil.log()
+      })
+    })
   })
 })
