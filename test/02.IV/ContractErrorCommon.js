@@ -36,7 +36,7 @@ function expectStackInvariants (subject) {
     .join(os.EOL)
   is.stack(restOfStack).should.be.true()
   // noinspection JSUnresolvedVariable
-  restOfStack.must.contain(subject._rawStack)
+  restOfStack.should.containEql(subject._rawStack)
 }
 
 function expectInvariants (subject) {

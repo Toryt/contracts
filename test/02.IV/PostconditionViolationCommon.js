@@ -29,7 +29,7 @@ function expectInvariants (subject) {
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'result')
   // noinspection JSUnresolvedVariable
-  subject.stack.must.contain(report.value(subject.result))
+  subject.stack.should.containEql(report.value(subject.result))
 }
 
 function expectConstructorPost (executionResult, contractFunction, condition, self, args, result) {
@@ -43,7 +43,7 @@ function expectDetailsPost (subject, result) {
   // noinspection JSUnresolvedFunction
   common.expectDetailsPost(subject, result)
   // noinspection JSUnresolvedVariable
-  result.must.contain(subject.result)
+  result.should.containEql(subject.result)
 }
 
 // noinspection ParameterNamingConventionJS

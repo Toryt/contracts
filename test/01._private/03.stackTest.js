@@ -39,7 +39,7 @@ describe('_private/stack', function () {
       result.should.be.a.String()
       result.split(os.EOL).length.should.equal(1)
       if (testUtil.environment !== 'safari') {
-        result.must.contain('aSecondFunction')
+        result.should.containEql('aSecondFunction')
       }
       is.stackLocation(result).should.be.true()
     })
@@ -65,7 +65,7 @@ describe('_private/stack', function () {
       result.should.be.a.String()
       result.split(os.EOL).length.should.equal(1)
       if (testUtil.environment !== 'safari') {
-        result.must.contain('aSecondFunction')
+        result.should.containEql('aSecondFunction')
       }
       is.stackLocation(result).should.be.true()
     })
@@ -100,11 +100,11 @@ describe('_private/stack', function () {
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
         lines.length.should.be.greaterThanOrEqual(5)
-        lines[0].must.contain('aFifthFunction')
-        lines[1].must.contain('aFourthFunction')
-        lines[2].must.contain('aThirdFunction')
-        lines[3].must.contain('aSecondFunction')
-        lines[4].must.contain('aFirstFunction')
+        lines[0].should.containEql('aFifthFunction')
+        lines[1].should.containEql('aFourthFunction')
+        lines[2].should.containEql('aThirdFunction')
+        lines[3].should.containEql('aSecondFunction')
+        lines[4].should.containEql('aFirstFunction')
       }
       is.stack(result).should.be.true()
     })
@@ -148,11 +148,11 @@ describe('_private/stack', function () {
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
         lines.length.should.be.greaterThanOrEqual(5)
-        lines[0].must.contain('aFifthFunction')
-        lines[1].must.contain('aFourthFunction')
-        lines[2].must.contain('aThirdFunction')
-        lines[3].must.contain('aSecondFunction')
-        lines[4].must.contain('aFirstFunction')
+        lines[0].should.containEql('aFifthFunction')
+        lines[1].should.containEql('aFourthFunction')
+        lines[2].should.containEql('aThirdFunction')
+        lines[3].should.containEql('aSecondFunction')
+        lines[4].should.containEql('aFirstFunction')
       }
       is.stack(result).should.be.true()
     })

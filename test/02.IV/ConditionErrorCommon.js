@@ -95,9 +95,9 @@ function expectInvariants (subject) {
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'message')
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'stack')
   // noinspection JSUnresolvedVariable
-  subject.message.must.contain(subject.contractFunction.name)
+  subject.message.should.containEql(subject.contractFunction.name)
   // noinspection JSUnresolvedVariable
-  subject.message.must.contain(report.conciseCondition('condition', subject.condition))
+  subject.message.should.containEql(report.conciseCondition('condition', subject.condition))
 }
 
 // noinspection ParameterNamingConventionJS
@@ -121,12 +121,12 @@ function expectConstructorPost (result, contractFunction, condition, self, args,
 function expectDetailsPost (subject, result) {
   result.should.be.a.String()
   // noinspection JSUnresolvedVariable
-  result.must.contain(report.conciseCondition('', subject.condition))
+  result.should.containEql(report.conciseCondition('', subject.condition))
   // noinspection JSUnresolvedVariable
-  result.must.contain(os.EOL + subject.contractFunction.contract.location)
-  result.must.contain(report.value(subject.self))
+  result.should.containEql(os.EOL + subject.contractFunction.contract.location)
+  result.should.containEql(report.value(subject.self))
   Array.prototype.forEach.call(subject.args, arg => {
-    result.must.contain(report.value(arg))
+    result.should.containEql(report.value(arg))
   })
 }
 

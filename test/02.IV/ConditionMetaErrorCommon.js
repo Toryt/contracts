@@ -31,11 +31,11 @@ function expectInvariants (subject) {
   }
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'error')
-  subject.stack.must.contain('' + subject.error)
+  subject.stack.should.containEql('' + subject.error)
   if (subject.error && subject.error.stack) {
-    subject.stack.must.contain(subject.error.stack)
+    subject.stack.should.containEql(subject.error.stack)
   }
-  subject.message.must.contain('(' + subject.error + ')')
+  subject.message.should.containEql('(' + subject.error + ')')
 }
 
 function expectConstructorPost (result, contractFunction, condition, self, args, error, rawStack) {
@@ -72,9 +72,9 @@ const errorCases = [
 
 function expectDetailsPost (subject, result) {
   common.expectDetailsPost(subject, result)
-  result.must.contain(report.extensiveThrown(subject.error))
+  result.should.containEql(report.extensiveThrown(subject.error))
   if (subject.error && subject.error.stack) {
-    result.must.contain(subject.error.stack)
+    result.should.containEql(subject.error.stack)
   }
 }
 
