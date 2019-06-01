@@ -131,12 +131,12 @@ function expectInvariants (/* AbstractContract */ subject) {
 }
 
 function expectArrayPost (result, array, propName, privatePropName) {
-  result[propName].must.be.an.array()
+  result[propName].should.be.an.Array()
   if (!array) {
     if (propName === 'exception' || propName === 'fastException') {
-      result[propName].must.eql(AbstractContract.mustNotHappen)
+      result[propName].should.eql(AbstractContract.mustNotHappen)
     } else {
-      result[propName].must.be.empty()
+      result[propName].should.be.empty()
     }
   } else {
     result[privatePropName].should.not.equal(array) // it must be copy, don't share the array
