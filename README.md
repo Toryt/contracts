@@ -100,18 +100,20 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
   - IV/4.0.1:
     - fix issue with stack trace of condition errors in Chrome ≥ v73
   - IV/4.0.2:
-    - fix bug with circular structures in this (and other arguments) with util.inspect; appear in mocha-reporter and
-      IntelliJ
+    - fix bug with circular structures in this (and other arguments) with util.inspect (It actually turns out there are
+      2 separate, separate bugs in IntelliJ and mocha-reporter)
   - IV/4.0.3:
     - fix bug in determination of Contract Violation location on Windows. It turns out that Node (8, at least) in
       Windows uses \n as EOL in stack traces, and not os.EOL.
+  - IV/4.0.4:
+    - replace `must` with `should` in tests
 
 ## TODO
 
 - IV
-  - IV/4.0.4: fix bug with async functions in Node 12 (a similar issue as with 4.0.1)
-  - IV/4.0.5: jsdoc
-  - IV/4.0.6: Documentation
+  - IV/4.0.5: fix bug with async functions in Node 12 (a similar issue as with 4.0.1)
+  - IV/4.0.6: jsdoc
+  - IV/4.0.7: Documentation
   - IV/4.1.0: extend function contracts - specialization / generalization
   - IV/4.2.0: type conditions ('interfaces')
   - IV/4.3.0: support `class`
