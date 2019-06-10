@@ -24,7 +24,7 @@ const stack = require('../../lib/_private/stack')
 const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
-const os = require('os')
+const eol = require('../../lib/_private/eol')
 const must = require('must')
 
 const someConditions = [
@@ -95,7 +95,7 @@ const constructorExceptionCases = [
   }
 ].concat(exceptionCases)
 
-const location = os.EOL + '    at /'
+const location = eol.stack + '    at /'
 
 function expectInvariants (/* AbstractContract */ subject) {
   subject.must.be.an.instanceof(AbstractContract)
@@ -125,7 +125,7 @@ function expectInvariants (/* AbstractContract */ subject) {
     const stack = err.stack
     stack.must.contain(AbstractContract.AbstractError.message)
     stack.must.contain(AbstractContract.AbstractError.name)
-    stack.split(os.EOL)[0].must.contain('abstract')
+    stack.split(eol.stack)[0].must.contain('abstract')
     testUtil.log(stack)
   }
 }
@@ -267,7 +267,7 @@ function generateConstructorMethodsDescriptions (ContractConstructor) {
   describe('@isAContractFunction', function () {
     generateIAGCFTests(ContractConstructor, ContractConstructor.isAContractFunction)
     notAFunctionNorAContract
-      .filter(t => !t || typeof t !== 'string' || t.indexOf(os.EOL) >= 0)
+      .filter(t => !t || typeof t !== 'string' || t.indexOf(eol.n) >= 0 || t.indexOf(eol.rn) >= 0)
       .concat([{}, AbstractContract.internalLocation])
       .forEach(v => {
         it(`says no if the location is not a location outside this library but ${v}`, function () {
