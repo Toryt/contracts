@@ -1,5 +1,5 @@
 /*
- Copyright 2016 - 2018 by Jan Dockx
+ Copyright 2016 - 2019 by Jan Dockx
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ const stack = require('../../lib/_private/stack')
 const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
-const stackEOL = require('../../lib/_private/eol').stack
+const eol = require('../../lib/_private/eol')
 const should = require('should')
 
 const someConditions = [

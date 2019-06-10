@@ -26,7 +26,7 @@ const ConditionError = require('../../lib/IV/ConditionError')
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const abstractContractCommon = require('./AbstractContractCommon')
 const should = require('should')
-const stackEol = require('../../lib/_private/eol').stack
+const stackEOL = require('../../lib/_private/eol').stack
 
 const conditionCase = function () {
   return 'This simulates a condition'

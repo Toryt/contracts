@@ -21,7 +21,7 @@
 const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-const os = require('os')
+const eol = require('../../lib/_private/eol')
 
 describe('_private/stack', function () {
   describe('#location', function () {
@@ -38,8 +38,8 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.should.be.a.String()
       // must be a single line with any EOL
-      result.split(cases.rnEOL).length.should.equal(1)
-      result.split(cases.nEOL).length.should.equal(1)
+      result.split(eol.rn).length.should.equal(1)
+      result.split(eol.n).length.should.equal(1)
       if (testUtil.environment !== 'safari') {
         result.should.containEql('aSecondFunction')
       }
@@ -66,8 +66,8 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.should.be.a.String()
       // must be a single line with any EOL
-      result.split(cases.rnEOL).length.should.equal(1)
-      result.split(cases.nEOL).length.should.equal(1)
+      result.split(eol.rn).length.should.equal(1)
+      result.split(eol.n).length.should.equal(1)
       if (testUtil.environment !== 'safari') {
         result.should.containEql('aSecondFunction')
       }
@@ -149,9 +149,9 @@ describe('_private/stack', function () {
       const result = aFirstFunction()
       testUtil.log(result)
       result.should.be.a.String()
-      const lines = result.split(stackEOL)
       result.should.not.containEql('skip')
       result.should.not.containEql('[[internal]]')
+      const lines = result.split(eol.stack)
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
         lines.length.should.be.greaterThanOrEqual(5)
