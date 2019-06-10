@@ -129,15 +129,24 @@ describe('_private/is', function () {
     it(`says no to a multi-line string with a blank line with eol.stack`, function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = is.stack('this is a' + eol.stack + 'multi-line' + eol.stack + 'string, with a' + eol.stack +
-                              eol.stack + 'blank line')
+      const result = is.stack(
+        'this is a' + eol.stack + 'multi-line' + eol.stack + 'string, with a' + eol.stack + eol.stack + 'blank line'
+      )
       result.must.be.false()
     })
     it(`says yes to a multi-line string with a blank line with other EOL (looks like a single line)`, function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = is.stack('this is a' + cases.notStackEOL + 'multi-line' + cases.notStackEOL +
-                              'string, with a' + cases.notStackEOL + cases.notStackEOL + 'blank line')
+      const result = is.stack(
+        'this is a' +
+          cases.notStackEOL +
+          'multi-line' +
+          cases.notStackEOL +
+          'string, with a' +
+          cases.notStackEOL +
+          cases.notStackEOL +
+          'blank line'
+      )
       // with the other EOL, it looks like a single line, which is a good stack
       result.must.be.true()
     })
