@@ -112,6 +112,7 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.must.be.a.string()
       const lines = result.split(os.EOL)
+      result.must.not.contain('[[internal]]')
       lines.length.must.be.at.least(1)
       if (testUtil.environment !== 'safari') {
         lines.length.must.be.at.least(5)
@@ -160,6 +161,8 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.must.be.a.string()
       const lines = result.split(os.EOL)
+      result.must.not.contain('skip')
+      result.must.not.contain('[[internal]]')
       lines.length.must.be.at.least(1)
       if (testUtil.environment !== 'safari') {
         lines.length.must.be.at.least(5)
