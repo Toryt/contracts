@@ -27,6 +27,14 @@ const rnEOL = '\r\n'
 const nEOL = '\n'
 
 describe('_private/stack', function () {
+  describe('#EOL', function () {
+    it('contains the expected EOL', function () {
+      const err = new Error('just an error')
+      err.stack.must.contain(stack.EOL)
+      const other = stack.EOL === rnEOL ? nEOL : rnEOL
+      err.stack.must.not.contain(other)
+    })
+  })
   describe('#location', function () {
     it('returns the expected line without arguments', function () {
       function aFirstFunction () {
