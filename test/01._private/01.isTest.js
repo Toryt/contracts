@@ -23,6 +23,8 @@ const testUtil = require('../_util/testUtil')
 const must = require('must')
 const os = require('os')
 const stuff = require('./_stuff')
+const cases = require('../_cases')
+const stack = require('../../lib/_private/stack')
 
 describe('_private/is', function () {
   describe('#arguments', function () {
@@ -66,16 +68,22 @@ describe('_private/is', function () {
       const result = is.stackLocation('abc')
       result.must.be.true()
     })
-    it(`says no to a multi-line string`, function () {
+    it(`says no to a multi-line string with \\n as EOL`, function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = is.stackLocation('this is a' + os.EOL + 'multi-line' + os.EOL + 'string')
+      const result = is.stackLocation('this is a' + cases.nEOL + 'multi-line' + cases.nEOL + 'string')
+      result.must.be.false()
+    })
+    it(`says no to a multi-line string with \\r\\n as EOL`, function () {
+      // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
+      // on Windows
+      const result = is.stackLocation('this is a' + cases.rnEOL + 'multi-line' + cases.rnEOL + 'string')
       result.must.be.false()
     })
     it(`says yes to all lines of a stack trace`, function () {
       // sadly, also to the message
       const error = new Error('This is an error to get a platform dependent stack')
-      const lines = error.stack.split(os.EOL)
+      const lines = error.stack.split(stack.EOL)
       lines
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
         .filter((line, index) => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
