@@ -18,6 +18,8 @@
 
 'use strict'
 
+const stack = require('../lib/_private/stack')
+
 const any = [
   undefined,
   null,
@@ -71,6 +73,7 @@ const intentionallyRejectingArrow = () => intentionallyRejectedPromise
 
 const rnEOL = '\r\n'
 const nEOL = '\n'
+const notStackEOL = stack.EOL === rnEOL ? nEOL : rnEOL
 
 module.exports = {
   any,
@@ -81,5 +84,6 @@ module.exports = {
   intentionallyRejectedPromise,
   intentionallyRejectingArrow,
   rnEOL,
-  nEOL
+  nEOL,
+  notStackEOL
 }

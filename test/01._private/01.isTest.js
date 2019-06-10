@@ -113,30 +113,45 @@ describe('_private/is', function () {
       const result = is.stack('abc')
       result.must.be.true()
     })
-    it(`says yes to a multi-line string`, function () {
-      const candidate = `this is a 
-multi-line
-string`
+    it(`says yes to a multi-line string with stack.EOL`, function () {
+      // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
+      // on Windows
+      const candidate = 'this is a' + stack.EOL + 'multi-line' + stack.EOL + 'string'
       const result = is.stack(candidate)
       result.must.be.true()
     })
-    it(`says no to a multi-line string with a blank line`, function () {
+    it(`says no to a multi-line string with the other EOL`, function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = is.stack('this is a' + os.EOL + 'multi-line' + os.EOL + 'string, with a' + os.EOL + os.EOL +
-                              'blank line')
+      const candidate = 'this is a' + cases.notStackEOL + 'multi-line' + cases.notStackEOL + 'string'
+      const result = is.stack(candidate)
+      result.must.be.true()
+    })
+    it(`says no to a multi-line string with a blank line with stack.EOL`, function () {
+      // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
+      // on Windows
+      const result = is.stack('this is a' + stack.EOL + 'multi-line' + stack.EOL + 'string, with a' + stack.EOL +
+                              stack.EOL + 'blank line')
       result.must.be.false()
+    })
+    it(`says yes to a multi-line string with a blank line with other EOL (looks like a single line)`, function () {
+      // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
+      // on Windows
+      const result = is.stack('this is a' + cases.notStackEOL + 'multi-line' + cases.notStackEOL +
+                              'string, with a' + cases.notStackEOL + cases.notStackEOL + 'blank line')
+      // with the other EOL, it looks like a single line, which is a good stack
+      result.must.be.true()
     })
     it(`says yes to a stack trace`, function () {
       const message = 'This is an error to get a platform dependent stack'
       // sadly, also to the message, on some platforms
       const error = new Error(message)
       testUtil.showStack(error)
-      const stackLines = error.stack.split(os.EOL)
+      const stackLines = error.stack.split(stack.EOL)
       const rawStack = stackLines
         // remove message line
         .filter(sl => sl && sl.indexOf(message) < 0)
-        .join(os.EOL)
+        .join(stack.EOL)
       testUtil.log('rawStack:')
       testUtil.log(`▷${rawStack}◁`)
       const result = is.stack(rawStack)
