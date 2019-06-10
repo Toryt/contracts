@@ -99,11 +99,13 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
     - Support `Promise` and `async` functions through `PromiseContract` (with `Contract.Promise` as alias)
   - IV/4.0.1:
     - fix issue with stack trace of condition errors in Chrome ≥ v73
+  - IV/4.0.2:
+    - fix bug with circular structures in this (and other arguments) with util.inspect; appear in mocha-reporter and
+      IntelliJ
 
 ## TODO
 
 - IV
-  - IV/4.0.2: fix bug with circular structures in this (and other arguments) with util.inspect
   - IV/4.0.3: fix bug with async functions in Node 12 (a similar issue as with 4.0.1)
   - IV/4.0.4: jsdoc
   - IV/4.0.5: Documentation
