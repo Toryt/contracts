@@ -41,6 +41,6 @@ describe('_private/eol', function () {
     })
   })
   it('#os', function () {
-    eol.rn.must.equal(os.EOL)
+    eol.os.must.equal(os.EOL)
   })
 })
