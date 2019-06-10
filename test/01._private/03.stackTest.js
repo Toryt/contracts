@@ -35,6 +35,7 @@ describe('_private/stack', function () {
       err.stack.must.not.contain(other)
     })
   })
+
   describe('#location', function () {
     it('returns the expected line without arguments', function () {
       function aFirstFunction () {
