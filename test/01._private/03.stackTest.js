@@ -21,7 +21,6 @@
 const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-const os = require('os')
 
 const rnEOL = '\r\n'
 const nEOL = '\n'
