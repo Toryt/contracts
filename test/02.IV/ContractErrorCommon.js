@@ -21,19 +21,19 @@
 const ContractError = require('../../lib/IV/ContractError')
 const testUtil = require('../_util/testUtil')
 const is = require('../../lib/_private/is')
-const os = require('os')
+const stackEOL = require('../../lib/_private/eol').stack
 
 function expectStackInvariants (subject) {
   const stack = subject.stack
   stack.must.be.a.string()
-  const startOfStack = subject.name + ': ' + subject.message + os.EOL
+  const startOfStack = subject.name + ': ' + subject.message + stackEOL
   stack.must.match(new RegExp('^' + testUtil.regExpEscape(startOfStack)))
   const restOfStack = stack
     .replace(startOfStack, '')
-    .split(os.EOL)
+    .split(stackEOL)
     // remove empty lines that may occur in 'caused by' in Safari when used via Web Driver
     .filter(l => !!l)
-    .join(os.EOL)
+    .join(stackEOL)
   is.stack(restOfStack).must.be.true()
   // noinspection JSUnresolvedVariable
   restOfStack.must.contain(subject._rawStack)
