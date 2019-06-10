@@ -69,6 +69,9 @@ intentionallyRejectedPromise.catch(ignore => {})
 
 const intentionallyRejectingArrow = () => intentionallyRejectedPromise
 
+const rnEOL = '\r\n'
+const nEOL = '\n'
+
 module.exports = {
   any,
   intentionalError,
@@ -76,5 +79,7 @@ module.exports = {
   intentionallyFailingArrow,
   intentionallyFailingAsyncArrow,
   intentionallyRejectedPromise,
-  intentionallyRejectingArrow
+  intentionallyRejectingArrow,
+  rnEOL,
+  nEOL
 }

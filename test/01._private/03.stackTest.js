@@ -21,16 +21,14 @@
 const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-
-const rnEOL = '\r\n'
-const nEOL = '\n'
+const cases = require('../_cases')
 
 describe('_private/stack', function () {
   describe('#EOL', function () {
     it('contains the expected EOL', function () {
       const err = new Error('just an error')
       err.stack.must.contain(stack.EOL)
-      const other = stack.EOL === rnEOL ? nEOL : rnEOL
+      const other = stack.EOL === cases.rnEOL ? cases.nEOL : cases.rnEOL
       err.stack.must.not.contain(other)
     })
   })
@@ -49,8 +47,8 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.must.be.a.string()
       // must be a single line with any EOL
-      result.split(rnEOL).length.must.equal(1)
-      result.split(nEOL).length.must.equal(1)
+      result.split(cases.rnEOL).length.must.equal(1)
+      result.split(cases.nEOL).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
@@ -77,8 +75,8 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.must.be.a.string()
       // must be a single line with any EOL
-      result.split(rnEOL).length.must.equal(1)
-      result.split(nEOL).length.must.equal(1)
+      result.split(cases.rnEOL).length.must.equal(1)
+      result.split(cases.nEOL).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
