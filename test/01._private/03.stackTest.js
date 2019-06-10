@@ -23,6 +23,9 @@ const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
 const os = require('os')
 
+const rnEOL = '\r\n'
+const nEOL = '\n'
+
 describe('_private/stack', function () {
   describe('#location', function () {
     it('returns the expected line without arguments', function () {
@@ -37,7 +40,9 @@ describe('_private/stack', function () {
       const result = aFirstFunction()
       testUtil.log(result)
       result.must.be.a.string()
-      result.split(os.EOL).length.must.equal(1)
+      // must be a single line with any EOL
+      result.split(rnEOL).length.must.equal(1)
+      result.split(nEOL).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
@@ -63,7 +68,9 @@ describe('_private/stack', function () {
       const result = aFirstFunction()
       testUtil.log(result)
       result.must.be.a.string()
-      result.split(os.EOL).length.must.equal(1)
+      // must be a single line with any EOL
+      result.split(rnEOL).length.must.equal(1)
+      result.split(nEOL).length.must.equal(1)
       if (testUtil.environment !== 'safari') {
         result.must.contain('aSecondFunction')
       }
