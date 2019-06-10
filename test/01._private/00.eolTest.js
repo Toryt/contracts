@@ -24,23 +24,23 @@ const cases = require('../_cases')
 
 describe('_private/eol', function () {
   it('#n', function () {
-    eol.n.must.equal('\n')
+    eol.n.should.equal('\n')
   })
   it('#rn', function () {
-    eol.rn.must.equal('\r\n')
+    eol.rn.should.equal('\r\n')
   })
   describe('#EOL', function () {
     it('is either n or rn', function () {
       const result = eol.stack === eol.n || eol.stack === eol.rn
-      result.must.be.true()
+      result.should.be.true()
     })
     it('a stack contains the expected EOL', function () {
       const err = new Error('just an error')
-      err.stack.must.contain(eol.stack)
-      err.stack.must.not.contain(cases.notStackEOL)
+      err.stack.should.containEql(eol.stack)
+      err.stack.should.not.containEql(cases.notStackEOL)
     })
   })
   it('#os', function () {
-    eol.os.must.equal(os.EOL)
+    eol.os.should.equal(os.EOL)
   })
 })

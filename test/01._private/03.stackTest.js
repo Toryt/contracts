@@ -100,8 +100,8 @@ describe('_private/stack', function () {
       const result = aFirstFunction()
       testUtil.log(result)
       result.should.be.a.String()
-      result.should.not.contain('[[internal]]')
-      const lines = result.split(stackEOL)
+      result.should.not.containEql('[[internal]]')
+      const lines = result.split(eol.stack)
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
         lines.length.should.be.greaterThanOrEqual(5)
@@ -149,9 +149,9 @@ describe('_private/stack', function () {
       const result = aFirstFunction()
       testUtil.log(result)
       result.should.be.a.String()
-      result.should.not.contain('skip')
-      result.should.not.contain('[[internal]]')
       const lines = result.split(stackEOL)
+      result.should.not.containEql('skip')
+      result.should.not.containEql('[[internal]]')
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
         lines.length.should.be.greaterThanOrEqual(5)
