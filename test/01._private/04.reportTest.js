@@ -22,7 +22,7 @@ const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
 const testUtil = require('../_util/testUtil')
-const os = require('os')
+const eol = require('../../lib/_private/eol')
 const util = require('util')
 const stuff = require('./_stuff')
 const cases = require('../_cases')
@@ -49,7 +49,8 @@ describe('_private/report', function () {
 
     function expectGeneralPostconditions (result, expected) {
       testUtil.log('result: %s', result)
-      result.must.not.contain(os.EOL)
+      result.must.not.contain(eol.n)
+      result.must.not.contain(eol.rn)
       result.length.must.be.at.most(report.maxLengthOfConciseRepresentation)
       result.trim().must.equal(result)
       isAConciseVersion(expected, result).must.be.truthy()
@@ -127,7 +128,7 @@ this function should have a name   ` // trim
 
     function stackDoesContainToString () {
       return {
-        stack: toStringString + os.EOL + stackString,
+        stack: toStringString + eol.stack + stackString,
         toString: function () {
           return toStringString
         }
@@ -152,7 +153,7 @@ this function should have a name   ` // trim
         result.indexOf(report.value(thrown)).must.equal(0)
         let stack = thrown && thrown.stack
         if (stack) {
-          stack = os.EOL + stack
+          stack = eol.stack + stack
           const expectedStart = result.length - stack.length
           result.lastIndexOf(stack).must.equal(expectedStart)
         }

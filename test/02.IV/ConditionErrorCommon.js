@@ -26,7 +26,7 @@ const ConditionError = require('../../lib/IV/ConditionError')
 const AbstractContract = require('../../lib/IV/AbstractContract')
 const abstractContractCommon = require('./AbstractContractCommon')
 const must = require('must')
-const os = require('os')
+const stackEol = require('../../lib/_private/eol').stack
 
 const conditionCase = function () {
   return 'This simulates a condition'
@@ -122,7 +122,7 @@ function expectDetailsPost (subject, result) {
   // noinspection JSUnresolvedVariable
   result.must.contain(report.conciseCondition('', subject.condition))
   // noinspection JSUnresolvedVariable
-  result.must.contain(os.EOL + subject.contractFunction.contract.location)
+  result.must.contain(stackEol + subject.contractFunction.contract.location)
   result.must.contain(report.value(subject.self))
   Array.prototype.forEach.call(subject.args, arg => {
     result.must.contain(report.value(arg))

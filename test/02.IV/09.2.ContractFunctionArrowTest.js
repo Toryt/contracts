@@ -30,7 +30,7 @@ const preconditionViolationCommon = require('./PreconditionViolationCommon')
 const postconditionViolationCommon = require('./PostconditionViolationCommon')
 const exceptionConditionViolationCommon = require('./ExceptionConditionViolationCommon')
 const must = require('must')
-const os = require('os')
+const stackEOL = require('../../lib/_private/eol').stack
 const cases = require('../_cases')
 
 /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
@@ -204,7 +204,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       testUtil.showStack(exception)
       testUtil.showStack(exception)
       expectException(exception)
-      const stackLines = exception.stack.split(os.EOL)
+      const stackLines = exception.stack.split(stackEOL)
       const callStackLine = stackLines.indexOf('call stack:')
       callStackLine.must.be.at.least(0)
       stackLines.splice(0, callStackLine + 1)

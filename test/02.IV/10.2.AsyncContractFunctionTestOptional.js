@@ -30,7 +30,7 @@ const preconditionViolationCommon = require('./PreconditionViolationCommon')
 const postconditionViolationCommon = require('./PostconditionViolationCommon')
 const exceptionConditionViolationCommon = require('./ExceptionConditionViolationCommon')
 const must = require('must')
-const os = require('os')
+const stackEOL = require('../../lib/_private/eol').stack
 const cases = require('../_cases')
 
 /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
@@ -210,7 +210,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       stack.must.contain(func.name)
       testUtil.showStack(rejection)
       expectException(rejection)
-      const stackLines = stack.split(os.EOL)
+      const stackLines = stack.split(stackEOL)
       const callStackLine = stackLines.indexOf('call stack:')
       callStackLine.must.be.at.least(0)
       stackLines.splice(0, callStackLine + 1)
