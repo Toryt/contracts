@@ -67,9 +67,9 @@ describe('_private/is', function () {
       result.must.be.true()
     })
     it(`says no to a multi-line string`, function () {
-      const result = is.stackLocation(`this is a 
-multi-line
-string`)
+      // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
+      // on Windows
+      const result = is.stackLocation('this is a' + os.EOL + 'multi-line' + os.EOL + 'string')
       result.must.be.false()
     })
     it(`says yes to all lines of a stack trace`, function () {
@@ -113,11 +113,10 @@ string`
       result.must.be.true()
     })
     it(`says no to a multi-line string with a blank line`, function () {
-      const result = is.stack(`this is a 
-multi-line
-string, with a
-
-blank line`)
+      // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
+      // on Windows
+      const result = is.stack('this is a' + os.EOL + 'multi-line' + os.EOL + 'string, with a' + os.EOL + os.EOL +
+                              'blank line')
       result.must.be.false()
     })
     it(`says yes to a stack trace`, function () {
