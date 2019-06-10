@@ -22,17 +22,9 @@ const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
 const cases = require('../_cases')
+const stackEOL = require('../../lib/_private/eol').stack
 
 describe('_private/stack', function () {
-  describe('#EOL', function () {
-    it('contains the expected EOL', function () {
-      const err = new Error('just an error')
-      err.stack.must.contain(stack.EOL)
-      const other = stack.EOL === cases.rnEOL ? cases.nEOL : cases.rnEOL
-      err.stack.must.not.contain(other)
-    })
-  })
-
   describe('#location', function () {
     it('returns the expected line without arguments', function () {
       function aFirstFunction () {
@@ -110,7 +102,7 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.must.be.a.string()
       result.must.not.contain('[[internal]]')
-      const lines = result.split(stack.EOL)
+      const lines = result.split(stackEOL)
       lines.length.must.be.at.least(1)
       if (testUtil.environment !== 'safari') {
         lines.length.must.be.at.least(5)
@@ -160,7 +152,7 @@ describe('_private/stack', function () {
       result.must.be.a.string()
       result.must.not.contain('skip')
       result.must.not.contain('[[internal]]')
-      const lines = result.split(stack.EOL)
+      const lines = result.split(stackEOL)
       lines.length.must.be.at.least(1)
       if (testUtil.environment !== 'safari') {
         lines.length.must.be.at.least(5)
