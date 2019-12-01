@@ -20,7 +20,7 @@
 
 const testUtil = require('../_util/testUtil')
 const stack = require('../../lib/_private/stack')
-const common = require('../02.IV/ContractCommon')
+const common = require('./ContractCommon')
 const Contract = require('../../lib/v/Contract')
 const abstractContractCommon = require('../02.IV/AbstractContractCommon')
 const AbstractContract = require('../../lib/IV/AbstractContract')
