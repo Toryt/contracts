@@ -237,8 +237,9 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
          - Firefox
          - Edge
          - node 6
+         - node 12
        */
-        const expectReference = /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
+        const expectReference = /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback|async Promise.all/
         stackLines[0].should.match(expectReference)
       }
     }
