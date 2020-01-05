@@ -148,7 +148,10 @@ describe('IV/AbstractContract', function () {
   function args () {
     return arguments
   }
-  const argsCases = [{ a: argsCase, d: 'array' }, { a: args.apply(null, argsCase), d: 'arguments' }]
+  const argsCases = [
+    { a: argsCase, d: 'array' },
+    { a: args.apply(null, argsCase), d: 'arguments' }
+  ]
 
   describe('AbstractContract.outcome', function () {
     argsCases.forEach(c => {
