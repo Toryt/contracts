@@ -32,6 +32,13 @@ describe('mocha this', function () {
   it('works when a precondition violation occurs when a function is called with a mocha fixture as this', function () {
     // noinspection JSUnresolvedVariable
     if (this.test.intellij_test_node) {
+      /* NOTE: This tests the workaround for a bug, that only occurs when running tests in IntelliJ, because of an
+               unhandled circular structure in `this.test.intellij_test_node`. Eventually, Node util.inspect
+               is called, and that cannot handle circular object structure in Node < 12. This test this is only
+               sensible when in the context where the bug might occur. util.inspect was made more robust in Node 12,
+               and now can deal with circular structures, so the bug does not appear in Node 12 or later.
+               Since we still support Node 8 and 10, we need to keep this test until that has passed. */
+      // MUDO only run the test in intellij, when using node < 12
       try {
         this.subject()
         true.should.be.false()
