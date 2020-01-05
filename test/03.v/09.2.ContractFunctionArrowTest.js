@@ -42,12 +42,9 @@ const cases = require('../_cases')
 
 // noinspection FunctionTooLongJS
 describe('v/ContractFunction-ArrowFunctions', function () {
-  let fibonacci
-
   const fibonacciImpl = n => (n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2))
 
-  // noinspection JSUnresolvedFunction
-  fibonacci = new Contract({
+  const fibonacci = new Contract({
     pre: [Number.isInteger, n => n >= 0],
     post: [
       (n, result) => Number.isInteger(result),
@@ -312,7 +309,7 @@ describe('v/ContractFunction-ArrowFunctions', function () {
   describe('#name', function () {
     it('fibonacci has the right name', function () {
       fibonacciImpl.name.should.equal('fibonacciImpl')
-      testUtil.log(`fibonacci.name: %s`, fibonacci.name)
+      testUtil.log('fibonacci.name: %s', fibonacci.name)
       fibonacci.name.should.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
     const anonymousContractFunctions = [
