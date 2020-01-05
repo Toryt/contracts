@@ -59,27 +59,27 @@ describe('_private/is', function () {
           result.should.be.false()
         })
       })
-    it(`says no to ''`, function () {
+    it('says no to \'\'', function () {
       const result = is.stackLocation('')
       result.should.be.false()
     })
-    it(`says yes to 'abc'`, function () {
+    it('says yes to \'abc\'', function () {
       const result = is.stackLocation('abc')
       result.should.be.true()
     })
-    it(`says no to a multi-line string with \\n as EOL`, function () {
+    it('says no to a multi-line string with \\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stackLocation('this is a' + eol.n + 'multi-line' + eol.n + 'string')
       result.should.be.false()
     })
-    it(`says no to a multi-line string with \\r\\n as EOL`, function () {
+    it('says no to a multi-line string with \\r\\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stackLocation('this is a' + eol.rn + 'multi-line' + eol.rn + 'string')
       result.should.be.false()
     })
-    it(`says yes to all lines of a stack trace`, function () {
+    it('says yes to all lines of a stack trace', function () {
       // sadly, also to the message
       const error = new Error('This is an error to get a platform dependent stack')
       const lines = error.stack.split(eol.stack)
@@ -104,29 +104,29 @@ describe('_private/is', function () {
           result.should.be.false()
         })
       })
-    it(`says no to ''`, function () {
+    it('says no to \'\'', function () {
       const result = is.stack('')
       result.should.be.false()
     })
-    it(`says yes to 'abc'`, function () {
+    it('says yes to \'abc\'', function () {
       const result = is.stack('abc')
       result.should.be.true()
     })
-    it(`says yes to a multi-line string with eol.stack`, function () {
+    it('says yes to a multi-line string with eol.stack', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const candidate = 'this is a' + eol.stack + 'multi-line' + eol.stack + 'string'
       const result = is.stack(candidate)
       result.should.be.true()
     })
-    it(`says no to a multi-line string with the other EOL`, function () {
+    it('says no to a multi-line string with the other EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const candidate = 'this is a' + cases.notStackEOL + 'multi-line' + cases.notStackEOL + 'string'
       const result = is.stack(candidate)
       result.should.be.true()
     })
-    it(`says no to a multi-line string with a blank line with eol.stack`, function () {
+    it('says no to a multi-line string with a blank line with eol.stack', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stack(
@@ -134,7 +134,7 @@ describe('_private/is', function () {
       )
       result.should.be.false()
     })
-    it(`says yes to a multi-line string with a blank line with other EOL (looks like a single line)`, function () {
+    it('says yes to a multi-line string with a blank line with other EOL (looks like a single line)', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stack(
@@ -150,7 +150,7 @@ describe('_private/is', function () {
       // with the other EOL, it looks like a single line, which is a good stack
       result.should.be.true()
     })
-    it(`says yes to a stack trace`, function () {
+    it('says yes to a stack trace', function () {
       const message = 'This is an error to get a platform dependent stack'
       // sadly, also to the message, on some platforms
       const error = new Error(message)
