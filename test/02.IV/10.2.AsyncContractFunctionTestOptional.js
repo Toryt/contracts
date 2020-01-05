@@ -237,7 +237,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
          - node12: alternating ('[[internal]]' and '    at async Promise.all (index 1)' - in self.fibonacciWrong,
            in a setTimeout)
        */
-        const expectReference = /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback|async Promise.all (index 1)/
+        const expectReference = /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise\.catch\.then|promise\.catch\.rejection|about:blank|Anonymous|runMicrotasksCallback|async Promise.all \(index 1\)/
         testUtil.log(stackLines[0])
         stackLines[0].should.match(expectReference)
       }
