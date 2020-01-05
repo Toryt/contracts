@@ -109,12 +109,16 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
     - replace `must` with `should` in tests
   - IV/4.0.5:
     - fix missing EOLs - these where lost in the 4.0.4 rebase
+  - IV/4.0.6:
+    - test also on Node 12 and 13 (use 12 as dev env)
+    - upgrade dependencies (dev)
+    - fix test issue with async functions in Node 12 (a similar issue as with 4.0.1) (there is still a test issue with
+      Node 12 and later when running tests in IntelliJ)
 
 ## TODO
 
 - IV
-  - IV/4.0.6: fix bug with async functions in Node 12 (a similar issue as with 4.0.1)
-  - IV/4.0.7: jsdoc
+  - IV/4.0.7: jsdoc or d.ts
   - IV/4.0.8: Documentation
   - IV/4.1.0: extend function contracts - specialization / generalization
   - IV/4.2.0: type conditions ('interfaces')
