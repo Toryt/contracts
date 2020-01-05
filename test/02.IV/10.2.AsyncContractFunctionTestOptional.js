@@ -361,19 +361,19 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
   describe('#name', function () {
     it('fibonacci has the right name', function () {
       fibonacciImpl.name.should.equal('fibonacciImpl')
-      testUtil.log(`fibonacci.name: %s`, fibonacci.name)
+      testUtil.log('fibonacci.name: %s', fibonacci.name)
       fibonacci.name.should.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
-    it(`self.fibonacci has the right name`, function () {
+    it('self.fibonacci has the right name', function () {
       testUtil.log(`self.fibonacci.name: ${self.fibonacci.name}`)
       self.fibonacci.name.should.containEql(`${AbstractContract.namePrefix} async function (n) {`)
     })
     it('fibonacciWrong has the right name', function () {
-      testUtil.log(`fibonacciWrong.name: %s`, fibonacciWrong.name)
+      testUtil.log('fibonacciWrong.name: %s', fibonacciWrong.name)
       fibonacciWrong.name.should.equal(`${AbstractContract.namePrefix} fWrong`)
     })
     it('self.fibonacciWrong has the right name', function () {
-      testUtil.log(`self.fibonacciWrong.name: %s`, self.fibonacciWrong.name)
+      testUtil.log('self.fibonacciWrong.name: %s', self.fibonacciWrong.name)
       self.fibonacciWrong.name.should.equal(`${AbstractContract.namePrefix} fWrong`)
     })
     const anonymousContractFunctions = [

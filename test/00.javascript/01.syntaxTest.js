@@ -39,7 +39,7 @@ describe('javascript/syntax', function () {
       const o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties)
       let count = 0
       let previous = -1
-      for (let key in o) {
+      for (const key in o) {
         count++
         const current = orderOfKeysCommon.nFromRandomName(key)
         current.should.equal(previous + 1)

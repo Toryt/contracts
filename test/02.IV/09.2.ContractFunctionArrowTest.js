@@ -312,7 +312,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   describe('#name', function () {
     it('fibonacci has the right name', function () {
       fibonacciImpl.name.should.equal('fibonacciImpl')
-      testUtil.log(`fibonacci.name: %s`, fibonacci.name)
+      testUtil.log('fibonacci.name: %s', fibonacci.name)
       fibonacci.name.should.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
     const anonymousContractFunctions = [
