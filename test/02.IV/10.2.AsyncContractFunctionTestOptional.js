@@ -43,8 +43,6 @@ const cases = require('../_cases')
 
 // noinspection FunctionTooLongJS
 describe('IV/PromiseContractFunction - AsyncFunctions', function () {
-  let fibonacci
-
   async function fibonacciImpl (n) {
     if (n <= 1) {
       return n
@@ -53,8 +51,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     return result[0] + result[1]
   }
 
-  // noinspection JSUnresolvedFunction
-  fibonacci = new PromiseContract({
+  const fibonacci = new PromiseContract({
     pre: [Number.isInteger, n => n >= 0],
     post: [
       function () {

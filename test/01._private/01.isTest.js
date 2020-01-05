@@ -59,11 +59,11 @@ describe('_private/is', function () {
           result.should.be.false()
         })
       })
-    it('says no to \'\'', function () {
+    it("says no to ''", function () {
       const result = is.stackLocation('')
       result.should.be.false()
     })
-    it('says yes to \'abc\'', function () {
+    it("says yes to 'abc'", function () {
       const result = is.stackLocation('abc')
       result.should.be.true()
     })
@@ -104,11 +104,11 @@ describe('_private/is', function () {
           result.should.be.false()
         })
       })
-    it('says no to \'\'', function () {
+    it("says no to ''", function () {
       const result = is.stack('')
       result.should.be.false()
     })
-    it('says yes to \'abc\'', function () {
+    it("says yes to 'abc'", function () {
       const result = is.stack('abc')
       result.should.be.true()
     })
