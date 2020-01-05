@@ -114,12 +114,14 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
     - upgrade dependencies (dev)
     - fix test issue with async functions in Node 12 (a similar issue as with 4.0.1) (there is still a test issue with
       Node 12 and later when running tests in IntelliJ)
+  - IV/4.0.7:
+    - fix test issue with Node 12 and later when running tests in IntelliJ
 
 ## TODO
 
 - IV
-  - IV/4.0.7: jsdoc or d.ts
-  - IV/4.0.8: Documentation
+  - IV/4.0.8: jsdoc or d.ts
+  - IV/4.0.9: Documentation
   - IV/4.1.0: extend function contracts - specialization / generalization
   - IV/4.2.0: type conditions ('interfaces')
   - IV/4.3.0: support `class`
