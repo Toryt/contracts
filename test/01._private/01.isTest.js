@@ -179,7 +179,7 @@ describe('_private/is', function () {
         writable: values[2],
         value: propValue
       })
-      if (!values[0] && values[1] && !values[2] && subject.hasOwnProperty(propName)) {
+      if (!values[0] && values[1] && !values[2] && Object.prototype.hasOwnProperty.call(subject, propName)) {
         it(
           'reports true if the property is an own property, ' +
             'and it is enumerable, not configurable and not writable',
@@ -246,7 +246,7 @@ describe('_private/is', function () {
         values[1] &&
         typeof values[2] === 'function' &&
         values[3] === undefined &&
-        subject.hasOwnProperty(propName)
+        Object.prototype.hasOwnProperty.call(subject, propName)
       ) {
         it(
           'reports true if the property is an own property, and it is enumerable, and not configurable, has a ' +
