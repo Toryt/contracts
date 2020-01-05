@@ -66,6 +66,12 @@
     "standard": "^14.3.1",
     "tldrlegal": "^1.0.6"
   },
+  "mocha": {
+    "require": ["should"],
+    "checkLeaks": true,
+    "reporter": "mocha-reporter",
+    "recursive": true
+  },
   "nyc": {
     "check-coverage": true,
     "per-file": true,
