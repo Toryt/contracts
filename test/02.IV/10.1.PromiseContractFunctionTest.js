@@ -40,8 +40,6 @@ const cases = require('../_cases')
 
 // noinspection FunctionTooLongJS
 describe('IV/PromiseContractFunction', function () {
-  let fibonacci
-
   function fibonacciImpl (n) {
     return n <= 1
       ? Promise.resolve(n)
@@ -50,8 +48,7 @@ describe('IV/PromiseContractFunction', function () {
         .then(function (result) { return result[0] + result[1] })
   }
 
-  // noinspection JSUnresolvedFunction
-  fibonacci = new PromiseContract({
+  const fibonacci = new PromiseContract({
     pre: [Number.isInteger, n => n >= 0],
     post: [
       (n, result) => Number.isInteger(result),

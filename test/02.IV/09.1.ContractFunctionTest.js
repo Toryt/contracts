@@ -41,14 +41,11 @@ const cases = require('../_cases')
 
 // noinspection FunctionTooLongJS
 describe('IV/ContractFunction', function () {
-  let fibonacci
-
   function fibonacciImpl (n) {
     return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2)
   }
 
-  // noinspection JSUnresolvedFunction
-  fibonacci = new Contract({
+  const fibonacci = new Contract({
     pre: [
       function (n) {
         return Number.isInteger(n)
