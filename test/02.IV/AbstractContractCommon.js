@@ -302,6 +302,11 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
       subject.isImplementedBy(subject.abstract).should.be.ok()
       self.expectInvariants(subject)
     })
+    it('says yes to abstract with its own contract', function () {
+      const subject = oneSubjectGenerator()
+      subject.abstract.contract.isImplementedBy(subject.abstract).should.be.ok()
+      self.expectInvariants(subject.abstract.contract)
+    })
     notAFunctionNorAContract.concat(['function() {}']).forEach(function (thing) {
       it(`says no if the argument is not a general contract function but ${thing}`, function () {
         const subject = oneSubjectGenerator()
