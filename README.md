@@ -116,15 +116,17 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
       Node 12 and later when running tests in IntelliJ)
   - IV/4.0.7:
     - fix test issue with Node 12 and later when running tests in IntelliJ
+  - IV/4.0.8:
+    - fix bug in `isImplementedBy`: `cf.contract.isImplementedBy(cf)` did not work
 
 ## TODO
 
 - IV
-  - IV/4.0.8: jsdoc or d.ts
-  - IV/4.0.9: Documentation
-  - IV/4.1.0: extend function contracts - specialization / generalization
-  - IV/4.2.0: type conditions ('interfaces')
-  - IV/4.3.0: support `class`
+  - IV/4.1.0: jsdoc or d.ts
+  - IV/4.1.1: Documentation
+  - IV/4.2.0: extend function contracts - specialization / generalization
+  - IV/4.3.0: type conditions ('interfaces')
+  - IV/4.4.0: support `class`
 - V
   - V/5.0.0: change to Joi-like conditions (conditions-per-argument)
   - V/5.1.0: old-support
