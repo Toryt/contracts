@@ -66,6 +66,11 @@
     "standard": "^14.3.1",
     "tldrlegal": "^1.0.6"
   },
+  "standard": {
+    "ignore": [
+      "**/*.d.ts"
+    ]
+  },
   "mocha": {
     "require": [
       "should"
