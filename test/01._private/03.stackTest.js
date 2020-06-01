@@ -40,7 +40,7 @@ describe('_private/stack', function () {
       // must be a single line with any EOL
       result.split(eol.rn).length.should.equal(1)
       result.split(eol.n).length.should.equal(1)
-      if (testUtil.environment !== 'safari') {
+      if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         result.should.containEql('aSecondFunction')
       }
       is.stackLocation(result).should.be.true()
@@ -68,7 +68,7 @@ describe('_private/stack', function () {
       // must be a single line with any EOL
       result.split(eol.rn).length.should.equal(1)
       result.split(eol.n).length.should.equal(1)
-      if (testUtil.environment !== 'safari') {
+      if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         result.should.containEql('aSecondFunction')
       }
       is.stackLocation(result).should.be.true()
@@ -103,7 +103,7 @@ describe('_private/stack', function () {
       result.should.not.containEql('[[internal]]')
       const lines = result.split(eol.stack)
       lines.length.should.be.greaterThanOrEqual(1)
-      if (testUtil.environment !== 'safari') {
+      if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         lines.length.should.be.greaterThanOrEqual(5)
         lines[0].should.containEql('aFifthFunction')
         lines[1].should.containEql('aFourthFunction')
@@ -155,7 +155,7 @@ describe('_private/stack', function () {
       }
       const lines = result.split(eol.stack)
       lines.length.should.be.greaterThanOrEqual(1)
-      if (testUtil.environment !== 'safari') {
+      if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         lines.length.should.be.greaterThanOrEqual(5)
         lines[0].should.containEql('aFifthFunction')
         lines[1].should.containEql('aFourthFunction')

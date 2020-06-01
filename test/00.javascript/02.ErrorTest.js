@@ -24,7 +24,7 @@ const should = require('should')
 const message = 'A message'
 const env = testUtil.environment
 const isFF = env === 'firefox'
-const isFFOrSafari = isFF || env === 'safari'
+const isFFOrSafari = isFF || env === 'safari' || env === 'safari <= 12'
 
 describe('javascript/Error', function () {
   describe('#message', function () {
@@ -139,7 +139,7 @@ describe('javascript/Error', function () {
             l.should[i === 0 ? 'it' : 'not'].containEql('throwAnError')
           } else {
             l.should[i === 0 ? 'it' : 'not'].containEql('createAnErrorOne')
-            if (testUtil.environment === 'safari') {
+            if (testUtil.environment === 'safari' || testUtil.environment === 'safari <= 12') {
               // Safari EATS stack frames
               l.should[i === 1 ? 'it' : 'not'].containEql('throwAnError')
             } else {

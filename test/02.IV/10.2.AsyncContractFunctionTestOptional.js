@@ -388,7 +388,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
-        if (testUtil.environment !== 'safari <=12') {
+        if (testUtil.environment !== 'safari <= 12') {
           a.f.name.should.containEql(`${AbstractContract.namePrefix} async n => {`)
         } else {
           // NOTE: In earlier versions of Safari, the name was `${AbstractContract.namePrefix} async function n => {`
