@@ -127,11 +127,18 @@ describe('IV/AbstractContract', function () {
       contractFunction.location.should.equal(location)
       testUtil.expectOwnFrozenProperty(contractFunction, 'bind')
       contractFunction.bind.should.equal(AbstractContract.bindContractFunction)
-      testUtil.expectFrozenDerivedPropertyOnAPrototype(contractFunction, 'name')
       contractFunction.should.have.ownProperty('name')
       contractFunction.name.should.equal(
         report.conciseCondition(AbstractContract.namePrefix, contractFunction.implementation)
       )
+      const implFunctionNamePropDesc = Object.getOwnPropertyDescriptor(implFunction, 'name')
+      delete implFunctionNamePropDesc.value
+      const contractFunctionNamePropDesc = Object.getOwnPropertyDescriptor(contractFunction, 'name')
+      contractFunctionNamePropDesc.value.should.equal(
+        report.conciseCondition(AbstractContract.namePrefix, contractFunction.implementation)
+      )
+      delete contractFunctionNamePropDesc.value
+      contractFunctionNamePropDesc.should.deepEqual(implFunctionNamePropDesc)
     })
   })
 
