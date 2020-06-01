@@ -38,7 +38,7 @@ const capabilitiesBase = {
 }
 
 const osVersion = {
-  'OS X': 'Mojave',
+  'OS X': 'Catalina',
   Windows: '10'
 }
 
