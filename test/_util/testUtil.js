@@ -235,6 +235,9 @@ function environment () {
     if (ua.indexOf('Edge') >= 0) {
       return 'edge'
     }
+    if (ua.indexOf('Safari/') >= 0 && ua.indexOf('Version/12') >= 0) {
+      return 'safari <=12'
+    }
     if (ua.indexOf('Safari/') >= 0 && ua.indexOf('Version/') >= 0) {
       return 'safari'
     }
