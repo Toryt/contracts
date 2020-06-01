@@ -29,6 +29,8 @@ jobs:
     # stage android
     - stage: android
       node_js: '14'
+      script: npm run wd:google_pixel_4xl
+    - node_js: '14'
       script: npm run wd:samsung_galaxy_note4
     - node_js: '14'
       script: npm run wd:samsung_galaxy_s9
