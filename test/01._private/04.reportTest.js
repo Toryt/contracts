@@ -104,7 +104,7 @@ this function should have a name   ` // trim
         it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${String(
           f
         )}`, function () {
-          expectGeneralPostconditions(result, prefix + ' ' + f)
+          expectGeneralPostconditions(result, prefix + ' ' + (typeof f === 'symbol' ? String(f) : f))
         })
       } else {
         it(`returns the name with the prefix, when there is an f and it has a name, for ${f}`, function () {
