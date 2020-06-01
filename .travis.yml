@@ -21,6 +21,8 @@ jobs:
       node_js: '14'
       script: npm run wd:osx-chrome
     - node_js: '14'
+      script: npm run wd:osx-firefox
+    - node_js: '14'
       script: npm run wd:osx-safari
     - node_js: '14'
       script: npm run wd:windows-chrome

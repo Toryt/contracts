@@ -20,6 +20,7 @@
     "wd:iphone_x": "mochify --wd --wd-file .min-wd-iphone_x.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:iphone_11": "mochify --wd --wd-file .min-wd-iphone_11.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:osx-chrome": "mochify --wd --wd-file .min-wd-osx-chrome.js --async-polling false --reporter dot 'test/**/*Test.js'",
+    "wd:osx-firefox": "mochify --wd --wd-file .min-wd-osx-firefox.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:osx-safari": "mochify --wd --wd-file .min-wd-osx-safari.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:samsung_galaxy_note4": "mochify --wd --wd-file .min-wd-samsung_galaxy_note4.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:samsung_galaxy_s9": "mochify --wd --wd-file .min-wd-samsung_galaxy_s9.js --async-polling false --reporter dot 'test/**/*Test.js'",
