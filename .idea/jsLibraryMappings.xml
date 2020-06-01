@@ -3,6 +3,5 @@
   <component name="JavaScriptLibraryMappings">
     <includedPredefinedLibrary name="Node.js Core" />
     <excludedPredefinedLibrary name="HTML" />
-    <excludedPredefinedLibrary name="HTML5 / EcmaScript 5" />
   </component>
 </project>
