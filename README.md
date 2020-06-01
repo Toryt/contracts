@@ -120,6 +120,8 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
     - fix bug in `isImplementedBy`: `cf.contract.isImplementedBy(cf)` did not work
   - IV/4.1.0:
     - support Symbols as arguments
+    - contract function `name` is now a true property, with the same settings as the implementation function name, and
+      no longer a derived property (in response to https://github.com/sinonjs/sinon/issues/2203)
 
 ## TODO
 
