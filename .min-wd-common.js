@@ -66,12 +66,12 @@ function createConfig (definition) {
 
 function desktop (definition) {
   return createConfig({
-    name: `${definition.browser} - ${definition.os} ${definition.os_version || osVersion[os]}`,
+    name: `${definition.browser} - ${definition.os} ${definition.os_version || osVersion[definition.os]}`,
     capabilities: Object.assign(
       {},
       capabilitiesBase,
       {
-        os_version: osVersion[os]
+        os_version: osVersion[definition.os]
       },
       definition // overwrite general settings
     )
