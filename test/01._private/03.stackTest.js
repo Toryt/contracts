@@ -150,7 +150,9 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.should.be.a.String()
       result.should.not.containEql('skip')
-      result.should.not.containEql('[[internal]]')
+      if (testUtil.environment !== 'safari') {
+        result.should.not.containEql('[[internal]]')
+      }
       const lines = result.split(eol.stack)
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari') {
