@@ -27,6 +27,7 @@
     "wd:samsung_galaxy_tab_s6": "mochify --wd --wd-file .min-wd-samsung_galaxy_tab_s6.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:windows-chrome": "mochify --wd --wd-file .min-wd-windows-chrome.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:windows-edge": "mochify --wd --wd-file .min-wd-windows-edge.js --async-polling false --reporter dot 'test/**/*Test.js'",
+    "wd:windows-firefox": "mochify --wd --wd-file .min-wd-windows-firefox.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "format": "prettier-standard \"**/*.{js,md,json}\"",
     "preversion": "npm run test",
     "update_credits": "credits . --reporter markdown > CREDITS.md",
