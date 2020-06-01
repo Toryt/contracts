@@ -122,6 +122,8 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
     - support Symbols as arguments
     - contract function `name` is now a true property, with the same settings as the implementation function name, and
       no longer a derived property (in response to https://github.com/sinonjs/sinon/issues/2203)
+  - IV/4.1.1:
+    - ignore unnecessary files in distribution
 
 ## TODO
 
