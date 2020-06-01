@@ -118,6 +118,8 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
     - fix test issue with Node 12 and later when running tests in IntelliJ
   - IV/4.0.8:
     - fix bug in `isImplementedBy`: `cf.contract.isImplementedBy(cf)` did not work
+  - IV/4.1.0:
+    - support Symbols as arguments
 
 ## TODO
 
