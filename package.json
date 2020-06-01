@@ -21,6 +21,7 @@
     "wd:osx-safari": "mochify --wd --wd-file .min-wd-osx-safari.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:samsung_galaxy_note4": "mochify --wd --wd-file .min-wd-samsung_galaxy_note4.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:samsung_galaxy_s9": "mochify --wd --wd-file .min-wd-samsung_galaxy_s9.js --async-polling false --reporter dot 'test/**/*Test.js'",
+    "wd:samsung_galaxy_s20": "mochify --wd --wd-file .min-wd-samsung_galaxy_s20.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:windows-chrome": "mochify --wd --wd-file .min-wd-windows-chrome.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:windows-edge": "mochify --wd --wd-file .min-wd-windows-edge.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "format": "prettier-standard \"**/*.{js,md,json}\"",

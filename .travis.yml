@@ -30,6 +30,8 @@ jobs:
     - node_js: '14'
       script: npm run wd:samsung_galaxy_s9
     - node_js: '14'
+      script: npm run wd:samsung_galaxy_s20
+    - node_js: '14'
       script: npm run wd:windows-chrome
     - node_js: '14'
       script: npm run wd:windows-edge
