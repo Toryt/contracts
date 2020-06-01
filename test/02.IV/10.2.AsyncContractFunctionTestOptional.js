@@ -223,7 +223,7 @@ describe('IV/PromiseContractFunction - AsyncFunctions', function () {
       // do is to point to where the contract function is called. The same applies to Meta errors (in conditions),
       // since we cannot create a stack trace that points in the condition. The caused by probably will for meta errors,
       // but there is no such thing for pre-, post- or exception conditions.
-      if (testUtil.environment !== 'safari') {
+      if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         /* Because it is in the event loop sometimes; this is not our code; we have to show something, but for Promises,
            it is largely irrelevant.
          In order:
