@@ -47,7 +47,7 @@ function generateMutableStuff () {
   return result
 }
 
-// noinspection JSPrimitiveTypeWrapperUsage
+// noinspection JSPrimitiveTypeWrapperUsage,SpellCheckingInspection
 const stuff = [
   { subject: undefined, expected: 'undefined', isPrimitive: false },
   { subject: null, expected: 'null', isPrimitive: false },
@@ -57,7 +57,8 @@ const stuff = [
   { subject: '', expected: 'string', isPrimitive: true },
   { subject: 4, expected: 'number', isPrimitive: true },
   { subject: false, expected: 'boolean', isPrimitive: true },
-  { subject: getGlobal(), expected: 'object', isPrimitive: false }
+  { subject: getGlobal(), expected: 'object', isPrimitive: false },
+  { subject: Symbol('abcdefghijklmnopqrstuvwxyz'), expected: 'symbol', isPrimitive: false }
 ].concat(generateMutableStuff())
 
 // noinspection JSUndefinedPropertyAssignment

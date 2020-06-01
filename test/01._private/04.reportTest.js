@@ -101,7 +101,9 @@ this function should have a name   ` // trim
     stuffToo.forEach(f => {
       const result = report.conciseCondition(prefix, f)
       if (!f || !f.name) {
-        it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${f}`, function () {
+        it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${String(
+          f
+        )}`, function () {
           expectGeneralPostconditions(result, prefix + ' ' + f)
         })
       } else {
@@ -166,7 +168,7 @@ this function should have a name   ` // trim
     stuff
       .map(s => s.subject)
       .forEach(s => {
-        it(`returns a string that is expected for ${s}`, function () {
+        it(`returns a string that is expected for ${String(s)}`, function () {
           const result = report.type(s)
           testUtil.log(result)
           result.should.be.a.String()
@@ -198,7 +200,7 @@ this function should have a name   ` // trim
     stuff
       .map(s => s.subject)
       .forEach(s => {
-        it(`returns a string that is expected for ${s}`, function () {
+        it(`returns a string that is expected for ${String(s)}`, function () {
           const result = report.value(s)
           testUtil.log(result)
           result.should.be.a.String()

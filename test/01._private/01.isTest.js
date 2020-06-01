@@ -28,7 +28,7 @@ const cases = require('../_cases')
 describe('_private/is', function () {
   describe('#arguments', function () {
     stuff.forEach(s => {
-      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${s.subject}`, function () {
+      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${String(s.subject)}`, function () {
         const result = is.functionArguments(s.subject)
         if (s.expected === 'arguments') {
           result.should.be.true()
@@ -41,7 +41,7 @@ describe('_private/is', function () {
 
   describe('#primitive()', function () {
     stuff.forEach(record => {
-      it(`correctly decides whether the argument is a primitive for ${record.subject}`, function () {
+      it(`correctly decides whether the argument is a primitive for ${String(record.subject)}`, function () {
         const result = is.primitive(record.subject)
         result.should.be.a.Boolean()
         result.should.equal(record.isPrimitive)
@@ -54,7 +54,7 @@ describe('_private/is', function () {
       .map(s => s.subject)
       .filter(s => typeof s !== 'string')
       .forEach(s => {
-        it(`says no to ${s}`, function () {
+        it(`says no to ${String(s)}`, function () {
           const result = is.stackLocation(s)
           result.should.be.false()
         })
@@ -99,7 +99,7 @@ describe('_private/is', function () {
       .map(s => s.subject)
       .filter(s => typeof s !== 'string')
       .forEach(s => {
-        it(`says no to ${s}`, function () {
+        it(`says no to ${String(s)}`, function () {
           const result = is.stack(s)
           result.should.be.false()
         })
