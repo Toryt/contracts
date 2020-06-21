@@ -39,7 +39,8 @@ function generateMutableStuff () {
     { subject: new String(''), expected: 'string' },
     // eslint-disable-next-line
     { subject: new Boolean(true), expected: 'boolean' },
-    { subject: arguments, expected: 'arguments' }
+    { subject: arguments, expected: 'arguments' },
+    { subject: [Symbol('abcdefghijklmnopqrstuvwxyz'), true, 4, '', 'abc', Math], expected: 'array' }
   ]
   result.forEach(r => {
     r.isPrimitive = false
