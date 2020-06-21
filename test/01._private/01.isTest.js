@@ -19,7 +19,7 @@
 'use strict'
 
 const is = require('../../lib/_private/is')
-const testUtil = require('../_util/testUtil')
+const { x, log, safeToString, showStack } = require('../_util/testUtil')
 const should = require('should')
 const stuff = require('./_stuff')
 const eol = require('../../lib/_private/eol')
@@ -28,7 +28,7 @@ const cases = require('../_cases')
 describe('_private/is', function () {
   describe('#arguments', function () {
     stuff.forEach(s => {
-      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${String(s.subject)}`, function () {
+      it(`returns ${s.expected === 'arguments' ? 'true' : 'false'} for ${safeToString(s.subject)}`, function () {
         const result = is.functionArguments(s.subject)
         if (s.expected === 'arguments') {
           result.should.be.true()
@@ -41,7 +41,7 @@ describe('_private/is', function () {
 
   describe('#primitive()', function () {
     stuff.forEach(record => {
-      it(`correctly decides whether the argument is a primitive for ${String(record.subject)}`, function () {
+      it(`correctly decides whether the argument is a primitive for ${safeToString(record.subject)}`, function () {
         const result = is.primitive(record.subject)
         result.should.be.a.Boolean()
         result.should.equal(record.isPrimitive)
@@ -54,7 +54,7 @@ describe('_private/is', function () {
       .map(s => s.subject)
       .filter(s => typeof s !== 'string')
       .forEach(s => {
-        it(`says no to ${String(s)}`, function () {
+        it(`says no to ${safeToString(s)}`, function () {
           const result = is.stackLocation(s)
           result.should.be.false()
         })
@@ -88,7 +88,7 @@ describe('_private/is', function () {
         .filter((line, index) => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
         .forEach(line => {
           const result = is.stackLocation(line)
-          testUtil.log(`${result}: ${line}`)
+          log(`${result}: ${line}`)
           result.should.be.true()
         })
     })
@@ -99,7 +99,7 @@ describe('_private/is', function () {
       .map(s => s.subject)
       .filter(s => typeof s !== 'string')
       .forEach(s => {
-        it(`says no to ${String(s)}`, function () {
+        it(`says no to ${safeToString(s)}`, function () {
           const result = is.stack(s)
           result.should.be.false()
         })
@@ -154,14 +154,14 @@ describe('_private/is', function () {
       const message = 'This is an error to get a platform dependent stack'
       // sadly, also to the message, on some platforms
       const error = new Error(message)
-      testUtil.showStack(error)
+      showStack(error)
       const stackLines = error.stack.split(eol.stack)
       const rawStack = stackLines
         // remove message line
         .filter(sl => sl && sl.indexOf(message) < 0)
         .join(eol.stack)
-      testUtil.log('rawStack:')
-      testUtil.log(`▷${rawStack}◁`)
+      log('rawStack:')
+      log(`▷${rawStack}◁`)
       const result = is.stack(rawStack)
       result.should.be.true()
     })
@@ -171,7 +171,7 @@ describe('_private/is', function () {
     const propName = 'test prop name'
     const propValue = 'dummy value'
     const truths = [true, false]
-    testUtil.x(truths, truths, truths).forEach(values => {
+    x(truths, truths, truths).forEach(values => {
       const subject = {}
       Object.defineProperty(subject, propName, {
         configurable: values[0],
@@ -233,7 +233,7 @@ describe('_private/is', function () {
       })
     })
     const fCandidates = [undefined, function () {}]
-    testUtil.x(truths, truths, fCandidates, fCandidates).forEach(values => {
+    x(truths, truths, fCandidates, fCandidates).forEach(values => {
       const subject = {}
       Object.defineProperty(subject, propName, {
         configurable: values[0],
