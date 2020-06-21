@@ -21,7 +21,7 @@
 const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
-const testUtil = require('../_util/testUtil')
+const { log, anyCasesGenerators, safeToString } = require('../_util/testUtil')
 const eol = require('../../lib/_private/eol')
 const util = require('util')
 const stuff = require('./_stuff')
@@ -48,7 +48,7 @@ describe('_private/report', function () {
     }
 
     function expectGeneralPostconditions (result, expected) {
-      testUtil.log('result: %s', result)
+      log('result: %s', result)
       result.should.not.containEql(eol.n)
       result.should.not.containEql(eol.rn)
       result.length.should.be.lessThanOrEqual(report.maxLengthOfConciseRepresentation)
@@ -101,13 +101,15 @@ this function should have a name   ` // trim
     stuffToo.forEach(f => {
       const result = report.conciseCondition(prefix, f)
       if (!f || !f.name) {
-        it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${String(
+        it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${safeToString(
           f
         )}`, function () {
-          expectGeneralPostconditions(result, prefix + ' ' + (typeof f === 'symbol' ? String(f) : f))
+          expectGeneralPostconditions(result, prefix + ' ' + safeToString(f))
         })
       } else {
-        it(`returns the name with the prefix, when there is an f and it has a name, for ${f}`, function () {
+        it(`returns the name with the prefix, when there is an f and it has a name, for ${safeToString(
+          f
+        )}`, function () {
           expectGeneralPostconditions(result, prefix + ' ' + f.name)
         })
       }
@@ -115,7 +117,7 @@ this function should have a name   ` // trim
   })
 
   describe('#extensiveThrown', function () {
-    let caseGenerators = testUtil.anyCasesGenerators('thrown')
+    let caseGenerators = anyCasesGenerators('thrown')
     const toStringString = 'This is the toString'
     const stackString = 'This is the stack'
 
@@ -140,7 +142,7 @@ this function should have a name   ` // trim
     caseGenerators.push(stackDoesNotContainToString)
     caseGenerators.push(stackDoesContainToString)
     caseGenerators = caseGenerators.concat(
-      testUtil.anyCasesGenerators('throw stack').map(ac => () => ({
+      anyCasesGenerators('throw stack').map(ac => () => ({
         stack: ac(),
         toString: function () {
           return toStringString
@@ -159,7 +161,7 @@ this function should have a name   ` // trim
           const expectedStart = result.length - stack.length
           result.lastIndexOf(stack).should.equal(expectedStart)
         }
-        testUtil.log(result)
+        log(result)
       })
     })
   })
@@ -168,9 +170,9 @@ this function should have a name   ` // trim
     stuff
       .map(s => s.subject)
       .forEach(s => {
-        it(`returns a string that is expected for ${String(s)}`, function () {
+        it(`returns a string that is expected for ${safeToString(s)}`, function () {
           const result = report.type(s)
-          testUtil.log(result)
+          log(result)
           result.should.be.a.String()
           result.should.not.equal('')
           // noinspection IfStatementWithTooManyBranchesJS
@@ -200,9 +202,9 @@ this function should have a name   ` // trim
     stuff
       .map(s => s.subject)
       .forEach(s => {
-        it(`returns a string that is expected for ${String(s)}`, function () {
+        it(`returns a string that is expected for ${safeToString(s)}`, function () {
           const result = report.value(s)
-          testUtil.log(result)
+          log(result)
           result.should.be.a.String()
           result.should.not.equal('')
           // noinspection IfStatementWithTooManyBranchesJS
@@ -246,19 +248,19 @@ this function should have a name   ` // trim
         this.error = cases.intentionalError
         const v = {} // an object triggers the interesting branch
         const result = report.value(v)
-        testUtil.log(result)
+        log(result)
         result.should.match(/𝕋⚖️ \[\[failed to represent the value]] /)
         result.should.endWith(`(${cases.intentionalError.message})`)
-        testUtil.log()
+        log()
       })
       it('returns a message when util.inspect fails with an error without a message', function () {
         this.error = new Error()
         const v = {} // an object triggers the interesting branch
         const result = report.value(v)
-        testUtil.log(result)
+        log(result)
         result.should.match(/𝕋⚖️ \[\[failed to represent the value]] /)
         result.should.endWith(`(${this.error})`)
-        testUtil.log()
+        log()
       })
     })
   })
