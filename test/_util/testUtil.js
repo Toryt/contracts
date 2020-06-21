@@ -265,22 +265,32 @@ function mustBeCallerLocation (actual, expected) {
   trimLineAndColumnPattern(expected).should.equal(trimLineAndColumnPattern(actual))
 }
 
+// also deals with arrays that contain Symbol
+function safeToString (s) {
+  try {
+    return String(s)
+  } catch (ignore) {
+    return Object.prototype.toString.call(s)
+  }
+}
+
 const env = environment()
 console.log(`Detected environment "${env}"`)
 
 module.exports = {
-  x: x,
-  expectOwnFrozenProperty: expectOwnFrozenProperty,
-  expectConfigurableDerivedPropertyOnAPrototype: expectConfigurableDerivedPropertyOnAPrototype,
-  expectFrozenDerivedPropertyOnAPrototype: expectFrozenDerivedPropertyOnAPrototype,
-  expectFrozenReadOnlyArrayPropertyWithPrivateBackingField: expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
-  expectFrozenPropertyOnAPrototype: expectFrozenPropertyOnAPrototype,
-  expectToBeArrayOfFunctions: expectToBeArrayOfFunctions,
-  log: log,
-  showStack: showStack,
-  regExpEscape: regExpEscape,
-  propertyIsWritable: propertyIsWritable,
-  anyCasesGenerators: anyCasesGenerators,
+  x,
+  expectOwnFrozenProperty,
+  expectConfigurableDerivedPropertyOnAPrototype,
+  expectFrozenDerivedPropertyOnAPrototype,
+  expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
+  expectFrozenPropertyOnAPrototype,
+  expectToBeArrayOfFunctions,
+  log,
+  showStack,
+  regExpEscape,
+  propertyIsWritable,
+  anyCasesGenerators,
   environment: env,
-  mustBeCallerLocation: mustBeCallerLocation
+  mustBeCallerLocation,
+  safeToString
 }
