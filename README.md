@@ -129,6 +129,8 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
 
 ## TODO
 
+- Upgrade to Mocha 8, but then we can no longer support Node 8
+
 - IV
   - IV/4.2.0: jsdoc or d.ts
   - IV/4.2.1: Documentation
