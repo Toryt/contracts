@@ -124,6 +124,8 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
       no longer a derived property (in response to https://github.com/sinonjs/sinon/issues/2203)
   - IV/4.1.1:
     - ignore unnecessary files in distribution
+  - IV/4.1.2:
+    - fix bug in dealing with `arguments`, when they contain a Symbol
 
 ## TODO
 
