@@ -1,0 +1,80 @@
+#  Copyright 2016 - 2020 by Jan Dockx
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+image: node:12
+
+definitions:
+  steps:
+    - step: &test
+        name: Latest Node N
+        image: IMAGE
+        caches:
+          - npm
+        script:
+          - git submodule update --init
+          - scripts/common/npm/testCi.sh
+  caches:
+    npm10: ~/.npm
+    npm12: ~/.npm
+    npm14: ~/.npm
+  branches:
+    - branch: &fullTestAndTag
+        - parallel:
+            - step:
+                <<: *test
+                name: Latest Node 10
+                image: node:10
+                caches:
+                  - npm10
+            - step:
+                <<: *test
+                name: Latest Node 12
+                image: node:12
+                caches:
+                  - npm12
+                script:
+                  - git submodule update --init
+                  - scripts/common/npm/testCi.sh
+                  # we report coverage on the latest LTS
+                  - npm run reportCoverage
+                  - bash <(curl -s https://codecov.io/bash)
+            - step:
+                <<: *test
+                name: Latest Node 14
+                image: node:14
+                caches:
+                  - npm14
+        - step:
+            name: Tag & Push to Github
+            caches:
+              - node
+            script:
+              - git submodule update --init
+              - scripts/common/git/tagBitbucket.sh
+              - scripts/common/git/pushToRemote.sh https://${GITHUB_CREDENTIALS}@github.com/Toryt/contracts.git
+
+pipelines:
+  branches:
+    master: *fullTestAndTag
+    bugfix/**: *fullTestAndTag
+    feature/**: *fullTestAndTag
+    hotfix/**: *fullTestAndTag
+    release/**: *fullTestAndTag
+  pull-requests:
+    snyk-*: *fullTestAndTag
+  tags:
+    I/*: *fullTestAndTag
+    II/*: *fullTestAndTag
+    III/*: *fullTestAndTag
+    IV/*: *fullTestAndTag
