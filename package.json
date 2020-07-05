@@ -10,6 +10,7 @@
     "pretest": "npm-check -i standard -i mocha-reporter -i legally -i tldrlegal -i inherits -i _process -i kindof -i lodash._root -i lodash._createwrapper -i lodash.wrap -i oolong -i json-stringify-safe -i egal; npm outdated || exit 0",
     "test": "standard && nyc mocha --reporter dot 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
+    "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "browserify": "browserify -s toryt.contracts.iv --outfile contracts.js lib/IV/Contract.js",
     "browserifyTest": "browserify -r should --outfile browser/test/suite.js test/**/*Test.js",
     "browserTest": "mochify --allow-chrome-as-root --reporter dot 'test/**/*Test.js'",
