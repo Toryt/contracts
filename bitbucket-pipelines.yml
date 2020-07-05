@@ -55,6 +55,13 @@ definitions:
                 image: node:14
                 caches:
                   - npm14
+            - step:
+                name: Browser
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm run wd:osx-chrome
         - step:
             name: Tag & Push to Github
             caches:
