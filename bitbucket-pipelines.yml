@@ -61,6 +61,7 @@ definitions:
                 caches:
                   - npm14
                 script:
+                  - npm ci
                   - npm run wd:osx-chrome
         - step:
             name: Tag & Push to Github
