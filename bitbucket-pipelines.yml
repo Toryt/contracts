@@ -104,6 +104,72 @@ definitions:
                 script:
                   - npm ci
                   - npm run wd:osx-firefox
+        - parallel:
+            - step:
+                name: Google Pixel 4XL
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:google_pixel_4xl
+            - step:
+                name: Samsung Galaxy Note 4
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:samsung_galaxy_note4
+            - step:
+                name: Samsung Galaxy S9
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:samsung_galaxy_s9
+            - step:
+                name: Samsung Galaxy S20
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:samsung_galaxy_s20
+            - step:
+                name: Samsung Galaxy Tab S6
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:samsung_galaxy_tab_s6
+        - parallel:
+            - step:
+                name: iPad Pro
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:ipad_pro
+            - step:
+                name: iPhone X
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:iphone_x
+            - step:
+                name: iPhone 11
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:iphone_11
         - step:
             name: Tag & Push to Github
             caches:
