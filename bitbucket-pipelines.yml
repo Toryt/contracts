@@ -194,6 +194,7 @@ pipelines:
     feature/**: *fullTestAndTag
     hotfix/**: *fullTestAndTag
     release/**: *fullTestAndTag
+    V/**: *fullTestAndTag
   pull-requests:
     snyk-*: *fullTestAndTag
   tags:
