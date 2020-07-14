@@ -20,7 +20,7 @@
 
 const testUtil = require('./_util/testUtil')
 const common = require('./ConditionViolationCommon')
-const ConditionViolation = require('../lib/IV/ConditionViolation')
+const ConditionViolation = require('../lib/ConditionViolation')
 
 describe('IV/ConditionViolation', function () {
   describe('#prototype', function () {

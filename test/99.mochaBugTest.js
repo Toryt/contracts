@@ -18,7 +18,7 @@
 
 'use strict'
 
-const Contract = require('../lib/IV/Contract')
+const Contract = require('../lib/Contract')
 const cases = require('./_cases')
 const testUtil = require('./_util/testUtil')
 

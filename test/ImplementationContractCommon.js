@@ -22,7 +22,7 @@ const testUtil = require('./_util/testUtil')
 const stack = require('../lib/_private/stack')
 const is = require('../lib/_private/is')
 const common = require('./AbstractContractCommon')
-const AbstractContract = require('../lib/IV/AbstractContract')
+const AbstractContract = require('../lib/AbstractContract')
 
 function expectInvariants (subject) {
   common.expectInvariants(subject)

@@ -20,7 +20,7 @@
 
 const testUtil = require('./_util/testUtil')
 const common = require('./PostconditionViolationCommon')
-const PostconditionViolation = require('../lib/IV/PostconditionViolation')
+const PostconditionViolation = require('../lib/PostconditionViolation')
 
 // noinspection JSUnresolvedVariable
 const argsCases = common.argsCases.filter(a => Array.isArray(a))

@@ -18,7 +18,7 @@
 
 'use strict'
 
-const ContractError = require('../lib/IV/ContractError')
+const ContractError = require('../lib/ContractError')
 const testUtil = require('./_util/testUtil')
 const property = require('../lib/_private/property')
 const stack = require('../lib/_private/stack')

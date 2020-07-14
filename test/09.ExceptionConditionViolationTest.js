@@ -20,7 +20,7 @@
 
 const testUtil = require('./_util/testUtil')
 const common = require('./ExceptionConditionViolationCommon')
-const ExceptionConditionViolation = require('../lib/IV/ExceptionConditionViolation')
+const ExceptionConditionViolation = require('../lib/ExceptionConditionViolation')
 
 // noinspection JSUnresolvedVariable
 const argsCases = common.argsCases.filter(a => Array.isArray(a))

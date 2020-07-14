@@ -21,7 +21,7 @@
 const testUtil = require('./_util/testUtil')
 const report = require('../lib/_private/report')
 const common = require('./ConditionViolationCommon')
-const ExceptionConditionViolation = require('../lib/IV/ExceptionConditionViolation')
+const ExceptionConditionViolation = require('../lib/ExceptionConditionViolation')
 const should = require('should')
 
 function expectInvariants (subject) {

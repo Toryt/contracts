@@ -21,10 +21,10 @@
 const testUtil = require('./_util/testUtil')
 const stack = require('../lib/_private/stack')
 const common = require('./ContractCommon')
-const Contract = require('../lib/IV/Contract')
+const Contract = require('../lib/Contract')
 const abstractContractCommon = require('./AbstractContractCommon')
-const AbstractContract = require('../lib/IV/AbstractContract')
-const PromiseContract = require('../lib/IV/PromiseContract')
+const AbstractContract = require('../lib/AbstractContract')
+const PromiseContract = require('../lib/PromiseContract')
 
 describe('IV/Contract', function () {
   describe('Contract', function () {

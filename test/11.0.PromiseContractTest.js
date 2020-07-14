@@ -21,10 +21,10 @@
 const testUtil = require('./_util/testUtil')
 const stack = require('../lib/_private/stack')
 const common = require('./PromiseContractCommon')
-const PromiseContract = require('../lib/IV/PromiseContract')
+const PromiseContract = require('../lib/PromiseContract')
 const abstractContractCommon = require('./AbstractContractCommon')
-const AbstractContract = require('../lib/IV/AbstractContract')
-const Contract = require('../lib/IV/Contract')
+const AbstractContract = require('../lib/AbstractContract')
+const Contract = require('../lib/Contract')
 
 function expectConstructorPost (pre, post, exception, fastException, location, result) {
   // noinspection JSUnresolvedFunction

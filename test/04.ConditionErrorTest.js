@@ -21,7 +21,7 @@
 const testUtil = require('./_util/testUtil')
 const stack = require('../lib/_private/stack')
 const common = require('./ConditionErrorCommon')
-const ConditionError = require('../lib/IV/ConditionError')
+const ConditionError = require('../lib/ConditionError')
 
 describe('IV/ConditionError', function () {
   describe('#ConditionError()', function () {

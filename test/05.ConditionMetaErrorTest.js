@@ -21,7 +21,7 @@
 const testUtil = require('./_util/testUtil')
 const stack = require('../lib/_private/stack')
 const common = require('./ConditionMetaErrorCommon')
-const ConditionMetaError = require('../lib/IV/ConditionMetaError')
+const ConditionMetaError = require('../lib/ConditionMetaError')
 
 describe('IV/ConditionMetaError', function () {
   describe('#prototype', function () {

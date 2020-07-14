@@ -19,7 +19,7 @@
 'use strict'
 
 const common = require('./ImplementationContractCommon')
-const Contract = require('../lib/IV/Contract')
+const Contract = require('../lib/Contract')
 
 function expectInvariants (subject) {
   subject.should.be.an.instanceof(Contract)

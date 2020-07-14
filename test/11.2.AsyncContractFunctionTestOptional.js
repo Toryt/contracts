@@ -19,12 +19,12 @@
 'use strict'
 
 const testUtil = require('./_util/testUtil')
-const PromiseContract = require('../lib/IV/PromiseContract')
-const AbstractContract = require('../lib/IV/AbstractContract')
-const ConditionMetaError = require('../lib/IV/ConditionMetaError')
-const PreconditionViolation = require('../lib/IV/PreconditionViolation')
-const PostconditionViolation = require('../lib/IV/PostconditionViolation')
-const ExceptionConditionViolation = require('../lib/IV/ExceptionConditionViolation')
+const PromiseContract = require('../lib/PromiseContract')
+const AbstractContract = require('../lib/AbstractContract')
+const ConditionMetaError = require('../lib/ConditionMetaError')
+const PreconditionViolation = require('../lib/PreconditionViolation')
+const PostconditionViolation = require('../lib/PostconditionViolation')
+const ExceptionConditionViolation = require('../lib/ExceptionConditionViolation')
 const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon')
 const preconditionViolationCommon = require('./PreconditionViolationCommon')
 const postconditionViolationCommon = require('./PostconditionViolationCommon')

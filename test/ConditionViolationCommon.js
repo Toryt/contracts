@@ -20,8 +20,8 @@
 
 const testUtil = require('./_util/testUtil')
 const common = require('./ConditionErrorCommon')
-const ConditionMetaError = require('../lib/IV/ConditionMetaError')
-const ConditionViolation = require('../lib/IV/ConditionViolation')
+const ConditionMetaError = require('../lib/ConditionMetaError')
+const ConditionViolation = require('../lib/ConditionViolation')
 const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon')
 const should = require('should')
 
