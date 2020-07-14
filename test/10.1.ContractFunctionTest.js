@@ -1,57 +1,73 @@
 /*
  Copyright 2016 - 2020 by Jan Dockx
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
- http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
  */
 
 /* eslint-env mocha */
 
 'use strict'
 
-const testUtil = require('../_util/testUtil')
-const Contract = require('../../lib/IV/Contract')
-const AbstractContract = require('../../lib/IV/AbstractContract')
-const ConditionMetaError = require('../../lib/IV/ConditionMetaError')
-const PreconditionViolation = require('../../lib/IV/PreconditionViolation')
-const PostconditionViolation = require('../../lib/IV/PostconditionViolation')
-const ExceptionConditionViolation = require('../../lib/IV/ExceptionConditionViolation')
+const testUtil = require('./_util/testUtil')
+const property = require('../lib/_private/property')
+const Contract = require('../lib/IV/Contract')
+const AbstractContract = require('../lib/IV/AbstractContract')
+const ConditionMetaError = require('../lib/IV/ConditionMetaError')
+const PreconditionViolation = require('../lib/IV/PreconditionViolation')
+const PostconditionViolation = require('../lib/IV/PostconditionViolation')
+const ExceptionConditionViolation = require('../lib/IV/ExceptionConditionViolation')
 const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon')
 const preconditionViolationCommon = require('./PreconditionViolationCommon')
 const postconditionViolationCommon = require('./PostconditionViolationCommon')
 const exceptionConditionViolationCommon = require('./ExceptionConditionViolationCommon')
 const should = require('should')
-const stackEOL = require('../../lib/_private/eol').stack
-const cases = require('../_cases')
+const stackEOL = require('../lib/_private/eol').stack
+const cases = require('./_cases')
 
 /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
      specific for ContractFunction: we test extensively whether the contract function works as expected here.
      This tests the behavior of the resulting contract function. The tests in
      Contract.generatePrototypeMethodsDescriptions tests the state postconditions only. */
-/* This is a copy of ContractFunctionTest, with as much functions replaced with arrow functions as possible.
-   Tests that require this in the implementation function are removed. That doesn't work with arrow functions. */
 
 // noinspection FunctionTooLongJS
-describe('IV/ContractFunction-ArrowFunctions', function () {
-  const fibonacciImpl = n => (n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2))
+describe('IV/ContractFunction', function () {
+  function fibonacciImpl (n) {
+    return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2)
+  }
 
   const fibonacci = new Contract({
-    pre: [Number.isInteger, n => n >= 0],
+    pre: [
+      function (n) {
+        return Number.isInteger(n)
+      },
+      function (n) {
+        return n >= 0
+      }
+    ],
     post: [
-      (n, result) => Number.isInteger(result),
-      (n, result) => n !== 0 || result === 0,
-      (n, result) => n !== 1 || result === 1,
-      // don't refer to a specific implementation ("fibonacci") in the Contract!
-      (n, result, fibonacci) => n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2)
+      function (n, result) {
+        return Number.isInteger(result)
+      },
+      function (n, result) {
+        return n !== 0 || result === 0
+      },
+      function (n, result) {
+        return n !== 1 || result === 1
+      },
+      function (n, result, fibonacci) {
+        // don't refer to a specific implementation ("fibonacci") in the Contract!
+        return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2)
+      }
     ],
     exception: Contract.mustNotHappen
   }).implementation(fibonacciImpl)
@@ -59,7 +75,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   const wrongParameter = 4
   const wrongResult = -3
 
-  const fibonacciWrong = fibonacci.contract.implementation(n => {
+  const fibonacciWrong = fibonacci.contract.implementation(function fWrong (n) {
     // noinspection IfStatementWithTooManyBranchesJS
     if (n === 0) {
       return 0
@@ -73,18 +89,31 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   })
 
   const factorialContract = new Contract({
-    pre: [Number.isInteger, n => n >= 0],
+    pre: [
+      function (n) {
+        return Number.isInteger(n)
+      },
+      function (n) {
+        return n >= 0
+      }
+    ],
     post: [
-      (n, result) => Number.isInteger(result),
-      (n, result) => n !== 0 || result === 1,
-      // don't refer to a specific implementation in the Contract!
-      (n, result, f) => n < 1 || result === n * f(n - 1)
+      function (n, result) {
+        return Number.isInteger(result)
+      },
+      function (n, result) {
+        return n !== 0 || result === 1
+      },
+      function (n, result, f) {
+        // don't refer to a specific implementation in the Contract!
+        return n < 1 || result === n * f(n - 1)
+      }
     ],
     exception: Contract.mustNotHappen
   })
 
   // noinspection JSUnresolvedFunction
-  const factorial = factorialContract.implementation(n => {
+  const factorial = factorialContract.implementation(function (n) {
     if (n <= 0) {
       return 1
     } else {
@@ -93,7 +122,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   })
 
   // noinspection JSUnresolvedFunction
-  const factorialIterative = factorialContract.implementation(n => {
+  const factorialIterative = factorialContract.implementation(function (n) {
     if (n === 8) {
       return -3 // wrong!
     }
@@ -112,18 +141,34 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   // noinspection JSUnresolvedFunction
   const defensiveIntegerSum = new Contract({
     post: [
-      (n, result) => Number.isInteger(result),
-      (n, result) => result >= 0,
-      (n, result) => n !== 0 || result === 0,
-      (n, result, sum) => n === 0 || result === sum(n - 1) + n
+      function (n, result) {
+        return Number.isInteger(result)
+      },
+      function (n, result) {
+        return result >= 0
+      },
+      function (n, result) {
+        return n !== 0 || result === 0
+      },
+      function (n, result, sum) {
+        return n === 0 || result === sum(n - 1) + n
+      }
     ],
     exception: [
-      (n, exc) => exc instanceof Error,
-      (n, exc) => exc.message === positiveMessage || exc.message === integerMessage,
-      (n, exc) => exc.message !== positiveMessage || n < 0,
-      (n, exc) => exc.message !== integerMessage || !Number.isInteger(n)
+      function (n, exc) {
+        return exc instanceof Error
+      },
+      function (n, exc) {
+        return exc.message === positiveMessage || exc.message === integerMessage
+      },
+      function (n, exc) {
+        return exc.message !== positiveMessage || n < 0
+      },
+      function (n, exc) {
+        return exc.message !== integerMessage || !Number.isInteger(n)
+      }
     ]
-  }).implementation(n => {
+  }).implementation(function (n) {
     if (!Number.isInteger(n)) {
       throw new Error(integerMessage)
     }
@@ -139,7 +184,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     return result
   })
 
-  const fastDefensiveIntegerSum = defensiveIntegerSum.contract.implementation(n => {
+  const fastDefensiveIntegerSum = defensiveIntegerSum.contract.implementation(function (n) {
     if (!Number.isInteger(n)) {
       throw new Error(integerMessage)
     }
@@ -151,7 +196,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
 
   const wrongException = new Error(integerMessage) // will be thrown in error
 
-  const fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(n => {
+  const fastDefensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(function (n) {
     if (Number.isInteger(n)) {
       throw wrongException
     } // wrong
@@ -180,7 +225,6 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       }
       endsNominally = true
     } catch (exception) {
-      testUtil.log(exception)
       exception.should.be.ok()
       const common =
         exception instanceof ConditionMetaError
@@ -199,9 +243,8 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       const stack = exception.stack
       stack.should.containEql(func.name)
       testUtil.showStack(exception)
-      testUtil.showStack(exception)
       expectException(exception)
-      const stackLines = exception.stack.split(stackEOL)
+      const stackLines = stack.split(stackEOL)
       const callStackLine = stackLines.indexOf('call stack:')
       callStackLine.should.be.greaterThanOrEqual(0)
       stackLines.splice(0, callStackLine + 1)
@@ -247,7 +290,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   }
 
   const contractWithAFailingPre = new Contract({
-    pre: [cases.intentionallyFailingArrow]
+    pre: [cases.intentionallyFailingFunction]
   })
 
   function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
@@ -298,8 +341,21 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
   const argumentsOfWrongType = [undefined, null, 'bar']
   const self = {
     aProperty: 'a property value',
-    // arrow functions that use this cannot be created
-    // below methods are not true methods: they do not use this
+    fibonacci: fibonacci.contract.implementation(function (n) {
+      return n <= 1 ? n : this.fibonacci(n - 1) + this.fibonacci(n - 2)
+    }),
+    fibonacciWrong: fibonacci.contract.implementation(function fWrong (n) {
+      // noinspection IfStatementWithTooManyBranchesJS
+      if (n === 0) {
+        return 0
+      } else if (n === 1) {
+        return 1
+      } else if (n === 4) {
+        return -3 // wrong!
+      } else {
+        return this.fibonacciWrong(n - 1) + this.fibonacciWrong(n - 2)
+      }
+    }),
     factorial: factorial,
     defensiveIntegerSum: defensiveIntegerSum,
     fastDefensiveIntegerSum: fastDefensiveIntegerSum,
@@ -312,13 +368,21 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       testUtil.log('fibonacci.name: %s', fibonacci.name)
       fibonacci.name.should.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`)
     })
+    it('fibonacciWrong has the right name', function () {
+      testUtil.log('fibonacciWrong.name: %s', fibonacciWrong.name)
+      fibonacciWrong.name.should.equal(`${AbstractContract.namePrefix} fWrong`)
+    })
+    it('self.fibonacciWrong has the right name', function () {
+      testUtil.log('self.fibonacciWrong.name: %s', self.fibonacciWrong.name)
+      self.fibonacciWrong.name.should.equal(`${AbstractContract.namePrefix} fWrong`)
+    })
     const anonymousContractFunctions = [
-      { name: 'fibonacciWrong', f: fibonacciWrong },
       { name: 'factorial', f: factorial },
       { name: 'factorialIterative', f: factorialIterative },
       { name: 'defensiveIntegerSum', f: defensiveIntegerSum },
       { name: 'fastDefensiveIntegerSum', f: fastDefensiveIntegerSum },
       { name: 'fastDefensiveIntegerSumWrong', f: fastDefensiveIntegerSumWrong },
+      { name: 'self.fibonacci', f: self.fibonacci },
       { name: 'self.factorial', f: self.factorial },
       { name: 'self.defensiveIntegerSum', f: self.defensiveIntegerSum },
       { name: 'self.fastDefensiveIntegerSum', f: self.fastDefensiveIntegerSum },
@@ -330,7 +394,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
         testUtil.log(`${a.name}.name: ${a.f.name}`)
-        a.f.name.should.containEql(`${AbstractContract.namePrefix} n => {`)
+        a.f.name.should.containEql(`${AbstractContract.namePrefix} function (n) {`)
       })
     })
   })
@@ -358,6 +422,11 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       // eslint-disable-next-line no-unused-vars
       const ignore = factorialIterative(5)
     })
+    it('works with a method that is correct', function () {
+      // any exception will fail the test
+      // eslint-disable-next-line no-unused-vars
+      const ignore = self.fibonacci(5)
+    })
     it('works with a method that is correct too', function () {
       // any exception will fail the test
       // eslint-disable-next-line no-unused-vars
@@ -369,18 +438,106 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       const ignore = self.defensiveIntegerSum(5)
     })
     it('works with a defensive function', function () {
+      fastDefensiveIntegerSum.contract.verifyPostconditions = true
       fastDefensiveIntegerSum.bind(undefined, negativeParameter).should.throw(Error, { message: positiveMessage })
+      fastDefensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive method', function () {
+      self.defensiveIntegerSum.contract.verifyPostconditions = true
       self.defensiveIntegerSum.bind(self, nonIntegerParameter).should.throw(Error, { message: integerMessage })
+      self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
+
+    // noinspection LocalVariableNamingConventionJS
+    const PersonConstructorContract = new Contract({
+      pre: [
+        function (name) {
+          return typeof name === 'string'
+        },
+        function (name) {
+          return !!name
+        }
+      ],
+      post: [
+        function (name, ignore) {
+          return this.name === name
+        }
+      ],
+      exception: Contract.mustNotHappen
+    })
+
+    // noinspection ParameterNamingConventionJS
+    function expectConstructorToWork (PersonImplementation, doBind) {
+      // noinspection LocalVariableNamingConventionJS, JSUnresolvedFunction
+      let ContractPerson = PersonConstructorContract.implementation(PersonImplementation)
+      if (doBind) {
+        ContractPerson = ContractPerson.bind(undefined)
+      }
+      const caseName = 'Jim'
+      const result = new ContractPerson(caseName)
+      result.should.be.ok()
+      result.should.be.instanceof(ContractPerson)
+      result.should.be.instanceof(PersonImplementation)
+      result.should.have.ownProperty('_name')
+      result.name.should.equal(caseName)
+    }
+
+    it('works with a constructor', function () {
+      // noinspection LocalVariableNamingConventionJS
+      const PersonImplementation = function (name) {
+        this._name = name
+      }
+      PersonImplementation.should.have.property('prototype')
+      PersonImplementation.prototype.should.have.property('constructor')
+      PersonImplementation.prototype.constructor.should.equal(PersonImplementation)
+      PersonImplementation.prototype._name = null
+      property.frozenDerived(PersonImplementation.prototype, 'name', function () {
+        return this._name
+      })
+
+      expectConstructorToWork(PersonImplementation)
+    })
+    it('works with a bound constructor', function () {
+      // noinspection LocalVariableNamingConventionJS
+      const PersonImplementation = function (name) {
+        this._name = name
+      }
+      PersonImplementation.should.have.property('prototype')
+      PersonImplementation.prototype.should.have.property('constructor')
+      PersonImplementation.prototype.constructor.should.equal(PersonImplementation)
+      PersonImplementation.prototype._name = null
+      property.frozenDerived(PersonImplementation.prototype, 'name', function () {
+        return this._name
+      })
+
+      expectConstructorToWork(PersonImplementation, true)
+    })
+    // TODO support class construct
+    // it("works with a class", function() {
+    //  class PersonImplementation {
+    //    constructor(name) {
+    //      this._name = name;
+    //    }
+    //
+    //    get name() {
+    //      return this._name;
+    //    }
+    //  }
+    //
+    //  expectConstructorToWork(PersonImplementation);
+    // });
   })
+
   describe('precondition', function () {
     describe('violation', function () {
-      argumentsOfWrongType.forEach(function (wrongArg) {
+      argumentsOfWrongType.forEach(wrongArg => {
         failsOnPreconditionViolation(undefined, fibonacci, wrongArg, fibonacci.contract.pre[0])
       })
       failsOnPreconditionViolation(undefined, fibonacci, -5, fibonacci.contract.pre[1])
+      argumentsOfWrongType.forEach(wrongArg => {
+        failsOnPreconditionViolation(self, self.fibonacci, wrongArg, fibonacci.contract.pre[0])
+      })
+      failsOnPreconditionViolation(self, self.fibonacci, -5, fibonacci.contract.pre[1])
       it('does not fail on a precondition violation when verify is false', function () {
         fibonacci.contract.verify = false
         // eslint-disable-next-line
@@ -393,14 +550,18 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         // noinspection JSUnresolvedFunction, JSUnresolvedVariable
         failsOnMetaError(
           undefined,
-          contractWithAFailingPre.implementation(() => resultWhenMetaError),
+          contractWithAFailingPre.implementation(function () {
+            return resultWhenMetaError
+          }),
           contractWithAFailingPre.pre[0]
         )
       })
       it('fails with a meta-error when a precondition is kaput when it is a method', function () {
         // noinspection JSUnresolvedFunction
         const self = {
-          method: contractWithAFailingPre.implementation(() => resultWhenMetaError)
+          method: contractWithAFailingPre.implementation(function () {
+            return resultWhenMetaError
+          })
         }
 
         // noinspection JSUnresolvedVariable
@@ -409,7 +570,9 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       it('does not fail when a precondition is kaput when verify is false', function () {
         const expectedResult = 'expected result'
         contractWithAFailingPre.verify = false
-        const result = contractWithAFailingPre.implementation(() => expectedResult)()
+        const result = contractWithAFailingPre.implementation(function () {
+          return expectedResult
+        })()
         contractWithAFailingPre.verify = true
         result.should.equal(expectedResult)
       })
@@ -427,6 +590,16 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         )
         fibonacciWrong.contract.verifyPostconditions = false
       })
+      it('fails when a simple postcondition is violated when it is a method', function () {
+        self.fibonacciWrong.contract.verifyPostconditions = true
+        callAndExpectException(
+          self,
+          self.fibonacciWrong,
+          wrongParameter,
+          expectPostProperties.bind(undefined, self, self.fibonacciWrong)
+        )
+        self.fibonacciWrong.contract.verifyPostconditions = false
+      })
       it('fails when a postcondition is violated in a called function with a nested Violation', function () {
         const parameter = 6
         fibonacciWrong.contract.verifyPostconditions = true
@@ -435,9 +608,21 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           fibonacciWrong,
           parameter,
           expectPostProperties.bind(undefined, undefined, fibonacciWrong),
-          'n'
+          'fWrong'
         )
         fibonacciWrong.contract.verifyPostconditions = false
+      })
+      it('fails when a postcondition is violated in a called function with a nested Violation when it is a method', function () {
+        const parameter = 6
+        self.fibonacciWrong.contract.verifyPostconditions = true
+        callAndExpectException(
+          self,
+          self.fibonacciWrong,
+          parameter,
+          expectPostProperties.bind(undefined, self, self.fibonacciWrong),
+          'fWrong'
+        )
+        self.fibonacciWrong.contract.verifyPostconditions = false
       })
       it('does not fail when a simple postcondition is violated when verify is false', function () {
         fibonacciWrong.contract.verify = false
@@ -456,12 +641,13 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     })
     describe('meta-error', function () {
       const contractWithAFailingPost = new Contract({
-        post: [cases.intentionallyFailingArrow]
+        post: [cases.intentionallyFailingFunction]
       })
-
       it('fails with a meta-error when a postcondition is kaput', function () {
         // noinspection JSUnresolvedFunction
-        const implementation = contractWithAFailingPost.implementation(() => resultWhenMetaError)
+        const implementation = contractWithAFailingPost.implementation(function () {
+          return resultWhenMetaError
+        })
         implementation.contract.verifyPostconditions = true
         // noinspection JSUnresolvedVariable
         failsOnMetaError(undefined, implementation, contractWithAFailingPost.post[0], [
@@ -472,10 +658,12 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
       it('fails with a meta-error when a postcondition is kaput when it is a method', function () {
         // noinspection JSUnresolvedFunction
         const self = {
-          method: contractWithAFailingPost.implementation(() => resultWhenMetaError)
+          method: contractWithAFailingPost.implementation(function () {
+            return resultWhenMetaError
+          })
         }
-
         self.method.contract.verifyPostconditions = true
+
         // noinspection JSUnresolvedVariable
         failsOnMetaError(self, self.method, contractWithAFailingPost.post[0], [
           resultWhenMetaError,
@@ -486,7 +674,9 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         const expectedResult = 'expected result'
         contractWithAFailingPre.verify = false
         contractWithAFailingPre.verifyPostconditions = true
-        const result = contractWithAFailingPost.implementation(() => expectedResult)()
+        const result = contractWithAFailingPost.implementation(function () {
+          return expectedResult
+        })()
         contractWithAFailingPre.verifyPostconditions = false
         contractWithAFailingPre.verify = true
         result.should.equal(expectedResult)
@@ -522,7 +712,7 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
         )
         self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
       })
-      it('does not fail when an exception condition is violated when verify is false', function () {
+      it('does not fail when a exception condition is violated when verify is false', function () {
         fastDefensiveIntegerSumWrong.contract.verify = false
         fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
         try {
@@ -549,13 +739,12 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
       const contractWithAFailingExceptionCondition = new Contract({
-        exception: [cases.intentionallyFailingArrow]
+        exception: [cases.intentionallyFailingFunction]
       })
-
       const anExceptedException = 'This exception is expected.'
       it('fails with a meta-error when an exception condition is kaput', function () {
         // noinspection JSUnresolvedFunction
-        const implementation = contractWithAFailingExceptionCondition.implementation(() => {
+        const implementation = contractWithAFailingExceptionCondition.implementation(function () {
           throw anExceptedException
         })
         implementation.contract.verifyPostconditions = true
@@ -565,7 +754,22 @@ describe('IV/ContractFunction-ArrowFunctions', function () {
           implementation
         ])
       })
-      it('does not fail when an exception condition is kaput when verify is false', function () {
+      it('fails with a meta-error when an exception condition is kaput when it is a method', function () {
+        // noinspection JSUnresolvedFunction
+        const self = {
+          method: contractWithAFailingExceptionCondition.implementation(function () {
+            throw anExceptedException
+          })
+        }
+        self.method.contract.verifyPostconditions = true
+
+        // noinspection JSUnresolvedVariable
+        failsOnMetaError(self, self.method, contractWithAFailingExceptionCondition.exception[0], [
+          anExceptedException,
+          self.method.bind(self)
+        ])
+      })
+      it('does not fail when a exception condition is kaput when verify is false', function () {
         contractWithAFailingExceptionCondition.verify = false
         contractWithAFailingExceptionCondition.verifyPostconditions = true
         try {
