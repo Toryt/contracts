@@ -124,6 +124,16 @@ to create a browser distribution.
   - V/5.0.0
     - stop support for Node 8
     - move from Travis to Bitbucket
+    - changed package name from `@toryt/contracts-iv` to `@toryt/contracts-v`; you can use different major versions next
+      to each other
+    - changed the layout of `lib/`: there is no more mark version directory
+    - added package export `lib/index` file: you can now import with, e.g.,
+      `const { Contract } = required('@toryt/contracts-v')`, in environments that support that syntax
+    - the use of `Contract` properties to access other modules is now deprecated; please start using the package export
+    - to upgrade:
+      - `/require('@toryt\/contracts-iv')\.(.*)/require('@toryt/contracts-v').$1/`
+      - `/require('@toryt\/contracts-iv')/require('@toryt/contracts-v').Contract/`
+      - `/require('@toryt\/contracts-iv\/lib\/IV\/(.*)')/require('@toryt/contracts-v').$1/`
 
 ## Where to find
 
