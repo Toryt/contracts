@@ -1,17 +1,17 @@
-# contracts-iv
+# contracts-v
 
-[![npm version](http://img.shields.io/npm/v/@toryt/contracts-iv.svg?style=flat)](https://npmjs.org/package/@toryt/contracts-iv 'View this project on npm')
-![license](https://img.shields.io/npm/l/@toryt/contracts-iv)
-![node-lts](https://img.shields.io/node/v-lts/@toryt/contracts-iv)
-![npm](https://img.shields.io/npm/dt/@toryt/contracts-iv) ![dependencies](https://img.shields.io/david/Toryt/contracts)
+[![npm version](http://img.shields.io/npm/v/@toryt/contracts-v.svg?style=flat)](https://npmjs.org/package/@toryt/contracts-v 'View this project on npm')
+![license](https://img.shields.io/npm/l/@toryt/contracts-v)
+![node-lts](https://img.shields.io/node/v-lts/@toryt/contracts-v)
+![npm](https://img.shields.io/npm/dt/@toryt/contracts-v) ![dependencies](https://img.shields.io/david/Toryt/contracts)
 ![development dependencies](https://img.shields.io/david/dev/Toryt/contracts)
-![Snyk Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@toryt/contracts-iv)
+![Snyk Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@toryt/contracts-v)
 ![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/toryt/contracts)
 ![Codecov](https://img.shields.io/codecov/c/bitbucket/toryt/contracts)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/@toryt/contracts-iv)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/@toryt/contracts-v)
 [![Bitbucket open issues](https://img.shields.io/bitbucket/issues/toryt/contracts)](https://bitbucket.org/toryt/contracts/issues)
 [![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr/toryt/contracts)](https://bitbucket.org/toryt/contracts/pull-requests/)
-![npm collaborators](https://img.shields.io/npm/collaborators/@toryt/contracts-iv)
+![npm collaborators](https://img.shields.io/npm/collaborators/@toryt/contracts-v)
 ![contributors](https://img.shields.io/github/contributors/Toryt/contracts)
 ![language count](https://img.shields.io/github/languages/count/toryt/contracts)
 ![top language](https://img.shields.io/github/languages/top/Toryt/contracts)
@@ -30,7 +30,7 @@ to create a browser distribution.
 
 ## Install
 
-    > npm install --save @toryt/contracts-iv
+    > npm install --save @toryt/contracts-v
 
 ## Tested
 
