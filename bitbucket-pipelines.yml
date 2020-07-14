@@ -201,3 +201,4 @@ pipelines:
     II/*: *fullTestAndTag
     III/*: *fullTestAndTag
     IV/*: *fullTestAndTag
+    V/*: *fullTestAndTag
