@@ -22,7 +22,7 @@ const testUtil = require('./_util/testUtil')
 const common = require('./ConditionViolationCommon')
 const ConditionViolation = require('../lib/ConditionViolation')
 
-describe('IV/ConditionViolation', function () {
+describe('ConditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable

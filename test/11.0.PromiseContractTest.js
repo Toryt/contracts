@@ -33,7 +33,7 @@ function expectConstructorPost (pre, post, exception, fastException, location, r
   common.expectArrayPost(result, fastException, 'fastException', '_fastException')
 }
 
-describe('IV/PromiseContract', function () {
+describe('PromiseContract', function () {
   describe('PromiseContract', function () {
     it('has the expected properties', function () {
       PromiseContract.should.have.ownProperty('prototype')

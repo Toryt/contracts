@@ -25,7 +25,7 @@ const ExceptionConditionViolation = require('../lib/ExceptionConditionViolation'
 // noinspection JSUnresolvedVariable
 const argsCases = common.argsCases.filter(a => Array.isArray(a))
 
-describe('IV/ExceptionConditionViolation', function () {
+describe('ExceptionConditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable

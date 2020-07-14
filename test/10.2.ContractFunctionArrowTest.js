@@ -41,7 +41,7 @@ const cases = require('./_cases')
    Tests that require this in the implementation function are removed. That doesn't work with arrow functions. */
 
 // noinspection FunctionTooLongJS
-describe('IV/ContractFunction-ArrowFunctions', function () {
+describe('ContractFunction-ArrowFunctions', function () {
   const fibonacciImpl = n => (n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2))
 
   const fibonacci = new Contract({

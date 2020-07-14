@@ -26,7 +26,7 @@ const abstractContractCommon = require('./AbstractContractCommon')
 const AbstractContract = require('../lib/AbstractContract')
 const PromiseContract = require('../lib/PromiseContract')
 
-describe('IV/Contract', function () {
+describe('Contract', function () {
   describe('Contract', function () {
     it('has the expected properties', function () {
       Contract.should.have.ownProperty('prototype')

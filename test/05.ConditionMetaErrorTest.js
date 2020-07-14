@@ -23,7 +23,7 @@ const stack = require('../lib/_private/stack')
 const common = require('./ConditionMetaErrorCommon')
 const ConditionMetaError = require('../lib/ConditionMetaError')
 
-describe('IV/ConditionMetaError', function () {
+describe('ConditionMetaError', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable

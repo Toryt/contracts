@@ -42,7 +42,7 @@ const cases = require('./_cases')
    functions as possible, to put them through the motions. */
 
 // noinspection FunctionTooLongJS
-describe('IV/PromiseContractFunction - AsyncFunctions', function () {
+describe('PromiseContractFunction - AsyncFunctions', function () {
   async function fibonacciImpl (n) {
     if (n <= 1) {
       return n

@@ -40,7 +40,7 @@ const cases = require('./_cases')
      Contract.generatePrototypeMethodsDescriptions tests the state postconditions only. */
 
 // noinspection FunctionTooLongJS
-describe('IV/ContractFunction', function () {
+describe('ContractFunction', function () {
   function fibonacciImpl (n) {
     return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2)
   }

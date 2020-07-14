@@ -23,7 +23,7 @@ const stack = require('../lib/_private/stack')
 const common = require('./ConditionErrorCommon')
 const ConditionError = require('../lib/ConditionError')
 
-describe('IV/ConditionError', function () {
+describe('ConditionError', function () {
   describe('#ConditionError()', function () {
     common.selfCaseGenerators.forEach(selfCaseGenerator => {
       common.argsCases.forEach(args => {

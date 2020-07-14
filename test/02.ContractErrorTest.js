@@ -24,7 +24,7 @@ const property = require('../lib/_private/property')
 const stack = require('../lib/_private/stack')
 const common = require('./ContractErrorCommon')
 
-describe('IV/ContractError', function () {
+describe('ContractError', function () {
   describe('#ContractError()', function () {
     it('creates an instance with all toppings', function () {
       const rawStack = stack.raw()

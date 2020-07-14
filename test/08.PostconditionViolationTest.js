@@ -25,7 +25,7 @@ const PostconditionViolation = require('../lib/PostconditionViolation')
 // noinspection JSUnresolvedVariable
 const argsCases = common.argsCases.filter(a => Array.isArray(a))
 
-describe('IV/PostconditionViolation', function () {
+describe('PostconditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable

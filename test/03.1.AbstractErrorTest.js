@@ -24,7 +24,7 @@ const testUtil = require('./_util/testUtil')
 const stack = require('../lib/_private/stack')
 const common = require('./AbstractErrorCommon')
 
-describe('IV/AbstractError', function () {
+describe('AbstractError', function () {
   describe('#AbstractError()', function () {
     it('creates an instance with all toppings for AbstractContract.root', function () {
       const rawStack = stack.raw()

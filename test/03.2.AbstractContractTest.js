@@ -25,7 +25,7 @@ const report = require('../lib/_private/report')
 const common = require('./AbstractContractCommon')
 const should = require('should')
 
-describe('IV/AbstractContract', function () {
+describe('AbstractContract', function () {
   describe('AbstractContract', function () {
     // noinspection FunctionTooLongJS
     it('has the expected properties', function () {
