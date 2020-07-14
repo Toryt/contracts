@@ -103,7 +103,7 @@ definitions:
                   - npm14
                 script:
                   - npm ci
-                  - npm run wd:osx-firefox
+                  - npm run wd:windows-firefox
         - parallel:
             - step:
                 name: Google Pixel 4XL
