@@ -1,60 +1,54 @@
-# Test-by-contract. Pre- and postcondition verification for Javascript.
+# contracts-iv
 
-[![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)](https://travis-ci.org/Toryt/contracts)
-[![codecov](https://codecov.io/gh/Toryt/contracts/branch/master/graph/badge.svg)](https://codecov.io/gh/Toryt/contracts)
 [![npm version](http://img.shields.io/npm/v/@toryt/contracts-iv.svg?style=flat)](https://npmjs.org/package/@toryt/contracts-iv 'View this project on npm')
-![semver stability](https://img.shields.io/dependabot/semver/Toryt/contracts-iv.svg)
-![downloads](https://img.shields.io/npm/dt/@toryt/contracts-iv.svg)
-![dependencies](https://img.shields.io/david/Toryt/contracts.svg)
-![development dependencies](https://img.shields.io/david/dev/Toryt/contracts.svg)
-[![issues](https://img.shields.io/github/issues/Toryt/contracts.svg)](https://github.com/Toryt/contracts/issues)
-[![pull requests](https://img.shields.io/github/issues-pr-closed/Toryt/contracts.svg)](https://github.com/Toryt/contracts/pulls)
-![contributors](https://img.shields.io/github/contributors/Toryt/contracts.svg)
-![last commit](https://img.shields.io/github/last-commit/Toryt/contracts.svg)
-![commit activity](https://img.shields.io/github/commit-activity/y/Toryt/contracts.svg)
-![# languages](https://img.shields.io/github/languages/count/Toryt/contracts.svg)
-![top language](https://img.shields.io/github/languages/top/Toryt/contracts.svg)
+![license](https://img.shields.io/npm/l/@toryt/contracts-iv)
+![node-lts](https://img.shields.io/node/v-lts/@toryt/contracts-iv)
+![npm](https://img.shields.io/npm/dt/@toryt/contracts-iv) ![dependencies](https://img.shields.io/david/Toryt/contracts)
+![development dependencies](https://img.shields.io/david/dev/Toryt/contracts)
+![Snyk Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/@toryt/contracts-iv)
+![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/toryt/contracts)
+![Codecov](https://img.shields.io/codecov/c/bitbucket/toryt/contracts)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/@toryt/contracts-iv)
+[![Bitbucket open issues](https://img.shields.io/bitbucket/issues/toryt/contracts)](https://bitbucket.org/toryt/contracts/issues)
+[![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr/toryt/contracts)](https://bitbucket.org/toryt/contracts/pull-requests/)
+![npm collaborators](https://img.shields.io/npm/collaborators/@toryt/contracts-iv)
+![contributors](https://img.shields.io/github/contributors/Toryt/contracts)
+![language count](https://img.shields.io/github/languages/count/toryt/contracts)
+![top language](https://img.shields.io/github/languages/top/Toryt/contracts)
+![commit activity](https://img.shields.io/github/commit-activity/y/Toryt/contracts)
+![last commit](https://img.shields.io/github/last-commit/Toryt/contracts)
 
-The web, nor node, are ready for ES6 modules at 2017-03-06.
+Test-by-contract. Pre- and postcondition verification for Javascript.
 
-This code is written for Nodejs. Browsers use is supported via `browserify`. Run
+Works in [node.js](https://nodejs.org/) out-of-the-box.
+
+Use in modern browsers is supported via `browserify`. Run
 
     > npm run browserify
 
 to create a browser distribution.
 
+## Install
+
+    > npm install --save @toryt/contracts-iv
+
 ## Tested
 
-- on Mac, during development, with Node 8
-- on Linux, with, via [Travis] ![Build Status](https://travis-ci.org/Toryt/contracts.svg?branch=master)
-  (https://travis-ci.org/Toryt/contracts), with
-  - Node 8
-  - Node 10
-  - Node 12
-- on browsers, with [Browserstack] ![Browserstack logo] and `mochify`,
-  - on the 'latest' versions of Chrome, Firefox, Safari, and Edge, on
-    - Windows 10
-    - macOS High Sierra
-  - on the 'latest' versions of the default browser, on
-    - the 'latest' version of iOS
-    - the 'latest' version of Android
+- Node 10, 12, 14
+- Browsers
+  - macOS 10.15
+    - Safari
+    - Chrome
+    - Edge
+    - Firefox
+  - Windows 10
+    - Chrome
+    - Edge
+    - Firefox
+  - iOS 11, 12, 13
+  - Android 6, 8, 9, 10
 
-## Browsers
-
-Some workarounds were made to accommodate different Safari. This only concerns using `Error` stack traces to report
-where a contract has failed.
-
-Safari support for traces is bad. First of all, Safari haphazardly skips frames in its stack trace. Second, there is a
-difference in the stack traces generated when using Safari 'live', and via Web Driver. In the latter case, no lines or
-columns are reported, and the stack contains a lot of empty lines. As a result, _it is impossible to return a sensible
-location of contract failure consistently with Safari_. A best effort will need to suffice.
-
-Furthermore, Safari on iOS is very weird in adding a default `prototype` object to a non-arrow function. That should
-always be there, but experience shows it is sometimes 'late'. It seems to be added 'lazily'.
-
-Environment detection is used in tests to exclude some conditions in some environments.
-
-More extensive, and sadly fragile, browser detection is used in tests for Safari.
+[![Browserstack logo](https://www.browserstack.com/images/mail/browserstack-logo-footer.png)](https://www.browserstack.com/)
 
 ## Versions
 
@@ -127,9 +121,37 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
   - IV/4.1.2:
     - fix bug in dealing with `arguments`, when they contain a Symbol
 
-## TODO
+## Where to find
 
-- Upgrade to Mocha 8, but then we can no longer support Node 8
+### Repo, CI, issues, pull requests
+
+This project is maintained in [Bitbucket](https://bitbucket.org/toryt/contracts) (repo, CI, issues, pull requests, …).
+
+Branches are copied automatically to [Github](https://github.com/Toryt/contracts) by CI. This is done as backup, and
+because open source projects are more easily found there. Issues and pull requests there will not be reviewed.
+
+### npm
+
+[@toryt/contracts](https://www.npmjs.com/package/@toryt/dns-sd-lookup)
+
+## Browsers
+
+Some workarounds were made to accommodate different Safari. This only concerns using `Error` stack traces to report
+where a contract has failed.
+
+Safari support for traces is bad. First of all, Safari haphazardly skips frames in its stack trace. Second, there is a
+difference in the stack traces generated when using Safari 'live', and via Web Driver. In the latter case, no lines or
+columns are reported, and the stack contains a lot of empty lines. As a result, _it is impossible to return a sensible
+location of contract failure consistently with Safari_. A best effort will need to suffice.
+
+Furthermore, Safari on iOS is very weird in adding a default `prototype` object to a non-arrow function. That should
+always be there, but experience shows it is sometimes 'late'. It seems to be added 'lazily'.
+
+Environment detection is used in tests to exclude some conditions in some environments.
+
+More extensive, and sadly fragile, browser detection is used in tests for Safari.
+
+## TODO
 
 - IV
   - IV/4.2.0: jsdoc or d.ts
@@ -141,9 +163,3 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
   - V/5.0.0: change to Joi-like conditions (conditions-per-argument)
   - V/5.1.0: old-support
   - V/5.2.0: test support Mocha
-
-[travis]: https://travis-ci.org/Toryt/contracts
-[browserstack]: https://www.browserstack.com/
-[browserstack logo]: https://www.browserstack.com/images/mail/browserstack-logo-footer.png
-[browserstack status]:
-  https://www.browserstack.com/automate/badge.svg?badge_key=aEZaaFphdUw4L0p1Wk1RZHRhdGk5OEFlYmlsVlVtWDgwb2JTT1R2WnRBST0tLWVaamdQdWszYzFwbXNad2Mrd1JuaFE9PQ==--02f4bb9220a2c3ad513a12c26c9a45345584f230
