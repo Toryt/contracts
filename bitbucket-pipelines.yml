@@ -147,6 +147,14 @@ definitions:
                   - npm run wd:samsung_galaxy_tab_s6
         - parallel:
             - step:
+                name: Safari - OSX
+                image: node:14
+                caches:
+                  - npm14
+                script:
+                  - npm ci
+                  - npm run wd:osx-safari
+            - step:
                 name: iPad Pro
                 image: node:14
                 caches:
