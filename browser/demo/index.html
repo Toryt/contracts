@@ -18,9 +18,9 @@
   -->
   <meta charset="utf-8">
   <title>Mocha Tests</title>
-  <script src="../../contracts.js"></script>
+  <script src="../../contracts-v.js"></script>
   <script>
-    const Contract = toryt.contracts.iv
+    const Contract = toryt.contracts.v.Contract
     const sumContract = new Contract({
       pre: [
         function (a) { return typeof a === 'number' },

@@ -11,7 +11,7 @@
     "test": "standard && nyc mocha --reporter dot 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
-    "browserify": "browserify -s toryt.contracts.iv --outfile contracts.js lib/Contract.js",
+    "browserify": "browserify -s toryt.contracts.v --outfile contracts-v.js lib/index.js",
     "browserifyTest": "browserify -r should --outfile browser/test/suite.js test/**/*Test.js",
     "browserTest": "mochify --allow-chrome-as-root --reporter dot 'test/**/*Test.js'",
     "watch": "mochify --watch --reporter min 'test/**/*Test.js'",

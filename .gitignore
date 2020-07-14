@@ -102,5 +102,5 @@ node_modules
 ### Project specific
 .nyc_output
 coverage
-contracts.js
+contracts-*.js
 browser/test/suite.js
