@@ -120,6 +120,10 @@ to create a browser distribution.
     - ignore unnecessary files in distribution
   - IV/4.1.2:
     - fix bug in dealing with `arguments`, when they contain a Symbol
+- V
+  - V/5.0.0
+    - stop support for Node 8
+    - move from Travis to Bitbucket
 
 ## Where to find
 
@@ -153,13 +157,13 @@ More extensive, and sadly fragile, browser detection is used in tests for Safari
 
 ## TODO
 
-- IV
-  - IV/4.2.0: jsdoc or d.ts
-  - IV/4.2.1: Documentation
-  - IV/4.3.0: extend function contracts - specialization / generalization
-  - IV/4.4.0: type conditions ('interfaces')
-  - IV/4.5.0: support `class`
 - V
-  - V/5.0.0: change to Joi-like conditions (conditions-per-argument)
-  - V/5.1.0: old-support
-  - V/5.2.0: test support Mocha
+  - 5.1.0: jsdoc or d.ts
+  - 5.1.1: Documentation
+  - 5.2.0: extend function contracts - specialization / generalization
+  - 5.3.0: type conditions ('interfaces')
+  - 5.4.0: support `class`
+- VI
+  - 6.0.0: change to Joi-like conditions (conditions-per-argument)
+  - 6.1.0: old-support
+  - 6.2.0: test support Mocha
