@@ -4,6 +4,7 @@ browser
 coverage
 scripts
 test
+dist
 .min-wd*.js
 .travis.yml
 How_to_publish.md

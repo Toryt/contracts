@@ -1,0 +1,44 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "assumeChangesOnlyAffectDirectDependencies": true,
+    "allowJs": true,
+    "checkJs": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "diagnostics": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": false,
+    "importsNotUsedAsValues": "error",
+    "incremental": true,
+    "listFiles": true,
+    "listEmittedFiles": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "skipLibCheck": false,
+    "target": "es2020",
+    "lib": [
+      "es2018"
+    ]
+  },
+  "include": [
+    "lib/**/*",
+    "test/50.d.ts/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules/**",
+    ".min-wd*.js",
+    "scripts/**",
+    "coverage/**",
+    "browser/**"
+  ]
+}
