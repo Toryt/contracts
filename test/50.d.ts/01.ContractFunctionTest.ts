@@ -815,7 +815,8 @@ describe('ContractFunction', function () {
       it('does not fail when a simple exception condition is violated when verifyPostcondition is false', function () {
         try {
           // eslint-disable-next-line
-          const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
+          const ignore: number = fastDefensiveIntegerSumWrong(wrongParameter);
+          consume(ignore);
           true.should.be.false()
         } catch (err) {
           err.should.equal(wrongException)
@@ -827,7 +828,7 @@ describe('ContractFunction', function () {
       const contractWithAFailingExceptionCondition = new Contract({
         exception: [intentionallyFailingFunction]
       });
-      const anExceptedException = 'This exception is expected.';
+      const anExceptedException: string = 'This exception is expected.';
       it('fails with a meta-error when an exception condition is kaput', function () {
         // noinspection JSUnresolvedFunction
         const implementation = contractWithAFailingExceptionCondition.implementation(function () {
@@ -856,28 +857,30 @@ describe('ContractFunction', function () {
         ]);
       });
       it('does not fail when a exception condition is kaput when verify is false', function () {
-        contractWithAFailingExceptionCondition.verify = false
-        contractWithAFailingExceptionCondition.verifyPostconditions = true
+        contractWithAFailingExceptionCondition.verify = false;
+        contractWithAFailingExceptionCondition.verifyPostconditions = true;
         try {
           // eslint-disable-next-line
-          const _ignore: never = contractWithAFailingExceptionCondition.implementation(function (): never {
+          const ignore: any = contractWithAFailingExceptionCondition.implementation(function (): never {
             throw anExceptedException;
           })();
+          consume(ignore);
           contractWithAFailingExceptionCondition.verifyPostconditions = false;
           contractWithAFailingExceptionCondition.verify = true;
           true.should.be.false();
-        } catch (err: string) {
+        } catch (err: any) {
           err.should.equal(anExceptedException);
         }
       });
       it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
         try {
           // eslint-disable-next-line
-          const _ignore: never = contractWithAFailingExceptionCondition.implementation(function (): never {
+          const ignore: any = contractWithAFailingExceptionCondition.implementation(function (): never {
             throw anExceptedException;
           })();
+          consume(ignore);
           true.should.be.false();
-        } catch (err: string) {
+        } catch (err: any) {
           err.should.equal(anExceptedException);
         }
       });
