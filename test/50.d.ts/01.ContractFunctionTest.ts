@@ -352,7 +352,7 @@ describe('ContractFunction', function () {
         exception.args.length.should.equal(extraArgs ? extraArgs.length + 1 : 1);
         exception.args[0].should.equal(param);
         if (extraArgs) {
-          exception.args[1].should.equal(extraArgs[0]);
+          should(exception.args[1]).equal(extraArgs[0]);
           AbstractContract.isAContractFunction(exception.args[2]).should.be.true();
         }
         exception.error.should.equal(intentionalError);
