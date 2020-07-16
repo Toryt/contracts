@@ -248,7 +248,12 @@ describe('ContractFunction', function () {
       endsNominally = true;
     } catch (exception: any) {
       exception.should.be.ok();
-      const common =
+
+      interface Common {
+        expectInvariants(exception: any): void
+      }
+
+      const common: Common | null =
         exception instanceof ConditionMetaError
           ? conditionMetaErrorCommon
           : /* prettier-ignore */ exception instanceof PreconditionViolation
@@ -259,8 +264,8 @@ describe('ContractFunction', function () {
               : exception instanceof ExceptionConditionViolation
                 ? exceptionConditionViolationCommon
                 : null;
-      common.should.be.ok();
-      common.expectInvariants(exception);
+      should(common).be.ok();
+      (common as Common).expectInvariants(exception);
       exception.message.should.containEql(func.name);
       const stack: string = exception.stack;
       stack.should.containEql(func.name);
