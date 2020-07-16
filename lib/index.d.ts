@@ -17,6 +17,8 @@
 
 /* TODO: Parameters<F> includes the this parameter at position 0, it seems. But not sure. */
 
+export as namespace contracts;
+
 export type AnyFunction = (this: any, ...args: any) => any;
 
 type ArgumentsWithResult<F extends AnyFunction, E extends Error | undefined, FE extends Error | undefined> = [...Parameters<F>, ReturnType<F>, ContractFunction<F, E, FE>]
