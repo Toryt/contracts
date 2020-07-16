@@ -28,16 +28,15 @@ import {
   ExceptionConditionViolation,
   Contract
 } from "../../lib";
-import * as should from "should"
-
-const testUtil = require('./_util/testUtil');
-const property = require('../lib/_private/property');
-const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon');
-const preconditionViolationCommon = require('./PreconditionViolationCommon');
-const postconditionViolationCommon = require('./PostconditionViolationCommon');
-const exceptionConditionViolationCommon = require('./ExceptionConditionViolationCommon');
-const stackEOL = require('../lib/_private/eol').stack;
-const cases = require('./_cases');
+import * as should from "should";
+import { environment, showStack, log } from "../_util/testUtil";
+import { frozenDerived } from "../../lib/_private/property";
+import { stack as stackEOL }  from "../../lib/_private/eol";
+import * as conditionMetaErrorCommon from "../ConditionMetaErrorCommon";
+import * as preconditionViolationCommon from "../PreconditionViolationCommon";
+import * as postconditionViolationCommon from "../PostconditionViolationCommon";
+import * as exceptionConditionViolationCommon from "../ExceptionConditionViolationCommon";
+import * as cases from "../_cases";
 
 /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
      specific for ContractFunction: we test extensively whether the contract function works as expected here.
@@ -265,7 +264,7 @@ describe('ContractFunction', function () {
       exception.message.should.containEql(func.name);
       const stack: string = exception.stack;
       stack.should.containEql(func.name);
-      testUtil.showStack(exception);
+      showStack(exception);
       expectException(exception);
       const stackLines: Array<string> = stack.split(stackEOL);
       const callStackLine: number = stackLines.indexOf('call stack:');
@@ -283,7 +282,7 @@ describe('ContractFunction', function () {
       // do is to point to where the contract function is called. The same applies to Meta errors (in conditions),
       // since we cannot create a stack trace that points in the condition. The caused by probably will for meta errors,
       // but there is no such thing for pre-, post- or exception conditions.
-      if (testUtil.environment !== 'safari') {
+      if (environment !== 'safari') {
         if (!recursive) {
           stackLines[0].should.containEql('callAndExpectException');
         } else {
@@ -439,15 +438,15 @@ describe('ContractFunction', function () {
   describe('#name', function () {
     it('fibonacci has the right name', function () {
       fibonacciImpl.name.should.equal('fibonacciImpl');
-      testUtil.log('fibonacci.name: %s', fibonacci.name);
+      log('fibonacci.name: %s', fibonacci.name);
       fibonacci.name.should.equal(`${AbstractContract.namePrefix} ${fibonacciImpl.name}`);
     });
     it('fibonacciWrong has the right name', function () {
-      testUtil.log('fibonacciWrong.name: %s', fibonacciWrong.name);
+      log('fibonacciWrong.name: %s', fibonacciWrong.name);
       fibonacciWrong.name.should.equal(`${AbstractContract.namePrefix} fWrong`);
     });
     it('self.fibonacciWrong has the right name', function () {
-      testUtil.log('self.fibonacciWrong.name: %s', self.fibonacciWrong.name);
+      log('self.fibonacciWrong.name: %s', self.fibonacciWrong.name);
       self.fibonacciWrong.name.should.equal(`${AbstractContract.namePrefix} fWrong`);
     });
     const anonymousContractFunctions = [
@@ -467,7 +466,7 @@ describe('ContractFunction', function () {
     ]
     anonymousContractFunctions.forEach(a => {
       it(`${a.name} has the right name`, function () {
-        testUtil.log(`${a.name}.name: ${a.f.name}`);
+        log(`${a.name}.name: ${a.f.name}`);
         a.f.name.should.containEql(`${AbstractContract.namePrefix} function (n) {`);
       });
     });
@@ -569,7 +568,7 @@ describe('ContractFunction', function () {
       PersonImplementation.prototype.should.have.property('constructor')
       PersonImplementation.prototype.constructor.should.equal(PersonImplementation)
       PersonImplementation.prototype._name = null
-      property.frozenDerived(PersonImplementation.prototype, 'name', function () {
+      frozenDerived(PersonImplementation.prototype, 'name', function () {
         return this._name
       })
 
@@ -584,7 +583,7 @@ describe('ContractFunction', function () {
       PersonImplementation.prototype.should.have.property('constructor')
       PersonImplementation.prototype.constructor.should.equal(PersonImplementation)
       PersonImplementation.prototype._name = null
-      property.frozenDerived(PersonImplementation.prototype, 'name', function () {
+      frozenDerived(PersonImplementation.prototype, 'name', function () {
         return this._name
       })
 
