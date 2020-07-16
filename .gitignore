@@ -105,3 +105,4 @@ coverage
 dist
 contracts-*.js
 browser/test/suite.js
+test/50.d.ts/*.js
