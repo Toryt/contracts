@@ -68,6 +68,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/mocha": "^8.0.0",
+    "@types/should": "^13.0.0",
     "browserify": "^16.2.3",
     "credits-cli": "^3.1.0",
     "just.randomstring": "^0.1.1",
@@ -80,11 +81,14 @@
     "prettier-standard": "^16.4.1",
     "should": "^13.2.3",
     "standard": "^14.3.1",
-    "tldrlegal": "^1.0.6"
+    "tldrlegal": "^1.0.6",
+    "typescript": "^4.0.0-beta"
   },
   "standard": {
     "ignore": [
-      "/scripts/common/"
+      "/lib/index.d.ts",
+      "/scripts/common/",
+      "/test/50.d.ts/**"
     ]
   },
   "mocha": {
