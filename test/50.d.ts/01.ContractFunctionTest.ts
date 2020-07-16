@@ -36,15 +36,19 @@ import * as conditionMetaErrorCommon from "../ConditionMetaErrorCommon";
 import * as preconditionViolationCommon from "../PreconditionViolationCommon";
 import * as postconditionViolationCommon from "../PostconditionViolationCommon";
 import * as exceptionConditionViolationCommon from "../ExceptionConditionViolationCommon";
-import * as cases from "../_cases";
+import { intentionalError } from "../_cases";
 
 /* This test is not included in Contract.generatePrototypeMethodsDescriptions, because it is
      specific for ContractFunction: we test extensively whether the contract function works as expected here.
      This tests the behavior of the resulting contract function. The tests in
      Contract.generatePrototypeMethodsDescriptions tests the state postconditions only. */
 
-function consume(a: any) {
+function consume(a: any): void {
   JSON.stringify(a);
+}
+
+function intentionallyFailingFunction (): boolean {
+  throw intentionalError;
 }
 
 
@@ -322,7 +326,7 @@ describe('ContractFunction', function () {
   }
 
   const contractWithAFailingPre: Contract<(this: void) => void, undefined> = new Contract<(this: void) => void, undefined>({
-    pre: [cases.intentionallyFailingFunction]
+    pre: [intentionallyFailingFunction]
   });
 
   function failsOnMetaError<O extends Object, R extends any> (
@@ -351,7 +355,7 @@ describe('ContractFunction', function () {
           exception.args[1].should.equal(extraArgs[0]);
           AbstractContract.isAContractFunction(exception.args[2]).should.be.true();
         }
-        exception.error.should.equal(cases.intentionalError);
+        exception.error.should.equal(intentionalError);
       }
     );
   }
@@ -723,7 +727,7 @@ describe('ContractFunction', function () {
     })
     describe('meta-error', function () {
       const contractWithAFailingPost = new Contract({
-        post: [cases.intentionallyFailingFunction]
+        post: [intentionallyFailingFunction]
       })
       it('fails with a meta-error when a postcondition is kaput', function () {
         // noinspection JSUnresolvedFunction
@@ -821,7 +825,7 @@ describe('ContractFunction', function () {
     describe('meta-error', function () {
       // noinspection LocalVariableNamingConventionJS
       const contractWithAFailingExceptionCondition = new Contract({
-        exception: [cases.intentionallyFailingFunction]
+        exception: [intentionallyFailingFunction]
       });
       const anExceptedException = 'This exception is expected.';
       it('fails with a meta-error when an exception condition is kaput', function () {
