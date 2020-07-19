@@ -82,7 +82,7 @@ export function location (depth: number): string {
  * Note that in Safari, the result cannot be trusted. Safari skips (optimized?) stack frames. In Safari, this
  * will return 'a' stack, but not necessarily a semantic meaningful one.
  */
-export function raw (depth: number): string {
+export function raw (depth?: number): string {
   assert(!depth || Number.isInteger(depth), 'optional depth is an integer');
   assert(!depth || depth >= 0, 'optional depth is positive');
 
