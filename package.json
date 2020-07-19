@@ -69,6 +69,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/mocha": "^8.0.0",
+    "@types/node": "^14.0.23",
     "@types/should": "^13.0.0",
     "browserify": "^16.2.3",
     "credits-cli": "^3.1.0",
