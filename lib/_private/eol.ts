@@ -14,26 +14,21 @@
   limitations under the License.
 */
 
-'use strict'
+import {EOL as osEOL} from "os";
 
-const os = require('os').EOL
+export type EOL = "\n" | "\r\n";
 
-const n = '\n'
-const rn = '\r\n'
+export const n = '\n';
+export const rn = '\r\n';
 
-const message = 'STACK MESSAGE'
-const mayBeAStack = new Error(message).stack
+export const os: EOL = osEOL as EOL;
+
+const message: string = 'STACK MESSAGE';
+const mayBeAStack: string | undefined = new Error(message).stack;
 
 /**
  * Determine the EOL used by this JavaScript engine in Error stack traces. It turns out this is not always `os.EOL`.
  * The default is '\n' (Unix).
  */
-const stack =
-  mayBeAStack && mayBeAStack.startsWith(message + rn) ? /* istanbul ignore next: platform dependent */ rn : n
-
-module.exports = {
-  n,
-  rn,
-  stack,
-  os
-}
+export const stack: EOL =
+  mayBeAStack && mayBeAStack.startsWith(message + rn) ? /* istanbul ignore next: platform dependent */ rn : n;
