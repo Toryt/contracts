@@ -14,4 +14,4 @@
   limitations under the License.
  */
 
-export type Signature = (this: any, ...args: any) => any;
+export type AnyFunction = (this: any, ...args: any) => any;

@@ -14,15 +14,16 @@
   limitations under the License.
  */
 
-import type {Signature} from "./Signature";
+import type {AnyFunction} from "./AnyFunction";
 import type {StackLocation} from "./_private/is";
+import type AbstractContract from "./AbstractContract";
 
-export type GeneralContractFunction<S extends Signature, Exceptions> = S & {
+export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
   readonly name: string;
-  readonly contract: AbstractContract<S, Exceptions>;
-  readonly implementation: S;
+  readonly contract: AbstractContract<F, Exceptions>;
+  readonly implementation: F;
   readonly location: StackLocation;
 
-  bind(...args: [ThisParameterType<S>, ...Parameters<S>]): GeneralContractFunction<S, Exceptions>
+  bind(thisArg: ThisParameterType<F>, ...argArray: Parameters<F>): GeneralContractFunction<F, Exceptions>
 }
 

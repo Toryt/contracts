@@ -19,7 +19,7 @@ import {functionArguments, Stack, stack} from './_private/is'
 import {ok, strictEqual} from 'assert'
 import {stack as stackEOL} from './_private/eol'
 
-import type {Signature} from "./Signature";
+import type {AnyFunction} from "./AnyFunction";
 import type {GeneralContractFunction} from "./GeneralContractFunction";
 import * as AbstractContract from "./AbstractContract";
 import type {Condition} from "./Condition";
@@ -106,17 +106,17 @@ import ContractError from "./ContractError";
  *
  * @constructor
  */
-export default class ConditionError<S extends Signature, Exceptions> extends ContractError {
-  readonly contractFunction: GeneralContractFunction<S, Exceptions>;
-  readonly condition: Condition<S, Exceptions>;
-  readonly self: Readonly<ThisParameterType<S>>;
-  private readonly _args: Readonly<Parameters<S>>;
+export default class ConditionError<F extends AnyFunction, Exceptions> extends ContractError {
+  readonly contractFunction: GeneralContractFunction<F, Exceptions>;
+  readonly condition: Condition<F, Exceptions>;
+  readonly self: Readonly<ThisParameterType<F>>;
+  private readonly _args: Readonly<Parameters<F>>;
 
   constructor(
-    contractFunction: GeneralContractFunction<S, Exceptions>,
-    condition: Condition<S, Exceptions>,
-    self: ThisParameterType<S>,
-    args: Parameters<S>,
+    contractFunction: GeneralContractFunction<F, Exceptions>,
+    condition: Condition<F, Exceptions>,
+    self: ThisParameterType<F>,
+    args: Parameters<F>,
     rawStack: Stack
   ) {
     super(rawStack);
@@ -132,10 +132,10 @@ export default class ConditionError<S extends Signature, Exceptions> extends Con
     this.contractFunction = contractFunction;
     this.condition = condition;
     this.self = self;
-    this._args = Object.freeze(Array.prototype.slice.call(args)) as Readonly<Parameters<S>>;
+    this._args = Object.freeze(Array.prototype.slice.call(args)) as Readonly<Parameters<F>>;
   }
 
-  get args(): Readonly<Parameters<S>> {
+  get args(): Parameters<F> { // not readonly: we have sliced
     return this._args.slice();
   }
 

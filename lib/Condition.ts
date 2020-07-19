@@ -14,16 +14,16 @@
   limitations under the License.
  */
 
-import type {Signature} from "./Signature";
+import type {AnyFunction} from "./AnyFunction";
 import type {ArgumentsWithException, ArgumentsWithResult} from "./ExtendedArguments";
 
-export type Precondition<S extends Signature> = (this: ThisParameterType<S>, ...args: Parameters<S>) => boolean;
+export type Precondition<F extends AnyFunction> = (this: ThisParameterType<F>, ...args: Parameters<F>) => boolean;
 
-export type Postcondition<S extends Signature, Exceptions> =
-  (this: ThisParameterType<S>, ...args: ArgumentsWithResult<S, Exceptions>) => boolean;
+export type Postcondition<F extends AnyFunction, Exceptions> =
+  (this: ThisParameterType<F>, ...args: ArgumentsWithResult<F, Exceptions>) => boolean;
 
-export type ExceptionCondition<S extends Signature, Exceptions> =
-  (this: ThisParameterType<S>, ...args: ArgumentsWithException<S, Exceptions, any>) => boolean;
+export type ExceptionCondition<F extends AnyFunction, Exceptions> =
+  (this: ThisParameterType<F>, ...args: ArgumentsWithException<F, Exceptions, any>) => boolean;
 
-export type Condition<S extends Signature, Exceptions> =
-  Precondition<S> | Postcondition<S, Exceptions> | ExceptionCondition<S, Exceptions>;
+export type Condition<F extends AnyFunction, Exceptions> =
+  Precondition<F> | Postcondition<F, Exceptions> | ExceptionCondition<F, Exceptions>;

@@ -16,14 +16,14 @@
 
 
 import type {GeneralContractFunction} from "./GeneralContractFunction";
-import type {Signature} from "./Signature";
+import type {AnyFunction} from "./AnyFunction";
 
-type ExtendedArguments<S extends Signature, Exceptions, T> =
-  [...Parameters<S>, T, GeneralContractFunction<S, Exceptions>];
+export type ExtendedArguments<F extends AnyFunction, Exceptions, T> =
+  [...Parameters<F>, T, GeneralContractFunction<F, Exceptions>];
 
-export type ArgumentsWithResult<S extends Signature, Exceptions> =
-  ExtendedArguments<S, Exceptions, ReturnType<S>>;
+export type ArgumentsWithResult<F extends AnyFunction, Exceptions> =
+  ExtendedArguments<F, Exceptions, ReturnType<F>>;
 
-export type ArgumentsWithException<S extends Signature, Exceptions extends Exc, Exc> =
-  ExtendedArguments<S, Exceptions, Exc>;
+export type ArgumentsWithException<F extends AnyFunction, Exceptions extends Exc, Exc> =
+  ExtendedArguments<F, Exceptions, Exc>;
 
