@@ -3,7 +3,7 @@
   "version": "5.0.0",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
   "main": "lib/index.js",
-  "types": "./lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "directories": {
     "test": "test"
   },
