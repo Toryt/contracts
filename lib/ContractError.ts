@@ -81,7 +81,6 @@ import {stack as stackEOL} from "./_private/eol";
 export class ContractError extends Error {
   static readonly message: string = 'abstract type';
 
-  readonly message: string = ContractError.message;
   protected readonly _rawStack: string;
 
   constructor(rawStack: Stack) {
@@ -89,6 +88,10 @@ export class ContractError extends Error {
 
     ok(stack(rawStack), 'rawStack is a stack');
     this._rawStack = rawStack;
+  }
+
+  get message(): string {
+    return ContractError.message;
   }
 
   get stack(): Stack {
