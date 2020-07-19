@@ -14,13 +14,10 @@
   limitations under the License.
  */
 
-'use strict'
+import {Stack, stack} from "./_private/is";
+import {ok} from "assert";
 
-const is = require('./_private/is')
-const stack = require('./_private/stack')
-const property = require('./_private/property')
-const assert = require('assert')
-const stackEOL = require('./_private/eol').stack
+import {stack as stackEOL} from "./_private/eol";
 
 /* Custom Error types are notoriously difficult in JavaScript.
    See, e.g.,
@@ -63,8 +60,6 @@ const stackEOL = require('./_private/eol').stack
    than where we create the custom error.
  */
 
-const message = 'abstract type'
-
 /**
  * ContractError is the general supertype of all errors thrown by Toryt Contracts.
  * ContractError itself is to be considered abstract.
@@ -83,22 +78,20 @@ const message = 'abstract type'
  *
  * @constructor
  */
-function ContractError (rawStack) {
-  assert(is.stack(rawStack), 'rawStack is a stack')
+export class ContractError extends Error {
+  static readonly message: string = 'abstract type';
 
-  property.setAndFreeze(this, '_rawStack', rawStack)
+  readonly message: string = ContractError.message;
+  protected readonly _rawStack: string;
+
+  constructor(rawStack: Stack) {
+    super();
+
+    ok(stack(rawStack), 'rawStack is a stack');
+    this._rawStack = rawStack;
+  }
+
+  get stack(): Stack {
+    return `${this.name}: ${this.message}` + stackEOL + this._rawStack;
+  }
 }
-
-ContractError.prototype = new Error()
-ContractError.prototype.constructor = ContractError
-property.setAndFreeze(ContractError.prototype, 'name', ContractError.name)
-property.setAndFreeze(ContractError.prototype, 'message', message)
-property.setAndFreeze(ContractError.prototype, '_rawStack', stack.raw())
-property.configurableDerived(ContractError.prototype, 'stack', function () {
-  // noinspection JSUnresolvedVariable
-  return `${this.name}: ${this.message}` + stackEOL + this._rawStack
-})
-
-ContractError.message = message
-
-module.exports = ContractError
