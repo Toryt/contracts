@@ -78,7 +78,7 @@ import {stack as stackEOL} from "./_private/eol";
  *
  * @constructor
  */
-export class ContractError extends Error {
+export default class ContractError extends Error {
   static readonly message: string = 'abstract type';
 
   protected readonly _rawStack: string;

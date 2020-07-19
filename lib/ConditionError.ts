@@ -19,11 +19,11 @@ import {functionArguments, Stack, stack} from './_private/is'
 import {ok, strictEqual} from 'assert'
 import {stack as stackEOL} from './_private/eol'
 
-import {ContractError} from "./ContractError";
 import type {Signature} from "./Signature";
 import type {GeneralContractFunction} from "./GeneralContractFunction";
 import * as AbstractContract from "./AbstractContract";
 import type {Condition} from "./Condition";
+import ContractError from "./ContractError";
 
 /**
  * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
@@ -106,7 +106,7 @@ import type {Condition} from "./Condition";
  *
  * @constructor
  */
-export class ConditionError<S extends Signature, Exceptions> extends ContractError {
+export default class ConditionError<S extends Signature, Exceptions> extends ContractError {
   readonly contractFunction: GeneralContractFunction<S, Exceptions>;
   readonly condition: Condition<S, Exceptions>;
   readonly self: Readonly<ThisParameterType<S>>;
