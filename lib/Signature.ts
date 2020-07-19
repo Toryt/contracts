@@ -14,8 +14,4 @@
   limitations under the License.
  */
 
-export as namespace contracts;
-
-export = AnyFunction;
-
-declare type AnyFunction = (this: any, ...args: any) => any;
+export type Signature = (this: any, ...args: any) => any;

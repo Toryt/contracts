@@ -14,13 +14,15 @@
   limitations under the License.
  */
 
-import type Precondition from "./Precondition";
-import type Postcondition from "./Postcondition";
-import type ExceptionCondition from "./ExceptionCondition";
-import type AnyFunction from "./AnyFunction";
+import type {Signature} from "./Signature";
+import type {StackLocation} from "./_private/is";
 
-export as namespace contracts;
+export type GeneralContractFunction<S extends Signature, Exceptions> = S & {
+  readonly name: string;
+  readonly contract: AbstractContract<S, Exceptions>;
+  readonly implementation: S;
+  readonly location: StackLocation;
 
-export = Condition;
+  bind(...args: [ThisParameterType<S>, ...Parameters<S>]): GeneralContractFunction<S, Exceptions>
+}
 
-declare type Condition<F extends AnyFunction, E extends Error | undefined, FE extends Error | undefined> = Precondition<F> | Postcondition<F, E, FE> | ExceptionCondition<F, E, FE, NonNullable<E | FE>>;

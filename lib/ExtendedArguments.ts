@@ -14,11 +14,16 @@
   limitations under the License.
  */
 
-import type ArgumentsWithException from "./ArgumentsWithException";
-import type AnyFunction from "./AnyFunction";
 
-export as namespace contracts;
+import type {GeneralContractFunction} from "./GeneralContractFunction";
+import type {Signature} from "./Signature";
 
-export = ExceptionCondition;
+type ExtendedArguments<S extends Signature, Exceptions, T> =
+  [...Parameters<S>, T, GeneralContractFunction<S, Exceptions>];
 
-declare type ExceptionCondition<F extends AnyFunction, E extends Error | undefined, FE extends Error | undefined, EXC extends NonNullable<E | FE>> = (...args: ArgumentsWithException<F, E, FE, EXC>) => boolean;
+export type ArgumentsWithResult<S extends Signature, Exceptions> =
+  ExtendedArguments<S, Exceptions, ReturnType<S>>;
+
+export type ArgumentsWithException<S extends Signature, Exceptions extends Exc, Exc> =
+  ExtendedArguments<S, Exceptions, Exc>;
+
