@@ -14,16 +14,16 @@
   limitations under the License.
  */
 
-'use strict'
+import {conciseCondition, type, value} from './_private/report'
+import {functionArguments, Stack, stack} from './_private/is'
+import {ok, strictEqual} from 'assert'
+import {stack as stackEOL} from './_private/eol'
 
-const report = require('./_private/report')
-const is = require('./_private/is')
-const property = require('./_private/property')
-const stack = require('./_private/stack')
-const ContractError = require('./ContractError')
-const AbstractContract = require('./AbstractContract')
-const assert = require('assert')
-const stackEOL = require('./_private/eol').stack
+import {ContractError} from "./ContractError";
+import type {Signature} from "./Signature";
+import type {GeneralContractFunction} from "./GeneralContractFunction";
+import * as AbstractContract from "./AbstractContract";
+import type {Condition} from "./Condition";
 
 /**
  * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
@@ -106,76 +106,69 @@ const stackEOL = require('./_private/eol').stack
  *
  * @constructor
  */
-function ConditionError (contractFunction, condition, self, args, rawStack) {
-  assert(
-    AbstractContract.isAGeneralContractFunction(contractFunction),
-    'ConditionError: first argument is a general contract function'
-  )
-  assert.strictEqual(typeof condition, 'function', 'ConditionError: condition is a function')
-  assert(is.functionArguments(args) || Array.isArray(args), 'ConditionError: args is arguments or array')
-  assert(is.stack(rawStack), 'ConditionError: rawStack is a stack')
+export class ConditionError<S extends Signature, Exceptions> extends ContractError {
+  readonly contractFunction: GeneralContractFunction<S, Exceptions>;
+  readonly condition: Condition<S, Exceptions>;
+  readonly self: Readonly<ThisParameterType<S>>;
+  private readonly _args: Readonly<Parameters<S>>;
 
-  ContractError.call(this, rawStack)
-  property.setAndFreeze(this, 'contractFunction', contractFunction)
-  property.setAndFreeze(this, 'condition', condition)
-  property.setAndFreeze(this, 'self', self)
-  property.setAndFreeze(this, '_args', Object.freeze(Array.prototype.slice.call(args)))
+  constructor(
+    contractFunction: GeneralContractFunction<S, Exceptions>,
+    condition: Condition<S, Exceptions>,
+    self: ThisParameterType<S>,
+    args: Parameters<S>,
+    rawStack: Stack
+  ) {
+    super(rawStack);
+
+    ok(
+      AbstractContract.isAGeneralContractFunction(contractFunction),
+      'ConditionError: first argument is a general contract function'
+    );
+    strictEqual(typeof condition, 'function', 'ConditionError: condition is a function');
+    ok(functionArguments(args) || Array.isArray(args), 'ConditionError: args is arguments or array');
+    ok(stack(rawStack), 'ConditionError: rawStack is a stack');
+
+    this.contractFunction = contractFunction;
+    this.condition = condition;
+    this.self = self;
+    this._args = Object.freeze(Array.prototype.slice.call(args)) as Readonly<Parameters<S>>;
+  }
+
+  get args(): Readonly<Parameters<S>> {
+    return this._args.slice();
+  }
+
+  get message(): string {
+    const conditionRepresentation: string = conciseCondition('condition', this.condition);
+    return `${conditionRepresentation} failed while ${this.contractFunction.name} was called`;
+  }
+
+  getDetails() {
+    // do not use multiline template strings: that turns out to use the EOL used in the file, and not the EOL of the
+    // platform
+    const argsList: string = this.args.map(
+      (arg: any, index: number): string => stackEOL + `    ${index} (${type(arg)}): ${value(arg)}`
+    );
+    return (
+      'contract:' + stackEOL +
+      this.contractFunction.contract.location + stackEOL +
+      'condition:' + stackEOL +
+      `    ${conciseCondition('', this.condition)}` + stackEOL +
+      'contract function:' + stackEOL +
+      this.contractFunction.location + stackEOL +
+      `this (${type(this.self)}):` + stackEOL +
+      `    ${value(this.self)}` + stackEOL +
+      `arguments (${this.args.length}):${argsList}`
+    );
+  }
+
+  get stack(): Stack {
+    return (
+      `${this.name}: ${this.message}` + stackEOL +
+      `${this.getDetails()}` + stackEOL +
+      'call stack:' + stackEOL +
+      `${this._rawStack}`
+    );
+  }
 }
-
-ConditionError.prototype = new ContractError(stack.raw())
-ConditionError.prototype.constructor = ConditionError
-property.setAndFreeze(ConditionError.prototype, 'name', ConditionError.name)
-property.setAndFreeze(ConditionError.prototype, 'contractFunction', null)
-property.setAndFreeze(ConditionError.prototype, 'condition', null)
-property.setAndFreeze(ConditionError.prototype, 'self', null)
-property.setAndFreeze(ConditionError.prototype, '_args', null)
-property.frozenReadOnlyArray(ConditionError.prototype, 'args', '_args')
-property.frozenDerived(ConditionError.prototype, 'message', function () {
-  // noinspection JSUnresolvedVariable
-  const conditionRepresentation = report.conciseCondition('condition', this.condition)
-  // noinspection JSUnresolvedVariable
-  return `${conditionRepresentation} failed while ${this.contractFunction.name} was called`
-})
-
-// do not use multiline template strings: that turns out to use the EOL used in the file, and not the EOL of the
-// platform noinspection JSUnresolvedVariable
-
-property.setAndFreeze(ConditionError.prototype, 'getDetails', function () {
-  const argsList = Array.prototype.map.call(
-    this.args,
-    (arg, index) => stackEOL + `    ${index} (${report.type(arg)}): ${report.value(arg)}`
-  )
-  return (
-    'contract:' +
-    stackEOL +
-    this.contractFunction.contract.location +
-    stackEOL +
-    'condition:' +
-    stackEOL +
-    `    ${report.conciseCondition('', this.condition)}` +
-    stackEOL +
-    'contract function:' +
-    stackEOL +
-    this.contractFunction.location +
-    stackEOL +
-    `this (${report.type(this.self)}):` +
-    stackEOL +
-    `    ${report.value(this.self)}` +
-    stackEOL +
-    `arguments (${this.args.length}):${argsList}`
-  )
-})
-property.frozenDerived(ConditionError.prototype, 'stack', function () {
-  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
-  return (
-    `${this.name}: ${this.message}` +
-    stackEOL +
-    `${this.getDetails()}` +
-    stackEOL +
-    'call stack:' +
-    stackEOL +
-    `${this._rawStack}`
-  )
-})
-
-module.exports = ConditionError
