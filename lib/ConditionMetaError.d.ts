@@ -14,18 +14,18 @@
   limitations under the License.
  */
 
-import ConditionMetaErrord from "./ConditionMetaError";
-import PreconditionViolation from "./PreconditionViolation";
-import PostconditionViolation from "./PostconditionViolation";
-import ExceptionConditionViolation from "./ExceptionConditionViolation";
-import Contract from "./Contract";
-import PromiseContract from "./PromiseContract";
-
-/* TODO: Parameters<F> includes the this parameter at position 0, it seems. But not sure. */
+import AnyFunction from "./AnyFunction";
+import Condition from "./Condition";
+import ContractFunction from "./ContractFunction";
+import ConditionError from "./ConditionError";
 
 export as namespace contracts;
 
-declare namespace contracts {
-  export class Contract;
-  export PromiseContract;
+export = ConditionMetaError;
+
+declare class ConditionMetaError<F extends AnyFunction, E extends Error | undefined, FE extends Error | undefined, C extends Condition<F, E, FE>> extends ConditionError<F, E, FE, C> {
+  readonly error: any;
+
+  constructor(contractFunction: ContractFunction<F, E, FE>, condition: C, self: ThisParameterType<F>, args: Parameters<F>, error: any, rawStack: string);
 }
+

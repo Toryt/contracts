@@ -14,18 +14,10 @@
   limitations under the License.
  */
 
-import ConditionMetaErrord from "./ConditionMetaError";
-import PreconditionViolation from "./PreconditionViolation";
-import PostconditionViolation from "./PostconditionViolation";
-import ExceptionConditionViolation from "./ExceptionConditionViolation";
-import Contract from "./Contract";
-import PromiseContract from "./PromiseContract";
-
-/* TODO: Parameters<F> includes the this parameter at position 0, it seems. But not sure. */
+import type AnyFunction from "./AnyFunction";
 
 export as namespace contracts;
 
-declare namespace contracts {
-  export class Contract;
-  export PromiseContract;
-}
+export = Precondition;
+
+declare type Precondition<F extends AnyFunction> = (...args: Parameters<F>) => boolean;

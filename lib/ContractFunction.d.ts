@@ -14,18 +14,19 @@
   limitations under the License.
  */
 
-import ConditionMetaErrord from "./ConditionMetaError";
-import PreconditionViolation from "./PreconditionViolation";
-import PostconditionViolation from "./PostconditionViolation";
-import ExceptionConditionViolation from "./ExceptionConditionViolation";
-import Contract from "./Contract";
+import AnyFunction from "./AnyFunction";
+import GeneralContractFunction from "./GeneralContractFunction";
+import AnyAsyncFunction from "./AnyAsyncFunction";
 import PromiseContract from "./PromiseContract";
-
-/* TODO: Parameters<F> includes the this parameter at position 0, it seems. But not sure. */
+import Contract from "./Contract";
 
 export as namespace contracts;
 
-declare namespace contracts {
-  export class Contract;
-  export PromiseContract;
+export = ContractFunction;
+
+declare type ContractFunction<F extends AnyFunction, E extends Error | undefined, FE extends Error | undefined> = GeneralContractFunction<F, E, FE> & {
+  readonly contract: F extends AnyAsyncFunction ? PromiseContract<F, E, FE> : Contract<F, E>;
+
+  bind(...args: Parameters<F>): ContractFunction<F, E, FE>
 }
+
