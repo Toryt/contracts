@@ -14,18 +14,13 @@
   limitations under the License.
  */
 
-import ConditionMetaErrord from "./ConditionMetaError";
-import PreconditionViolation from "./PreconditionViolation";
-import PostconditionViolation from "./PostconditionViolation";
-import ExceptionConditionViolation from "./ExceptionConditionViolation";
-import Contract from "./Contract";
-import PromiseContract from "./PromiseContract";
-
-/* TODO: Parameters<F> includes the this parameter at position 0, it seems. But not sure. */
-
-export as namespace contracts;
-
-declare namespace contracts {
-  export class Contract;
-  export PromiseContract;
-}
+export const ContractError: typeof import("./ContractError");
+export const AbstractContract: typeof import("./AbstractContract");
+export const ConditionError: typeof import("./ConditionError");
+export const ConditionMetaError: typeof import("./ConditionMetaError");
+export const ConditionViolation: typeof import("./ConditionViolation");
+export const PreconditionViolation: typeof import("./PreconditionViolation");
+export const PostconditionViolation: typeof import("./PostconditionViolation");
+export const ExceptionConditionViolation: typeof import("./ExceptionConditionViolation");
+export const Contract: typeof import("./Contract");
+export const PromiseContract: typeof import("./PromiseContract");
