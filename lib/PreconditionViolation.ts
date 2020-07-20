@@ -15,11 +15,11 @@
  */
 
 import type {
-  ConditionArguments,
   ConditionContract,
   ConditionThis,
   GeneralContractFunction,
-  Precondition
+  Precondition,
+  PreconditionArguments
 } from "./AbstractContract";
 import {ok, strictEqual} from "assert";
 import {isAGeneralContractFunction} from "./AbstractContract";
@@ -53,7 +53,7 @@ export default class PreconditionViolation<Pre extends Precondition<any>> extend
     contractFunction: GeneralContractFunction<ConditionContract<Pre>>,
     condition: Pre,
     self: ConditionThis<Pre>,
-    args: ConditionArguments<Pre>
+    args: PreconditionArguments<Pre>
   ) {
     ok(isAGeneralContractFunction(contractFunction), 'this is a general contract function');
     strictEqual(typeof condition, 'function');
