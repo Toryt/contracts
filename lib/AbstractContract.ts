@@ -14,18 +14,18 @@
   limitations under the License.
  */
 
-import {ok, strictEqual} from "assert";
-import {raw, location as getStackLocation} from "./_private/stack";
-import type {Stack, StackLocation} from "./_private/is";
-import type {Condition, ExceptionCondition, Postcondition, Precondition} from "./Condition";
+import type {StackLocation, Stack} from "./_private/is";
 import type {AnyFunction} from "./AnyFunction";
-import type {GeneralContractFunction} from "./GeneralContractFunction";
-import { namePrefix, conciseCondition } from './_private/report';
-import ContractError from "./ContractError";
-import {frozenOwnProperty, stack, stackLocation} from "./_private/is";
-import {frozenDerived, setAndFreeze} from "./_private/property";
-import type {ContractFunction} from "./ContractFunction";
 import type {ExtendedArguments} from "./ExtendedArguments";
+import type {Precondition, Postcondition, ExceptionCondition, Condition} from "./Condition";
+import type {GeneralContractFunction} from "./GeneralContractFunction";
+import type {ContractFunction} from "./ContractFunction";
+import {ok, strictEqual} from "assert";
+import {frozenOwnProperty, stackLocation, stack} from "./_private/is";
+import {setAndFreeze, frozenDerived} from "./_private/property";
+import {raw, location as getStackLocation} from "./_private/stack";
+import {namePrefix, conciseCondition} from './_private/report';
+import ContractError from "./ContractError";
 
 /**
  * Function that always returns <code>false</code>.
@@ -338,7 +338,7 @@ export function bless<F extends AnyFunction, Exceptions>(
  * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
  * this is the function call result, respectively, the thrown exception.
  */
-export function outcome<F extends AnyFunction, Exceptions, T> (this: any, ...args: ExtendedArguments<F, Exceptions, T>): T {
+export function outcome<F extends AnyFunction, Exceptions, T extends ReturnType<F> | Exceptions> (this: any, ...args: ExtendedArguments<F, Exceptions, T>): T {
   ok(args);
   ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
   // NOTE: it is not possible to fully test for an arguments object in strict mode

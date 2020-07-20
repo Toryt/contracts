@@ -18,12 +18,12 @@
 import type {GeneralContractFunction} from "./GeneralContractFunction";
 import type {AnyFunction} from "./AnyFunction";
 
-export type ExtendedArguments<F extends AnyFunction, Exceptions, T> =
+export type ExtendedArguments<F extends AnyFunction, Exceptions, T extends ReturnType<F> | Exceptions> =
   [...Parameters<F>, T, GeneralContractFunction<F, Exceptions>];
 
 export type ArgumentsWithResult<F extends AnyFunction, Exceptions> =
   ExtendedArguments<F, Exceptions, ReturnType<F>>;
 
-export type ArgumentsWithException<F extends AnyFunction, Exceptions extends Exc, Exc> =
+export type ArgumentsWithException<F extends AnyFunction, Exceptions, Exc extends Exceptions> =
   ExtendedArguments<F, Exceptions, Exc>;
 
