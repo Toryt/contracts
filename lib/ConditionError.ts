@@ -14,15 +14,16 @@
   limitations under the License.
  */
 
-import {conciseCondition, type, value} from './_private/report'
-import {functionArguments, Stack, stack} from './_private/is'
+import type {AnyFunction} from "./AnyFunction";
+import type {Condition} from "./Condition";
+import type {GeneralContractFunction} from "./AbstractContract";
+
 import {ok, strictEqual} from 'assert'
 import {stack as stackEOL} from './_private/eol'
+import {functionArguments, Stack, stack} from './_private/is'
+import {conciseCondition, type, value} from './_private/report'
 
-import type {AnyFunction} from "./AnyFunction";
-import type {GeneralContractFunction} from "./GeneralContractFunction";
 import * as AbstractContract from "./AbstractContract";
-import type {Condition} from "./Condition";
 import ContractError from "./ContractError";
 
 /**

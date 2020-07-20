@@ -15,8 +15,8 @@
  */
 
 
-import type {GeneralContractFunction} from "./GeneralContractFunction";
 import type {AnyFunction} from "./AnyFunction";
+import type {GeneralContractFunction} from "./AbstractContract";
 
 export type ExtendedArguments<F extends AnyFunction, Exceptions, T extends ReturnType<F> | Exceptions> =
   [...Parameters<F>, T, GeneralContractFunction<F, Exceptions>];

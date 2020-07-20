@@ -18,7 +18,6 @@ import type {StackLocation, Stack} from "./_private/is";
 import type {AnyFunction} from "./AnyFunction";
 import type {ExtendedArguments} from "./ExtendedArguments";
 import type {Precondition, Postcondition, ExceptionCondition, Condition} from "./Condition";
-import type {GeneralContractFunction} from "./GeneralContractFunction";
 import type {ContractFunction} from "./ContractFunction";
 import {ok, strictEqual} from "assert";
 import {frozenOwnProperty, stackLocation, stack} from "./_private/is";
@@ -26,6 +25,18 @@ import {setAndFreeze, frozenDerived} from "./_private/property";
 import {raw, location as getStackLocation} from "./_private/stack";
 import {namePrefix, conciseCondition} from './_private/report';
 import ContractError from "./ContractError";
+
+
+export interface GeneralContractFunctionProps<F extends AnyFunction, Exceptions> extends Function {
+  readonly contract: AbstractContract<F, Exceptions>;
+  readonly implementation: F;
+  readonly location: StackLocation;
+
+  bind(thisArg: ThisParameterType<F>, ...argArray: Parameters<F>): GeneralContractFunction<F, Exceptions>
+}
+
+export type GeneralContractFunction<F extends AnyFunction, Exceptions> =
+  F & GeneralContractFunctionProps<F, Exceptions>;
 
 /**
  * Function that always returns <code>false</code>.
