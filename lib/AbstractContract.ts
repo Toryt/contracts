@@ -26,41 +26,70 @@ import ContractError from "./ContractError";
 
 export type AnyFunction = (this: any, ...args: any) => any;
 
-export interface GeneralContractFunctionProps<F extends AnyFunction, Exceptions> extends Function {
-  readonly contract: AbstractContract<F, Exceptions>;
-  readonly implementation: F;
+export interface GeneralContractFunctionProps<C extends AbstractContract<any, any>> extends Function {
+  readonly contract: C;
+  readonly implementation: ContractSignature<C>;
   readonly location: StackLocation;
 
-  bind(thisArg: ThisParameterType<F>, ...argArray: Parameters<F>): GeneralContractFunction<F, Exceptions>
+  bind(thisArg: ThisParameterType<ContractThis<C>>, ...argArray: ContractParameters<C>): GeneralContractFunction<C>
 }
 
-export type GeneralContractFunction<F extends AnyFunction, Exceptions> =
-  F & GeneralContractFunctionProps<F, Exceptions>;
+export type GeneralContractFunction<C extends AbstractContract<any, any>> =
+  ContractSignature<C> & GeneralContractFunctionProps<C>;
 
-export type ExtendedArguments<F extends AnyFunction, Exceptions, T extends ReturnType<F> | Exceptions> =
-  [...Parameters<F>, T, GeneralContractFunction<F, Exceptions>];
+export type Precondition<C extends AbstractContract<any, any>> =
+  (this: ContractThis<C>, ...args: ContractParameters<C>) => boolean;
 
-export type ArgumentsWithResult<F extends AnyFunction, Exceptions> =
-  ExtendedArguments<F, Exceptions, ReturnType<F>>;
+export type Postcondition<C extends AbstractContract<any, any>> =
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, GeneralContractFunction<C>]) => boolean;
 
-export type ArgumentsWithException<F extends AnyFunction, Exceptions, Exc extends Exceptions> =
-  ExtendedArguments<F, Exceptions, Exc>;
+export type ExceptionCondition<C extends AbstractContract<any, any>> =
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, GeneralContractFunction<C>]) => boolean;
 
-export type Precondition<F extends AnyFunction> = (this: ThisParameterType<F>, ...args: Parameters<F>) => boolean;
+export type PECondition<C extends AbstractContract<any, any>> =
+  Postcondition<C> | ExceptionCondition<C>;
 
-export type Postcondition<F extends AnyFunction, Exceptions> =
-  (this: ThisParameterType<F>, ...args: ArgumentsWithResult<F, Exceptions>) => boolean;
+export type Condition<C extends AbstractContract<any, any>> =
+  Precondition<C> | PECondition<C>;
 
-export type ExceptionCondition<F extends AnyFunction, Exceptions> =
-  (this: ThisParameterType<F>, ...args: ArgumentsWithException<F, Exceptions, any>) => boolean;
-
-export type Condition<F extends AnyFunction, Exceptions> =
-  Precondition<F> | Postcondition<F, Exceptions> | ExceptionCondition<F, Exceptions>;
+export type ConditionContract<B extends Condition<any>> = B extends Condition<infer C> ? C : never;
+export type ConditionThis<B extends Condition<any>> = ContractThis<ConditionContract<B>>;
+export type PreconditionArguments<B extends Condition<any>> = ContractParameters<ConditionContract<B>>;
+export type PostconditionArguments<B extends Condition<any>> = [
+  ...ContractParameters<ConditionContract<B>>,
+  ContractResult<ConditionContract<B>>,
+  GeneralContractFunction<ConditionContract<B>>
+];
+export type ExceptionConditionArguments<B extends Condition<any>> = [
+  ...ContractParameters<ConditionContract<B>>,
+  ContractExceptions<ConditionContract<B>>,
+  GeneralContractFunction<ConditionContract<B>>
+];
+export type PEConditionArguments<B extends PECondition<any>> =
+  B extends Postcondition<any>
+    ? PostconditionArguments<B>
+    : B extends ExceptionCondition<any>
+      ? ExceptionConditionArguments<B>
+      : never;
+export type PEConditionOutcome<B extends PECondition<any>> =
+  B extends Postcondition<any>
+    ? ContractResult<ConditionContract<B>>
+    : B extends ExceptionCondition<any>
+      ? ContractExceptions<ConditionContract<B>>
+      : never;
+export type ConditionArguments<B extends Condition<any>> =
+  B extends Precondition<any>
+    ? PreconditionArguments<B>
+    : B extends Postcondition<any>
+      ? PostconditionArguments<B>
+      : B extends ExceptionCondition<any>
+        ? ExceptionConditionArguments<B>
+        : never;
 
 /**
  * Function that always returns <code>false</code>.
  */
-export const falseCondition: Condition<AnyFunction, any> = function falseCondition (): false {
+export const falseCondition: Condition<any> = function falseCondition (): false {
   return false;
 };
 
@@ -69,7 +98,7 @@ export const falseCondition: Condition<AnyFunction, any> = function falseConditi
  * that a function should never throw exceptions, or never end nominally, or should never be called,
  * because the conditions will always fail.
  */
-export const mustNotHappen: ReadonlyArray<Condition<AnyFunction, any>> = Object.freeze([falseCondition]);
+export const mustNotHappen: ReadonlyArray<Condition<any>> = Object.freeze([falseCondition]);
 
 /**
  * Thrown when an abstract method is called. You shouldn't.
@@ -92,9 +121,9 @@ export class AbstractError extends ContractError {
 }
 
 export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
-  pre?: ReadonlyArray<Precondition<F>>,
-  post?: ReadonlyArray<Postcondition<F, Exceptions>>,
-  exception?: ReadonlyArray<ExceptionCondition<F, Exceptions>>
+  pre?: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>>,
+  post?: ReadonlyArray<Postcondition<AbstractContract<F, Exceptions>>>,
+  exception?: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>>
 }
 
 function isOrHasAsPrototype (obj: {}, proto: {}): boolean {
@@ -152,11 +181,11 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
 
   static readonly namePrefix: string = namePrefix;
 
-  readonly _pre: ReadonlyArray<Precondition<F>>;
-  readonly _post: ReadonlyArray<Postcondition<F, Exceptions>>;
-  readonly _exception: ReadonlyArray<ExceptionCondition<F, Exceptions>>;
+  readonly _pre: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>>;
+  readonly _post: ReadonlyArray<Postcondition<AbstractContract<F, Exceptions>>>;
+  readonly _exception: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>>;
   readonly location: StackLocation | typeof AbstractContract.internalLocation;
-  readonly abstract: GeneralContractFunction<F, Exceptions>;
+  readonly abstract: GeneralContractFunction<AbstractContract<F, Exceptions>>;
 
   verify: boolean = true;
   verifyPostconditions: boolean = false;
@@ -183,30 +212,26 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
     } as F;
 
     const location = _location || getStackLocation(1);
-
-    bless(abstract, self, abstract, location);
-    ok(isAGeneralContractFunction<F, Exceptions>(abstract));
-
     this._pre = Object.freeze(kwargs.pre ? kwargs.pre.slice() : []);
     this._post = Object.freeze(kwargs.post ? kwargs.post.slice() : []);
     this._exception = Object.freeze(kwargs.exception ? kwargs.exception.slice() : mustNotHappen);
     this.location = Object.freeze(location);
-    this.abstract = abstract;
+    this.abstract = bless<AbstractContract<F, Exceptions>>(abstract, self, abstract, location);
   }
 
-  isImplementedBy<F extends AnyFunction, Exceptions> (f: any): f is GeneralContractFunction<F, Exceptions> {
-    return isAGeneralContractFunction<F, Exceptions>(f) && isOrHasAsPrototype(f.contract, this);
+  isImplementedBy (f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>> {
+    return isAGeneralContractFunction<AbstractContract<F, Exceptions>>(f) && isOrHasAsPrototype(f.contract, this);
   }
 
-  get pre(): Array<Precondition<F>> { // not ReadonlyArray: we have sliced
+  get pre(): Array<Precondition<AbstractContract<F, Exceptions>>> { // not ReadonlyArray: we have sliced
     return this._pre.slice();
   }
 
-  get post(): Array<Postcondition<F, Exceptions>> { // not ReadonlyArray: we have sliced
+  get post(): Array<Postcondition<AbstractContract<F, Exceptions>>> { // not ReadonlyArray: we have sliced
     return this._post.slice();
   }
 
-  get exception(): Array<ExceptionCondition<F, Exceptions>> { // not ReadonlyArray: we have sliced
+  get exception(): Array<ExceptionCondition<AbstractContract<F, Exceptions>>> { // not ReadonlyArray: we have sliced
     return this._exception.slice();
   }
 }
@@ -214,6 +239,13 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
 AbstractContract.prototype.verify = true;
 AbstractContract.prototype.verifyPostconditions = false;
 
+export type ContractSignature<C extends AbstractContract<any, any>> =
+  C extends AbstractContract<infer F, any> ? F : never;
+export type ContractThis<C extends AbstractContract<any, any>> = ThisParameterType<ContractSignature<C>>;
+export type ContractParameters<C extends AbstractContract<any, any>> = Parameters<ContractSignature<C>>;
+export type ContractResult<C extends AbstractContract<any, any>> = ReturnType<ContractSignature<C>>;
+export type ContractExceptions<C extends AbstractContract<any, any>> =
+  C extends AbstractContract<any, infer Exceptions> ? Exceptions : never;
 
 /**
  * This function is intended to be used as the bind function of contract functions. It makes sure
@@ -223,19 +255,18 @@ AbstractContract.prototype.verifyPostconditions = false;
  * The implementation of the resulting contract function is also bound in the same
  * way as the resulting contract function itself.
  */
-const bindContractFunction = function bind<F extends AnyFunction, Exceptions> (
-  this: GeneralContractFunction<F, Exceptions>,
-  thisArg: ThisParameterType<F>,
-  ...argArray: Parameters<F>
-): GeneralContractFunction<F, Exceptions> {
+const bindContractFunction = function bind<C extends AbstractContract<any, any>> (
+  this: GeneralContractFunction<C>,
+  thisArg: ContractThis<C>,
+  ...argArray: ContractParameters<C>
+): GeneralContractFunction<C> {
   ok(isAGeneralContractFunction(this), 'this is a general contract function');
 
-  const bound: F = Function.prototype.bind.apply(this, [thisArg, ...argArray]);
-  const boundImplementation: F = Function.prototype.bind.apply(this.implementation, [thisArg, ...argArray]);
+  const bound: ContractSignature<C> = Function.prototype.bind.apply(this, [thisArg, ...argArray]);
+  const boundImplementation: ContractSignature<C> =
+    Function.prototype.bind.apply(this.implementation, [thisArg, ...argArray]);
   frozenDerived(boundImplementation, 'name', () => conciseCondition('bound', this.implementation));
-  bless<F, Exceptions>(bound, this.contract, boundImplementation, this.location);
-  ok(isAGeneralContractFunction<F, Exceptions>(bound));
-  return bound;
+  return bless<C>(bound, this.contract, boundImplementation, this.location);
 };
 
 /**
@@ -259,10 +290,10 @@ const bindContractFunction = function bind<F extends AnyFunction, Exceptions> (
  *     </ul>
  *   </li>
  */
-export function isAGeneralContractFunction<F extends AnyFunction, Exceptions>(
+export function isAGeneralContractFunction <C extends AbstractContract<any, any>> (
   this: void,
-  f: F
-): f is GeneralContractFunction<F, Exceptions> {
+  f: ContractSignature<C>
+): f is GeneralContractFunction<C> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
   return (
@@ -300,13 +331,13 @@ export function isAGeneralContractFunction<F extends AnyFunction, Exceptions>(
  *                          [contract function]{@linkplain AbstractContract#isAContractFunction} will carry,
  *                          that says where it is defined.
  */
-export function bless<F extends AnyFunction, Exceptions>(
+export function bless <C extends AbstractContract<any, any>> (
   this: void,
-  contractFunction: F,
-  contract: AbstractContract<F, Exceptions>,
-  implFunction: F,
+  contractFunction: ContractSignature<C>,
+  contract: C,
+  implFunction: ContractSignature<C>,
   location: StackLocation | typeof AbstractContract.internalLocation
-): void {
+): GeneralContractFunction<C> {
   strictEqual(typeof contractFunction, 'function');
   ok(!(contractFunction as any).contract);
   ok(!(contractFunction as any).implementation);
@@ -362,29 +393,30 @@ export function bless<F extends AnyFunction, Exceptions>(
       value: conciseCondition(namePrefix, implFunction)
     });
   }
+  return contractFunction;
 }
 
 /**
  * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
  * this is the function call result, respectively, the thrown exception.
  */
-export function outcome<F extends AnyFunction, Exceptions, T extends ReturnType<F> | Exceptions> (this: any, ...args: ExtendedArguments<F, Exceptions, T>): T {
+export function outcome<B extends Condition<any>> (this: any, ...args: ConditionArguments<B>): PEConditionOutcome<B> {
   ok(args);
   ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
   // NOTE: it is not possible to fully test for an arguments object in strict mode
   ok(args.length >= 2, 'args has at least 2 elements');
 
-  return args[args.length - 2] as T;
+  return args[args.length - 2];
 }
 
 /**
  * Returns the last element of an Array-like argument. In post- and exception conditions,
  * this is the called contract function, bound to this. This can be used in recursive definitions.
  */
-export function callee<F extends AnyFunction, Exceptions> (
-  this: any,
-  ...args: ExtendedArguments<F, Exceptions, any>
-): GeneralContractFunction<F, Exceptions> {
+export function callee<B extends Condition<any>> (
+  this: void,
+  ...args: ConditionArguments<B>
+): GeneralContractFunction<ConditionContract<B>> {
   ok(args);
   ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
   // NOTE: it is not possible to fully test for an arguments object in strict mode
@@ -406,7 +438,6 @@ export const root: AbstractContract<AnyFunction, any> = new AbstractContract(
   },
   AbstractContract.internalLocation
 );
-
 
 /**
  * A Contract Function is an implementation of a Contract. This function verifies whether a function
