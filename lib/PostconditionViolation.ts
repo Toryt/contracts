@@ -14,15 +14,18 @@
   limitations under the License.
  */
 
-'use strict'
-
-const report = require('./_private/report')
-const is = require('./_private/is')
-const property = require('./_private/property')
-const ConditionViolation = require('./ConditionViolation')
-const AbstractContract = require('./AbstractContract')
-const assert = require('assert')
-const stackEOL = require('./_private/eol').stack
+import type {
+  ConditionContract,
+  ConditionThis,
+  GeneralContractFunction,
+  Postcondition, PostconditionArguments
+} from "./AbstractContract";
+import ConditionViolation from "./ConditionViolation";
+import {ok, strictEqual} from "assert";
+import {ContractResult, isAGeneralContractFunction} from "./AbstractContract";
+import {functionArguments} from "./_private/is";
+import {type, value} from "./_private/report";
+import {stack as stackEOL} from "./_private/eol";
 
 /**
  * <p>A PostconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
@@ -54,39 +57,29 @@ const stackEOL = require('./_private/eol').stack
  *                it was called on. The bound contract function is always the last entry. The result of the
  *                implementation execution is always the second-to-last entry.
  */
-function PostconditionViolation (contractFunction, condition, self, args) {
-  assert(AbstractContract.isAGeneralContractFunction(contractFunction), 'this is a general contract function')
-  assert.strictEqual(typeof condition, 'function')
-  assert(is.functionArguments(args) || Array.isArray(args), 'args is arguments or array')
+export default class PostconditionViolation<Post extends Postcondition<any>> extends ConditionViolation<Post> {
+  readonly result: ContractResult<ConditionContract<Post>>;
 
-  const actualArgs = Array.prototype.slice.call(args)
-  actualArgs.pop() // the bound contract function
-  const result = actualArgs.pop()
-  ConditionViolation.call(this, contractFunction, condition, self, actualArgs)
-  property.setAndFreeze(this, 'result', result)
+  constructor (
+    contractFunction: GeneralContractFunction<ConditionContract<Post>>,
+    condition: Post,
+    self: ConditionThis<Post>,
+    args: PostconditionArguments<Post>
+  ) {
+    ok(isAGeneralContractFunction(contractFunction), 'this is a general contract function');
+    strictEqual(typeof condition, 'function');
+    ok(functionArguments(args) || Array.isArray(args), 'args is arguments or array');
+
+    const actualArgs: PostconditionArguments<Post> = Array.prototype.slice.call(args) as PostconditionArguments<Post>;
+    actualArgs.pop(); // the bound contract function
+    const result: ContractResult<ConditionContract<Post>> = actualArgs.pop();
+    super(contractFunction, condition, self, actualArgs);
+    this.result = result;
+  }
+
+  getDetails(): string {
+    return super.getDetails() +
+      stackEOL + `result (${type(this.result)}):` +
+      stackEOL + value(this.result);
+  }
 }
-
-// noinspection JSUnresolvedVariable
-PostconditionViolation.prototype = new ConditionViolation(
-  AbstractContract.root.abstract,
-  function () {
-    return 'This is a dummy condition in the PostconditionViolation prototype.'
-  },
-  undefined,
-  []
-)
-PostconditionViolation.prototype.constructor = PostconditionViolation
-property.setAndFreeze(PostconditionViolation.prototype, 'name', PostconditionViolation.name)
-property.setAndFreeze(PostconditionViolation.prototype, 'result', undefined)
-property.setAndFreeze(PostconditionViolation.prototype, 'getDetails', function () {
-  // noinspection JSUnresolvedVariable
-  return (
-    ConditionViolation.prototype.getDetails.call(this) +
-    stackEOL +
-    `result (${report.type(this.result)}):` +
-    stackEOL +
-    report.value(this.result)
-  )
-})
-
-module.exports = PostconditionViolation
