@@ -14,13 +14,17 @@
   limitations under the License.
  */
 
-'use strict'
-
-const is = require('./_private/is')
-const property = require('./_private/property')
-const ConditionViolation = require('./ConditionViolation')
-const AbstractContract = require('./AbstractContract')
-const assert = require('assert')
+import type {
+  ConditionArguments,
+  ConditionContract,
+  ConditionThis,
+  GeneralContractFunction,
+  Precondition
+} from "./AbstractContract";
+import {ok, strictEqual} from "assert";
+import {isAGeneralContractFunction} from "./AbstractContract";
+import {functionArguments} from "./_private/is";
+import ConditionViolation from "./ConditionViolation";
 
 /**
  * A PreconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
@@ -44,24 +48,17 @@ const assert = require('assert')
  * @param {Array} args
  *                The arguments with which the contract function that failed, was called
  */
-function PreconditionViolation (contractFunction, condition, self, args) {
-  assert(AbstractContract.isAGeneralContractFunction(contractFunction), 'this is a general contract function')
-  assert.strictEqual(typeof condition, 'function')
-  assert(is.functionArguments(args) || Array.isArray(args), 'args is arguments or array')
+export default class PreconditionViolation<Pre extends Precondition<any>> extends ConditionViolation<Pre> {
+  constructor (
+    contractFunction: GeneralContractFunction<ConditionContract<Pre>>,
+    condition: Pre,
+    self: ConditionThis<Pre>,
+    args: ConditionArguments<Pre>
+  ) {
+    ok(isAGeneralContractFunction(contractFunction), 'this is a general contract function');
+    strictEqual(typeof condition, 'function');
+    ok(functionArguments(args) || Array.isArray(args), 'args is arguments or array');
 
-  ConditionViolation.apply(this, arguments)
+    super(contractFunction, condition, self, args);
+  }
 }
-
-// noinspection JSUnresolvedVariable
-PreconditionViolation.prototype = new ConditionViolation(
-  AbstractContract.root.abstract,
-  function () {
-    return 'This is a dummy condition in the PreconditionViolation prototype.'
-  },
-  undefined,
-  []
-)
-PreconditionViolation.prototype.constructor = PreconditionViolation
-property.setAndFreeze(PreconditionViolation.prototype, 'name', PreconditionViolation.name)
-
-module.exports = PreconditionViolation
