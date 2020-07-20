@@ -25,7 +25,7 @@ import ContractError from "./ContractError";
 import {frozenOwnProperty, stack, stackLocation} from "./_private/is";
 import {frozenDerived, setAndFreeze} from "./_private/property";
 import type {ContractFunction} from "./ContractFunction";
-import type {ArgumentsWithResult, ExtendedArguments} from "./ExtendedArguments";
+import type {ExtendedArguments} from "./ExtendedArguments";
 
 /**
  * Function that always returns <code>false</code>.
@@ -39,7 +39,7 @@ export const falseCondition: Condition<AnyFunction, any> = function falseConditi
  * that a function should never throw exceptions, or never end nominally, or should never be called,
  * because the conditions will always fail.
  */
-const mustNotHappen: ReadonlyArray<Condition<AnyFunction, any>> = Object.freeze([falseCondition]);
+export const mustNotHappen: ReadonlyArray<Condition<AnyFunction, any>> = Object.freeze([falseCondition]);
 
 /**
  * Thrown when an abstract method is called. You shouldn't.
@@ -52,10 +52,11 @@ export class AbstractError extends ContractError {
   constructor (contract: AbstractContract<any, any>, rawStack: Stack) {
     super(rawStack);
 
+    // noinspection SuspiciousTypeOfGuard
     ok(contract instanceof AbstractContract, 'contract is an AbstractContract');
     ok(stack(rawStack), 'rawStack is a stack');
 
-    this.message = AbstractError.message;
+    setAndFreeze(this, 'message', AbstractError.message);
     this.contract = contract;
   }
 }
@@ -337,13 +338,13 @@ export function bless<F extends AnyFunction, Exceptions>(
  * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
  * this is the function call result, respectively, the thrown exception.
  */
-export function outcome<F extends AnyFunction, Exceptions> (this: any, ...args: ArgumentsWithResult<F, Exceptions>): ReturnType<F> {
+export function outcome<F extends AnyFunction, Exceptions, T> (this: any, ...args: ExtendedArguments<F, Exceptions, T>): T {
   ok(args);
-  ok(Array.isArray(args) || typeof args.length === 'number', 'args is Array or arguments');
+  ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
   // NOTE: it is not possible to fully test for an arguments object in strict mode
   ok(args.length >= 2, 'args has at least 2 elements');
 
-  return args[args.length - 2];
+  return args[args.length - 2] as T;
 }
 
 /**
@@ -355,7 +356,7 @@ export function callee<F extends AnyFunction, Exceptions> (
   ...args: ExtendedArguments<F, Exceptions, any>
 ): GeneralContractFunction<F, Exceptions> {
   ok(args);
-  ok(Array.isArray(args) || typeof args.length === 'number', 'args is Array or arguments');
+  ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
   // NOTE: it is not possible to fully test for an arguments object in strict mode
   ok(args.length >= 2, 'args has at least 2 elements'); // stronger than absolutely necessary
 
