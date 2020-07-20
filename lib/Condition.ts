@@ -15,7 +15,7 @@
  */
 
 import type {AnyFunction} from "./AnyFunction";
-import type {ArgumentsWithException, ArgumentsWithResult} from "./ExtendedArguments";
+import type {ArgumentsWithException, ArgumentsWithResult} from "./AbstractContract";
 
 export type Precondition<F extends AnyFunction> = (this: ThisParameterType<F>, ...args: Parameters<F>) => boolean;
 

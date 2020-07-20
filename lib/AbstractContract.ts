@@ -16,7 +16,6 @@
 
 import type {StackLocation, Stack} from "./_private/is";
 import type {AnyFunction} from "./AnyFunction";
-import type {ExtendedArguments} from "./ExtendedArguments";
 import type {Precondition, Postcondition, ExceptionCondition, Condition} from "./Condition";
 import type {ContractFunction} from "./ContractFunction";
 import {ok, strictEqual} from "assert";
@@ -37,6 +36,15 @@ export interface GeneralContractFunctionProps<F extends AnyFunction, Exceptions>
 
 export type GeneralContractFunction<F extends AnyFunction, Exceptions> =
   F & GeneralContractFunctionProps<F, Exceptions>;
+
+export type ExtendedArguments<F extends AnyFunction, Exceptions, T extends ReturnType<F> | Exceptions> =
+  [...Parameters<F>, T, GeneralContractFunction<F, Exceptions>];
+
+export type ArgumentsWithResult<F extends AnyFunction, Exceptions> =
+  ExtendedArguments<F, Exceptions, ReturnType<F>>;
+
+export type ArgumentsWithException<F extends AnyFunction, Exceptions, Exc extends Exceptions> =
+  ExtendedArguments<F, Exceptions, Exc>;
 
 /**
  * Function that always returns <code>false</code>.
