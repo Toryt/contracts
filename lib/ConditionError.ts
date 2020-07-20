@@ -14,7 +14,13 @@
   limitations under the License.
  */
 
-import type {AnyFunction, GeneralContractFunction, Condition} from "./AbstractContract";
+import type {
+  GeneralContractFunction,
+  Condition,
+  ConditionContract,
+  ConditionThis, ConditionArguments
+} from "./AbstractContract";
+
 import {ok, strictEqual} from 'assert'
 import {stack as stackEOL} from './_private/eol'
 import {functionArguments, Stack, stack} from './_private/is'
@@ -103,17 +109,17 @@ import ContractError from "./ContractError";
  *
  * @constructor
  */
-export default class ConditionError<F extends AnyFunction, Exceptions> extends ContractError {
-  readonly contractFunction: GeneralContractFunction<F, Exceptions>;
-  readonly condition: Condition<F, Exceptions>;
-  readonly self: Readonly<ThisParameterType<F>>;
-  private readonly _args: Readonly<Parameters<F>>;
+export default class ConditionError<B extends Condition<any>> extends ContractError {
+  readonly contractFunction: GeneralContractFunction<ConditionContract<B>>;
+  readonly condition: B;
+  readonly self: Readonly<ConditionThis<B>>;
+  private readonly _args: Readonly<ConditionArguments<B>>;
 
   constructor(
-    contractFunction: GeneralContractFunction<F, Exceptions>,
-    condition: Condition<F, Exceptions>,
-    self: ThisParameterType<F>,
-    args: Parameters<F>,
+    contractFunction: GeneralContractFunction<ConditionContract<B>>,
+    condition: B,
+    self: ConditionThis<B>,
+    args: ConditionArguments<B>,
     rawStack: Stack
   ) {
     super(rawStack);
@@ -129,10 +135,10 @@ export default class ConditionError<F extends AnyFunction, Exceptions> extends C
     this.contractFunction = contractFunction;
     this.condition = condition;
     this.self = self;
-    this._args = Object.freeze(Array.prototype.slice.call(args)) as Readonly<Parameters<F>>;
+    this._args = Object.freeze(Array.prototype.slice.call(args)) as Readonly<ConditionArguments<B>>;
   }
 
-  get args(): Parameters<F> { // not readonly: we have sliced
+  get args(): ConditionArguments<B> { // not readonly: we have sliced
     return this._args.slice();
   }
 
