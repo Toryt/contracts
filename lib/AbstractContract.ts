@@ -16,7 +16,6 @@
 
 import type {StackLocation, Stack} from "./_private/is";
 import type {AnyFunction} from "./AnyFunction";
-import type {Precondition, Postcondition, ExceptionCondition, Condition} from "./Condition";
 import type {ContractFunction} from "./ContractFunction";
 import {ok, strictEqual} from "assert";
 import {frozenOwnProperty, stackLocation, stack} from "./_private/is";
@@ -45,6 +44,17 @@ export type ArgumentsWithResult<F extends AnyFunction, Exceptions> =
 
 export type ArgumentsWithException<F extends AnyFunction, Exceptions, Exc extends Exceptions> =
   ExtendedArguments<F, Exceptions, Exc>;
+
+export type Precondition<F extends AnyFunction> = (this: ThisParameterType<F>, ...args: Parameters<F>) => boolean;
+
+export type Postcondition<F extends AnyFunction, Exceptions> =
+  (this: ThisParameterType<F>, ...args: ArgumentsWithResult<F, Exceptions>) => boolean;
+
+export type ExceptionCondition<F extends AnyFunction, Exceptions> =
+  (this: ThisParameterType<F>, ...args: ArgumentsWithException<F, Exceptions, any>) => boolean;
+
+export type Condition<F extends AnyFunction, Exceptions> =
+  Precondition<F> | Postcondition<F, Exceptions> | ExceptionCondition<F, Exceptions>;
 
 /**
  * Function that always returns <code>false</code>.
