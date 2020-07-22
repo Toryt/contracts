@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="00.javascript/05.PromiseTest.js" type="mocha-javascript-test-runner">
+  <configuration default="false" name="01._private/04.report" type="mocha-javascript-test-runner">
     <node-interpreter>project</node-interpreter>
     <node-options />
     <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -8,7 +8,7 @@
     <ui>bdd</ui>
     <extra-mocha-options>--require ts-node/register/transpile-only --watch</extra-mocha-options>
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/00.javascript/05.PromiseTest.js</test-file>
+    <test-file>$PROJECT_DIR$/test/01._private/04.reportTest.js</test-file>
     <method v="2" />
   </configuration>
 </component>
