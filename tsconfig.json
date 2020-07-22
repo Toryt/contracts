@@ -36,8 +36,8 @@
     "importsNotUsedAsValues": "error"
   },
   "include": [
-    "lib/**/*",
-    "test/50.d.ts/**/*.ts"
+    "lib/**/*.ts",
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules/**",

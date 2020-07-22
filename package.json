@@ -89,9 +89,9 @@
   },
   "standard": {
     "ignore": [
-      "/lib/index.d.ts",
+      "/lib/**/*.ts",
       "/scripts/common/",
-      "/test/50.d.ts/**"
+      "/test/**/*.ts"
     ]
   },
   "mocha": {
