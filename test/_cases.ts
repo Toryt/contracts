@@ -16,11 +16,9 @@
 
 /* eslint-env mocha */
 
-'use strict'
+import {stack, n , rn} from "../lib/_private/eol";
 
-const eol = require('../lib/_private/eol')
-
-const any = [
+export const any: Array<any> = [
   undefined,
   null,
   4,
@@ -46,40 +44,29 @@ const any = [
   new Boolean(false),
   Object,
   (function () {
-    return arguments
+    return arguments;
   })()
-]
+];
 
-const intentionalError = new Error('This condition intentionally fails.')
+export const intentionalError: Error = new Error('This condition intentionally fails.');
 
-function intentionallyFailingFunction () {
-  throw intentionalError
+export function intentionallyFailingFunction (): never {
+  throw intentionalError;
 }
 
-const intentionallyFailingArrow = () => {
-  throw intentionalError
-}
+export const intentionallyFailingArrow = (): never => {
+  throw intentionalError;
+};
 
-const intentionallyFailingAsyncArrow = async () => {
-  throw intentionalError
-}
+export const intentionallyFailingAsyncArrow = async (): Promise<never> => {
+  throw intentionalError;
+};
 
-const intentionallyRejectedPromise = Promise.reject(intentionalError)
+export const intentionallyRejectedPromise: Promise<never> = Promise.reject(intentionalError);
 /* Note detects this as an UnhandledPromiseRejectionWarning, although we do nothing with it. The following code works
    around the confusing warning. */
-intentionallyRejectedPromise.catch(ignore => {})
+intentionallyRejectedPromise.catch(_ignore => {});
 
-const intentionallyRejectingArrow = () => intentionallyRejectedPromise
+export const intentionallyRejectingArrow = () => intentionallyRejectedPromise;
 
-const notStackEOL = eol.stack === eol.n ? eol.rn : eol.n
-
-module.exports = {
-  any,
-  intentionalError,
-  intentionallyFailingFunction,
-  intentionallyFailingArrow,
-  intentionallyFailingAsyncArrow,
-  intentionallyRejectedPromise,
-  intentionallyRejectingArrow,
-  notStackEOL
-}
+export const notStackEOL = stack === n ? rn : eol.n;
