@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="00.javascript/03.ObjectTest.js" type="mocha-javascript-test-runner">
+  <configuration default="false" name="00.javascript/06.utilInspect.js" type="mocha-javascript-test-runner">
     <node-interpreter>node</node-interpreter>
     <node-options />
     <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
@@ -8,7 +8,7 @@
     <ui>bdd</ui>
     <extra-mocha-options>--require ts-node/register/transpile-only --watch</extra-mocha-options>
     <test-kind>TEST_FILE</test-kind>
-    <test-file>$PROJECT_DIR$/test/00.javascript/03.ObjectTest.js</test-file>
+    <test-file>$PROJECT_DIR$/test/00.javascript/06.utilInspect.js</test-file>
     <method v="2" />
   </configuration>
 </component>
