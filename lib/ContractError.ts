@@ -18,6 +18,7 @@ import {Stack, stack} from "./_private/is";
 import {ok} from "assert";
 
 import {stack as stackEOL} from "./_private/eol";
+import {setAndFreeze} from "./_private/property";
 
 /* Custom Error types are notoriously difficult in JavaScript.
    See, e.g.,
@@ -81,20 +82,25 @@ import {stack as stackEOL} from "./_private/eol";
 export default class ContractError extends Error {
   static readonly message: string = 'abstract type';
 
-  protected readonly _rawStack: string;
+  protected readonly _rawStack: Stack;
 
   constructor(rawStack: Stack) {
-    super();
-
     ok(stack(rawStack), 'rawStack is a stack');
-    this._rawStack = rawStack;
+
+    super();
+    this._rawStack = rawStack; // make the compiler happy
+    setAndFreeze(this, '_rawStack', rawStack);
+    /* super() explicitly sets the stack to where the constructor was called.
+       We don't want that. We want our stack, based on _rawStack.
+       Also, we need to ignore, because we want it to be readonly, and non-optional. */
+    // @ts-ignore
+    delete this.stack;
   }
 
-  get message(): string {
-    return ContractError.message;
-  }
-
-  get stack(): Stack {
+  get stack() {
     return `${this.name}: ${this.message}` + stackEOL + this._rawStack;
   }
 }
+
+setAndFreeze(ContractError.prototype, 'name', ContractError.name);
+setAndFreeze(ContractError.prototype, 'message', ContractError.message);

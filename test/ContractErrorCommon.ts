@@ -20,11 +20,10 @@ import type {Stack} from "../lib/_private/is";
 import {stack as stackEOL} from "../lib/_private/eol";
 import {stack as isStack} from "../lib/_private/is";
 import ContractError from "../lib/ContractError";
-import {expectOwnFrozenProperty, log, regExpEscape} from "./_util/testUtil";
+import {expectOwnFrozenProperty, regExpEscape} from "./_util/testUtil";
 
 export function expectStackInvariants (subject: ContractError) {
   const stack: Stack = subject.stack;
-  log(`subject stack: ${stack}`);
   stack.should.be.a.String();
   const startOfStack = subject.name + ': ' + subject.message + stackEOL;
   stack.should.match(new RegExp('^' + regExpEscape(startOfStack)));
@@ -35,9 +34,8 @@ export function expectStackInvariants (subject: ContractError) {
     .filter(l => !!l)
     .join(stackEOL);
   isStack(restOfStack).should.be.true();
-  log(`rest of stack: ${restOfStack}`);
-  log(`raw stack: ${subject._rawStack}`);
   // noinspection JSUnresolvedVariable
+  // @ts-ignore
   restOfStack.should.containEql(subject._rawStack);
 }
 
@@ -48,8 +46,10 @@ export function expectInvariants (subject: ContractError) {
   subject.name.should.equal(subject.constructor.name);
   expectOwnFrozenProperty(ContractError.prototype, 'message');
   subject.message.should.be.a.String();
+  // @ts-ignore
   expectOwnFrozenProperty(subject, '_rawStack');
   // noinspection JSUnresolvedVariable
+  // @ts-ignore
   isStack(subject._rawStack).should.be.true();
   expectStackInvariants(subject);
 }
@@ -58,6 +58,7 @@ export function expectConstructorPost (result: ContractError, message: string, r
   Object.isExtensible(result).should.be.true();
   result.name.should.equal(result.constructor.name);
   result.message.should.equal(message);
+  // @ts-ignore
   result._rawStack.should.equal(rawStack);
 }
 
