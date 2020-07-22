@@ -14,15 +14,20 @@
   limitations under the License.
  */
 
-'use strict'
-
-const report = require('./_private/report')
-const is = require('./_private/is')
-const property = require('./_private/property')
-const ConditionViolation = require('./ConditionViolation')
-const AbstractContract = require('./AbstractContract')
-const assert = require('assert')
-const stackEOL = require('./_private/eol').stack
+import type {
+  ConditionArguments,
+  ConditionContract,
+  ConditionThis,
+  ContractExceptions,
+  ExceptionCondition,
+  GeneralContractFunction
+} from "./AbstractContract";
+import {ok, strictEqual} from "assert";
+import {isAGeneralContractFunction} from "./AbstractContract";
+import {functionArguments} from "./_private/is";
+import ConditionViolation from "./ConditionViolation";
+import {stack as stackEOL} from "./_private/eol";
+import {extensiveThrown, type} from "./_private/report";
 
 /**
  * <p>An ExceptionConditionViolation is the means by which Toryt Contracts tells developers that it detected that an
@@ -56,39 +61,29 @@ const stackEOL = require('./_private/eol').stack
  *                it was called on. The bound contract function is always the last entry. The thrown exception
  *                is always the second-to-last entry.
  */
-function ExceptionConditionViolation (contractFunction, condition, self, args) {
-  assert(AbstractContract.isAGeneralContractFunction(contractFunction), 'this is a general contract function')
-  assert.strictEqual(typeof condition, 'function')
-  assert(is.functionArguments(args) || Array.isArray(args), 'args is arguments or array')
+export default class ExceptionConditionViolation <EC extends ExceptionCondition<any>> extends ConditionViolation<EC> {
+  readonly exception: ContractExceptions<ConditionContract<EC>>;
 
-  const actualArgs = Array.prototype.slice.call(args)
-  actualArgs.pop() // the bound contract function
-  const exception = actualArgs.pop()
-  ConditionViolation.call(this, contractFunction, condition, self, actualArgs)
-  property.setAndFreeze(this, 'exception', exception)
+  constructor(
+    contractFunction: GeneralContractFunction<ConditionContract<EC>>,
+    condition: EC,
+    self: ConditionThis<EC>,
+    args: ConditionArguments<EC>
+  ) {
+    ok(isAGeneralContractFunction(contractFunction), 'this is a general contract function');
+    strictEqual(typeof condition, 'function');
+    ok(functionArguments(args) || Array.isArray(args), 'args is arguments or array');
+
+    const actualArgs: ConditionArguments<EC> = Array.prototype.slice.call(args) as ConditionArguments<EC>;
+    actualArgs.pop(); // the bound contract function
+    const exception = actualArgs.pop();
+    super(contractFunction, condition, self, actualArgs);
+    this.exception = exception;
+  }
+
+  getDetails(): string {
+    return super.getDetails() +
+      stackEOL + `exception (${type(this.exception)}):` +
+      stackEOL + extensiveThrown(this.exception);
+  }
 }
-
-// noinspection JSUnresolvedVariable
-ExceptionConditionViolation.prototype = new ConditionViolation(
-  AbstractContract.root.abstract,
-  function () {
-    return 'This is a dummy condition in the ExceptionConditionViolation prototype.'
-  },
-  undefined,
-  []
-)
-ExceptionConditionViolation.prototype.constructor = ExceptionConditionViolation
-property.setAndFreeze(ExceptionConditionViolation.prototype, 'name', ExceptionConditionViolation.name)
-property.setAndFreeze(ExceptionConditionViolation.prototype, 'exception', undefined)
-property.setAndFreeze(ExceptionConditionViolation.prototype, 'getDetails', function () {
-  // noinspection JSUnresolvedVariable
-  return (
-    ConditionViolation.prototype.getDetails.call(this) +
-    stackEOL +
-    `exception (${report.type(this.exception)}):` +
-    stackEOL +
-    report.extensiveThrown(this.exception)
-  )
-})
-
-module.exports = ExceptionConditionViolation
