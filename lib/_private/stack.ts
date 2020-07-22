@@ -49,14 +49,16 @@ export function location (depth?: number): string {
   assert(!depth || depth >= 0, 'optional depth is positive');
 
   const stackSource: Error = new Error();
-  // most environments add the stackSource.toString() at the beginning of the stack; Firefox does not
-  const stackSourceStr: string = stackSource.toString();
   const stackSourceStack: string | undefined = stackSource.stack;
   if (!stackSourceStack) {
     return '    ⚠︎ location could not be determined (no stack) ⚠';
   }
-  const stack: string = stackSourceStack.replace(stackSourceStr + stackEOL, '');
-  const stackLines: Array<string> = stack.split(stackEOL);
+  const stackLines: Array<string> = stackSourceStack.split(stackEOL);
+  // most environments add the stackSource.toString() at the beginning of the stack; Firefox does not
+  const stackSourceStr: string = stackSource.toString();
+  if (stackLines[0].startsWith(stackSourceStr)) {
+    stackLines.shift();
+  }
   /* Return the line at 1 + (depth || 0)
      Since Safari skips stack frames, this might not work in Safari.
      There will however be at least 1 element in stack frames.
