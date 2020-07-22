@@ -14,6 +14,7 @@
   limitations under the License.
 */
 
+import type {Stack} from "./is";
 import * as assert from "assert";
 import {stack as stackEOL} from "./eol";
 
@@ -34,6 +35,21 @@ function determineSkipsForEach (): boolean {
   }
 }
 
+function relevantStackLines(): Array<string> | undefined {
+  const stackSource: Error = new Error();
+  const stackSourceStack: string | undefined = stackSource.stack;
+  if (!stackSourceStack) {
+    return undefined;
+  }
+  const stackLines: Array<string> = stackSourceStack.split(stackEOL);
+  // most environments add the stackSource.toString() at the beginning of the stack; Firefox does not
+  const stackSourceStr: string = stackSource.toString();
+  if (stackLines[0].startsWith(stackSourceStr)) {
+    stackLines.shift();
+  }
+  return stackLines;
+}
+
 /**
  * The (depth + 1)nd line from a stack trace created here, after the `toString()` (the `toString()` might prepended
  * to the stack).
@@ -48,18 +64,11 @@ export function location (depth?: number): string {
   assert(!depth || Number.isInteger(depth), 'optional depth is an integer');
   assert(!depth || depth >= 0, 'optional depth is positive');
 
-  const stackSource: Error = new Error();
-  const stackSourceStack: string | undefined = stackSource.stack;
-  if (!stackSourceStack) {
+  const stackLines: Array<string> | undefined = relevantStackLines();
+  if (!stackLines) {
     return '    ⚠︎ location could not be determined (no stack) ⚠';
   }
-  const stackLines: Array<string> = stackSourceStack.split(stackEOL);
-  // most environments add the stackSource.toString() at the beginning of the stack; Firefox does not
-  const stackSourceStr: string = stackSource.toString();
-  if (stackLines[0].startsWith(stackSourceStr)) {
-    stackLines.shift();
-  }
-  /* Return the line at 1 + (depth || 0)
+  /* Return the line at 2 + (depth || 0) (2 = this function and relevantStackLines())
      Since Safari skips stack frames, this might not work in Safari.
      There will however be at least 1 element in stack frames.
      The Math.min protects this call for safari for array out of bounds problems.
@@ -67,7 +76,7 @@ export function location (depth?: number): string {
      Furthermore, when used via Web Driver, that stack is again quite different in Safari, and contains many empty
      lines. A warning string is returned: there is nothing we can do. */
   return (
-    stackLines[Math.min(1 + (depth || 0), stackLines.length - 1)] ||
+    stackLines[Math.min(2 + (depth || 0), stackLines.length - 1)] ||
     /* istanbul ignore next: only in Safari via Web Driver */
     '    ⚠︎ location could not be determined (happens in Safari, when used with remote commands) ⚠'
   );
@@ -84,35 +93,31 @@ export function location (depth?: number): string {
  * Note that in Safari, the result cannot be trusted. Safari skips (optimized?) stack frames. In Safari, this
  * will return 'a' stack, but not necessarily a semantic meaningful one.
  */
-export function raw (depth?: number): string {
+export function raw (depth?: number): Stack {
   assert(!depth || Number.isInteger(depth), 'optional depth is an integer');
   assert(!depth || depth >= 0, 'optional depth is positive');
 
-  const stackSource: Error = new Error();
-  // most environments add the stackSource.toString() at the beginning of the stack; Firefox does not
-  const stackSourceStr: string = stackSource.toString();
-  const stackSourceStack: string | undefined = stackSource.stack;
-  if (!stackSourceStack) {
-    return '    ⚠︎ stack could not be determined (no stack) ⚠';
+  const stackLines: Array<string> | undefined = relevantStackLines();
+  if (!stackLines) {
+    return '    ⚠︎ location could not be determined (no stack) ⚠';
   }
-  const stack: string = stackSourceStack.replace(stackSourceStr + stackEOL, '');
-  const stackLines: Array<string> = stack.split(stackEOL).filter(sl => !!sl); // Firefox has empty lines (at the end)
-  /* Return the lines after 1 + (depth || 0)
+  const filteredStackLines: Array<string> = stackLines.filter((sl: string): boolean => !!sl); // Firefox has empty lines (at the end)
+  /* Return the lines after 2 + (depth || 0) (2 = this function and relevantStackLines())
      Since Safari skips stack frames, this might not work in Safari.
      There will however be at least 1 element in stack frames.
      The Math.min protects this call for safari for array out of bounds problems.
      This returns a technical result (a string), without real semantic meaning.
      We cannot use splice, because that requires deleteCount to be > 0.
      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice */
-  const firstToKeep: number = 1 + (depth || 0);
+  const firstToKeep: number = 2 + (depth || 0);
   /*  Since Safari skips stack frames, this might not work in Safari. There will however be at least 1 element in
       stack frames. In Chrome (since v73), the Promise code that calls resolutions does not appear in the stack.
       For violations triggered in Promise resolutions, the stack is only `depth` deep. In those cases, we
       just return the line '[[internal]]'. */
-  if (firstToKeep >= stackLines.length) {
+  if (firstToKeep >= filteredStackLines.length) {
     return '[[internal]]';
   }
-  const relevant: Array<string> = stackLines.slice(firstToKeep);
+  const relevant: Array<string> = filteredStackLines.slice(firstToKeep);
   return relevant.join(stackEOL);
 }
 
