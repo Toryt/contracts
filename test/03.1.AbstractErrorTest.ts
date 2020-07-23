@@ -16,29 +16,27 @@
 
 /* eslint-env mocha */
 
-'use strict'
-
-const AbstractContract = require('../lib/AbstractContract')
-const AbstractError = AbstractContract.AbstractError
-const testUtil = require('./_util/testUtil')
-const stack = require('../lib/_private/stack')
-const common = require('./AbstractErrorCommon')
+import type {Stack} from "../lib/_private/is";
+import {raw} from "../lib/_private/stack";
+import {AbstractError, root} from "../lib/AbstractContract";
+import {common} from "./AbstractErrorCommon";
+import {log} from "./_util/testUtil";
 
 describe('AbstractError', function () {
   describe('#AbstractError()', function () {
     it('creates an instance with all toppings for AbstractContract.root', function () {
-      const rawStack = stack.raw()
-      const result = new AbstractError(AbstractContract.root, rawStack)
-      common.expectConstructorPost(result, AbstractError.message, AbstractContract.root, rawStack)
-      common.expectInvariants(result)
-      testUtil.log('result.stack:\n%s', result.stack)
-    })
-  })
+      const rawStack: Stack = raw();
+      const result: AbstractError = new AbstractError(root, rawStack);
+      common.expectAbstactErrorConstructorPost(result, AbstractError.message, root, rawStack);
+      common.expectInvariants(result);
+      log('result.stack:\n%s', result.stack);
+    });
+  });
 
-  common.generatePrototypeMethodsDescriptions(() => new AbstractError(AbstractContract.root, stack.raw()), [
+  common.generatePrototypeMethodsDescriptions(() => new AbstractError(root, raw()), [
     {
-      subject: () => new AbstractError(AbstractContract.root, stack.raw()),
+      subject: () => new AbstractError(root, raw()),
       description: 'AbstractContract.root'
     }
-  ])
-})
+  ]);
+});

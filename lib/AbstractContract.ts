@@ -115,10 +115,14 @@ export class AbstractError extends ContractError {
     ok(contract instanceof AbstractContract, 'contract is an AbstractContract');
     ok(stack(rawStack), 'rawStack is a stack');
 
+    setAndFreeze(this, 'name', AbstractError.name);
     setAndFreeze(this, 'message', AbstractError.message);
     this.contract = contract;
   }
 }
+
+setAndFreeze(AbstractError.prototype, 'name', AbstractError.name);
+setAndFreeze(AbstractError.prototype, 'message', AbstractError.message);
 
 export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
   pre?: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>>,
