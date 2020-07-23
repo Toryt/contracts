@@ -17,7 +17,8 @@
 /* eslint-env mocha */
 
 import type {
-  Condition,
+  AnyFunction,
+  Condition, ContractConstructor, ContractExceptions,
   ContractSignature,
   ExceptionCondition, GeneralContractFunction,
   Postcondition,
@@ -41,6 +42,7 @@ import AbstractContract, {
 import should = require('should');
 import {setAndFreeze} from "../lib/_private/property";
 import {conciseCondition} from "../lib/_private/report";
+import {ok} from "assert";
 
 const someConditions: Array<Condition<any>> = [
   function (this: any): Array<never> {
@@ -205,17 +207,18 @@ export default class AbstractContractCommon {
     this.expectArrayPost(result, post, 'post', '_post');
     this.expectArrayPost(result, exception, 'exception', '_exception');
     result.location.should.be.a.String();
-    mustBeCallerLocation(result.location as StackLocation, location);
+    ok(typeof result.location === 'string');
+    mustBeCallerLocation(result.location, location);
     this.expectInvariants(result);
   }
 
   // noinspection OverlyComplexFunctionJS, ParameterNamingConventionJS
-  createCandidateContractFunction<C extends AbstractContract<any, any>>(
-    ContractConstructor?: typeof AbstractContract,
+  createCandidateContractFunction<F extends AnyFunction, Exceptions>(
+    ContractConstructor?: ContractConstructor<F, Exceptions>,
     doNotFreezeProperty?: typeof contractFunctionPropertyNames[number],
     otherPropertyName?: typeof contractFunctionPropertyNames[number] | 'name',
     otherPropertyValue?: any
-  ): GeneralContractFunction<C> {
+  ): GeneralContractFunction<AbstractContract<F, Exceptions>> {
     function candidate(): void {
     }
 
@@ -262,13 +265,17 @@ export default class AbstractContractCommon {
     candidate.prototype = Object.create(impl.prototype, {
       constructor: {value: candidate}
     });
-    return candidate as GeneralContractFunction<C>;
+    return candidate as GeneralContractFunction<AbstractContract<F, Exceptions>>;
   }
 
   // noinspection ParameterNamingConventionJS
-  generateIAGCFTests<ContractC extends typeof AbstractContract, C extends AbstractContract<any, any>>(
-    ContractConstructor: ContractC,
-    isAXXXContractFunction: (this: ContractC, f: GeneralContractFunction<C>) => boolean
+  generateIAGCFTests<
+    F extends AnyFunction,
+    Exceptions,
+    CConstructor extends ContractConstructor<F, Exceptions>
+  >(
+    ContractConstructor: CConstructor,
+    isAXXXContractFunction: (this: CConstructor, f: GeneralContractFunction<AbstractContract<F, Exceptions>>) => boolean
   ) {
     const self = this;
 
@@ -276,7 +283,8 @@ export default class AbstractContractCommon {
       'says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 ' +
       'properties are frozen, and it has the expected name',
       function () {
-        const candidate: GeneralContractFunction<C> = self.createCandidateContractFunction(ContractConstructor);
+        const candidate: GeneralContractFunction<AbstractContract<F, Exceptions>> =
+          self.createCandidateContractFunction(ContractConstructor);
         isAXXXContractFunction.call(ContractConstructor, candidate).should.be.ok();
       }
     );
@@ -288,7 +296,7 @@ export default class AbstractContractCommon {
     });
     contractFunctionPropertyNames.forEach(doNotFreezeProperty => {
       it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
-        const candidate: GeneralContractFunction<C> =
+        const candidate: GeneralContractFunction<AbstractContract<F, Exceptions>> =
           self.createCandidateContractFunction(ContractConstructor, doNotFreezeProperty);
         should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok();
       });
@@ -318,7 +326,8 @@ export default class AbstractContractCommon {
     ].forEach((aCase: {propertyName: typeof contractFunctionPropertyNames[number], expected: string, extra: Array<any>}) => {
       notAFunctionNorAContract.concat(aCase.extra).forEach((v: any) => {
         it('says no if the ' + aCase.propertyName + ' is not ' + aCase.expected + ' but ' + v, function () {
-          const candidate = self.createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v);
+          const candidate: GeneralContractFunction<AbstractContract<F, Exceptions>> =
+            self.createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v);
           should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok();
         });
       });
@@ -326,7 +335,9 @@ export default class AbstractContractCommon {
   }
 
   // noinspection FunctionNamingConventionJS, ParameterNamingConventionJS
-  generateConstructorMethodsDescriptions(ContractConstructor: typeof AbstractContract) {
+  generateConstructorMethodsDescriptions<F extends AnyFunction, Exceptions>(
+    ContractConstructor: ContractConstructor<F, Exceptions>
+  ) {
     const self = this;
 
     describe('@isAContractFunction', function () {
@@ -344,7 +355,8 @@ export default class AbstractContractCommon {
         .filter(v => !v)
         .forEach(v => {
           it(`says no if the location is not truthy but ${v}`, function () {
-            const candidate = self.createCandidateContractFunction(ContractConstructor, undefined, 'location', v);
+            const candidate: GeneralContractFunction<AbstractContract<F, Exceptions>>
+              = self.createCandidateContractFunction(ContractConstructor, undefined, 'location', v);
             should(ContractConstructor.isAContractFunction(candidate)).not.be.ok();
           });
         });
@@ -353,14 +365,14 @@ export default class AbstractContractCommon {
 
   // noinspection FunctionNamingConventionJS,JSUnusedLocalSymbols
   generateAbstractContractPrototypeMethodsDescriptions<C extends AbstractContract<any, any>>(
-    oneSubjectGenerator: () => C,
+    oneSubjectGenerator: () => C & {constructor: ContractConstructor<ContractSignature<C>, ContractExceptions<C>>},
     _allSubjectGenerators: Array<() => AbstractContract<any, any>>
   ) {
     const self = this;
 
     describe('#isImplementedBy()', function () {
       it('says yes if the argument is a general contract function for the contract', function () {
-        const subject: C = oneSubjectGenerator();
+        const subject: C & {constructor: ContractConstructor<ContractSignature<C>, ContractExceptions<C>>} = oneSubjectGenerator();
         const f: GeneralContractFunction<C> =
           self.createCandidateContractFunction(subject.constructor, undefined, 'contract', subject);
         subject.isImplementedBy(f).should.be.ok();

@@ -155,6 +155,19 @@ export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
   exception?: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>>
 }
 
+/* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern */
+export interface ContractConstructor<F extends AnyFunction, Exceptions> {
+  readonly internalLocation: object;
+  readonly namePrefix: string;
+
+  new (
+    kwargs: AbstractContractKwargs<F, Exceptions>,
+    _location?: StackLocation | typeof AbstractContract.internalLocation
+  ): AbstractContract<F, Exceptions>;
+
+  isAContractFunction(f: any): f is ContractFunction<F, Exceptions>
+}
+
 function isOrHasAsPrototype (obj: {}, proto: {}): boolean {
   return obj === proto || (obj !== Object.prototype && isOrHasAsPrototype(Object.getPrototypeOf(obj), proto));
 }
@@ -210,11 +223,29 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
 
   static readonly namePrefix: string = namePrefix;
 
-  readonly _pre: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>>;
-  readonly _post: ReadonlyArray<Postcondition<AbstractContract<F, Exceptions>>>;
-  readonly _exception: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>>;
+  /**
+   * A Contract Function is an implementation of a Contract. This function verifies whether a function
+   * given as a parameter is a Contract Function.
+   *
+   * To be a Contract Function, the subject must
+   * <ul>
+   *   <li>be a [general contract function]{@linkplain #isAGeneralContractFunction()},</li>
+   *   <li>have a frozen `location` property, which is a string that represents a location in source code,
+   *     outside this library.</li>
+   * </ul>
+   */
+  static isAContractFunction<F extends AnyFunction, Exceptions> (
+    this: ContractConstructor<F, Exceptions>,
+    f: any
+  ): f is ContractFunction<F, Exceptions> {
+    return isAGeneralContractFunction(f) && f.contract instanceof this && stackLocation(f.location);
+  }
+
+  readonly _pre: ReadonlyArray<Precondition<this>>;
+  readonly _post: ReadonlyArray<Postcondition<this>>;
+  readonly _exception: ReadonlyArray<ExceptionCondition<this>>;
   readonly location: StackLocation | typeof AbstractContract.internalLocation;
-  readonly abstract: GeneralContractFunction<AbstractContract<F, Exceptions>>;
+  readonly abstract: GeneralContractFunction<this>;
 
   verify: boolean = true;
   verifyPostconditions: boolean = false;
@@ -232,35 +263,35 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
       'optional private _location is internal or a string'
     );
 
-    const self: AbstractContract<F, Exceptions> = this;
+    const self: this = this;
 
     /* This cannot be defined in the prototype. The `self` is the contract, not the `this`. When this function is called
        as a method of a random object, that random object is the `this`, not this contract. */
-    const abstract: F = function abstract(): ReturnType<F> {
+    const abstract: ContractSignature<this> = function abstract(this: ThisType<F>, ..._args: Parameters<F>): ReturnType<F> {
       throw new AbstractError(self, raw());
-    } as F;
+    } as ContractSignature<this>;
 
     const location = _location || getStackLocation(1);
     this._pre = Object.freeze(kwargs.pre ? kwargs.pre.slice() : []);
     this._post = Object.freeze(kwargs.post ? kwargs.post.slice() : []);
     this._exception = Object.freeze(kwargs.exception ? kwargs.exception.slice() : mustNotHappen);
     this.location = Object.freeze(location);
-    this.abstract = bless<AbstractContract<F, Exceptions>>(abstract, self, abstract, location);
+    this.abstract = bless<this>(abstract, self, abstract, location);
   }
 
   isImplementedBy (f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>> {
-    return isAGeneralContractFunction<AbstractContract<F, Exceptions>>(f) && isOrHasAsPrototype(f.contract, this);
+    return isAGeneralContractFunction<this>(f) && isOrHasAsPrototype(f.contract, this);
   }
 
-  get pre(): Array<Precondition<AbstractContract<F, Exceptions>>> { // not ReadonlyArray: we have sliced
+  get pre(): Array<Precondition<this>> { // not ReadonlyArray: we have sliced
     return this._pre.slice();
   }
 
-  get post(): Array<Postcondition<AbstractContract<F, Exceptions>>> { // not ReadonlyArray: we have sliced
+  get post(): Array<Postcondition<this>> { // not ReadonlyArray: we have sliced
     return this._post.slice();
   }
 
-  get exception(): Array<ExceptionCondition<AbstractContract<F, Exceptions>>> { // not ReadonlyArray: we have sliced
+  get exception(): Array<ExceptionCondition<this>> { // not ReadonlyArray: we have sliced
     return this._exception.slice();
   }
 }
@@ -459,7 +490,7 @@ export function callee<B extends Condition<any>> (
  * be weakened by specializations, and the most general nominal and exceptional postconditions (anything goes),
  * which can be strengthened by specializations.
  */
-export const root: AbstractContract<AnyFunction, any> = new AbstractContract(
+export const root: AbstractContract<(...args: never) => any, any> = new AbstractContract(
   {
     pre: mustNotHappen,
     post: [],
@@ -467,19 +498,4 @@ export const root: AbstractContract<AnyFunction, any> = new AbstractContract(
   },
   AbstractContract.internalLocation
 );
-
-/**
- * A Contract Function is an implementation of a Contract. This function verifies whether a function
- * given as a parameter is a Contract Function.
- *
- * To be a Contract Function, the subject must
- * <ul>
- *   <li>be a [general contract function]{@linkplain #isAGeneralContractFunction()},</li>
- *   <li>have a frozen `location` property, which is a string that represents a location in source code,
- *     outside this library.</li>
- * </ul>
- */
-export function isAContractFunction<F extends AnyFunction, Exceptions, C extends Function> (this: C, f: any): f is ContractFunction<F, Exceptions> {
-  return isAGeneralContractFunction(f) && f.contract instanceof this && stackLocation(f.location);
-}
 
