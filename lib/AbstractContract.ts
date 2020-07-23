@@ -284,7 +284,7 @@ export type ContractExceptions<C extends AbstractContract<any, any>> =
  * The implementation of the resulting contract function is also bound in the same
  * way as the resulting contract function itself.
  */
-const bindContractFunction = function bind<C extends AbstractContract<any, any>> (
+export const bindContractFunction = function bind<C extends AbstractContract<any, any>> (
   this: GeneralContractFunction<C>,
   thisArg: ContractThis<C>,
   ...argArray: ContractParameters<C>
