@@ -22,50 +22,55 @@ import {stack as isStack} from "../lib/_private/is";
 import ContractError from "../lib/ContractError";
 import {expectOwnFrozenProperty, regExpEscape} from "./_util/testUtil";
 
-export function expectStackInvariants (subject: ContractError) {
-  const stack: Stack = subject.stack;
-  stack.should.be.a.String();
-  const startOfStack = subject.name + ': ' + subject.message + stackEOL;
-  stack.should.match(new RegExp('^' + regExpEscape(startOfStack)));
-  const restOfStack: Stack = stack
-    .replace(startOfStack, '')
-    .split(stackEOL)
-    // remove empty lines that may occur in 'caused by' in Safari when used via Web Driver
-    .filter(l => !!l)
-    .join(stackEOL);
-  isStack(restOfStack).should.be.true();
-  // noinspection JSUnresolvedVariable
-  // @ts-ignore
-  restOfStack.should.containEql(subject._rawStack);
+
+export class ContractErrorCommon {
+  expectStackInvariants(subject: ContractError): void {
+    const stack: Stack = subject.stack;
+    stack.should.be.a.String();
+    const startOfStack = subject.name + ': ' + subject.message + stackEOL;
+    stack.should.match(new RegExp('^' + regExpEscape(startOfStack)));
+    const restOfStack: Stack = stack
+      .replace(startOfStack, '')
+      .split(stackEOL)
+      // remove empty lines that may occur in 'caused by' in Safari when used via Web Driver
+      .filter(l => !!l)
+      .join(stackEOL);
+    isStack(restOfStack).should.be.true();
+    // noinspection JSUnresolvedVariable
+    // @ts-ignore
+    restOfStack.should.containEql(subject._rawStack);
+  }
+
+  expectInvariants(subject: ContractError): void {
+    subject.should.be.an.instanceof(ContractError);
+    expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name');
+    subject.name.should.be.a.String();
+    subject.name.should.equal(subject.constructor.name);
+    expectOwnFrozenProperty(ContractError.prototype, 'message');
+    subject.message.should.be.a.String();
+    // @ts-ignore
+    expectOwnFrozenProperty(subject, '_rawStack');
+    // noinspection JSUnresolvedVariable
+    // @ts-ignore
+    isStack(subject._rawStack).should.be.true();
+    this.expectStackInvariants(subject);
+  }
+
+  expectConstructorPost(result: ContractError, message: string, rawStack: Stack): void {
+    Object.isExtensible(result).should.be.true();
+    result.name.should.equal(result.constructor.name);
+    result.message.should.equal(message);
+    // @ts-ignore
+    result._rawStack.should.equal(rawStack);
+  }
+
+  // noinspection FunctionNamingConventionJS
+  generatePrototypeMethodsDescriptions(
+    _oneSubjectGenerator: () => ContractError,
+    _allSubjectGenerators: Array<{ subject: () => ContractError, description: string }>
+  ): void {
+    // NOP: no methods here
+  }
 }
 
-export function expectInvariants (subject: ContractError) {
-  subject.should.be.an.instanceof(ContractError);
-  expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name');
-  subject.name.should.be.a.String();
-  subject.name.should.equal(subject.constructor.name);
-  expectOwnFrozenProperty(ContractError.prototype, 'message');
-  subject.message.should.be.a.String();
-  // @ts-ignore
-  expectOwnFrozenProperty(subject, '_rawStack');
-  // noinspection JSUnresolvedVariable
-  // @ts-ignore
-  isStack(subject._rawStack).should.be.true();
-  expectStackInvariants(subject);
-}
-
-export function expectConstructorPost (result: ContractError, message: string, rawStack: Stack): void {
-  Object.isExtensible(result).should.be.true();
-  result.name.should.equal(result.constructor.name);
-  result.message.should.equal(message);
-  // @ts-ignore
-  result._rawStack.should.equal(rawStack);
-}
-
-// noinspection FunctionNamingConventionJS
-export function generatePrototypeMethodsDescriptions (
-  _oneSubjectGenerator: () => ContractError,
-  _allSubjectGenerators: Array<{ subject: () => ContractError, description: string }>
-): void {
-  // NOP: no methods here
-}
+export const common = new ContractErrorCommon();

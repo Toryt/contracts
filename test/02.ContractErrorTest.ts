@@ -21,7 +21,7 @@ import {raw} from "../lib/_private/stack";
 import ContractError from "../lib/ContractError";
 import {frozenDerived} from "../lib/_private/property";
 import {log} from "./_util/testUtil";
-import {expectConstructorPost, expectInvariants, generatePrototypeMethodsDescriptions} from "./ContractErrorCommon";
+import {common} from "./ContractErrorCommon";
 
 describe('ContractError', function () {
   describe('#ContractError()', function () {
@@ -30,8 +30,8 @@ describe('ContractError', function () {
       const result = new ContractError(rawStack);
       log('result:\n%s', result);
       log('result.toString():\n%s', result.toString());
-      expectConstructorPost(result, ContractError.message, rawStack);
-      expectInvariants(result);
+      common.expectConstructorPost(result, ContractError.message, rawStack);
+      common.expectInvariants(result);
       result.should.not.have.ownProperty('message');
       log('result.stack:\n%s', result.stack);
     });
@@ -43,11 +43,11 @@ describe('ContractError', function () {
       });
       result.should.have.ownProperty('message');
       result.message.should.equal(message);
-      expectInvariants(result);
+      common.expectInvariants(result);
     });
   });
 
-  generatePrototypeMethodsDescriptions(() => new ContractError(raw()), [
+  common.generatePrototypeMethodsDescriptions(() => new ContractError(raw()), [
     {
       subject: () => new ContractError(raw()),
       description: 'a contract error'
