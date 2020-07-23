@@ -15,7 +15,6 @@
  */
 
 import type {StackLocation, Stack} from "./_private/is";
-import type {ContractFunction} from "./ContractFunction";
 
 import {ok, strictEqual} from "assert";
 import {frozenOwnProperty, stackLocation, stack} from "./_private/is";
@@ -165,7 +164,7 @@ export interface ContractConstructor<F extends AnyFunction, Exceptions> {
     _location?: StackLocation | typeof AbstractContract.internalLocation
   ): AbstractContract<F, Exceptions>;
 
-  isAContractFunction(f: any): f is ContractFunction<F, Exceptions>
+  isAContractFunction(f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>>
 }
 
 function isOrHasAsPrototype (obj: {}, proto: {}): boolean {
@@ -237,7 +236,7 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
   static isAContractFunction<F extends AnyFunction, Exceptions> (
     this: ContractConstructor<F, Exceptions>,
     f: any
-  ): f is ContractFunction<F, Exceptions> {
+  ): f is GeneralContractFunction<AbstractContract<F, Exceptions>> {
     return isAGeneralContractFunction(f) && f.contract instanceof this && stackLocation(f.location);
   }
 
@@ -317,7 +316,7 @@ export type ContractExceptions<C extends AbstractContract<any, any>> =
  */
 export const bindContractFunction = function bind<C extends AbstractContract<any, any>> (
   this: GeneralContractFunction<C>,
-  thisArg: ContractThis<C>,
+  thisArg?: ContractThis<C>,
   ...argArray: ContractParameters<C>
 ): GeneralContractFunction<C> {
   ok(isAGeneralContractFunction(this), 'this is a general contract function');
@@ -460,7 +459,10 @@ export function bless <C extends AbstractContract<any, any>> (
  * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
  * this is the function call result, respectively, the thrown exception.
  */
-export function outcome<B extends Condition<any>> (this: any, ...args: ConditionArguments<B>): PEConditionOutcome<B> {
+export function outcome<B extends PECondition<any>> (
+  this: any,
+  ...args: PEConditionArguments<B>
+): PEConditionOutcome<B> {
   ok(args);
   ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
   // NOTE: it is not possible to fully test for an arguments object in strict mode
@@ -473,9 +475,9 @@ export function outcome<B extends Condition<any>> (this: any, ...args: Condition
  * Returns the last element of an Array-like argument. In post- and exception conditions,
  * this is the called contract function, bound to this. This can be used in recursive definitions.
  */
-export function callee<B extends Condition<any>> (
+export function callee<B extends PECondition<any>> (
   this: void,
-  ...args: ConditionArguments<B>
+  ...args: PEConditionArguments<B>
 ): GeneralContractFunction<ConditionContract<B>> {
   ok(args);
   ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
