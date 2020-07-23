@@ -47,7 +47,7 @@ describe('ContractError', function () {
     });
   });
 
-  common.generatePrototypeMethodsDescriptions(() => new ContractError(raw()), [
+  common.generateContractErrorPrototypeMethodsDescriptions(() => new ContractError(raw()), [
     {
       subject: () => new ContractError(raw()),
       description: 'a contract error'

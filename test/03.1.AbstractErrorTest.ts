@@ -27,13 +27,13 @@ describe('AbstractError', function () {
     it('creates an instance with all toppings for AbstractContract.root', function () {
       const rawStack: Stack = raw();
       const result: AbstractError = new AbstractError(root, rawStack);
-      common.expectAbstactErrorConstructorPost(result, AbstractError.message, root, rawStack);
+      common.expectAbstractErrorConstructorPost(result, AbstractError.message, root, rawStack);
       common.expectInvariants(result);
       log('result.stack:\n%s', result.stack);
     });
   });
 
-  common.generatePrototypeMethodsDescriptions(() => new AbstractError(root, raw()), [
+  common.generateAbstractErrorPrototypeMethodsDescriptions(() => new AbstractError(root, raw()), [
     {
       subject: () => new AbstractError(root, raw()),
       description: 'AbstractContract.root'

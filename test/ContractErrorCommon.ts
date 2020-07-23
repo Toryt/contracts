@@ -65,7 +65,7 @@ export class ContractErrorCommon {
   }
 
   // noinspection FunctionNamingConventionJS
-  generatePrototypeMethodsDescriptions(
+  generateContractErrorPrototypeMethodsDescriptions(
     _oneSubjectGenerator: () => ContractError,
     _allSubjectGenerators: Array<{ subject: () => ContractError, description: string }>
   ): void {

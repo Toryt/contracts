@@ -15,15 +15,17 @@
  */
 
 /* eslint-env mocha */
+
+import type {Stack} from "../lib/_private/is";
+import type ContractError from "../lib/ContractError";
 import {ContractErrorCommon} from "./ContractErrorCommon";
 import AbstractContract, {AbstractError} from "../lib/AbstractContract";
 import {expectOwnFrozenProperty} from "./_util/testUtil";
-import type {Stack} from "../lib/_private/is";
 
 export class AbstractErrorCommon extends ContractErrorCommon {
-  expectInvariants(subject: AbstractError): void {
-    subject.should.be.an.instanceof(AbstractError);
+  expectInvariants(subject: ContractError): void {
     super.expectInvariants(subject);
+    subject.should.be.an.instanceof(AbstractError);
     expectOwnFrozenProperty(subject, 'name');
     subject.name.should.equal(AbstractError.name);
     expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name');
@@ -34,17 +36,17 @@ export class AbstractErrorCommon extends ContractErrorCommon {
     Object.getPrototypeOf(subject).message.should.equal(AbstractError.message);
   }
 
-  expectAbstactErrorConstructorPost(result: AbstractError, message:string, contract:AbstractContract<any, any>, rawStack: Stack): void {
-    super.expectContractErrorConstructorPost(result, message, rawStack);
+  expectAbstractErrorConstructorPost(result: AbstractError, message:string, contract:AbstractContract<any, any>, rawStack: Stack): void {
+    this.expectContractErrorConstructorPost(result, message, rawStack);
     result.contract.should.equal(contract);
   }
 
   // noinspection FunctionNamingConventionJS
-  generatePrototypeMethodsDescriptions(
+  generateAbstractErrorPrototypeMethodsDescriptions(
     oneSubjectGenerator: () => AbstractError,
     allSubjectGenerators: Array<{ subject: () => AbstractError, description: string }>
   ): void {
-    super.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+    this.generateContractErrorPrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
     // NOP: no methods here
   }
