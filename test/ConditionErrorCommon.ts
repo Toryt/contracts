@@ -36,7 +36,7 @@ import {stack as stackEOL} from "../lib/_private/eol";
 import {setAndFreeze} from "../lib/_private/property";
 import should = require('should');
 
-const conditionCase: Condition<AbstractContract<() => void, undefined>> = function (this: any): string {
+export const conditionCase: Condition<AbstractContract<() => void, undefined>> = function (this: any): string {
   return 'This simulates a condition';
 };
 
@@ -53,7 +53,7 @@ function generateMultiLineAnonFunction (this: void): (this: any) => string {
   };
 }
 
-const conditionCases: Array<Condition<AbstractContract<() => void, any>>> =
+export const conditionCases: Array<Condition<AbstractContract<() => void, any>>> =
   [conditionCase, generateMultiLineAnonFunction()];
 
 function functionWithAName (this: any): void {}
@@ -78,7 +78,7 @@ conditionCases.push(other);
 export const selfCaseGenerators: Array<() => any> = anyCasesGenerators('self');
 export const oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
 
-let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
+export let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
 argsCases = argsCases.concat(
   argsCases.map((c: Array<any>) => {
     function asArgs (..._args: Array<any>): IArguments {
