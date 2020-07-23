@@ -34,8 +34,8 @@ export class AbstractErrorCommon extends ContractErrorCommon {
     Object.getPrototypeOf(subject).message.should.equal(AbstractError.message);
   }
 
-  expectConstructorPostAbstactError(result: AbstractError, message:string, contract:AbstractContract<any, any>, rawStack: Stack): void {
-    super.expectConstructorPost(result, message, rawStack);
+  expectAbstactErrorConstructorPost(result: AbstractError, message:string, contract:AbstractContract<any, any>, rawStack: Stack): void {
+    super.expectContractErrorConstructorPost(result, message, rawStack);
     result.contract.should.equal(contract);
   }
 

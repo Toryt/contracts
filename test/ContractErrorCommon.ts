@@ -56,7 +56,7 @@ export class ContractErrorCommon {
     this.expectStackInvariants(subject);
   }
 
-  expectConstructorPost(result: ContractError, message: string, rawStack: Stack): void {
+  expectContractErrorConstructorPost(result: ContractError, message: string, rawStack: Stack): void {
     Object.isExtensible(result).should.be.true();
     result.name.should.equal(result.constructor.name);
     result.message.should.equal(message);
