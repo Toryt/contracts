@@ -113,7 +113,7 @@ export default class ConditionError<B extends Condition<any>> extends ContractEr
   readonly contractFunction: GeneralContractFunction<ConditionContract<B>>;
   readonly condition: B;
   readonly self: Readonly<ConditionThis<B>>;
-  private readonly _args: Readonly<ConditionArguments<B>>;
+  /* TODO private*/ readonly _args: Readonly<ConditionArguments<B>>;
 
   constructor(
     contractFunction: GeneralContractFunction<ConditionContract<B>>,

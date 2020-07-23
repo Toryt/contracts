@@ -31,17 +31,17 @@ import AbstractContract, {
   GeneralContractFunction,
   isAGeneralContractFunction
 } from "../lib/AbstractContract";
-import {conciseCondition} from "../lib/_private/report";
+import {conciseCondition, value} from "../lib/_private/report";
 import {stack as stackEOL} from "../lib/_private/eol";
 import {setAndFreeze} from "../lib/_private/property";
 import should = require('should');
 
-const conditionCase: Condition<AbstractContract<() => void, undefined>> = function () {
+const conditionCase: Condition<AbstractContract<() => void, undefined>> = function (this: any): string {
   return 'This simulates a condition';
 };
 
-function generateMultiLineAnonFunction (): () => string {
-  return function (): string {
+function generateMultiLineAnonFunction (this: void): (this: any) => string {
+  return function (this: any): string {
     let x = 'This is a multi-line function';
     x += 'The intention of this test';
     x += 'is to verify';
@@ -53,12 +53,14 @@ function generateMultiLineAnonFunction (): () => string {
   };
 }
 
-const conditionCases: Array<Condition<AbstractContract<() => void, undefined>>> = [conditionCase, generateMultiLineAnonFunction()];
+const conditionCases: Array<Condition<AbstractContract<() => void, any>>> =
+  [conditionCase, generateMultiLineAnonFunction()];
 
-function functionWithAName (): void {}
+function functionWithAName (this: any): void {}
 setAndFreeze(functionWithAName, 'name', '  This is a name  '); // trim
 conditionCases.push(functionWithAName);
-const other = generateMultiLineAnonFunction();
+
+const other: (this: any) => any = generateMultiLineAnonFunction();
 setAndFreeze(
   other,
   'name',
@@ -73,20 +75,20 @@ this function should have a name   ` // trim
 );
 conditionCases.push(other);
 
-const selfCaseGenerators = anyCasesGenerators('self');
-const oneSelfCase = selfCaseGenerators[selfCaseGenerators.length - 1]();
+export const selfCaseGenerators: Array<() => any> = anyCasesGenerators('self');
+export const oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
 
-let argsCases = [[], anyCasesGenerators('arguments element').map(g => g())];
+let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
 argsCases = argsCases.concat(
-  argsCases.map(c => {
-    function asArgs (args) {
+  argsCases.map((c: Array<any>) => {
+    function asArgs (..._args: Array<any>): IArguments {
       return arguments;
     }
 
     return asArgs.apply(undefined, c);
   })
 );
-const oneArgsCase = argsCases[argsCases.length - 1];
+export const oneArgsCase: any = argsCases[argsCases.length - 1];
 
 export class ConditionErrorCommon extends ContractErrorCommon {
   expectInvariants(subject: ContractError): void {
@@ -147,9 +149,9 @@ export class ConditionErrorCommon extends ContractErrorCommon {
     result.should.containEql(conciseCondition('', subject.condition));
     // noinspection JSUnresolvedVariable
     result.should.containEql(stackEOL + subject.contractFunction.contract.location);
-    result.should.containEql(report.value(subject.self));
+    result.should.containEql(value(subject.self));
     Array.prototype.forEach.call(subject.args, arg => {
-      result.should.containEql(report.value(arg));
+      result.should.containEql(value(arg));
     });
   }
 

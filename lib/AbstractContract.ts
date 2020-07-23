@@ -37,18 +37,43 @@ export interface GeneralContractFunctionProps<C extends AbstractContract<any, an
 export type GeneralContractFunction<C extends AbstractContract<any, any>> =
   ContractSignature<C> & GeneralContractFunctionProps<C>;
 
+/**
+ * Boolean function: are `this` and the `args` valid?
+ *
+ * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ */
 export type Precondition<C extends AbstractContract<any, any>> =
-  (this: ContractThis<C>, ...args: ContractParameters<C>) => boolean;
+  (this: ContractThis<C>, ...args: ContractParameters<C>) => any;
 
+/**
+ * Boolean function: are `this`, the `args`, and the `result` valid?
+ *
+ * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ */
 export type Postcondition<C extends AbstractContract<any, any>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, GeneralContractFunction<C>]) => boolean;
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, GeneralContractFunction<C>]) => any;
 
+/**
+ * Boolean function: are `this`, `args`, and the thrown exception valid?
+ *
+ * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ */
 export type ExceptionCondition<C extends AbstractContract<any, any>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, GeneralContractFunction<C>]) => boolean;
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, GeneralContractFunction<C>]) => any;
 
+/**
+ * Boolean function: are `this`, `args`, and the outcome valid?
+ *
+ * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ */
 export type PECondition<C extends AbstractContract<any, any>> =
   Postcondition<C> | ExceptionCondition<C>;
 
+/**
+ * Boolean function: are `this`, `args`, … valid?
+ *
+ * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ */
 export type Condition<C extends AbstractContract<any, any>> =
   Precondition<C> | PECondition<C>;
 
