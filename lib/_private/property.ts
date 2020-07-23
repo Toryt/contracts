@@ -59,7 +59,12 @@ export function frozenDerived<O extends {}, T> (this:void, prototype: O, propert
   });
 }
 
-export function frozenReadOnlyArray<T, PK extends PropertyKey, O extends {[key in PK]: Array<T>}> (this:void, prototype: O, propertyName: PropertyKey, privatePropName: PK): void {
+export function frozenReadOnlyArray<T, PK extends PropertyKey, O extends {readonly [key in PK]: ReadonlyArray<T>}> (
+  this:void,
+  prototype: O,
+  propertyName: PropertyKey,
+  privatePropName: PK
+): void {
   ok(prototype);
   ok(!primitive(prototype));
   strictEqual(typeof propertyName, 'string');
@@ -67,7 +72,7 @@ export function frozenReadOnlyArray<T, PK extends PropertyKey, O extends {[key i
   notStrictEqual(propertyName, privatePropName);
 
   frozenDerived(prototype, propertyName, function derivation (this: O): Array<T> {
-    const original: Array<T> = this[privatePropName];
+    const original: ReadonlyArray<T> = this[privatePropName];
     return original.slice();
   });
 }

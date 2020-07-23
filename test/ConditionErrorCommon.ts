@@ -26,7 +26,7 @@ import {
   expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
   expectOwnFrozenProperty, log
 } from "./_util/testUtil";
-import AbstractContract, {
+import {
   Condition, ConditionArguments, ConditionContract, ConditionThis,
   GeneralContractFunction,
   isAGeneralContractFunction
@@ -35,9 +35,9 @@ import {conciseCondition, value} from "../lib/_private/report";
 import {stack as stackEOL} from "../lib/_private/eol";
 import {setAndFreeze} from "../lib/_private/property";
 import should = require('should');
-export {createCandidateContractFunction} from "./AbstractContractCommon"
+import {common as abstractContractCommon} from "./AbstractContractCommon"
 
-export const conditionCase: Condition<AbstractContract<() => void, undefined>> = function (this: any): string {
+export const conditionCase: Condition<any> = function (this: any): string {
   return 'This simulates a condition';
 };
 
@@ -54,7 +54,7 @@ function generateMultiLineAnonFunction (this: void): (this: any) => string {
   };
 }
 
-export const conditionCases: Array<Condition<AbstractContract<() => void, any>>> =
+export const conditionCases: Array<Condition<any>> =
   [conditionCase, generateMultiLineAnonFunction()];
 
 function functionWithAName (this: any): void {}
@@ -179,4 +179,5 @@ export class ConditionErrorCommon extends ContractErrorCommon {
   }
 }
 
+export const createCandidateContractFunction = abstractContractCommon.createCandidateContractFunction;
 export const common: ConditionErrorCommon = new ConditionErrorCommon();

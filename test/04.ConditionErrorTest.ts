@@ -18,7 +18,14 @@
 
 import type AbstractContract from "../lib/AbstractContract";
 import type {GeneralContractFunction} from "../lib/AbstractContract";
-import {common, conditionCase, conditionCases, selfCaseGenerators, argsCases} from "./ConditionErrorCommon";
+import {
+  common,
+  conditionCase,
+  conditionCases,
+  selfCaseGenerators,
+  argsCases,
+  createCandidateContractFunction
+} from "./ConditionErrorCommon";
 import {raw} from "../lib/_private/stack";
 import {log, x} from "./_util/testUtil";
 import ConditionError from "../lib/ConditionError";
@@ -29,7 +36,7 @@ describe('ConditionError', function () {
       argsCases.forEach((args: Array<any>) => {
         const self: any = selfCaseGenerator();
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          const contractFunction: GeneralContractFunction<AbstractContract<any, any>> = common.createCandidateContractFunction();
+          const contractFunction: GeneralContractFunction<AbstractContract<any, any>> = createCandidateContractFunction();
           const rawStack = raw();
           const result: ConditionError<any> = new ConditionError(contractFunction, conditionCase, self, args, rawStack);
           common.expectConditionErrorConstructorPost(result, contractFunction, conditionCase, self, args, rawStack);
@@ -43,12 +50,12 @@ describe('ConditionError', function () {
   });
 
   common.generateConditionErrorPrototypeMethodsDescriptions(
-    () => new ConditionError(common.createCandidateContractFunction(), conditionCase, null, argsCases[0], raw()),
+    () => new ConditionError(createCandidateContractFunction(), conditionCase, null, argsCases[0], raw()),
     x(conditionCases, selfCaseGenerators, argsCases).map(parameters => {
       const self = parameters[1]();
       return {
         subject: () =>
-          new ConditionError(common.createCandidateContractFunction(), parameters[0], self, parameters[2], stack.raw()),
+          new ConditionError(createCandidateContractFunction(), parameters[0], self, parameters[2], raw()),
         description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
       };
     })

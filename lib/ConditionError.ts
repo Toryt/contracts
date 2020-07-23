@@ -27,6 +27,7 @@ import {functionArguments, Stack, stack} from './_private/is'
 import {conciseCondition, type, value} from './_private/report'
 import * as AbstractContract from "./AbstractContract";
 import ContractError from "./ContractError";
+import {frozenDerived, frozenReadOnlyArray, setAndFreeze} from "./_private/property";
 
 /**
  * ConditionError is the general supertype of all errors thrown by Toryt Contracts.
@@ -132,10 +133,15 @@ export default class ConditionError<B extends Condition<any>> extends ContractEr
     ok(functionArguments(args) || Array.isArray(args), 'ConditionError: args is arguments or array');
     ok(stack(rawStack), 'ConditionError: rawStack is a stack');
 
+    // double write, because compiler needs the first, because it is annotated as readonly
     this.contractFunction = contractFunction;
+    setAndFreeze(this, 'contractFunction', contractFunction);
     this.condition = condition;
+    setAndFreeze(this, 'condition', condition);
     this.self = self;
+    setAndFreeze(this, 'self', self);
     this._args = Object.freeze(Array.prototype.slice.call(args)) as Readonly<ConditionArguments<B>>;
+    setAndFreeze(this, '_args', Object.freeze(Array.prototype.slice.call(args)));
   }
 
   get args(): ConditionArguments<B> { // not readonly: we have sliced
@@ -143,8 +149,7 @@ export default class ConditionError<B extends Condition<any>> extends ContractEr
   }
 
   get message(): string {
-    const conditionRepresentation: string = conciseCondition('condition', this.condition);
-    return `${conditionRepresentation} failed while ${this.contractFunction.name} was called`;
+    return getMessage.call(this);
   }
 
   getDetails() {
@@ -167,11 +172,33 @@ export default class ConditionError<B extends Condition<any>> extends ContractEr
   }
 
   get stack(): Stack {
-    return (
-      `${this.name}: ${this.message}` + stackEOL +
-      `${this.getDetails()}` + stackEOL +
-      'call stack:' + stackEOL +
-      `${this._rawStack}`
-    );
+    return getStack.call(this);
   }
 }
+
+setAndFreeze(ConditionError.prototype, 'name', ConditionError.name);
+
+function getMessage(this: ConditionError<any>): string {
+  // noinspection JSUnresolvedVariable
+  const conditionRepresentation = conciseCondition('condition', this.condition);
+  // noinspection JSUnresolvedVariable
+  return `${conditionRepresentation} failed while ${this.contractFunction.name} was called`;
+}
+
+function getStack(this: ConditionError<any>): Stack {
+  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
+  return (
+    `${this.name}: ${this.message}` +
+    stackEOL +
+    `${this.getDetails()}` +
+    stackEOL +
+    'call stack:' +
+    stackEOL +
+    `${this._rawStack}`
+  );
+}
+
+// do better that the regular class getters: now they are immutable (backward compatible with existing tests)
+frozenReadOnlyArray(ConditionError.prototype, 'args', '_args');
+frozenDerived(ConditionError.prototype, 'message', getMessage);
+frozenDerived(ConditionError.prototype, 'stack', getStack);

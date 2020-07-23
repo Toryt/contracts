@@ -407,3 +407,5 @@ export default class AbstractContractCommon {
     });
   }
 }
+
+export const common: AbstractContractCommon = new AbstractContractCommon();
