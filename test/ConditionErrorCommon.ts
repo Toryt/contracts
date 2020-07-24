@@ -136,7 +136,7 @@ export class ConditionErrorCommon extends ContractErrorCommon {
     exception.args.should.eql(Array.prototype.slice.call(args));
   }
 
-  expectConditionErrorConstructorPost <B extends Condition<any>> (
+  expectConstructorPost <B extends Condition<any>> (
     result: ConditionError<B>,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,

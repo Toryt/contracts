@@ -96,7 +96,7 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon {
     error: any,
     rawStack: Stack
   ): void {
-    this.expectConditionErrorConstructorPost(result, contractFunction, condition, self, args, rawStack);
+    this.expectConstructorPost(result, contractFunction, condition, self, args, rawStack);
     should(result.error).equal(error);
   }
 }
