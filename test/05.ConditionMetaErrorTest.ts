@@ -17,7 +17,7 @@
 /* eslint-env mocha */
 
 import ConditionMetaError from "../lib/ConditionMetaError";
-import {common} from "./ConditionMetaErrorCommon";
+import common from "./ConditionMetaErrorCommon";
 import {raw} from "../lib/_private/stack";
 import {log} from "./_util/testUtil";
 

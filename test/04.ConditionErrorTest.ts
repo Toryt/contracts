@@ -18,9 +18,7 @@
 
 import type AbstractContract from "../lib/AbstractContract";
 import type {GeneralContractFunction} from "../lib/AbstractContract";
-import {
-  common
-} from "./ConditionErrorCommon";
+import common from "./ConditionErrorCommon";
 import {raw} from "../lib/_private/stack";
 import {log, x} from "./_util/testUtil";
 import ConditionError from "../lib/ConditionError";

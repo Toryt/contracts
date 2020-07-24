@@ -101,4 +101,4 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon {
   }
 }
 
-export const common = new ConditionMetaErrorCommon();
+export default new ConditionMetaErrorCommon();

@@ -21,7 +21,7 @@ import {raw} from "../lib/_private/stack";
 import ContractError from "../lib/ContractError";
 import {frozenDerived} from "../lib/_private/property";
 import {log} from "./_util/testUtil";
-import {common} from "./ContractErrorCommon";
+import common from "./ContractErrorCommon";
 
 describe('ContractError', function () {
   describe('#ContractError()', function () {

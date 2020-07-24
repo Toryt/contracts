@@ -77,7 +77,7 @@ const exceptionCases: Array<(this: void) => Array<ExceptionCondition<any>> | nul
 
 const contractFunctionPropertyNames = ['contract', 'implementation', 'location', 'bind'];
 
-export default class AbstractContractCommon {
+export class AbstractContractCommon {
   readonly constructorPreCases: Array<(this: void) => Array<Precondition<any>> | null | undefined> = ([
     function (this: void): undefined {
       return undefined;
@@ -406,4 +406,4 @@ export default class AbstractContractCommon {
   }
 }
 
-export const common: AbstractContractCommon = new AbstractContractCommon();
+export default new AbstractContractCommon();

@@ -52,4 +52,4 @@ export class AbstractErrorCommon extends ContractErrorCommon {
   }
 }
 
-export const common = new AbstractErrorCommon();
+export default new AbstractErrorCommon();

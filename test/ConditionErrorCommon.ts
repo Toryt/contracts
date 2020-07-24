@@ -186,4 +186,4 @@ export class ConditionErrorCommon extends ContractErrorCommon {
   readonly createCandidateContractFunction = abstractContractCommon.createCandidateContractFunction;
 }
 
-export const common: ConditionErrorCommon = new ConditionErrorCommon();
+export default new ConditionErrorCommon();

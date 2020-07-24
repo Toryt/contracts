@@ -19,7 +19,7 @@
 import type {Stack} from "../lib/_private/is";
 import {raw} from "../lib/_private/stack";
 import {AbstractError, root} from "../lib/AbstractContract";
-import {common} from "./AbstractErrorCommon";
+import common from "./AbstractErrorCommon";
 import {log} from "./_util/testUtil";
 
 describe('AbstractError', function () {

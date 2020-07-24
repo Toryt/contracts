@@ -73,4 +73,4 @@ export class ContractErrorCommon {
   }
 }
 
-export const common = new ContractErrorCommon();
+export default new ContractErrorCommon();

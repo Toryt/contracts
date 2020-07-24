@@ -25,9 +25,7 @@ import AbstractContract, {
   isAGeneralContractFunction, mustNotHappen, outcome, PECondition, Postcondition, Precondition,
   root
 } from "../lib/AbstractContract";
-import {
-  common
-} from "./AbstractContractCommon";
+import common from "./AbstractContractCommon";
 import {expectOwnFrozenProperty, x} from "./_util/testUtil";
 import {conciseCondition} from "../lib/_private/report";
 import type {StackLocation} from "../lib/_private/is";
