@@ -461,7 +461,7 @@ export function bless <C extends AbstractContract<any, any>> (
  */
 export function outcome<B extends PECondition<any>> (
   this: any,
-  ...args: PEConditionArguments<B>
+  args: PEConditionArguments<B>
 ): PEConditionOutcome<B> {
   ok(args);
   ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');
@@ -477,7 +477,7 @@ export function outcome<B extends PECondition<any>> (
  */
 export function callee<B extends PECondition<any>> (
   this: void,
-  ...args: PEConditionArguments<B>
+  args: PEConditionArguments<B>
 ): GeneralContractFunction<ConditionContract<B>> {
   ok(args);
   ok(Array.isArray(args) || typeof (args as any).length === 'number', 'args is Array or arguments');

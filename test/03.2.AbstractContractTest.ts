@@ -156,11 +156,17 @@ describe('AbstractContract', function () {
 
   type R = string;
   const argsResult: R = 'a result';
-  type F = (this: void) => R;
-  type C = AbstractContract<F, any>;
-  type GCF = GeneralContractFunction<C>;
-  const argsCallee: GCF = function (this: void) { return 'something'; };
   type P = [string, string, number];
+  type F = (this: void, ...args: P) => R;
+  type C = AbstractContract<F, any>;
+  const contract = new AbstractContract<F, any>({});
+  type GCF = GeneralContractFunction<C>;
+  const argsCallee: GCF = bless<C>(
+    function (this: void, _a: string, _b: string, _c: number) { return 'something'; },
+      contract,
+    function(this: void, _a: string, _b?: string) { return 'something else'; },
+    'a stack location'
+    );
   type ConditionArgs = [...P, R, GCF];
   const argsCase: ConditionArgs = ['lala', 'lulu', 4, argsResult, argsCallee];
   function args (..._args: ConditionArgs): IArguments & ConditionArgs {
