@@ -154,7 +154,8 @@ export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
   exception?: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>>
 }
 
-/* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern */
+/* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
+   See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
 export interface ContractConstructor<F extends AnyFunction, Exceptions> {
   readonly internalLocation: object;
   readonly namePrefix: string;
@@ -249,6 +250,8 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
   verify: boolean = true;
   verifyPostconditions: boolean = false;
 
+  /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
+  ['constructor']!: ContractConstructor<F, Exceptions>;
   constructor(
     kwargs: AbstractContractKwargs<F, Exceptions>,
     _location?: StackLocation | typeof AbstractContract.internalLocation

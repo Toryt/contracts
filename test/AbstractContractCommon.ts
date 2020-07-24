@@ -18,7 +18,7 @@
 
 import type {
   AnyFunction,
-  Condition, ContractConstructor, ContractExceptions,
+  Condition, ContractConstructor,
   ContractSignature,
   ExceptionCondition, GeneralContractFunction,
   Postcondition,
@@ -365,14 +365,14 @@ export default class AbstractContractCommon {
 
   // noinspection FunctionNamingConventionJS,JSUnusedLocalSymbols
   generateAbstractContractPrototypeMethodsDescriptions<C extends AbstractContract<any, any>>(
-    oneSubjectGenerator: () => C & {constructor: ContractConstructor<ContractSignature<C>, ContractExceptions<C>>},
+    oneSubjectGenerator: () => C,
     _allSubjectGenerators: Array<() => AbstractContract<any, any>>
   ) {
     const self = this;
 
     describe('#isImplementedBy()', function () {
       it('says yes if the argument is a general contract function for the contract', function () {
-        const subject: C & {constructor: ContractConstructor<ContractSignature<C>, ContractExceptions<C>>} = oneSubjectGenerator();
+        const subject: C = oneSubjectGenerator();
         const f: GeneralContractFunction<C> =
           self.createCandidateContractFunction(subject.constructor, undefined, 'contract', subject);
         subject.isImplementedBy(f).should.be.ok();
