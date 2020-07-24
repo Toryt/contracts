@@ -156,16 +156,16 @@ export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
 
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
-export interface ContractConstructor<F extends AnyFunction, Exceptions> {
+export interface ContractConstructor<C extends AbstractContract<any, any>> {
   readonly internalLocation: object;
   readonly namePrefix: string;
 
   new (
-    kwargs: AbstractContractKwargs<F, Exceptions>,
+    kwargs: AbstractContractKwargs<ContractSignature<C>, ContractExceptions<C>>,
     _location?: StackLocation | typeof AbstractContract.internalLocation
-  ): AbstractContract<F, Exceptions>;
+  ): C;
 
-  isAContractFunction(f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>>
+  isAContractFunction(f: any): f is GeneralContractFunction<C>
 }
 
 function isOrHasAsPrototype (obj: {}, proto: {}): boolean {
@@ -234,10 +234,10 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
    *     outside this library.</li>
    * </ul>
    */
-  static isAContractFunction<F extends AnyFunction, Exceptions> (
-    this: ContractConstructor<F, Exceptions>,
+  static isAContractFunction<C extends AbstractContract<any, any>> (
+    this: ContractConstructor<C>,
     f: any
-  ): f is GeneralContractFunction<AbstractContract<F, Exceptions>> {
+  ): f is GeneralContractFunction<C> {
     return isAGeneralContractFunction(f) && f.contract instanceof this && stackLocation(f.location);
   }
 
@@ -251,7 +251,7 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
   verifyPostconditions: boolean = false;
 
   /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
-  ['constructor']!: ContractConstructor<F, Exceptions>;
+  ['constructor']!: ContractConstructor<this>;
   constructor(
     kwargs: AbstractContractKwargs<F, Exceptions>,
     _location?: StackLocation | typeof AbstractContract.internalLocation
