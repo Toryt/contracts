@@ -17,8 +17,6 @@
 /* eslint-env mocha */
 
 import type {Stack} from "../lib/_private/is";
-import type ContractError from "../lib/ContractError";
-import type ConditionError from "../lib/ConditionError";
 import type {
   Condition,
   ConditionArguments,
@@ -29,12 +27,11 @@ import type {
 
 import {ConditionErrorCommon} from "./ConditionErrorCommon";
 import ConditionMetaError from "../lib/ConditionMetaError";
-import {ok} from "assert";
 import {expectOwnFrozenProperty} from "./_util/testUtil";
 import {extensiveThrown} from "../lib/_private/report";
 import * as should from "should";
 
-export class ConditionMetaErrorCommon extends ConditionErrorCommon {
+export class ConditionMetaErrorCommon extends ConditionErrorCommon<Condition<any>, ConditionMetaError<Condition<any>>> {
   // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
   readonly errorCases: Array<any> = [
     new Error('This is an error case'),
@@ -62,10 +59,9 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon {
     { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
   ];
 
-  expectInvariants(subject: ContractError): void {
+  expectInvariants(subject: ConditionMetaError<Condition<any>>): void {
     super.expectInvariants(subject);
     subject.should.be.an.instanceof(ConditionMetaError);
-    ok(subject instanceof ConditionMetaError);
     if (subject.error) {
       Object.isFrozen(subject.error).should.be.true();
     }
@@ -77,10 +73,9 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon {
     subject.message.should.containEql('(' + subject.error + ')');
   }
 
-  expectDetailsPost (subject: ConditionError<any>, result: string): void {
+  expectDetailsPost (subject: ConditionMetaError<Condition<any>>, result: string): void {
     super.expectDetailsPost(subject, result);
     subject.should.be.an.instanceof(ConditionMetaError);
-    ok(subject instanceof ConditionMetaError);
     result.should.containEql(extensiveThrown(subject.error));
     if (subject.error && subject.error.stack) {
       result.should.containEql(subject.error.stack);
@@ -96,7 +91,7 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon {
     error: any,
     rawStack: Stack
   ): void {
-    this.expectConstructorPost(result, contractFunction, condition, self, args, rawStack);
+    super.expectConstructorPost(result, contractFunction, condition, self, args, rawStack);
     should(result.error).equal(error);
   }
 }

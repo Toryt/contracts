@@ -17,7 +17,6 @@
 /* eslint-env mocha */
 
 import type {Stack} from "../lib/_private/is";
-import type ContractError from "../lib/ContractError";
 import {ContractErrorCommon} from "./ContractErrorCommon";
 import ConditionError from "../lib/ConditionError";
 import {
@@ -89,7 +88,7 @@ argsCases = argsCases.concat(
   })
 );
 
-export class ConditionErrorCommon extends ContractErrorCommon {
+export class ConditionErrorCommon<B extends Condition<any>, S extends ConditionError<B>> extends ContractErrorCommon<S> {
   readonly selfCaseGenerators: Array<() => any> = selfCaseGenerators;
   readonly oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
   readonly oneArgsCase: any = argsCases[argsCases.length - 1];
@@ -97,10 +96,10 @@ export class ConditionErrorCommon extends ContractErrorCommon {
   readonly conditionCases: Array<Condition<any>> = conditionCases;
   readonly conditionCase: Precondition<any> & Postcondition<any> & ExceptionCondition<any> = conditionCase;
 
-  expectInvariants(subject: ContractError): void {
+  expectInvariants(subject: S): void {
     super.expectInvariants(subject);
     subject.should.be.an.instanceof(ConditionError);
-    const subjectConditionError: ConditionError<any> = subject as ConditionError<any>;
+    const subjectConditionError: S = subject as S;
     expectOwnFrozenProperty(subjectConditionError, 'contractFunction');
     // noinspection JSUnresolvedVariable
     isAGeneralContractFunction(subjectConditionError.contractFunction).should.be.true();
@@ -118,13 +117,13 @@ export class ConditionErrorCommon extends ContractErrorCommon {
     subject.message.should.containEql(conciseCondition('condition', subjectConditionError.condition));
   }
 
-  expectProperties <B extends Condition<any>>(
-    exception: ConditionError<B>,
-    Type: typeof ConditionError,
-    contractFunction: GeneralContractFunction<ConditionContract<B>>,
-    condition: B,
-    self: ConditionThis<B>,
-    args: ConditionArguments<B>
+  expectProperties  <B2 extends B, S2 extends S & ConditionError<B2>> (
+    exception: S2,
+    Type: Function,
+    contractFunction: GeneralContractFunction<ConditionContract<B2>>,
+    condition: B2,
+    self: ConditionThis<B2>,
+    args: ConditionArguments<B2>
   ): void {
     exception.should.be.an.Error();
     exception.should.be.instanceof(Type);
@@ -136,12 +135,12 @@ export class ConditionErrorCommon extends ContractErrorCommon {
     exception.args.should.eql(Array.prototype.slice.call(args));
   }
 
-  expectConstructorPost <B extends Condition<any>> (
-    result: ConditionError<B>,
-    contractFunction: GeneralContractFunction<ConditionContract<B>>,
-    condition: B,
-    self: ConditionThis<B>,
-    args: ConditionArguments<B>,
+  expectConstructorPost <B2 extends B, S2 extends S & ConditionError<B2>> (
+    result: S2,
+    contractFunction: GeneralContractFunction<ConditionContract<B2>>,
+    condition: B2,
+    self: ConditionThis<B2>,
+    args: ConditionArguments<B2>,
     rawStack: Stack
   ): void {
     this.expectContractErrorConstructorPost(result, result.message, rawStack);
@@ -149,7 +148,7 @@ export class ConditionErrorCommon extends ContractErrorCommon {
     Object.isExtensible(result).should.be.true();
   }
 
-  expectDetailsPost(subject: ConditionError<any>, result: string): void {
+  expectDetailsPost(subject: S, result: string): void {
     result.should.be.a.String();
     // noinspection JSUnresolvedVariable
     result.should.containEql(conciseCondition('', subject.condition));
@@ -162,15 +161,15 @@ export class ConditionErrorCommon extends ContractErrorCommon {
   }
 
   generateConditionErrorPrototypeMethodsDescriptions(
-    oneSubjectGenerator: () => ConditionError<any>,
-    allSubjectGenerators: Array<{ subject: () => ConditionError<any>, description: string }>
+    oneSubjectGenerator: () => S,
+    allSubjectGenerators: Array<{ subject: () => S, description: string }>
   ): void {
     this.generateContractErrorPrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
     const self = this;
 
     describe('#getDetails()', function () {
-      allSubjectGenerators.forEach((generator: { subject: () => ConditionError<any>, description: string }) => {
+      allSubjectGenerators.forEach((generator: { subject: () => S, description: string }) => {
         it('returns the details as expected for ' + generator.description, function () {
           const subject = generator.subject();
           // noinspection JSUnresolvedFunction
@@ -186,4 +185,4 @@ export class ConditionErrorCommon extends ContractErrorCommon {
   readonly createCandidateContractFunction = abstractContractCommon.createCandidateContractFunction;
 }
 
-export default new ConditionErrorCommon();
+export default new ConditionErrorCommon<Condition<any>, ConditionError<Condition<any>>>();

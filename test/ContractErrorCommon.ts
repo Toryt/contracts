@@ -23,8 +23,8 @@ import ContractError from "../lib/ContractError";
 import {expectOwnFrozenProperty, regExpEscape} from "./_util/testUtil";
 
 
-export class ContractErrorCommon {
-  expectStackInvariants(subject: ContractError): void {
+export class ContractErrorCommon<S extends ContractError> {
+  expectStackInvariants(subject: S): void {
     const stack: Stack = subject.stack;
     stack.should.be.a.String();
     const startOfStack = subject.name + ': ' + subject.message + stackEOL;
@@ -41,7 +41,7 @@ export class ContractErrorCommon {
     restOfStack.should.containEql(subject._rawStack);
   }
 
-  expectInvariants(subject: ContractError): void {
+  expectInvariants(subject: S): void {
     subject.should.be.an.instanceof(ContractError);
     expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name');
     subject.name.should.be.a.String();
@@ -56,7 +56,7 @@ export class ContractErrorCommon {
     this.expectStackInvariants(subject);
   }
 
-  expectContractErrorConstructorPost(result: ContractError, message: string, rawStack: Stack): void {
+  expectContractErrorConstructorPost(result: S, message: string, rawStack: Stack): void {
     Object.isExtensible(result).should.be.true();
     result.name.should.equal(result.constructor.name);
     result.message.should.equal(message);
@@ -66,11 +66,11 @@ export class ContractErrorCommon {
 
   // noinspection FunctionNamingConventionJS
   generateContractErrorPrototypeMethodsDescriptions(
-    _oneSubjectGenerator: () => ContractError,
-    _allSubjectGenerators: Array<{ subject: () => ContractError, description: string }>
+    _oneSubjectGenerator: () => S,
+    _allSubjectGenerators: Array<{ subject: () => S, description: string }>
   ): void {
     // NOP: no methods here
   }
 }
 
-export default new ContractErrorCommon();
+export default new ContractErrorCommon<ContractError>();

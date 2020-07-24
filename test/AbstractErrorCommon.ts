@@ -17,13 +17,12 @@
 /* eslint-env mocha */
 
 import type {Stack} from "../lib/_private/is";
-import type ContractError from "../lib/ContractError";
 import {ContractErrorCommon} from "./ContractErrorCommon";
 import AbstractContract, {AbstractError} from "../lib/AbstractContract";
 import {expectOwnFrozenProperty} from "./_util/testUtil";
 
-export class AbstractErrorCommon extends ContractErrorCommon {
-  expectInvariants(subject: ContractError): void {
+export class AbstractErrorCommon extends ContractErrorCommon<AbstractError> {
+  expectInvariants(subject: AbstractError): void {
     super.expectInvariants(subject);
     subject.should.be.an.instanceof(AbstractError);
     expectOwnFrozenProperty(subject, 'name');
