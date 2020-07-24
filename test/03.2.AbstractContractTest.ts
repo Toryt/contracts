@@ -26,8 +26,7 @@ import AbstractContract, {
   root
 } from "../lib/AbstractContract";
 import {
-  common, constructorExceptionCases, constructorPostCases, constructorPreCases,
-  notAFunctionNorAContract as thingsThatAreNotAFunctionNorAContract
+  common
 } from "./AbstractContractCommon";
 import {expectOwnFrozenProperty, x} from "./_util/testUtil";
 import {conciseCondition} from "../lib/_private/report";
@@ -94,7 +93,7 @@ describe('AbstractContract', function () {
 
   describe('isAGeneralizedContractFunction', function () {
     common.generateIAGCFTests(AbstractContract, isAGeneralContractFunction);
-    thingsThatAreNotAFunctionNorAContract
+    common.thingsThatAreNotAFunctionNorAContract
       .filter((v: any): boolean => !!v)
       .concat(['    at', 'at /', {}, AbstractContract.internalLocation])
       .forEach((v: any): void => {
@@ -217,9 +216,9 @@ describe('AbstractContract', function () {
   });
 
   describe('#AbstractContract()', function () {
-    constructorPreCases.forEach((pre: (this: void) => Array<Precondition<any>> | null | undefined): void => {
-      constructorPostCases.forEach((post: (this: void) => Array<Postcondition<any>> | null | undefined): void => {
-        constructorExceptionCases.forEach((exception: (this: void) => Array<ExceptionCondition<any>> | null | undefined): void => {
+    common.constructorPreCases.forEach((pre: (this: void) => Array<Precondition<any>> | null | undefined): void => {
+      common.constructorPostCases.forEach((post: (this: void) => Array<Postcondition<any>> | null | undefined): void => {
+        common.constructorExceptionCases.forEach((exception: (this: void) => Array<ExceptionCondition<any>> | null | undefined): void => {
           it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
             const preConditions: Array<Precondition<any>> | null | undefined = pre();
             const postConditions: Array<Postcondition<any>> | null | undefined = post();
@@ -244,7 +243,7 @@ describe('AbstractContract', function () {
 
   common.generateAbstractContractPrototypeMethodsDescriptions(
     () => new AbstractContract({}),
-    x(constructorPreCases, constructorPostCases, constructorExceptionCases)
+    x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
       .map((parameters) => ({
         subject: () =>
           new AbstractContract({

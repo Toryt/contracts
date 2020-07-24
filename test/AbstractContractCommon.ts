@@ -59,64 +59,62 @@ const someConditions: Array<(this: void) => Array<Precondition<any> & Postcondit
     ];
   }
 ];
-export const preCases: Array<(this: void) => Array<Precondition<any>> | null> = ([
+const preCases: Array<(this: void) => Array<Precondition<any>> | null> = ([
   function (this: any): null {
     return null;
   }
 ] as Array<(this: void) => Array<Precondition<any>> | null>).concat(someConditions);
-export const postCases: Array<(this: void) => Array<Postcondition<any>> | null> = ([
+const postCases: Array<(this: void) => Array<Postcondition<any>> | null> = ([
   function (this: any): null {
     return null;
   }
 ] as Array<(this: void) => Array<Postcondition<any>> | null>).concat(someConditions);
-export const exceptionCases: Array<(this: void) => Array<ExceptionCondition<any>> | null> = ([
+const exceptionCases: Array<(this: void) => Array<ExceptionCondition<any>> | null> = ([
   function (this: any): null {
     return null;
   }
 ] as Array<(this: void) => Array<ExceptionCondition<any>> | null>).concat(someConditions);
 
-// noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
-export const notAFunctionNorAContract: Array<any> = [
-  undefined,
-  null,
-  '',
-  'foo',
-  0,
-  -1,
-  true,
-  false,
-  /lala/,
-  {},
-  new Date(),
-  // eslint-disable-next-line
-  new Number(42),
-  // eslint-disable-next-line
-  new Boolean(true),
-  // eslint-disable-next-line
-  new String('lalala')
-];
-
-export const constructorPreCases: Array<(this: void) => Array<Precondition<any>> | null | undefined> = ([
-  function (this: void): undefined {
-    return undefined;
-  }
-] as Array<(this: void) => Array<Precondition<any>> | null | undefined>).concat(preCases);
-export const constructorPostCases: Array<(this: void) => Array<Postcondition<any>> | null | undefined> = ([
-  function (this: void): undefined {
-    return undefined;
-  }
-] as Array<(this: void) => Array<Postcondition<any>> | null | undefined>).concat(postCases);
-export const constructorExceptionCases: Array<() => Array<ExceptionCondition<any>> | null | undefined> = ([
-  function (this: void): undefined {
-    return undefined;
-  }
-] as Array<(this: void) => Array<ExceptionCondition<any>> | null | undefined>).concat(exceptionCases);
-
-export const location: StackLocation = stackEOL + '    at /';
-
-export const contractFunctionPropertyNames = ['contract', 'implementation', 'location', 'bind'];
+const contractFunctionPropertyNames = ['contract', 'implementation', 'location', 'bind'];
 
 export default class AbstractContractCommon {
+  readonly constructorPreCases: Array<(this: void) => Array<Precondition<any>> | null | undefined> = ([
+    function (this: void): undefined {
+      return undefined;
+    }
+  ] as Array<(this: void) => Array<Precondition<any>> | null | undefined>).concat(preCases);
+  readonly constructorPostCases: Array<(this: void) => Array<Postcondition<any>> | null | undefined> = ([
+    function (this: void): undefined {
+      return undefined;
+    }
+  ] as Array<(this: void) => Array<Postcondition<any>> | null | undefined>).concat(postCases);
+  readonly constructorExceptionCases: Array<() => Array<ExceptionCondition<any>> | null | undefined> = ([
+    function (this: void): undefined {
+      return undefined;
+    }
+  ] as Array<(this: void) => Array<ExceptionCondition<any>> | null | undefined>).concat(exceptionCases);
+  // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
+  readonly thingsThatAreNotAFunctionNorAContract: Array<any> = [
+    undefined,
+    null,
+    '',
+    'foo',
+    0,
+    -1,
+    true,
+    false,
+    /lala/,
+    {},
+    new Date(),
+    // eslint-disable-next-line
+    new Number(42),
+    // eslint-disable-next-line
+    new Boolean(true),
+    // eslint-disable-next-line
+    new String('lalala')
+  ];
+
+
   expectInvariants<C extends AbstractContract<any, any>>(subject: C): void {
     subject.should.be.an.instanceof(AbstractContract);
     expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre');
@@ -289,7 +287,7 @@ export default class AbstractContractCommon {
       }
     );
 
-    notAFunctionNorAContract.forEach((thing: any) => {
+    this.thingsThatAreNotAFunctionNorAContract.forEach((thing: any) => {
       it('says no if the argument is not a function, but ' + thing, function () {
         should(isAXXXContractFunction.call(ContractConstructor, thing)).not.be.ok();
       });
@@ -324,7 +322,7 @@ export default class AbstractContractCommon {
         extra: ['candidate', AbstractContract.namePrefix]
       }
     ].forEach((aCase: {propertyName: typeof contractFunctionPropertyNames[number], expected: string, extra: Array<any>}) => {
-      notAFunctionNorAContract.concat(aCase.extra).forEach((v: any) => {
+      this.thingsThatAreNotAFunctionNorAContract.concat(aCase.extra).forEach((v: any) => {
         it('says no if the ' + aCase.propertyName + ' is not ' + aCase.expected + ' but ' + v, function () {
           const candidate: GeneralContractFunction<AbstractContract<F, Exceptions>> =
             self.createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v);
@@ -342,7 +340,7 @@ export default class AbstractContractCommon {
 
     describe('@isAContractFunction', function () {
       self.generateIAGCFTests(ContractConstructor, ContractConstructor.isAContractFunction);
-      notAFunctionNorAContract
+      self.thingsThatAreNotAFunctionNorAContract
         .filter(t => !t || typeof t !== 'string' || t.indexOf(n) >= 0 || t.indexOf(rn) >= 0)
         .concat([{}, AbstractContract.internalLocation])
         .forEach(v => {
@@ -351,7 +349,7 @@ export default class AbstractContractCommon {
             should(AbstractContract.isAContractFunction(candidate)).not.be.ok();
           });
         });
-      notAFunctionNorAContract
+      self.thingsThatAreNotAFunctionNorAContract
         .filter(v => !v)
         .forEach(v => {
           it(`says no if the location is not truthy but ${v}`, function () {
@@ -389,7 +387,7 @@ export default class AbstractContractCommon {
         // MUDO shows a bug elsewhere; see expectInvariants
         // self.expectInvariants(subject.abstract.contract)
       });
-      notAFunctionNorAContract.concat(['function() {}']).forEach(function (thing) {
+      self.thingsThatAreNotAFunctionNorAContract.concat(['function() {}']).forEach(function (thing) {
         it(`says no if the argument is not a general contract function but ${thing}`, function () {
           const subject: C = oneSubjectGenerator();
           subject.isImplementedBy(thing).should.not.be.ok();
