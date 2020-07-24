@@ -18,6 +18,7 @@
 
 import {stack, n , rn} from "../lib/_private/eol";
 
+// noinspection JSPrimitiveTypeWrapperUsage
 export const any: Array<any> = [
   undefined,
   null,
@@ -69,4 +70,4 @@ intentionallyRejectedPromise.catch(_ignore => {});
 
 export const intentionallyRejectingArrow = () => intentionallyRejectedPromise;
 
-export const notStackEOL = stack === n ? rn : eol.n;
+export const notStackEOL = stack === n ? rn : n;
