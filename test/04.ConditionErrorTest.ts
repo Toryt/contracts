@@ -19,11 +19,7 @@
 import type AbstractContract from "../lib/AbstractContract";
 import type {GeneralContractFunction} from "../lib/AbstractContract";
 import {
-  common,
-  conditionCases,
-  selfCaseGenerators,
-  argsCases,
-  createCandidateContractFunction
+  common
 } from "./ConditionErrorCommon";
 import {raw} from "../lib/_private/stack";
 import {log, x} from "./_util/testUtil";
@@ -31,11 +27,12 @@ import ConditionError from "../lib/ConditionError";
 
 describe('ConditionError', function () {
   describe('#ConditionError()', function () {
-    selfCaseGenerators.forEach((selfCaseGenerator: () => any) => {
-      argsCases.forEach((args: Array<any>) => {
+    common.selfCaseGenerators.forEach((selfCaseGenerator: () => any) => {
+      common.argsCases.forEach((args: Array<any>) => {
         const self: any = selfCaseGenerator();
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          const contractFunction: GeneralContractFunction<AbstractContract<any, any>> = createCandidateContractFunction();
+          const contractFunction: GeneralContractFunction<AbstractContract<any, any>> =
+            common.createCandidateContractFunction();
           const rawStack = raw();
           const result: ConditionError<any> = new ConditionError(contractFunction, common.conditionCase, self, args, rawStack);
           common.expectConditionErrorConstructorPost(result, contractFunction, common.conditionCase, self, args, rawStack);
@@ -49,12 +46,12 @@ describe('ConditionError', function () {
   });
 
   common.generateConditionErrorPrototypeMethodsDescriptions(
-    () => new ConditionError(createCandidateContractFunction(), common.conditionCase, null, argsCases[0], raw()),
-    x(conditionCases, selfCaseGenerators, argsCases).map(parameters => {
+    () => new ConditionError(common.createCandidateContractFunction(), common.conditionCase, null, common.argsCases[0], raw()),
+    x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
       const self = parameters[1]();
       return {
         subject: () =>
-          new ConditionError(createCandidateContractFunction(), parameters[0], self, parameters[2], raw()),
+          new ConditionError(common.createCandidateContractFunction(), parameters[0], self, parameters[2], raw()),
         description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
       };
     })

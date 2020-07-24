@@ -37,7 +37,7 @@ import {setAndFreeze} from "../lib/_private/property";
 import should = require('should');
 import {common as abstractContractCommon} from "./AbstractContractCommon"
 
-export const conditionCase: Condition<any> = function (this: any): string {
+const conditionCase: Condition<any> = function (this: any): string {
   return 'This simulates a condition';
 };
 
@@ -54,7 +54,7 @@ function generateMultiLineAnonFunction (this: void): (this: any) => string {
   };
 }
 
-export const conditionCases: Array<Condition<any>> =
+const conditionCases: Array<Condition<any>> =
   [conditionCase, generateMultiLineAnonFunction()];
 
 function functionWithAName (this: any): void {}
@@ -76,9 +76,9 @@ this function should have a name   ` // trim
 );
 conditionCases.push(other);
 
-export const selfCaseGenerators: Array<() => any> = anyCasesGenerators('self');
+const selfCaseGenerators: Array<() => any> = anyCasesGenerators('self');
 
-export let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
+let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
 argsCases = argsCases.concat(
   argsCases.map((c: Array<any>) => {
     function asArgs (..._args: Array<any>): IArguments {
@@ -90,8 +90,11 @@ argsCases = argsCases.concat(
 );
 
 export class ConditionErrorCommon extends ContractErrorCommon {
+  readonly selfCaseGenerators: Array<() => any> = selfCaseGenerators;
   readonly oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
   readonly oneArgsCase: any = argsCases[argsCases.length - 1];
+  readonly argsCases: Array<any> = argsCases;
+  readonly conditionCases: Array<Condition<any>> = conditionCases;
   readonly conditionCase: Precondition<any> & Postcondition<any> & ExceptionCondition<any> = conditionCase;
 
   expectInvariants(subject: ContractError): void {
@@ -179,7 +182,8 @@ export class ConditionErrorCommon extends ContractErrorCommon {
       });
     });
   }
+
+  readonly createCandidateContractFunction = abstractContractCommon.createCandidateContractFunction;
 }
 
-export const createCandidateContractFunction = abstractContractCommon.createCandidateContractFunction;
 export const common: ConditionErrorCommon = new ConditionErrorCommon();
