@@ -69,7 +69,7 @@ describe('ConditionMetaError', function () {
   });
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
-  common.generatePrototypeMethodsDescriptions(
+  common.generateConditionErrorPrototypeMethodsDescriptions(
     () => new ConditionMetaError(common.conditionCase, null, common.oneArgsCase, common.errorCases[0], raw()),
     common.errorCases.map(errorCase => {
       // noinspection JSUnresolvedFunction, JSUnresolvedVariable
