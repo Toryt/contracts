@@ -35,6 +35,7 @@ export class AbstractErrorCommon extends ContractErrorCommon<AbstractError> {
     Object.getPrototypeOf(subject).message.should.equal(AbstractError.message);
   }
 
+  // noinspection FunctionNamingConventionJS
   expectAbstractErrorConstructorPost(result: AbstractError, message:string, contract:AbstractContract<any, any>, rawStack: Stack): void {
     this.expectContractErrorConstructorPost(result, message, rawStack);
     result.contract.should.equal(contract);
@@ -45,7 +46,7 @@ export class AbstractErrorCommon extends ContractErrorCommon<AbstractError> {
     oneSubjectGenerator: () => AbstractError,
     allSubjectGenerators: Array<{ subject: () => AbstractError, description: string }>
   ): void {
-    this.generateContractErrorPrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+    this.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
     // NOP: no methods here
   }

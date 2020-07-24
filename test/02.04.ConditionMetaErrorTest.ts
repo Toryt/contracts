@@ -71,7 +71,7 @@ describe('ConditionMetaError', function () {
   });
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
-  common.generateConditionErrorPrototypeMethodsDescriptions(
+  common.generatePrototypeMethodsDescriptions(
     () => new ConditionMetaError(
       common.createCandidateContractFunction(),
       common.conditionCase,

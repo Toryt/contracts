@@ -36,9 +36,7 @@ export class ContractErrorCommon<S extends ContractError> {
       .filter(l => !!l)
       .join(stackEOL);
     isStack(restOfStack).should.be.true();
-    // noinspection JSUnresolvedVariable
-    // @ts-ignore
-    restOfStack.should.containEql(subject._rawStack);
+    restOfStack.should.containEql(subject['_rawStack']);
   }
 
   expectInvariants(subject: S): void {
@@ -50,22 +48,20 @@ export class ContractErrorCommon<S extends ContractError> {
     subject.message.should.be.a.String();
     // @ts-ignore
     expectOwnFrozenProperty(subject, '_rawStack');
-    // noinspection JSUnresolvedVariable
-    // @ts-ignore
-    isStack(subject._rawStack).should.be.true();
+    isStack(subject['_rawStack']).should.be.true();
     this.expectStackInvariants(subject);
   }
 
+  // noinspection FunctionNamingConventionJS
   expectContractErrorConstructorPost(result: S, message: string, rawStack: Stack): void {
     Object.isExtensible(result).should.be.true();
     result.name.should.equal(result.constructor.name);
     result.message.should.equal(message);
-    // @ts-ignore
-    result._rawStack.should.equal(rawStack);
+    result['_rawStack'].should.equal(rawStack);
   }
 
-  // noinspection FunctionNamingConventionJS
-  generateContractErrorPrototypeMethodsDescriptions(
+  // noinspection FunctionNamingConventionJS,ParameterNamingConventionJS
+  generatePrototypeMethodsDescriptions(
     _oneSubjectGenerator: () => S,
     _allSubjectGenerators: Array<{ subject: () => S, description: string }>
   ): void {

@@ -118,7 +118,7 @@ export class ConditionViolationCommon extends ConditionErrorCommon {
     oneSubjectGenerator: () => ConditionViolation<any>,
     allSubjectGenerators: Array<{ subject: () => ConditionViolation<any>, description: string }>
   ): void {
-    super.generateConditionErrorPrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+    super.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
     const that = this;
 

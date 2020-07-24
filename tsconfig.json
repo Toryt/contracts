@@ -21,7 +21,7 @@
     "listFiles": true,
     "listEmittedFiles": true,
     "lib": [
-      "es2018"
+      "es2018", "dom"
     ],
     "strict": true,
     "noImplicitAny": true,
@@ -30,7 +30,7 @@
     "noFallthroughCasesInSwitch": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "allowUnreachableCode": false,
+    "allowUnreachableCode": true,
     "allowUnusedLabels": false,
     "forceConsistentCasingInFileNames": true,
     "importsNotUsedAsValues": "error"

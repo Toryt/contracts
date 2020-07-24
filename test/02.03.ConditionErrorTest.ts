@@ -43,7 +43,7 @@ describe('ConditionError', function () {
     });
   });
 
-  common.generateConditionErrorPrototypeMethodsDescriptions(
+  common.generatePrototypeMethodsDescriptions(
     () => new ConditionError(common.createCandidateContractFunction(), common.conditionCase, null, common.argsCases[0], raw()),
     x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
       const self = parameters[1]();
