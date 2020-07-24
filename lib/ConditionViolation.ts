@@ -26,7 +26,18 @@ import type {
 import {isAGeneralContractFunction} from "./AbstractContract";
 import {raw, skipsForEach} from "./_private/stack";
 import {functionArguments} from "./_private/is";
-import ConditionMetaError = require("./ConditionMetaError");
+import ConditionMetaError from "./ConditionMetaError"
+
+/* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
+   See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
+export interface ConditionViolationConstructor<B extends Condition<any>, CV extends ConditionViolation<B>> {
+  new (
+    contractFunction: GeneralContractFunction<ConditionContract<B>>,
+    condition: B,
+    self: ConditionThis<B>,
+    args: ConditionArguments<B>
+  ): CV;
+}
 
 /**
  * Super type for objects that are thrown to signal a condition violation.
@@ -40,6 +51,8 @@ import ConditionMetaError = require("./ConditionMetaError");
  *                The arguments with which the contract function that failed, was called.
  */
 export default class ConditionViolation<B extends Condition<any>> extends ConditionError<B> {
+  /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
+  ['constructor']!: ConditionViolationConstructor<B, this>;
   constructor(
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
@@ -133,13 +146,14 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
       throw cme;
     }
     if (!conditionResult) {
-      const cv: ThisType<any> = new this.constructor(contractFunction, condition, self, args);
+      const cv = new this.constructor(contractFunction, condition, self, args);
       Object.freeze(cv);
       throw cv;
     }
   }
 
-  /**
+/* MUDO
+  /!**
    * Dynamic conditional constructor and thrower of instances of this type. Conditions may return a Promise.
    * The intended usage is:
    *
@@ -153,7 +167,7 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
    *
    * When any of the the supplied <var>condition</var> fails to execute, i.e., rejects with a ConditionMetaError, with
    * its properties filled out appropriately.
-   */
+   *!/
   verifyAllPromise <B extends Condition<any>> (
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     conditions: ReadonlyArray<B>,
@@ -176,7 +190,7 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
     return Promise.all(conditions.map(condition => this.verifyPromise(contractFunction, condition, self, args)));
   }
 
-  /**
+  /!**
    * Dynamic conditional constructor and thrower of instances of this type. Conditions may return a Promise.
    * The intended usage is:
    *
@@ -192,7 +206,7 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
    * filled out appropriately.
    *
    * Mostly, this method is not used directly, but called via <code>verifyAllPromise</code>.
-   */
+   *!/
   verifyPromise <B extends Condition<any>> (
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
@@ -213,7 +227,7 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
         self,
         args,
         err,
-        stack.raw(/* istanbul ignore next: platform dependent */ stack.skipsForEach ? 5 : 6)
+        stack.raw(/!* istanbul ignore next: platform dependent *!/ stack.skipsForEach ? 5 : 6)
       );
       Object.freeze(cme);
       return cme;
@@ -245,4 +259,5 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
     }
     return Promise.resolve();
   }
+*/
 }
