@@ -35,7 +35,7 @@ import {conciseCondition, value} from "../lib/_private/report";
 import {stack as stackEOL} from "../lib/_private/eol";
 import {setAndFreeze} from "../lib/_private/property";
 import should = require('should');
-import {common as abstractContractCommon} from "./AbstractContractCommon"
+import abstractContractCommon from "./AbstractContractCommon";
 
 const conditionCase: Condition<any> = function (this: any): string {
   return 'This simulates a condition';
