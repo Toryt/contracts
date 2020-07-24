@@ -366,7 +366,7 @@ export default class AbstractContractCommon {
   // noinspection FunctionNamingConventionJS,JSUnusedLocalSymbols
   generateAbstractContractPrototypeMethodsDescriptions<C extends AbstractContract<any, any>>(
     oneSubjectGenerator: () => C,
-    _allSubjectGenerators: Array<() => AbstractContract<any, any>>
+    _allSubjectGenerators: Array<{ subject: () => AbstractContract<any, any>, description: string }>
   ) {
     const self = this;
 
