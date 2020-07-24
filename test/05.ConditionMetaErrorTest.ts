@@ -70,7 +70,14 @@ describe('ConditionMetaError', function () {
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
   common.generateConditionErrorPrototypeMethodsDescriptions(
-    () => new ConditionMetaError(common.conditionCase, null, common.oneArgsCase, common.errorCases[0], raw()),
+    () => new ConditionMetaError(
+      common.createCandidateContractFunction(),
+      common.conditionCase,
+      null,
+      common.oneArgsCase,
+      common.errorCases[0],
+      raw()
+    ),
     common.errorCases.map(errorCase => {
       // noinspection JSUnresolvedFunction, JSUnresolvedVariable
       return {

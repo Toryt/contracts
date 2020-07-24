@@ -77,3 +77,5 @@ export default class ConditionMetaError<B extends Condition<any>> extends Condit
     );
   }
 }
+
+setAndFreeze(ConditionMetaError.prototype, 'name', ConditionMetaError.name);
