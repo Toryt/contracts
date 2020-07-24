@@ -27,9 +27,9 @@ import {
   expectOwnFrozenProperty, log
 } from "./_util/testUtil";
 import {
-  Condition, ConditionArguments, ConditionContract, ConditionThis,
+  Condition, ConditionArguments, ConditionContract, ConditionThis, ExceptionCondition,
   GeneralContractFunction,
-  isAGeneralContractFunction
+  isAGeneralContractFunction, Postcondition, Precondition
 } from "../lib/AbstractContract";
 import {conciseCondition, value} from "../lib/_private/report";
 import {stack as stackEOL} from "../lib/_private/eol";
@@ -77,7 +77,6 @@ this function should have a name   ` // trim
 conditionCases.push(other);
 
 export const selfCaseGenerators: Array<() => any> = anyCasesGenerators('self');
-export const oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
 
 export let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
 argsCases = argsCases.concat(
@@ -89,9 +88,12 @@ argsCases = argsCases.concat(
     return asArgs.apply(undefined, c);
   })
 );
-export const oneArgsCase: any = argsCases[argsCases.length - 1];
 
 export class ConditionErrorCommon extends ContractErrorCommon {
+  readonly oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
+  readonly oneArgsCase: any = argsCases[argsCases.length - 1];
+  readonly conditionCase: Precondition<any> & Postcondition<any> & ExceptionCondition<any> = conditionCase;
+
   expectInvariants(subject: ContractError): void {
     super.expectInvariants(subject);
     subject.should.be.an.instanceof(ConditionError);
@@ -114,7 +116,7 @@ export class ConditionErrorCommon extends ContractErrorCommon {
   }
 
   expectProperties <B extends Condition<any>>(
-    exception: ConditionError<ConditionContract<B>>,
+    exception: ConditionError<B>,
     Type: typeof ConditionError,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
@@ -132,7 +134,7 @@ export class ConditionErrorCommon extends ContractErrorCommon {
   }
 
   expectConditionErrorConstructorPost <B extends Condition<any>> (
-    result: ConditionError<ConditionContract<B>>,
+    result: ConditionError<B>,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
     self: ConditionThis<B>,

@@ -20,7 +20,6 @@ import type AbstractContract from "../lib/AbstractContract";
 import type {GeneralContractFunction} from "../lib/AbstractContract";
 import {
   common,
-  conditionCase,
   conditionCases,
   selfCaseGenerators,
   argsCases,
@@ -38,8 +37,8 @@ describe('ConditionError', function () {
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
           const contractFunction: GeneralContractFunction<AbstractContract<any, any>> = createCandidateContractFunction();
           const rawStack = raw();
-          const result: ConditionError<any> = new ConditionError(contractFunction, conditionCase, self, args, rawStack);
-          common.expectConditionErrorConstructorPost(result, contractFunction, conditionCase, self, args, rawStack);
+          const result: ConditionError<any> = new ConditionError(contractFunction, common.conditionCase, self, args, rawStack);
+          common.expectConditionErrorConstructorPost(result, contractFunction, common.conditionCase, self, args, rawStack);
           common.expectInvariants(result);
           result.should.not.have.ownProperty('message');
           result.should.not.have.ownProperty('stack');
@@ -50,7 +49,7 @@ describe('ConditionError', function () {
   });
 
   common.generateConditionErrorPrototypeMethodsDescriptions(
-    () => new ConditionError(createCandidateContractFunction(), conditionCase, null, argsCases[0], raw()),
+    () => new ConditionError(createCandidateContractFunction(), common.conditionCase, null, argsCases[0], raw()),
     x(conditionCases, selfCaseGenerators, argsCases).map(parameters => {
       const self = parameters[1]();
       return {

@@ -35,6 +35,33 @@ import {extensiveThrown} from "../lib/_private/report";
 import * as should from "should";
 
 export class ConditionMetaErrorCommon extends ConditionErrorCommon {
+  // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
+  readonly errorCases: Array<any> = [
+    new Error('This is an error case'),
+    undefined,
+    null,
+    1,
+    0,
+    'a string that is used as an error',
+    '',
+    true,
+    false,
+    new Date(),
+    /foo/,
+    function () {},
+    // eslint-disable-next-line no-new-wrappers
+    new Number(42),
+    // eslint-disable-next-line no-new-wrappers
+    new Boolean(false),
+    // eslint-disable-next-line no-new-wrappers
+    new String('lalala'),
+    (function () {
+      return arguments;
+    })(),
+    {},
+    { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
+  ];
+
   expectInvariants(subject: ContractError): void {
     super.expectInvariants(subject);
     subject.should.be.an.instanceof(ConditionMetaError);
@@ -61,7 +88,7 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon {
   }
 
   expectConditionMetaErrorConstructorPost <B extends Condition<any>> (
-    result: ConditionMetaError<ConditionContract<B>>,
+    result: ConditionMetaError<B>,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
     self: ConditionThis<B>,
@@ -73,31 +100,5 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon {
     should(result.error).equal(error);
   }
 }
-// noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint
- export const errorCases: Array<any> = [
-  new Error('This is an error case'),
-  undefined,
-  null,
-  1,
-  0,
-  'a string that is used as an error',
-  '',
-  true,
-  false,
-  new Date(),
-  /foo/,
-  function () {},
-  // eslint-disable-next-line no-new-wrappers
-  new Number(42),
-  // eslint-disable-next-line no-new-wrappers
-  new Boolean(false),
-  // eslint-disable-next-line no-new-wrappers
-  new String('lalala'),
-  (function () {
-    return arguments;
-  })(),
-  {},
-  { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
-];
 
 export const common = new ConditionMetaErrorCommon();

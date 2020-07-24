@@ -16,31 +16,29 @@
 
 /* eslint-env mocha */
 
-'use strict'
-
-const testUtil = require('./_util/testUtil')
-const stack = require('../lib/_private/stack')
-const common = require('./ConditionMetaErrorCommon')
-const ConditionMetaError = require('../lib/ConditionMetaError')
+import ConditionMetaError from "../lib/ConditionMetaError";
+import {common} from "./ConditionMetaErrorCommon";
+import {raw} from "../lib/_private/stack";
+import {log} from "./_util/testUtil";
 
 describe('ConditionMetaError', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
-      ConditionMetaError.prototype.condition.should.be.a.Function()
+      ConditionMetaError.prototype.condition.should.be.a.Function();
       // noinspection JSUnresolvedVariable
-      ConditionMetaError.prototype.condition.should.not.throw()
-    })
-  })
+      ConditionMetaError.prototype.condition.should.not.throw();
+    });
+  });
 
   describe('#ConditionMetaError()', function () {
-    common.errorCases.forEach(error => {
+    common.errorCases.forEach((error: any) => {
       it(
         'creates an instance with all toppings for ' + common.oneSelfCase + ' - ' + common.oneArgsCase + ' - ' + error,
         function () {
           // noinspection JSUnresolvedFunction
-          const contractFunction = common.createCandidateContractFunction()
-          const rawStack = stack.raw()
+          const contractFunction = common.createCandidateContractFunction();
+          const rawStack = raw();
           // noinspection JSUnresolvedVariable
           const result = new ConditionMetaError(
             contractFunction,
@@ -49,9 +47,9 @@ describe('ConditionMetaError', function () {
             common.oneArgsCase,
             error,
             rawStack
-          )
+          );
           // noinspection JSUnresolvedVariable
-          common.expectConstructorPost(
+          common.expectConditionMetaErrorConstructorPost(
             result,
             contractFunction,
             common.conditionCase,
@@ -59,20 +57,20 @@ describe('ConditionMetaError', function () {
             common.oneArgsCase,
             error,
             rawStack
-          )
-          common.expectInvariants(result)
-          result.should.not.have.ownProperty('message')
-          result.should.not.have.ownProperty('stack')
+          );
+          common.expectInvariants(result);
+          result.should.not.have.ownProperty('message');
+          result.should.not.have.ownProperty('stack');
           // noinspection JSUnresolvedVariable
-          testUtil.log('result.stack:\n%s', result.stack)
+          log('result.stack:\n%s', result.stack);
         }
-      )
-    })
-  })
+      );
+    });
+  });
 
   // noinspection JSUnresolvedVariable, JSUnresolvedFunction
   common.generatePrototypeMethodsDescriptions(
-    () => new ConditionMetaError(common.conditionCase, null, common.oneArgsCase, common.errorCases[0], stack.raw()),
+    () => new ConditionMetaError(common.conditionCase, null, common.oneArgsCase, common.errorCases[0], raw()),
     common.errorCases.map(errorCase => {
       // noinspection JSUnresolvedFunction, JSUnresolvedVariable
       return {
@@ -83,10 +81,10 @@ describe('ConditionMetaError', function () {
             common.oneSelfCase,
             common.oneArgsCase,
             errorCase,
-            stack.raw()
+            raw()
           ),
         description: common.conditionCase + ' — ' + common.oneSelfCase + ' – ' + common.oneArgsCase + ' – ' + errorCase
-      }
+      };
     })
-  )
-})
+  );
+});
