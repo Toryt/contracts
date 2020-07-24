@@ -18,7 +18,7 @@ import type {StackLocation, Stack} from "./_private/is";
 
 import {ok, strictEqual} from "assert";
 import {frozenOwnProperty, stackLocation, stack} from "./_private/is";
-import {setAndFreeze, frozenDerived} from "./_private/property";
+import {setAndFreeze, frozenDerived, frozenReadOnlyArray} from "./_private/property";
 import {raw, location as getStackLocation} from "./_private/stack";
 import {namePrefix, conciseCondition} from './_private/report';
 import ContractError from "./ContractError";
@@ -274,11 +274,18 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
     } as ContractSignature<this>;
 
     const location = _location || getStackLocation(1);
-    this._pre = Object.freeze(kwargs.pre ? kwargs.pre.slice() : []);
-    this._post = Object.freeze(kwargs.post ? kwargs.post.slice() : []);
-    this._exception = Object.freeze(kwargs.exception ? kwargs.exception.slice() : mustNotHappen);
-    this.location = Object.freeze(location);
-    this.abstract = bless<this>(abstract, self, abstract, location);
+    const blessedAbstract: GeneralContractFunction<this> = bless<this>(abstract, self, abstract, location);
+
+    this._pre = []; // make the compiler happy, and stay backward compatible
+    setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []));
+    this._post = []; // make the compiler happy, and stay backward compatible
+    setAndFreeze(self, '_post', Object.freeze(kwargs.post ? kwargs.post.slice() : []));
+    this._exception = []; // make the compiler happy, and stay backward compatible
+    setAndFreeze(self, '_exception', Object.freeze(kwargs.exception ? kwargs.exception.slice() : mustNotHappen));
+    this.location = ''; // make the compiler happy, and stay backward compatible
+    setAndFreeze(self, 'location', Object.freeze(location));
+    this.abstract = blessedAbstract; // make the compiler happy, and stay backward compatible
+    setAndFreeze(self, 'abstract', blessedAbstract);
   }
 
   isImplementedBy (f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>> {
@@ -297,6 +304,13 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
     return this._exception.slice();
   }
 }
+
+/* remain backward compatible */
+frozenReadOnlyArray(AbstractContract.prototype, 'pre', '_pre');
+frozenReadOnlyArray(AbstractContract.prototype, 'post', '_post');
+frozenReadOnlyArray(AbstractContract.prototype, 'exception', '_exception');
+// MUDO setAndFreeze(AbstractContract.prototype, 'location', AbstractContract.internalLocation);
+// MUDO setAndFreeze(AbstractContract.prototype, 'abstract', null);
 
 AbstractContract.prototype.verify = true;
 AbstractContract.prototype.verifyPostconditions = false;
