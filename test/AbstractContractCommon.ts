@@ -18,7 +18,7 @@
 
 import type {
   AnyFunction,
-  Condition, ContractConstructor,
+  ContractConstructor,
   ContractSignature,
   ExceptionCondition, GeneralContractFunction,
   Postcondition,
@@ -44,7 +44,7 @@ import {setAndFreeze} from "../lib/_private/property";
 import {conciseCondition} from "../lib/_private/report";
 import {ok} from "assert";
 
-const someConditions: Array<Condition<any>> = [
+const someConditions: Array<(this: void) => Array<Precondition<any> & Postcondition<any> & ExceptionCondition<any>>> = [
   function (this: any): Array<never> {
     return [];
   },
@@ -59,21 +59,21 @@ const someConditions: Array<Condition<any>> = [
     ];
   }
 ];
-export const preCases: Array<Precondition<any>> = [
+export const preCases: Array<(this: void) => Array<Precondition<any>> | null> = ([
   function (this: any): null {
     return null;
   }
-].concat(someConditions);
-export const postCases: Array<Postcondition<any>> = [
+] as Array<(this: void) => Array<Precondition<any>> | null>).concat(someConditions);
+export const postCases: Array<(this: void) => Array<Postcondition<any>> | null> = ([
   function (this: any): null {
     return null;
   }
-].concat(someConditions);
-export const exceptionCases: Array<ExceptionCondition<any>> = [
+] as Array<(this: void) => Array<Postcondition<any>> | null>).concat(someConditions);
+export const exceptionCases: Array<(this: void) => Array<ExceptionCondition<any>> | null> = ([
   function (this: any): null {
     return null;
   }
-].concat(someConditions);
+] as Array<(this: void) => Array<ExceptionCondition<any>> | null>).concat(someConditions);
 
 // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
 export const notAFunctionNorAContract: Array<any> = [
@@ -96,21 +96,21 @@ export const notAFunctionNorAContract: Array<any> = [
   new String('lalala')
 ];
 
-export const constructorPreCases: Array<Precondition<any>> = [
+export const constructorPreCases: Array<(this: void) => Array<Precondition<any>> | null | undefined> = ([
   function (this: void): undefined {
     return undefined;
   }
-].concat(preCases);
-export const constructorPostCases: Array<Postcondition<any>> = [
+] as Array<(this: void) => Array<Precondition<any>> | null | undefined>).concat(preCases);
+export const constructorPostCases: Array<(this: void) => Array<Postcondition<any>> | null | undefined> = ([
   function (this: void): undefined {
     return undefined;
   }
-].concat(postCases);
-export const constructorExceptionCases: Array<ExceptionCondition<any>> = [
+] as Array<(this: void) => Array<Postcondition<any>> | null | undefined>).concat(postCases);
+export const constructorExceptionCases: Array<() => Array<ExceptionCondition<any>> | null | undefined> = ([
   function (this: void): undefined {
     return undefined;
   }
-].concat(exceptionCases);
+] as Array<(this: void) => Array<ExceptionCondition<any>> | null | undefined>).concat(exceptionCases);
 
 export const location: StackLocation = stackEOL + '    at /';
 
@@ -170,7 +170,7 @@ export default class AbstractContractCommon {
         ? Postcondition<C>
         : P extends 'exception'
           ? ExceptionCondition<C>
-          : never>,
+          : never> | null | undefined,
     propName: P,
     privatePropName: P extends 'pre'
       ? '_pre'
@@ -197,9 +197,9 @@ export default class AbstractContractCommon {
   }
 
   expectAbstractContractConstructorPost<C extends AbstractContract<any, any>>(
-    pre: Array<Precondition<C>>,
-    post: Array<Postcondition<C>>,
-    exception: Array<ExceptionCondition<C>>,
+    pre: Array<Precondition<C>> | null | undefined,
+    post: Array<Postcondition<C>> | null | undefined,
+    exception: Array<ExceptionCondition<C>> | null | undefined,
     location: StackLocation,
     result: C
   ): void {

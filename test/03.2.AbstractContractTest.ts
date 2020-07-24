@@ -217,13 +217,13 @@ describe('AbstractContract', function () {
   });
 
   describe('#AbstractContract()', function () {
-    constructorPreCases.forEach((pre: (this: void) => Array<Precondition<any>>): void => {
-      constructorPostCases.forEach((post: (this: void) => Array<Postcondition<any>>): void => {
-        constructorExceptionCases.forEach((exception: (this: void) => Array<ExceptionCondition<any>>): void => {
+    constructorPreCases.forEach((pre: (this: void) => Array<Precondition<any>> | null | undefined): void => {
+      constructorPostCases.forEach((post: (this: void) => Array<Postcondition<any>> | null | undefined): void => {
+        constructorExceptionCases.forEach((exception: (this: void) => Array<ExceptionCondition<any>> | null | undefined): void => {
           it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
-            const preConditions: Array<Precondition<any>> = pre();
-            const postConditions: Array<Postcondition<any>> = post();
-            const exceptionConditions: Array<ExceptionCondition<any>> = exception();
+            const preConditions: Array<Precondition<any>> | null | undefined = pre();
+            const postConditions: Array<Postcondition<any>> | null | undefined = post();
+            const exceptionConditions: Array<ExceptionCondition<any>> | null | undefined  = exception();
             const result = new AbstractContract({
               pre: preConditions,
               post: postConditions,

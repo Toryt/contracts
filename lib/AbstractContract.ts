@@ -149,9 +149,9 @@ setAndFreeze(AbstractError.prototype, 'name', AbstractError.name);
 setAndFreeze(AbstractError.prototype, 'message', AbstractError.message);
 
 export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
-  pre?: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>>,
-  post?: ReadonlyArray<Postcondition<AbstractContract<F, Exceptions>>>,
-  exception?: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>>
+  pre?: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>> | null,
+  post?: ReadonlyArray<Postcondition<AbstractContract<F, Exceptions>>> | null,
+  exception?: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>> | null
 }
 
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
