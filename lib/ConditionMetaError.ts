@@ -26,7 +26,7 @@ import type {
 import {ok, strictEqual} from "assert";
 import {functionArguments, stack} from "./_private/is";
 import {stack as stackEOL} from "./_private/eol";
-import {setAndFreeze} from "./_private/property";
+import {frozenDerived, setAndFreeze} from "./_private/property";
 import {conciseCondition, extensiveThrown} from "./_private/report";
 import {isAGeneralContractFunction} from "./AbstractContract";
 import ConditionError from "./ConditionError";
@@ -63,10 +63,7 @@ export default class ConditionMetaError<B extends Condition<any>> extends Condit
   }
 
   get message(): string {
-    return (
-      `error occurred while evaluating ${conciseCondition('condition', this.condition)} ` +
-      `while contract function ${this.contractFunction.name} was called (${this.error})`
-    );
+    return getMessage.call(this);
   }
 
   getDetails(): string {
@@ -79,3 +76,13 @@ export default class ConditionMetaError<B extends Condition<any>> extends Condit
 }
 
 setAndFreeze(ConditionMetaError.prototype, 'name', ConditionMetaError.name);
+
+function getMessage(this: ConditionMetaError<any>): string {
+  return (
+    `error occurred while evaluating ${conciseCondition('condition', this.condition)} ` +
+    `while contract function ${this.contractFunction.name} was called (${this.error})`
+  );
+}
+
+// do better that the regular class getters: now they are immutable (backward compatible with existing tests)
+frozenDerived(ConditionMetaError.prototype, 'message', getMessage);

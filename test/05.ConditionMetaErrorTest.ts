@@ -22,6 +22,7 @@ import {raw} from "../lib/_private/stack";
 import {log} from "./_util/testUtil";
 
 describe('ConditionMetaError', function () {
+/* MUDO tests are irrelevant - remove
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
@@ -30,6 +31,7 @@ describe('ConditionMetaError', function () {
       ConditionMetaError.prototype.condition.should.not.throw();
     });
   });
+*/
 
   describe('#ConditionMetaError()', function () {
     common.errorCases.forEach((error: any) => {
