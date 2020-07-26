@@ -80,6 +80,7 @@ const selfCaseGenerators: Array<() => any> = anyCasesGenerators('self');
 let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
 argsCases = argsCases.concat(
   argsCases.map((c: Array<any>) => {
+    // noinspection ParameterNamingConventionJS
     function asArgs (..._args: Array<any>): IArguments {
       return arguments;
     }
@@ -117,30 +118,28 @@ export class ConditionErrorCommon<B extends Condition<any>, S extends ConditionE
     subject.message.should.containEql(conciseCondition('condition', subjectConditionError.condition));
   }
 
-  expectProperties  <B2 extends B, S2 extends S & ConditionError<B2>> (
-    exception: S2,
-    Type: Function,
-    contractFunction: GeneralContractFunction<ConditionContract<B2>>,
-    condition: B2,
-    self: ConditionThis<B2>,
-    args: ConditionArguments<B2>
+  expectProperties(
+    exception: S,
+    type: Function,
+    contractFunction: GeneralContractFunction<ConditionContract<B>>,
+    condition: B,
+    self: ConditionThis<B>,
+    args: ConditionArguments<B>
   ): void {
     exception.should.be.an.Error();
-    exception.should.be.instanceof(Type);
-    // noinspection JSUnresolvedVariable
+    exception.should.be.instanceof(type);
     exception.contractFunction.should.equal(contractFunction);
-    // noinspection JSUnresolvedVariable
     exception.condition.should.equal(condition);
     should(exception.self).equal(self);
     exception.args.should.eql(Array.prototype.slice.call(args));
   }
 
-  expectConstructorPost <B2 extends B, S2 extends S & ConditionError<B2>> (
-    result: S2,
-    contractFunction: GeneralContractFunction<ConditionContract<B2>>,
-    condition: B2,
-    self: ConditionThis<B2>,
-    args: ConditionArguments<B2>,
+  expectConstructorPost(
+    result: S,
+    contractFunction: GeneralContractFunction<ConditionContract<B>>,
+    condition: B,
+    self: ConditionThis<B>,
+    args: ConditionArguments<B>,
     rawStack: Stack
   ): void {
     this.expectContractErrorConstructorPost(result, result.message, rawStack);
@@ -150,9 +149,7 @@ export class ConditionErrorCommon<B extends Condition<any>, S extends ConditionE
 
   expectDetailsPost(subject: S, result: string): void {
     result.should.be.a.String();
-    // noinspection JSUnresolvedVariable
     result.should.containEql(conciseCondition('', subject.condition));
-    // noinspection JSUnresolvedVariable
     result.should.containEql(stackEOL + subject.contractFunction.contract.location);
     result.should.containEql(value(subject.self));
     Array.prototype.forEach.call(subject.args, arg => {
@@ -160,11 +157,12 @@ export class ConditionErrorCommon<B extends Condition<any>, S extends ConditionE
     });
   }
 
-  generateConditionErrorPrototypeMethodsDescriptions(
+  // noinspection FunctionNamingConventionJS
+  generatePrototypeMethodsDescriptions(
     oneSubjectGenerator: () => S,
     allSubjectGenerators: Array<{ subject: () => S, description: string }>
   ): void {
-    this.generateContractErrorPrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
+    super.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
     const self = this;
 

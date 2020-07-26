@@ -21,20 +21,18 @@ import type {
   Condition,
   ConditionArguments,
   ConditionContract,
-  ConditionThis, ExceptionCondition,
-  GeneralContractFunction, Postcondition, Precondition
+  ConditionThis,
+  GeneralContractFunction,
 } from "../lib/AbstractContract";
-import type ContractError from "../lib/ContractError";
-import type ConditionError from "../lib/ConditionError";
 
 import {ConditionErrorCommon} from "./ConditionErrorCommon";
 import {expectFrozenPropertyOnAPrototype} from "./_util/testUtil";
 import ConditionViolation from "../lib/ConditionViolation";
-import {ok} from "assert";
 import {functionArguments} from "../lib/_private/is";
 import * as should from "should";
 import conditionMetaErrorCommon from "./ConditionMetaErrorCommon";
 import ConditionMetaError from "../lib/ConditionMetaError";
+import {ok} from "assert";
 
 function isArguments (o: any): void {
   functionArguments(o).should.be.true();
@@ -52,11 +50,12 @@ const selfVerifyCases: Array<(this: void) => any> = [
   }
 ];
 
+// noinspection ParameterNamingConventionJS
 function args (..._args: any): IArguments {
   return arguments;
 }
 
-const argsVerifyCases: Array<(this: void) => ArrayLike<any>> = [
+const argsVerifyCases: Array<(this: void) => ConditionArguments<Condition<any>>> = [
   function () {
     return args();
   },
@@ -72,14 +71,17 @@ const argsVerifyCases: Array<(this: void) => ArrayLike<any>> = [
 ];
 
 
-export class ConditionViolationCommon extends ConditionErrorCommon {
-  doctorArgs (args, boundContractFunction) { // MUDO
+export class ConditionViolationCommon<B extends Condition<any>, S extends ConditionViolation<B>> extends ConditionErrorCommon<B, S> {
+  // noinspection ParameterNamingConventionJS
+  doctorArgs (
+    args: ConditionArguments<B>,
+    _boundContractFunction: GeneralContractFunction<ConditionContract<B>>
+  ): ConditionArguments<B> { // MUDO
     return args;
   }
 
-  expectInvariants(subject: ContractError): void {
+  expectInvariants(subject: S): void {
     subject.should.be.an.instanceof(ConditionViolation);
-    ok(subject instanceof ConditionViolation);
     super.expectInvariants(subject);
     expectFrozenPropertyOnAPrototype(subject, 'verify');
     subject.verify.should.be.a.Function();
@@ -88,21 +90,21 @@ export class ConditionViolationCommon extends ConditionErrorCommon {
   }
 
   // noinspection ParameterNamingConventionJS
-  expectProperties<B extends Condition<any>>(
-    exception: ConditionError<B>,
-    Type: typeof ConditionError,
+  expectProperties(
+    exception: S,
+    type: Function,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
     self: ConditionThis<B>,
     args: ConditionArguments<B>,
     _extraProperty?: any
   ): void {
-    super.expectProperties(exception, Type, contractFunction, condition, self, args);
+    super.expectProperties(exception, type, contractFunction, condition, self, args);
     Object.isFrozen(exception).should.be.true();
   }
 
-  expectConstructorPost<B extends Condition<any>> (
-    result: ConditionError<B>,
+  expectConstructorPost(
+    result: S,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
     self: ConditionThis<B>,
@@ -115,38 +117,40 @@ export class ConditionViolationCommon extends ConditionErrorCommon {
 
   // noinspection FunctionNamingConventionJS
   generatePrototypeMethodsDescriptions(
-    oneSubjectGenerator: () => ConditionViolation<any>,
-    allSubjectGenerators: Array<{ subject: () => ConditionViolation<any>, description: string }>
+    oneSubjectGenerator: () => S,
+    allSubjectGenerators: Array<{ subject: () => S, description: string }>
   ): void {
     super.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators);
 
     const that = this;
 
-    type GeneralConditionCase =
-      Precondition<any> & Postcondition<any> & ExceptionCondition<any> & {self: any, args: IArguments};
+    type ConditionExtension = {self: any, args: IArguments};
 
-    function adorn(f: Precondition<any> & Postcondition<any> & ExceptionCondition<any>): GeneralConditionCase {
+    type ExtendedB = B & ConditionExtension;
+
+    function adorn(f: Condition<any>): ExtendedB {
       return function adorned() {
-        (adorned as GeneralConditionCase).self = this;
-        (adorned as GeneralConditionCase).args = arguments;
+        (adorned as ExtendedB).self = this;
+        (adorned as ExtendedB).args = arguments;
         return f.call(this, ...arguments);
-      } as GeneralConditionCase;
+      } as ExtendedB;
     }
 
-    const verifyConditionCases: Array<(this: void) => GeneralConditionCase> = [
-      () => function f(): void {
-        // no return
-      },
-      () => function f(): false {
-        return false;
-      },
-      () => function f(): true {
-        return true;
-      },
-      () => function f(): never {
-        throw new Error('This condition fails with an error');
-      }
-    ].map((g: (this: void) => Precondition<any> & Postcondition<any> & ExceptionCondition<any>) => () => adorn(g()));
+    const verifyConditionCases: Array<(this: void) => ExtendedB> =
+      [
+        () => function f(): void {
+          // no return
+        },
+        () => function f(): false {
+          return false;
+        },
+        () => function f(): true {
+          return true;
+        },
+        () => function f(): never {
+          throw new Error('This condition fails with an error');
+        }
+      ].map((g: (this: void) => Condition<any>) => () => adorn(g()));
 
 /* MUDO
     const verifyPromiseConditionCases: Array<(this: void) => GeneralConditionCase> = [
@@ -178,15 +182,15 @@ export class ConditionViolationCommon extends ConditionErrorCommon {
 */
 
     describe('#verify()', function () {
-      verifyConditionCases.forEach((conditionGenerator: (this: void) => GeneralConditionCase) => {
-        selfVerifyCases.forEach((selfGenerator: (this:void) => any) => {
-          argsVerifyCases.forEach((argGenerator: (this: void) => ArrayLike<any>) => {
-            const condition: GeneralConditionCase = conditionGenerator();
-            const self: any = selfGenerator();
-            const args: ArrayLike<any> = argGenerator();
+      verifyConditionCases.forEach((conditionGenerator: (this: void) => ExtendedB) => {
+        selfVerifyCases.forEach((selfGenerator: (this:void) => ConditionThis<B>) => {
+          argsVerifyCases.forEach((argGenerator: (this: void) => ConditionArguments<B>) => {
+            const condition: ExtendedB = conditionGenerator();
+            const self: ConditionThis<B> = selfGenerator();
+            const args: ConditionArguments<B> = argGenerator();
             it('works for ' + condition + ' - ' + self + ' - ' + args, function () {
-              const subject: ConditionViolation<any> = oneSubjectGenerator();
-              const contractFunction: GeneralContractFunction<any> = that.createCandidateContractFunction();
+              const subject: S = oneSubjectGenerator();
+              const contractFunction: GeneralContractFunction<ConditionContract<ExtendedB>> = that.createCandidateContractFunction();
               const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self)); // MUDO
               let outcome: any;
               let metaError: boolean = false;
@@ -366,7 +370,7 @@ export class ConditionViolationCommon extends ConditionErrorCommon {
     })
 */
 
-    const verifyAllConditionsCases: Array<(this: void) => Array<GeneralConditionCase>> = [
+    const verifyAllConditionsCases: Array<(this: void) => Array<ExtendedB>> = [
       () => [],
       () => [
         function f(): false {
@@ -414,26 +418,24 @@ export class ConditionViolationCommon extends ConditionErrorCommon {
         }
       ]
     ].map(
-      (g: (this: void) => Array<Precondition<any> & Postcondition<any> & ExceptionCondition<any>>) =>
-        () => g().map((condition: Precondition<any> & Postcondition<any> & ExceptionCondition<any>) =>
-          adorn(condition)));
+      (g: (this: void) => Array<Condition<any>>) => () => g().map((condition: Condition<any>) => adorn(condition)));
 
     describe('#verifyAll()', function () {
-      verifyAllConditionsCases.forEach((conditionsGenerator: (this: void) => Array<GeneralConditionCase>) => {
-        selfVerifyCases.forEach((selfGenerator: (this:void) => any) => {
-          argsVerifyCases.forEach((argGenerator: (this:void) => ArrayLike<any>) => {
-            const conditions: Array<GeneralConditionCase> = conditionsGenerator();
-            const self: any = selfGenerator();
-            const args: ArrayLike<any> = argGenerator();
+      verifyAllConditionsCases.forEach((conditionsGenerator: (this: void) => Array<ExtendedB>) => {
+        selfVerifyCases.forEach((selfGenerator: (this:void) => ConditionThis<B>) => {
+          argsVerifyCases.forEach((argGenerator: (this:void) => ConditionArguments<B>) => {
+            const conditions: Array<ExtendedB> = conditionsGenerator();
+            const self: ConditionThis<B> = selfGenerator();
+            const args: ConditionArguments<B> = argGenerator();
             const conditionsRepr: string = conditions.map(c => ('' + c).replace(/\s+/g, ' ')).join(', ');
 
             // noinspection FunctionTooLongJS
             it('works for [' + conditionsRepr + '] - ' + self + ' - ' + args, function () {
-              const subject: ConditionViolation<any> = oneSubjectGenerator();
+              const subject: S = oneSubjectGenerator();
               const contractFunction = that.createCandidateContractFunction();
               const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self));
 
-              let firstFailure: GeneralConditionCase | undefined;
+              let firstFailure: ExtendedB | undefined;
               let firstFailureIndex: number = -1;
               let metaError: boolean = false;
               for (let i = 0; !firstFailure && i < conditions.length; i++) {
@@ -459,6 +461,7 @@ export class ConditionViolationCommon extends ConditionErrorCommon {
               } catch (exc) {
                 conditions.length.should.be.greaterThanOrEqual(1); // otherwise, there can be no failure
                 should(firstFailure).be.ok(); // metaError or a false condition
+                ok(firstFailure);
                 if (metaError) {
                   conditionMetaErrorCommon.expectProperties(
                     exc,
