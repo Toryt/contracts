@@ -100,7 +100,6 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
     _extraProperty?: any
   ): void {
     super.expectProperties(exception, type, contractFunction, condition, self, args);
-    Object.isFrozen(exception).should.be.true();
   }
 
   expectConstructorPost(
@@ -220,6 +219,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                   should(outcome).not.be.ok();
                   const extraProperty = doctoredArgs[args.length]; // might not exist
                   that.expectProperties(exc, subject.constructor, contractFunction, condition, self, args, extraProperty);
+                  Object.isFrozen(exc).should.be.true();
                 }
               } finally {
                 should(condition.self).equal(self);
@@ -288,6 +288,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                         args,
                         extraProperty
                       )
+                      Object.isFrozen(exc).should.be.true()
                     }
                   }
                 )
@@ -352,6 +353,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                         self,
                         doctoredArgs
                       )
+                      Object.isFrozen(exc).should.be.true()
                     }
                   )
                 })
@@ -482,6 +484,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                     args,
                     extraProperty
                   );
+                  Object.isFrozen(exc).should.be.true();
                 }
               } finally {
                 // evaluates all conditions up until the first failure with the given self and arguments
@@ -760,6 +763,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                           args,
                           extraProperty
                         )
+                        Object.isFrozen(exc).should.be.true()
                       }
                     }
                   )
