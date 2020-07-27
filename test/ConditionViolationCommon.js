@@ -71,12 +71,6 @@ function expectInvariants (subject) {
   subject.verifyAll.should.be.a.Function()
 }
 
-// noinspection ParameterNamingConventionJS
-function expectProperties (exception, Type, contractFunction, condition, self, args) {
-  common.expectProperties.apply(undefined, arguments)
-  Object.isFrozen(exception).should.be.true()
-}
-
 function expectConstructorPost (result, contractFunction, condition, self, args) {
   // noinspection JSUnresolvedVariable
   common.expectConstructorPost(result, contractFunction, condition, self, args, result._rawStack)
@@ -188,6 +182,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                 should(outcome).not.be.ok()
                 const extraProperty = doctoredArgs[args.length] // might not exist
                 that.expectProperties(exc, subject.constructor, contractFunction, condition, self, args, extraProperty)
+                Object.isFrozen(exc).should.be.true()
               }
             } finally {
               should(condition.self).equal(self)
@@ -255,6 +250,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                       args,
                       extraProperty
                     )
+                    Object.isFrozen(exc).should.be.true()
                   }
                 }
               )
@@ -319,6 +315,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                       self,
                       doctoredArgs
                     )
+                    Object.isFrozen(exc).should.be.true()
                   }
                 )
               })
@@ -467,6 +464,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
                   args,
                   extraProperty
                 )
+                Object.isFrozen(exc).should.be.true()
               }
             } finally {
               // evaluates all conditions up until the first failure with the given self and arguments
@@ -776,7 +774,7 @@ const test = {
   argsVerifyCases: argsVerifyCases,
   generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
   expectInvariants: expectInvariants,
-  expectProperties: expectProperties,
+  expectProperties: common.expectProperties,
   expectConstructorPost: expectConstructorPost,
   doctorArgs: doctorArgs
 }
