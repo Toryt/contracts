@@ -27,6 +27,7 @@ import {isAGeneralContractFunction} from "./AbstractContract";
 import {raw, skipsForEach} from "./_private/stack";
 import {functionArguments} from "./_private/is";
 import ConditionMetaError from "./ConditionMetaError"
+import {setAndFreeze} from "./_private/property";
 
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
@@ -261,3 +262,5 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
   }
 */
 }
+
+setAndFreeze(ConditionViolation.prototype, 'name', ConditionViolation.name);

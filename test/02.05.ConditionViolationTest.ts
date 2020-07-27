@@ -28,6 +28,7 @@ import {log, x} from "./_util/testUtil";
 import ConditionViolation from "../lib/ConditionViolation";
 
 describe('ConditionViolation', function () {
+/* MUDO tests are irrelevant - remove
   describe('#prototype', function () {
     it('has a condition', function () {
       // noinspection JSUnresolvedVariable
@@ -36,7 +37,7 @@ describe('ConditionViolation', function () {
       ConditionViolation.prototype.condition.should.not.throw();
     });
   });
-
+*/
   describe('#ConditionViolation()', function () {
     // noinspection JSUnresolvedVariable
     common.selfCaseGenerators.forEach(selfCaseGenerator => {
