@@ -241,8 +241,11 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
     return isAGeneralContractFunction(f) && f.contract instanceof this && stackLocation(f.location);
   }
 
+  // noinspection LocalVariableNamingConventionJS
   readonly _pre: ReadonlyArray<Precondition<this>>;
+  // noinspection LocalVariableNamingConventionJS
   readonly _post: ReadonlyArray<Postcondition<this>>;
+  // noinspection LocalVariableNamingConventionJS
   readonly _exception: ReadonlyArray<ExceptionCondition<this>>;
   readonly location: StackLocation | typeof AbstractContract.internalLocation;
   readonly abstract: GeneralContractFunction<this>;
@@ -252,6 +255,7 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
 
   /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
   ['constructor']!: ContractConstructor<this>;
+  // noinspection ParameterNamingConventionJS
   constructor(
     kwargs: AbstractContractKwargs<F, Exceptions>,
     _location?: StackLocation | typeof AbstractContract.internalLocation
@@ -292,6 +296,7 @@ export default class AbstractContract<F extends AnyFunction, Exceptions> {
     return isAGeneralContractFunction<this>(f) && isOrHasAsPrototype(f.contract, this);
   }
 
+  // noinspection FunctionNamingConventionJS
   get pre(): Array<Precondition<this>> { // not ReadonlyArray: we have sliced
     return this._pre.slice();
   }
@@ -372,6 +377,7 @@ export function isAGeneralContractFunction <C extends AbstractContract<any, any>
 ): f is GeneralContractFunction<C> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
+  // noinspection JSPotentiallyInvalidConstructorUsage
   return (
     typeof f === 'function' &&
       frozenOwnProperty(f, 'contract') &&
@@ -419,6 +425,7 @@ export function bless <C extends AbstractContract<any, any>> (
   ok(!(contractFunction as any).implementation);
   ok(!(contractFunction as any).location);
   strictEqual(contractFunction.bind, Function.prototype.bind);
+  // noinspection SuspiciousTypeOfGuard
   ok(contract instanceof AbstractContract, 'contract is an AbstractContract');
   strictEqual(typeof implFunction, 'function');
   ok(
