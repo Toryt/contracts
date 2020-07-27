@@ -419,7 +419,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
 
             let firstFailure
-            let firstFailureIndex
+            let firstFailureIndex = -1
             let metaError = false
             for (let i = 0; !firstFailure && i < conditions.length; i++) {
               try {
