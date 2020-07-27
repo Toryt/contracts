@@ -123,16 +123,20 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
 
     const that = this;
 
-    type ConditionExtension = {self: any, args: IArguments};
+    type ConditionExtension = {self?: any, args?: IArguments};
 
     type ExtendedB = B & ConditionExtension;
 
     function adorn(f: Condition<any>): ExtendedB {
-      return function adorned() {
+      const result: ExtendedB = function adorned() {
         (adorned as ExtendedB).self = this;
         (adorned as ExtendedB).args = arguments;
         return f.call(this, ...arguments);
       } as ExtendedB;
+      result.toString = function (this: ExtendedB): string {
+        return f.toString();
+      };
+      return result;
     }
 
     const verifyConditionCases: Array<(this: void) => ExtendedB> =
@@ -223,7 +227,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                 }
               } finally {
                 should(condition.self).equal(self);
-                condition.args.should.be.ok();
+                should(condition.args).be.ok();
                 isArguments(condition.args);
                 // doctoredArgs might be arguments, or Array
                 Array.prototype.slice.call(doctoredArgs).should.eql(Array.prototype.slice.call(condition.args));
@@ -438,7 +442,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
               const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self));
 
               let firstFailure: ExtendedB | undefined;
-              let firstFailureIndex: number = -1;
+              let firstFailureIndex: number | undefined = undefined;
               let metaError: boolean = false;
               for (let i = 0; !firstFailure && i < conditions.length; i++) {
                 try {
@@ -490,11 +494,11 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                 // evaluates all conditions up until the first failure with the given self and arguments
                 for (let j = 0; j <= firstFailureIndex; j++) {
                   should(conditions[j].self).equal(self);
-                  const appliedArgs: ArrayLike<any> = conditions[j].args;
-                  appliedArgs.should.be.ok();
+                  const appliedArgs: ArrayLike<any> | undefined = conditions[j].args;
+                  should(appliedArgs).be.ok();
                   isArguments(appliedArgs);
                   if (!args) {
-                    appliedArgs.should.be.empty();
+                    should(appliedArgs).be.empty();
                   } else {
                     // doctoredArgs might be arguments, or Array
                     Array.prototype.slice.call(doctoredArgs).should.eql(Array.prototype.slice.call(appliedArgs));
