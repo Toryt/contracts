@@ -264,3 +264,7 @@ export default class ConditionViolation<B extends Condition<any>> extends Condit
 }
 
 setAndFreeze(ConditionViolation.prototype, 'name', ConditionViolation.name);
+
+// do better that the regular class getters: now they are immutable (backward compatible with existing tests)
+setAndFreeze(ConditionViolation.prototype, 'verify', ConditionViolation.prototype.verify);
+setAndFreeze(ConditionViolation.prototype, 'verifyAll', ConditionViolation.prototype.verifyAll);
