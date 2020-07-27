@@ -19,15 +19,23 @@ import type {
   ConditionContract,
   ConditionThis,
   ContractExceptions,
-  ExceptionCondition,
+  ExceptionCondition, ExceptionConditionArguments,
   GeneralContractFunction
 } from "./AbstractContract";
 import {ok, strictEqual} from "assert";
 import {isAGeneralContractFunction} from "./AbstractContract";
 import {functionArguments} from "./_private/is";
-import ConditionViolation from "./ConditionViolation";
+import ConditionViolation, {ConditionViolationConstructor} from "./ConditionViolation";
 import {stack as stackEOL} from "./_private/eol";
 import {extensiveThrown, type} from "./_private/report";
+
+/* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
+   See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
+// noinspection JSClassNamingConvention
+export type ExceptionConditionViolationConstructor<
+  EC extends ExceptionCondition<any>,
+  ECV extends ExceptionConditionViolation<EC>
+  > = ConditionViolationConstructor<EC, ECV>;
 
 /**
  * <p>An ExceptionConditionViolation is the means by which Toryt Contracts tells developers that it detected that an
@@ -64,19 +72,22 @@ import {extensiveThrown, type} from "./_private/report";
 export default class ExceptionConditionViolation <EC extends ExceptionCondition<any>> extends ConditionViolation<EC> {
   readonly exception: ContractExceptions<ConditionContract<EC>>;
 
+  /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
+  ['constructor']!: ExceptionConditionViolationConstructor<EC, this>;
   constructor(
     contractFunction: GeneralContractFunction<ConditionContract<EC>>,
     condition: EC,
     self: ConditionThis<EC>,
-    args: ConditionArguments<EC>
+    args: ExceptionConditionArguments<EC>
   ) {
     ok(isAGeneralContractFunction(contractFunction), 'this is a general contract function');
     strictEqual(typeof condition, 'function');
     ok(functionArguments(args) || Array.isArray(args), 'args is arguments or array');
 
+    // compiler cannot deal with PostconditionArguments<B>, but ConditionArguments<Pre> is functionally the same
     const actualArgs: ConditionArguments<EC> = Array.prototype.slice.call(args) as ConditionArguments<EC>;
     actualArgs.pop(); // the bound contract function
-    const exception = actualArgs.pop();
+    const exception: ContractExceptions<ConditionContract<EC>> = actualArgs.pop();
     super(contractFunction, condition, self, actualArgs);
     this.exception = exception;
   }

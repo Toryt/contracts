@@ -15,16 +15,23 @@
  */
 
 import type {
+  ConditionArguments,
   ConditionContract,
   ConditionThis,
   GeneralContractFunction,
   Precondition,
-  PreconditionArguments
 } from "./AbstractContract";
 import {ok, strictEqual} from "assert";
 import {isAGeneralContractFunction} from "./AbstractContract";
 import {functionArguments} from "./_private/is";
-import ConditionViolation from "./ConditionViolation";
+import ConditionViolation, {ConditionViolationConstructor} from "./ConditionViolation";
+
+/* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
+   See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
+export type PreconditionViolationConstructor<
+  Pre extends Precondition<any>,
+  PreCV extends PreconditionViolation<Pre>
+> = ConditionViolationConstructor<Pre, PreCV>;
 
 /**
  * A PreconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
@@ -49,11 +56,14 @@ import ConditionViolation from "./ConditionViolation";
  *                The arguments with which the contract function that failed, was called
  */
 export default class PreconditionViolation<Pre extends Precondition<any>> extends ConditionViolation<Pre> {
+  /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
+  ['constructor']!: PreconditionViolationConstructor<Pre, this>;
   constructor (
     contractFunction: GeneralContractFunction<ConditionContract<Pre>>,
     condition: Pre,
     self: ConditionThis<Pre>,
-    args: PreconditionArguments<Pre>
+    // compiler cannot deal with PreconditionArguments<B>, but ConditionArguments<Pre> is functionally the same
+    args: ConditionArguments<Pre>
   ) {
     ok(isAGeneralContractFunction(contractFunction), 'this is a general contract function');
     strictEqual(typeof condition, 'function');

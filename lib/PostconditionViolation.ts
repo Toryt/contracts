@@ -15,17 +15,26 @@
  */
 
 import type {
+  ConditionArguments,
   ConditionContract,
   ConditionThis,
   GeneralContractFunction,
   Postcondition, PostconditionArguments
 } from "./AbstractContract";
-import ConditionViolation from "./ConditionViolation";
+import ConditionViolation, {ConditionViolationConstructor} from "./ConditionViolation";
 import {ok, strictEqual} from "assert";
 import {ContractResult, isAGeneralContractFunction} from "./AbstractContract";
 import {functionArguments} from "./_private/is";
 import {type, value} from "./_private/report";
 import {stack as stackEOL} from "./_private/eol";
+
+/* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
+   See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
+// noinspection JSClassNamingConvention
+export type PostconditionViolationConstructor<
+  Post extends Postcondition<any>,
+  PostCV extends PostconditionViolation<Post>
+  > = ConditionViolationConstructor<Post, PostCV>;
 
 /**
  * <p>A PostconditionViolation is the means by which Toryt Contracts tells developers that it detected that a
@@ -60,6 +69,8 @@ import {stack as stackEOL} from "./_private/eol";
 export default class PostconditionViolation<Post extends Postcondition<any>> extends ConditionViolation<Post> {
   readonly result: ContractResult<ConditionContract<Post>>;
 
+  /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
+  ['constructor']!: PostconditionViolationConstructor<Post, this>;
   constructor (
     contractFunction: GeneralContractFunction<ConditionContract<Post>>,
     condition: Post,
@@ -70,7 +81,8 @@ export default class PostconditionViolation<Post extends Postcondition<any>> ext
     strictEqual(typeof condition, 'function');
     ok(functionArguments(args) || Array.isArray(args), 'args is arguments or array');
 
-    const actualArgs: PostconditionArguments<Post> = Array.prototype.slice.call(args) as PostconditionArguments<Post>;
+    // compiler cannot deal with PostconditionArguments<B>, but ConditionArguments<Pre> is functionally the same
+    const actualArgs: ConditionArguments<Post> = Array.prototype.slice.call(args) as ConditionArguments<Post>;
     actualArgs.pop(); // the bound contract function
     const result: ContractResult<ConditionContract<Post>> = actualArgs.pop();
     super(contractFunction, condition, self, actualArgs);
