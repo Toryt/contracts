@@ -442,7 +442,7 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
               const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self));
 
               let firstFailure: ExtendedB | undefined;
-              let firstFailureIndex: number = -1;
+              let firstFailureIndex: number = conditions.length - 1;
               let metaError: boolean = false;
               for (let i = 0; !firstFailure && i < conditions.length; i++) {
                 try {
