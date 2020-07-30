@@ -16,43 +16,35 @@
 
 /* eslint-env mocha */
 
-'use strict'
-
-const testUtil = require('./_util/testUtil')
-const common = require('./PreconditionViolationCommon')
-const PreconditionViolation = require('../lib/PreconditionViolation')
+import PreconditionViolation from "../lib/PreconditionViolation";
+import common from "./PreconditionViolationCommon";
+import {log, x} from "./_util/testUtil";
 
 describe('PreconditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
-      // noinspection JSUnresolvedVariable
-      PreconditionViolation.prototype.condition.should.be.a.Function()
-      // noinspection JSUnresolvedVariable
-      PreconditionViolation.prototype.condition.should.not.throw()
-    })
-  })
+      PreconditionViolation.prototype.condition.should.be.a.Function();
+      PreconditionViolation.prototype.condition.should.not.throw();
+    });
+  });
 
   describe('#PreconditionViolation()', function () {
     // noinspection JSUnresolvedVariable
     common.selfCaseGenerators.forEach(selfCaseGenerator => {
       // noinspection JSUnresolvedVariable
       common.argsCases.forEach(args => {
-        const self = selfCaseGenerator()
+        const self = selfCaseGenerator();
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          // noinspection JSUnresolvedFunction
-          const contractFunction = common.createCandidateContractFunction()
-          // noinspection JSUnresolvedVariable
-          const result = new PreconditionViolation(contractFunction, common.conditionCase, self, args)
-          // noinspection JSUnresolvedFunction, JSUnresolvedVariable
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
-          common.expectInvariants(result)
-          testUtil.log('result.stack:\n%s', result.stack)
-        })
-      })
-    })
-  })
+          const contractFunction = common.createCandidateContractFunction();
+          const result = new PreconditionViolation(contractFunction, common.conditionCase, self, args);
+          common.expectPreconditionViolationConstructorPost(result, contractFunction, common.conditionCase, self, args);
+          common.expectInvariants(result);
+          log('result.stack:\n%s', result.stack);
+        });
+      });
+    });
+  });
 
-  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
   common.generatePrototypeMethodsDescriptions(
     () =>
       new PreconditionViolation(
@@ -61,14 +53,14 @@ describe('PreconditionViolation', function () {
         null,
         common.argsCases[0]
       ),
-    testUtil.x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
-      const self = parameters[1]()
+    x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
+      const self = parameters[1]();
       // noinspection JSUnresolvedFunction
       return {
         subject: () =>
           new PreconditionViolation(common.createCandidateContractFunction(), parameters[0], self, parameters[2]),
         description: parameters[0] + ' — ' + self + ' – ' + parameters[2]
-      }
+      };
     })
-  )
-})
+  );
+});
