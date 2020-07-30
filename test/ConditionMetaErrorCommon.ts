@@ -59,10 +59,9 @@ extends ConditionErrorCommon<Condition<any>, 'no extra property', undefined, Con
     {},
     { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
   ];
-  readonly types: Array<Function> = super.types.concat([ConditionMetaError]);
 
   constructor() {
-    super('no extra property');
+    super('no extra property', [ConditionMetaError]);
   }
 
   expectInvariants(subject: ConditionMetaError<Condition<any>>): void {

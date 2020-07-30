@@ -110,11 +110,12 @@ export class ConditionErrorCommon<
   readonly conditionCases: Array<Condition<any>> = conditionCases;
   readonly conditionCase: Precondition<any> & Postcondition<any> & ExceptionCondition<any> = conditionCase;
   readonly extraPropertyName: Extra;
-  readonly types: Array<Function> = [ContractError, ConditionError];
+  readonly types: Array<Function>;
 
-  constructor(extraPropertyName: Extra) {
+  constructor(extraPropertyName: Extra, types: Array<Function>) {
     super();
     this.extraPropertyName = extraPropertyName;
+    this.types = ([ContractError, ConditionError] as Array<Function>).concat(types);
   }
 
   expectInvariants(subject: S): void {
@@ -214,5 +215,6 @@ export class ConditionErrorCommon<
 }
 
 export default new ConditionErrorCommon<Condition<any>, 'no extra property', undefined, ConditionError<Condition<any>>>(
-  'no extra property'
+  'no extra property',
+  []
 );

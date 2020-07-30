@@ -29,10 +29,8 @@ import {ConditionViolationCommon} from "./ConditionViolationCommon";
 export class PreconditionViolationCommon<
   Pre extends Precondition<any>
 > extends ConditionViolationCommon<Pre, 'no extra property', undefined, PreconditionViolation<Pre>> {
-  readonly types: Array<Function> = super.types.concat([PreconditionViolation]);
-
   constructor() {
-    super('no extra property');
+    super('no extra property', [PreconditionViolation]);
   }
 
   expectInvariants(subject: PreconditionViolation<Pre>) {

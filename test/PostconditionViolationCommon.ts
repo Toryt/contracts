@@ -37,7 +37,7 @@ export class PostconditionViolationCommon<
   readonly types: Array<Function> = super.types.concat([PostconditionViolation]);
 
   constructor() {
-    super('result');
+    super('result', [PostconditionViolation]);
   }
 
   expectInvariants (subject: PostconditionViolation<Post>): void {

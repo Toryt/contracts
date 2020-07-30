@@ -75,10 +75,8 @@ export class ConditionViolationCommon<
   ExtraT,
   S extends (Extra extends 'no extra property' ? ConditionViolation<B> : ConditionViolation<B> & {[E in Extra]: ExtraT})
 > extends ConditionErrorCommon<B, Extra, ExtraT, S> {
-  readonly types: Array<Function> = super.types.concat([ConditionViolation]);
-
-  constructor(extraPropertyName: Extra) {
-    super(extraPropertyName);
+  constructor(extraPropertyName: Extra, types: Array<Function>) {
+    super(extraPropertyName, ([ConditionViolation] as Array<Function>).concat(types));
   }
 
   expectInvariants(subject: S): void {
@@ -793,5 +791,6 @@ export class ConditionViolationCommon<
 
 
 export default new ConditionViolationCommon<Condition<any>, 'no extra property', undefined, ConditionViolation<any>>(
-  'no extra property'
+  'no extra property',
+  []
 );

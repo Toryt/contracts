@@ -49,7 +49,7 @@ describe('ConditionViolation', function () {
             common.createCandidateContractFunction();
           const result: ContractResult<ConditionContract<Condition<any>>> =
             new ConditionViolation(contractFunction, common.conditionCase, self, args);
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args);
+          common.expectConditionViolationConstructorPost(result, contractFunction, common.conditionCase, self, args);
           common.expectInvariants(result);
           result.should.not.have.ownProperty('message');
           result.should.not.have.ownProperty('stack');

@@ -38,7 +38,7 @@ export class ExceptionConditionViolationCommon<
   readonly types: Array<Function> = super.types.concat([ExceptionConditionViolation]);
 
   constructor() {
-    super('exception');
+    super('exception', [ExceptionConditionViolation]);
   }
 
   expectInvariants(subject: ExceptionConditionViolation<ExcC>) {

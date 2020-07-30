@@ -33,7 +33,7 @@ describe('ConditionError', function () {
             common.createCandidateContractFunction();
           const rawStack = raw();
           const result: ConditionError<any> = new ConditionError(contractFunction, common.conditionCase, self, args, rawStack);
-          common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, rawStack);
+          common.expectConditionErrorConstructorPost(result, contractFunction, common.conditionCase, self, args, rawStack);
           result.should.not.have.ownProperty('message');
           result.should.not.have.ownProperty('stack');
           log('result.stack:\n%s', result.stack);
