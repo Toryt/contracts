@@ -23,18 +23,26 @@ import {
   anyCasesGenerators,
   expectFrozenDerivedPropertyOnAPrototype,
   expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
-  expectOwnFrozenProperty, log
+  expectOwnFrozenProperty,
+  log
 } from "./_util/testUtil";
 import {
-  Condition, ConditionArguments, ConditionContract, ConditionThis, ExceptionCondition,
+  Condition,
+  ConditionArguments,
+  ConditionContract,
+  ConditionThis,
+  ExceptionCondition,
   GeneralContractFunction,
-  isAGeneralContractFunction, Postcondition, Precondition
+  isAGeneralContractFunction,
+  Postcondition,
+  Precondition
 } from "../lib/AbstractContract";
 import {conciseCondition, value} from "../lib/_private/report";
 import {stack as stackEOL} from "../lib/_private/eol";
 import {setAndFreeze} from "../lib/_private/property";
-import should = require('should');
 import abstractContractCommon from "./AbstractContractCommon";
+import ContractError from "../lib/ContractError";
+import should = require('should');
 
 const conditionCase: Condition<any> = function (this: any): string {
   return 'This simulates a condition';
@@ -89,17 +97,31 @@ argsCases = argsCases.concat(
   })
 );
 
-export class ConditionErrorCommon<B extends Condition<any>, S extends ConditionError<B>> extends ContractErrorCommon<S> {
+export class ConditionErrorCommon<
+  B extends Condition<any>,
+  Extra extends PropertyKey,
+  ExtraT,
+  S extends (Extra extends 'no extra property' ? ConditionError<B> : ConditionError<B> & {[E in Extra]: ExtraT})
+> extends ContractErrorCommon<S> {
   readonly selfCaseGenerators: Array<() => any> = selfCaseGenerators;
   readonly oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
   readonly oneArgsCase: any = argsCases[argsCases.length - 1];
   readonly argsCases: Array<any> = argsCases;
   readonly conditionCases: Array<Condition<any>> = conditionCases;
   readonly conditionCase: Precondition<any> & Postcondition<any> & ExceptionCondition<any> = conditionCase;
+  readonly extraPropertyName: Extra;
+  readonly types: Array<Function> = [ContractError, ConditionError];
+
+  constructor(extraPropertyName: Extra) {
+    super();
+    this.extraPropertyName = extraPropertyName;
+  }
 
   expectInvariants(subject: S): void {
     super.expectInvariants(subject);
-    subject.should.be.an.instanceof(ConditionError);
+    this.types.forEach((c: Function) => {
+      subject.should.be.an.instanceof(c);
+    });
     const subjectConditionError: S = subject as S;
     expectOwnFrozenProperty(subjectConditionError, 'contractFunction');
     // noinspection JSUnresolvedVariable
@@ -120,31 +142,39 @@ export class ConditionErrorCommon<B extends Condition<any>, S extends ConditionE
 
   expectProperties(
     exception: S,
-    type: Function,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
     self: ConditionThis<B>,
-    args: ConditionArguments<B>
+    args: ConditionArguments<B>,
+    extraProperty?:ExtraT
   ): void {
     exception.should.be.an.Error();
-    exception.should.be.instanceof(type);
+    this.types.forEach((c: Function) => {
+      exception.should.be.instanceof(c);
+    });
     exception.contractFunction.should.equal(contractFunction);
     exception.condition.should.equal(condition);
     should(exception.self).equal(self);
     exception.args.should.eql(Array.prototype.slice.call(args));
+    if(this.extraPropertyName !== 'no extra property') {
+      const p: Extra = this.extraPropertyName;
+      const v: ExtraT = (exception as ConditionError<B> & {[E in Extra]: ExtraT})[p];
+      should(v).equal(extraProperty);
+    }
   }
 
-  expectConstructorPost(
+  // noinspection FunctionNamingConventionJS
+  expectConditionErrorConstructorPost(
     result: S,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
     self: ConditionThis<B>,
     args: ConditionArguments<B>,
-    rawStack: Stack
+    rawStack: Stack,
+    extraProperty?: ExtraT
   ): void {
     this.expectContractErrorConstructorPost(result, result.message, rawStack);
-    this.expectProperties(result, ConditionError, contractFunction, condition, self, args);
-    Object.isExtensible(result).should.be.true();
+    this.expectProperties(result, contractFunction, condition, self, args, extraProperty);
   }
 
   expectDetailsPost(subject: S, result: string): void {
@@ -183,4 +213,6 @@ export class ConditionErrorCommon<B extends Condition<any>, S extends ConditionE
   readonly createCandidateContractFunction = abstractContractCommon.createCandidateContractFunction;
 }
 
-export default new ConditionErrorCommon<Condition<any>, ConditionError<Condition<any>>>();
+export default new ConditionErrorCommon<Condition<any>, 'no extra property', undefined, ConditionError<Condition<any>>>(
+  'no extra property'
+);

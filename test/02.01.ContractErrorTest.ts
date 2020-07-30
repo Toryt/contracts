@@ -31,7 +31,6 @@ describe('ContractError', function () {
       log('result:\n%s', result);
       log('result.toString():\n%s', result.toString());
       common.expectContractErrorConstructorPost(result, ContractError.message, rawStack);
-      common.expectInvariants(result);
       result.should.not.have.ownProperty('message');
       log('result.stack:\n%s', result.stack);
     });

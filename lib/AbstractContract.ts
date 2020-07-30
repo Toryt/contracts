@@ -109,6 +109,7 @@ export type ConditionArguments<B extends Condition<any>> =
       : B extends ExceptionCondition<any>
         ? ExceptionConditionArguments<B>
         : never;
+export type ConditionResult<B extends Condition<any>> = ContractResult<ConditionContract<B>>;
 
 /**
  * Function that always returns <code>false</code>.

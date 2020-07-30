@@ -34,7 +34,6 @@ describe('ConditionError', function () {
           const rawStack = raw();
           const result: ConditionError<any> = new ConditionError(contractFunction, common.conditionCase, self, args, rawStack);
           common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args, rawStack);
-          common.expectInvariants(result);
           result.should.not.have.ownProperty('message');
           result.should.not.have.ownProperty('stack');
           log('result.stack:\n%s', result.stack);

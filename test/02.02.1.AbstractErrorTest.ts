@@ -28,7 +28,6 @@ describe('AbstractError', function () {
       const rawStack: Stack = raw();
       const result: AbstractError = new AbstractError(root, rawStack);
       common.expectAbstractErrorConstructorPost(result, AbstractError.message, root, rawStack);
-      common.expectInvariants(result);
       log('result.stack:\n%s', result.stack);
     });
   });

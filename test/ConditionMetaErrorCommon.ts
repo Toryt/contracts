@@ -31,7 +31,8 @@ import {expectOwnFrozenProperty} from "./_util/testUtil";
 import {extensiveThrown} from "../lib/_private/report";
 import * as should from "should";
 
-export class ConditionMetaErrorCommon extends ConditionErrorCommon<Condition<any>, ConditionMetaError<Condition<any>>> {
+export class ConditionMetaErrorCommon
+extends ConditionErrorCommon<Condition<any>, 'no extra property', undefined, ConditionMetaError<Condition<any>>> {
   // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
   readonly errorCases: Array<any> = [
     new Error('This is an error case'),
@@ -58,6 +59,11 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon<Condition<any
     {},
     { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
   ];
+  readonly types: Array<Function> = super.types.concat([ConditionMetaError]);
+
+  constructor() {
+    super('no extra property');
+  }
 
   expectInvariants(subject: ConditionMetaError<Condition<any>>): void {
     super.expectInvariants(subject);
@@ -82,6 +88,7 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon<Condition<any
     }
   }
 
+  // noinspection FunctionNamingConventionJS
   expectConditionMetaErrorConstructorPost <B extends Condition<any>> (
     result: ConditionMetaError<B>,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
@@ -91,7 +98,7 @@ export class ConditionMetaErrorCommon extends ConditionErrorCommon<Condition<any
     error: any,
     rawStack: Stack
   ): void {
-    super.expectConstructorPost(result, contractFunction, condition, self, args, rawStack);
+    this.expectConditionErrorConstructorPost(result, contractFunction, condition, self, args, rawStack);
     should(result.error).equal(error);
   }
 }

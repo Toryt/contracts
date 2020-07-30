@@ -16,7 +16,6 @@
 
 /* eslint-env mocha */
 
-
 import type {
   Condition,
   ConditionArguments,
@@ -31,7 +30,6 @@ import ConditionViolation from "../lib/ConditionViolation";
 import {functionArguments} from "../lib/_private/is";
 import * as should from "should";
 import conditionMetaErrorCommon from "./ConditionMetaErrorCommon";
-import ConditionMetaError from "../lib/ConditionMetaError";
 import {ok} from "assert";
 
 function isArguments (o: any): void {
@@ -71,47 +69,46 @@ const argsVerifyCases: Array<(this: void) => ConditionArguments<Condition<any>>>
 ];
 
 
-export class ConditionViolationCommon<B extends Condition<any>, S extends ConditionViolation<B>> extends ConditionErrorCommon<B, S> {
-  // noinspection ParameterNamingConventionJS
-  doctorArgs (
-    args: ConditionArguments<B>,
-    _boundContractFunction: GeneralContractFunction<ConditionContract<B>>
-  ): ConditionArguments<B> { // MUDO
-    return args;
+export class ConditionViolationCommon<
+  B extends Condition<any>,
+  Extra extends PropertyKey,
+  ExtraT,
+  S extends (Extra extends 'no extra property' ? ConditionViolation<B> : ConditionViolation<B> & {[E in Extra]: ExtraT})
+> extends ConditionErrorCommon<B, Extra, ExtraT, S> {
+  readonly types: Array<Function> = super.types.concat([ConditionViolation]);
+
+  constructor(extraPropertyName: Extra) {
+    super(extraPropertyName);
   }
 
   expectInvariants(subject: S): void {
-    subject.should.be.an.instanceof(ConditionViolation);
     super.expectInvariants(subject);
+    subject.should.be.an.instanceof(ConditionViolation);
     expectFrozenPropertyOnAPrototype(subject, 'verify');
     subject.verify.should.be.a.Function();
     expectFrozenPropertyOnAPrototype(subject, 'verifyAll');
     subject.verifyAll.should.be.a.Function();
   }
 
-  // noinspection ParameterNamingConventionJS
-  expectProperties(
+  // noinspection FunctionNamingConventionJS
+  expectConditionViolationConstructorPost(
     exception: S,
-    type: Function,
     contractFunction: GeneralContractFunction<ConditionContract<B>>,
     condition: B,
     self: ConditionThis<B>,
     args: ConditionArguments<B>,
-    _extraProperty?: any
+    extraProperty?: ExtraT
   ): void {
-    super.expectProperties(exception, type, contractFunction, condition, self, args);
+    this.expectConditionErrorConstructorPost(exception, contractFunction, condition, self, args, exception['_rawStack'], extraProperty);
+    // not frozen yet
   }
 
-  expectConstructorPost(
-    result: S,
-    contractFunction: GeneralContractFunction<ConditionContract<B>>,
-    condition: B,
-    self: ConditionThis<B>,
-    args: ConditionArguments<B>
-  ): void {
-    super.expectConstructorPost(result, contractFunction, condition, self, args, result['_rawStack']);
-    this.expectProperties( result, ConditionViolation, contractFunction, condition, self, args);
-    // not frozen yet
+  // noinspection ParameterNamingConventionJS
+  doctorArgs (
+    args: ConditionArguments<any>,
+    _boundContractFunction: GeneralContractFunction<ConditionContract<B>>
+  ): ConditionArguments<B> { // MUDO
+    return args as ConditionArguments<B>;
   }
 
   // noinspection FunctionNamingConventionJS
@@ -212,7 +209,6 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                   // noinspection JSUnresolvedFunction
                   conditionMetaErrorCommon.expectProperties(
                     exc,
-                    ConditionMetaError,
                     contractFunction,
                     condition,
                     self,
@@ -221,8 +217,8 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                 } else {
                   // ConditionViolation
                   should(outcome).not.be.ok();
-                  const extraProperty = doctoredArgs[args.length]; // might not exist
-                  that.expectProperties(exc, subject.constructor, contractFunction, condition, self, args, extraProperty);
+                  const extraProperty: ExtraT = doctoredArgs[args.length]; // might not exist
+                  that.expectProperties(exc, contractFunction, condition, self, args, extraProperty);
                   Object.isFrozen(exc).should.be.true();
                 }
               } finally {
@@ -471,17 +467,15 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
                 if (metaError) {
                   conditionMetaErrorCommon.expectProperties(
                     exc,
-                    ConditionMetaError,
                     contractFunction,
                     firstFailure,
                     self,
                     doctoredArgs
                   );
                 } else {
-                  const extraProperty: any = doctoredArgs[args.length]; // might not exist
+                  const extraProperty: ExtraT = doctoredArgs[args.length]; // might not exist
                   that.expectProperties(
                     exc,
-                    subject.constructor,
                     contractFunction,
                     firstFailure,
                     self,
@@ -798,4 +792,6 @@ export class ConditionViolationCommon<B extends Condition<any>, S extends Condit
 }
 
 
-export default new ConditionViolationCommon();
+export default new ConditionViolationCommon<Condition<any>, 'no extra property', undefined, ConditionViolation<any>>(
+  'no extra property'
+);

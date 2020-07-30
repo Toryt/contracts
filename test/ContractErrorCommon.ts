@@ -58,6 +58,7 @@ export class ContractErrorCommon<S extends ContractError> {
     result.name.should.equal(result.constructor.name);
     result.message.should.equal(message);
     result['_rawStack'].should.equal(rawStack);
+    this.expectInvariants(result);
   }
 
   // noinspection FunctionNamingConventionJS,ParameterNamingConventionJS
