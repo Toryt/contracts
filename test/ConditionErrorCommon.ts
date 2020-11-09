@@ -44,12 +44,12 @@ import abstractContractCommon from "./AbstractContractCommon";
 import ContractError from "../lib/ContractError";
 import should = require('should');
 
-const conditionCase: Condition<any> = function (this: any): string {
+const conditionCase: Condition<any> = function (this: unknown): string {
   return 'This simulates a condition';
 };
 
-function generateMultiLineAnonFunction (this: void): (this: any) => string {
-  return function (this: any): string {
+function generateMultiLineAnonFunction (this: void): (this: unknown) => string {
+  return function (this: unknown): string {
     let x = 'This is a multi-line function';
     x += 'The intention of this test';
     x += 'is to verify';
@@ -64,11 +64,11 @@ function generateMultiLineAnonFunction (this: void): (this: any) => string {
 const conditionCases: Array<Condition<any>> =
   [conditionCase, generateMultiLineAnonFunction()];
 
-function functionWithAName (this: any): void {}
+function functionWithAName (this: unknown): void {}
 setAndFreeze(functionWithAName, 'name', '  This is a name  '); // trim
 conditionCases.push(functionWithAName);
 
-const other: (this: any) => any = generateMultiLineAnonFunction();
+const other: (this: unknown) => unknown = generateMultiLineAnonFunction();
 setAndFreeze(
   other,
   'name',
@@ -83,13 +83,13 @@ this function should have a name   ` // trim
 );
 conditionCases.push(other);
 
-const selfCaseGenerators: Array<() => any> = anyCasesGenerators('self');
+const selfCaseGenerators: Array<() => unknown> = anyCasesGenerators('self');
 
-let argsCases: Array<any> = [[], anyCasesGenerators('arguments element').map(g => g())];
+let argsCases: Array<Array<unknown>> = [[], anyCasesGenerators('arguments element').map(g => g())];
 argsCases = argsCases.concat(
-  argsCases.map((c: Array<any>) => {
+  argsCases.map((c: Array<unknown>) => {
     // noinspection ParameterNamingConventionJS
-    function asArgs (..._args: Array<any>): IArguments {
+    function asArgs (..._args: Array<unknown>): IArguments {
       return arguments;
     }
 
@@ -103,10 +103,10 @@ export class ConditionErrorCommon<
   ExtraT,
   S extends (Extra extends 'no extra property' ? ConditionError<B> : ConditionError<B> & {[E in Extra]: ExtraT})
 > extends ContractErrorCommon<S> {
-  readonly selfCaseGenerators: Array<() => any> = selfCaseGenerators;
-  readonly oneSelfCase: any = selfCaseGenerators[selfCaseGenerators.length - 1]();
-  readonly oneArgsCase: any = argsCases[argsCases.length - 1];
-  readonly argsCases: Array<any> = argsCases;
+  readonly selfCaseGenerators: Array<() => unknown> = selfCaseGenerators;
+  readonly oneSelfCase: unknown = selfCaseGenerators[selfCaseGenerators.length - 1]();
+  readonly oneArgsCase: ReadonlyArray<unknown> = argsCases[argsCases.length - 1];
+  readonly argsCases: ReadonlyArray<Array<unknown>> = argsCases;
   readonly conditionCases: Array<Condition<any>> = conditionCases;
   readonly conditionCase: Precondition<any> & Postcondition<any> & ExceptionCondition<any> = conditionCase;
   readonly extraPropertyName: Extra;

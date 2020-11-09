@@ -16,11 +16,17 @@
 
 /* eslint-env mocha */
 
+import type {
+  ConditionContract,
+  ConditionThis,
+  ExceptionCondition, ExceptionConditionArguments,
+  GeneralContractFunction
+} from "../lib/AbstractContract";
 import ExceptionConditionViolation from "../lib/ExceptionConditionViolation";
-import common from "./ExceptionConditionViolationCommon";
+import common, {exceptionCaseGenerators} from "./ExceptionConditionViolationCommon";
 import {log, x} from "./_util/testUtil";
 
-const argsCases = common.argsCases.filter(a => Array.isArray(a));
+const argsCases: ReadonlyArray<ReadonlyArray<unknown>> = common.argsCases.filter(a => Array.isArray(a));
 
 describe('ExceptionConditionViolation', function () {
   describe('#prototype', function () {
@@ -31,18 +37,18 @@ describe('ExceptionConditionViolation', function () {
   });
 
   describe('#ExceptionConditionViolation()', function () {
-    common.selfCaseGenerators.forEach(selfCaseGenerator => {
-      argsCases.forEach(args => {
-        common.exceptionCaseGenerators.forEach(exceptionCaseGenerator => {
-          const self = selfCaseGenerator();
-          const exception = exceptionCaseGenerator();
+    common.selfCaseGenerators.forEach((selfCaseGenerator: () => ConditionThis<ExceptionCondition<any>>) => {
+      argsCases.forEach((args: ReadonlyArray<unknown>) => {
+        exceptionCaseGenerators.forEach(exceptionCaseGenerator => {
+          const self: ConditionThis<ExceptionCondition<any>> = selfCaseGenerator();
+          const exception: unknown = exceptionCaseGenerator();
           it('creates an instance with all toppings for ' + self + ' - ' + args + ' - ' + exception, function () {
-            const contractFunction = common.createCandidateContractFunction();
-            const doctoredArgs = args.slice();
+            const contractFunction: GeneralContractFunction<ConditionContract<ExceptionCondition<any>>> =
+              common.createCandidateContractFunction();
+            const doctoredArgs: ExceptionConditionArguments<ExceptionCondition<any>> = args.slice();
             doctoredArgs.push(exception);
             doctoredArgs.push(contractFunction.bind(self));
-            // noinspection JSUnresolvedVariable
-            const creationResult = new ExceptionConditionViolation(
+            const creationResult: ExceptionConditionViolation<any> = new ExceptionConditionViolation(
               contractFunction,
               common.conditionCase,
               self,
@@ -57,17 +63,19 @@ describe('ExceptionConditionViolation', function () {
     });
   });
 
-  // noinspection JSUnresolvedVariable
-  const cases = x(common.conditionCases, [() => common.oneSelfCase], [() => common.oneArgsCase], common.exceptionCaseGenerators)
-    .concat(
-      x(
-        [common.conditionCase],
-        common.selfCaseGenerators,
-        [() => common.oneArgsCase],
-        [() => new Error('test error')]
+  type Params = [ExceptionCondition<any>, ConditionThis<ExceptionCondition<any>>, Array<any>, () => unknown];
+
+  const cases: Array<Params> =
+    x(common.conditionCases, [() => common.oneSelfCase], [() => common.oneArgsCase], exceptionCaseGenerators)
+      .concat(
+        x(
+          [common.conditionCase],
+          common.selfCaseGenerators,
+          [() => common.oneArgsCase],
+          [() => new Error('test error')]
+        )
       )
-    )
-    .concat(x([common.conditionCase], [() => common.oneSelfCase], argsCases, [() => new Error('test error')]));
+      .concat(x([common.conditionCase], [() => common.oneSelfCase], argsCases, [() => new Error('test error')]));
 
   common.generatePrototypeMethodsDescriptions(
     () => {
@@ -76,11 +84,12 @@ describe('ExceptionConditionViolation', function () {
       const doctoredArgs = common.doctorArgs(common.argsCases[0], contractFunction.bind(self));
       return new ExceptionConditionViolation(contractFunction, common.conditionCase, self, doctoredArgs);
     },
-    cases.map(parameters => {
-      const self = parameters[1]();
+    cases.map((parameters: Params) => {
+      const self: ConditionThis<ExceptionCondition<any>> = parameters[1]();
       return {
         subject: () => {
-          const contractFunction = common.createCandidateContractFunction();
+          const contractFunction: GeneralContractFunction<ConditionContract<ExceptionCondition<any>>> =
+            common.createCandidateContractFunction();
           const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]());
           return new ExceptionConditionViolation(contractFunction, parameters[0], self, doctoredArgs);
         },

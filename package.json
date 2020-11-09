@@ -9,7 +9,7 @@
   },
   "scripts": {
     "pretest": "npm-check -i standard -i mocha-reporter -i legally -i tldrlegal -i inherits -i _process -i kindof -i lodash._root -i lodash._createwrapper -i lodash.wrap -i oolong -i json-stringify-safe -i egal; npm outdated || exit 0",
-    "test": "standard && nyc mocha --reporter dot 'test/**/*Test.js'",
+    "test": "standard && nyc ts-mocha --reporter dot 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "browserify": "browserify -s toryt.contracts.v --outfile contracts-v.js lib/index.js",
@@ -99,7 +99,6 @@
       "should"
     ],
     "checkLeaks": true,
-    "reporter": "mocha-reporter",
     "recursive": true
   },
   "nyc": {

@@ -104,8 +104,9 @@ export class ConditionViolationCommon<
   // noinspection ParameterNamingConventionJS
   doctorArgs (
     args: ConditionArguments<any>,
-    _boundContractFunction: GeneralContractFunction<ConditionContract<B>>
-  ): ConditionArguments<B> { // MUDO
+    _boundContractFunction: GeneralContractFunction<ConditionContract<B>>,
+    _extra?: ExtraT
+  ): ConditionArguments<B> {
     return args as ConditionArguments<B>;
   }
 

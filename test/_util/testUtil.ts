@@ -19,15 +19,27 @@ import type {Stack, StackLocation} from "../../lib/_private/is";
 import {EOL as osEOL} from "os";
 
 // noinspection FunctionNamingConventionJS
-export function x <T> (this: void, ...args: Array<Array<T>>): Array<Array<T>> {
+export function x (this: void): Array<never>;
+// noinspection ParameterNamingConventionJS,FunctionNamingConventionJS
+export function x <T1> (this: void, _a1: ReadonlyArray<T1>): Array<[T1]>;
+// noinspection ParameterNamingConventionJS,FunctionNamingConventionJS
+export function x <T1, T2> (this: void, _a1: ReadonlyArray<T1>, _a2: ReadonlyArray<T2>): Array<[T1, T2]>;
+// noinspection ParameterNamingConventionJS,FunctionNamingConventionJS
+export function x <T1, T2, T3> (this: void, _a1: ReadonlyArray<T1>, _a2: ReadonlyArray<T2>, _a3: ReadonlyArray<T3>): Array<[T1, T2, T3]>;
+// noinspection ParameterNamingConventionJS,FunctionNamingConventionJS
+export function x <T1, T2, T3, T4> (this: void, _a1: ReadonlyArray<T1>, _a2: ReadonlyArray<T2>, _a3: ReadonlyArray<T3>, _a4: ReadonlyArray<T4>): Array<[T1, T2, T3, T4]>;
+// noinspection ParameterNamingConventionJS,FunctionNamingConventionJS
+export function x <T1, T2, T3, T4, T5> (this: void, _a1: ReadonlyArray<T1>, _a2: ReadonlyArray<T2>, _a3: ReadonlyArray<T3>, _a4: ReadonlyArray<T4>, _a5: ReadonlyArray<T5>): Array<[T1, T2, T3, T4, T5]>;
+// noinspection FunctionNamingConventionJS
+export function x (this: void, ...args: ReadonlyArray<ReadonlyArray<any>>): Array<Array<any>> {
   if (arguments.length <= 0) {
     return [];
   }
   return args.reduce(
-    (acc: Array<Array<T>>, arrayI: Array<T>): Array<Array<T>> => {
-      const ret: Array<Array<T>> = [];
-      acc.forEach((elementSoFar: Array<T>) => {
-        arrayI.forEach((elementOfI: T): void => {
+    (acc: Array<Array<any>>, arrayI: ReadonlyArray<any>): Array<Array<any>> => {
+      const ret: Array<Array<any>> = [];
+      acc.forEach((elementSoFar: ReadonlyArray<any>) => {
+        arrayI.forEach((elementOfI: any): void => {
           ret.push(elementSoFar.concat([elementOfI]));
         });
       });

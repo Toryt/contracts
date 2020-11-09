@@ -67,10 +67,11 @@ export class ExceptionConditionViolationCommon<
 
   doctorArgs(
     args: ConditionArguments<any>,
-    boundContractFunction: GeneralContractFunction<ConditionContract<ExcC>>
+    boundContractFunction: GeneralContractFunction<ConditionContract<ExcC>>,
+    extra?: any
   ): ConditionArguments<ExcC> {
     const doctored: ConditionArguments<ExcC> = Array.prototype.slice.call(args) as ConditionArguments<ExcC>;
-    doctored.push(new Error('Dummy exception for ExceptionConditionViolation')); // an exception
+    doctored.push(extra || new Error('Dummy exception for ExceptionConditionViolation')); // an exception
     doctored.push(boundContractFunction);
     return doctored;
   }

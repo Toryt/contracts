@@ -40,9 +40,9 @@ describe('ConditionViolation', function () {
 */
   describe('#ConditionViolation()', function () {
     // noinspection JSUnresolvedVariable
-    common.selfCaseGenerators.forEach(selfCaseGenerator => {
+    common.selfCaseGenerators.forEach((selfCaseGenerator: () => ConditionThis<Condition<any>>) => {
       // noinspection JSUnresolvedVariable
-      common.argsCases.forEach(args => {
+      common.argsCases.forEach((args: Array<unknown>) => {
         const self: ConditionThis<Condition<any>> = selfCaseGenerator();
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
           const contractFunction: GeneralContractFunction<ConditionContract<Condition<any>>> =
@@ -63,7 +63,7 @@ describe('ConditionViolation', function () {
   common.generatePrototypeMethodsDescriptions(
     () =>
       new ConditionViolation(common.createCandidateContractFunction(), common.conditionCase, null, common.argsCases[0]),
-    x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
+    x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map((parameters: [Condition<any>, () => unknown, Array<unknown>]) => {
       const self = parameters[1]();
       // noinspection JSUnresolvedFunction
       return {

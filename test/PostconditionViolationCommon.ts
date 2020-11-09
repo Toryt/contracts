@@ -69,11 +69,12 @@ export class PostconditionViolationCommon<
 
   doctorArgs (
     args: ConditionArguments<any>,
-    boundContractFunction: GeneralContractFunction<ConditionContract<Post>>
+    boundContractFunction: GeneralContractFunction<ConditionContract<Post>>,
+    extra?: ConditionResult<Post>
   ): ConditionArguments<Post> {
     const doctored: ConditionArguments<Post> = Array.prototype.slice.call(args) as ConditionArguments<Post>;
     // noinspection MagicNumberJS
-    doctored.push(42); // a result
+    doctored.push(extra || 42); // a result
     doctored.push(boundContractFunction);
     return doctored;
   }

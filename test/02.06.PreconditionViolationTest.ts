@@ -16,27 +16,29 @@
 
 /* eslint-env mocha */
 
+import type {ConditionThis, Precondition, ConditionContract, GeneralContractFunction} from "../lib/AbstractContract";
 import PreconditionViolation from "../lib/PreconditionViolation";
 import common from "./PreconditionViolationCommon";
 import {log, x} from "./_util/testUtil";
 
 describe('PreconditionViolation', function () {
+/* MUDO tests are irrelevant - remove
   describe('#prototype', function () {
     it('has a condition', function () {
       PreconditionViolation.prototype.condition.should.be.a.Function();
       PreconditionViolation.prototype.condition.should.not.throw();
     });
   });
+*/
 
   describe('#PreconditionViolation()', function () {
-    // noinspection JSUnresolvedVariable
-    common.selfCaseGenerators.forEach(selfCaseGenerator => {
-      // noinspection JSUnresolvedVariable
-      common.argsCases.forEach(args => {
-        const self = selfCaseGenerator();
+    common.selfCaseGenerators.forEach((selfCaseGenerator: () => ConditionThis<Precondition<any>>) => {
+      common.argsCases.forEach((args: Array<unknown>) => {
+        const self: ConditionThis<Precondition<any>> = selfCaseGenerator();
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          const contractFunction = common.createCandidateContractFunction();
-          const result = new PreconditionViolation(contractFunction, common.conditionCase, self, args);
+          const contractFunction: GeneralContractFunction<ConditionContract<Precondition<any>>> =
+            common.createCandidateContractFunction();
+          const result: PreconditionViolation<any> = new PreconditionViolation(contractFunction, common.conditionCase, self, args);
           common.expectPreconditionViolationConstructorPost(result, contractFunction, common.conditionCase, self, args);
           common.expectInvariants(result);
           log('result.stack:\n%s', result.stack);
@@ -53,8 +55,8 @@ describe('PreconditionViolation', function () {
         null,
         common.argsCases[0]
       ),
-    x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
-      const self = parameters[1]();
+    x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map((parameters: [Precondition<any>, () => unknown, ReadonlyArray<unknown>]) => {
+      const self: ConditionThis<Precondition<any>> = parameters[1]();
       // noinspection JSUnresolvedFunction
       return {
         subject: () =>
