@@ -147,7 +147,7 @@ because open source projects are more easily found there. Issues and pull reques
 
 ### npm
 
-[@toryt/contracts](https://www.npmjs.com/package/@toryt/dns-sd-lookup)
+[@toryt/contracts-v](https://www.npmjs.com/package/@toryt/contracts-v)
 
 ## Browsers
 
