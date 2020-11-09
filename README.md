@@ -130,6 +130,7 @@ to create a browser distribution.
     - added package export `lib/index` file: you can now import with, e.g.,
       `const { Contract } = required('@toryt/contracts-v')`, in environments that support that syntax
     - the use of `Contract` properties to access other modules is now deprecated; please start using the package export
+    - upgraded dependencies
     - to upgrade:
       - `/require('@toryt\/contracts-iv')\.(.*)/require('@toryt/contracts-v').$1/`
       - `/require('@toryt\/contracts-iv')/require('@toryt/contracts-v').Contract/`
