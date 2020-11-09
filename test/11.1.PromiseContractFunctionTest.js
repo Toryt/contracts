@@ -145,12 +145,11 @@ describe('PromiseContractFunction', function () {
     let result
     let endsNominally = false
     try {
+      // result is not used
       if (!self) {
-        // noinspection JSUnusedAssignment
-        result = func(parameter)
+        func(parameter)
       } else {
-        // noinspection JSUnusedAssignment
-        result = func.call(self, parameter)
+        func.call(self, parameter)
       }
       endsNominally = true
     } catch (exception) {

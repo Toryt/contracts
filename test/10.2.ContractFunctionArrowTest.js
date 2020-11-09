@@ -167,16 +167,13 @@ describe('ContractFunction-ArrowFunctions', function () {
   const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
   function callAndExpectException (self, func, parameter, expectException, recursive) {
-    // eslint-disable-next-line no-unused-vars
-    let result
     let endsNominally = false
     try {
+      // result is not used
       if (!self) {
-        // noinspection JSUnusedAssignment
-        result = func(parameter)
+        func(parameter)
       } else {
-        // noinspection JSUnusedAssignment
-        result = func.call(self, parameter)
+        func.call(self, parameter)
       }
       endsNominally = true
     } catch (exception) {
