@@ -80,7 +80,7 @@
     "prettier-standard": "^16.4.1",
     "should": "^13.2.3",
     "standard": "^16.0.1",
-    "tldrlegal": "^1.0.6",
+    "tldrlegal": "^1.0.11",
     "tslint": "^6.1.3",
     "typescript": "^4.0.5"
   },
