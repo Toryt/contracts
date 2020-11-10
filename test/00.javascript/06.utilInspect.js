@@ -41,6 +41,7 @@ describe('util.inspect', function () {
   })
   describe('nested', function () {
     it('works for a nested object', function () {
+      // noinspection SpellCheckingInspection
       const arg = {
         a: {
           aa: {
@@ -86,6 +87,7 @@ describe('util.inspect', function () {
   })
   describe('circular', function () {
     it('works for a circular object', function () {
+      // noinspection SpellCheckingInspection
       const arg = {
         a: {
           aa: {

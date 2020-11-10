@@ -411,9 +411,9 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
           const conditions = conditionsGenerator()
           const self = selfGenerator()
           const args = argGenerator()
-          const conditionsRepr = conditions.map(c => ('' + c).replace(/\s+/g, ' ')).join(', ')
+          const conditionsRepresentation = conditions.map(c => ('' + c).replace(/\s+/g, ' ')).join(', ')
           // noinspection FunctionTooLongJS
-          it('works for [' + conditionsRepr + '] - ' + self + ' - ' + args, function () {
+          it('works for [' + conditionsRepresentation + '] - ' + self + ' - ' + args, function () {
             const subject = oneSubjectGenerator()
             const contractFunction = common.createCandidateContractFunction()
             const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))

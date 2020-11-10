@@ -105,7 +105,7 @@ function expectInvariants (/* AbstractContract */ subject) {
           -
           c.implementation(…) creates a new object with c as prototype in bless: Object.create(contract)
           -
-          therefor, it is not true that for all contracts _pre, _post, _exceptions must be _own_ properties
+          therefore, it is not true that for all contracts _pre, _post, _exceptions must be _own_ properties
           -
           we are missing a test for the invariants of cf.contract
           -
