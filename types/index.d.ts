@@ -38,7 +38,7 @@ export type booleany = undefined | null | unknown
  * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
  */
 export type Precondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: ContractParameters<C>) => booleany;
+  (this: ContractThis<C>, ...args: ContractParameters<C>) => booleany
 
 /**
  * Boolean function: are `this`, the `args`, and the `result` valid?
@@ -46,7 +46,7 @@ export type Precondition<C extends AbstractContract<AnyFunction, unknown>> =
  * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
  */
 export type Postcondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, GeneralContractFunction<C>]) => booleany;
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, GeneralContractFunction<C>]) => booleany
 
 /**
  * Boolean function: are `this`, `args`, and the thrown exception valid?
@@ -54,7 +54,7 @@ export type Postcondition<C extends AbstractContract<AnyFunction, unknown>> =
  * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
  */
 export type ExceptionCondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, GeneralContractFunction<C>]) => booleany;
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, GeneralContractFunction<C>]) => booleany
 
 export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
   pre?: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>> | null,
@@ -65,13 +65,13 @@ export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
 export interface ContractConstructor<C extends AbstractContract<AnyFunction, unknown>> {
-  readonly internalLocation: object;
-  readonly namePrefix: string;
+  readonly internalLocation: object
+  readonly namePrefix: string
 
   new (
     kwargs: AbstractContractKwargs<ContractSignature<C>, ContractExceptions<C>>,
     _location?: StackLocation | typeof AbstractContract.internalLocation
-  ): C;
+  ): C
 
   isAContractFunction (f: unknown): f is GeneralContractFunction<C>
 }
@@ -164,9 +164,9 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
 }
 
 export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =
-  C extends AbstractContract<infer F, unknown> ? F : never;
-export type ContractThis<C extends AbstractContract<AnyFunction, unknown>> = ThisParameterType<ContractSignature<C>>;
-export type ContractParameters<C extends AbstractContract<AnyFunction, unknown>> = Parameters<ContractSignature<C>>;
-export type ContractResult<C extends AbstractContract<AnyFunction, unknown>> = ReturnType<ContractSignature<C>>;
+  C extends AbstractContract<infer F, unknown> ? F : never
+export type ContractThis<C extends AbstractContract<AnyFunction, unknown>> = ThisParameterType<ContractSignature<C>>
+export type ContractParameters<C extends AbstractContract<AnyFunction, unknown>> = Parameters<ContractSignature<C>>
+export type ContractResult<C extends AbstractContract<AnyFunction, unknown>> = ReturnType<ContractSignature<C>>
 export type ContractExceptions<C extends AbstractContract<AnyFunction, unknown>> =
-  C extends AbstractContract<AnyFunction, infer Exceptions> ? Exceptions : never;
+  C extends AbstractContract<AnyFunction, infer Exceptions> ? Exceptions : never
