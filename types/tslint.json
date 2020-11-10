@@ -1,0 +1,10 @@
+{
+  "extends": "dtslint/dtslint.json",
+  "rules": {
+    "ban-ts-ignore": true,
+    "no-any": true,
+    "semicolon": false,
+    "space-before-function-paren": true,
+    "only-arrow-functions": false
+  }
+}
