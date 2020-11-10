@@ -3,11 +3,13 @@
   "version": "5.0.0",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
   "main": "lib/index.js",
+  "types": "types",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "pretest": "npm-check -i npm-check; npm outdated || exit 0",
+    "dtslint": "dtslint --localTs node_modules/typescript/lib types",
     "test": "standard && nyc mocha 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
@@ -69,6 +71,7 @@
   "devDependencies": {
     "browserify": "^17.0.0",
     "credits-cli": "^3.1.0",
+    "dtslint": "^4.0.5",
     "just.randomstring": "^0.1.1",
     "legally": "^3.5.8",
     "mocha": "^8.2.1",
@@ -78,11 +81,13 @@
     "prettier-standard": "^16.4.1",
     "should": "^13.2.3",
     "standard": "^16.0.1",
-    "tldrlegal": "^1.0.6"
+    "tldrlegal": "^1.0.6",
+    "typescript": "^4.0.5"
   },
   "standard": {
     "ignore": [
-      "/scripts/common/"
+      "/scripts/common/",
+      "**/*.ts"
     ]
   },
   "mocha": {
