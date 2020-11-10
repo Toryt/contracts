@@ -53,37 +53,37 @@ to create a browser distribution.
 ## Versions
 
 - I
-  - I/1.0 : First release, minimally functional, Mac - node
-  - I/2.0 : Use it in web projects, Mac
-  - I/2.1 : Use it with node on linux ([Travis])
-  - I/2.2 : Now also tests with [Intern] on node, on Mac and Linux. [Intern] is preferred over Mocha. This version only
+  - I/1.0 : First release, minimally functional, Mac / Node
+  - I/2.0 : Use it in web-projects, Mac
+  - I/2.1 : Use it with Node on linux ([Travis])
+  - I/2.2 : Now also tests with [Intern] on Node, on Mac and Linux. [Intern] is preferred over Mocha. This version only
     changes private code, test code, and build setup.
   - I/2.3 : Cleanup, renaming, administration, license, fixing warnings
   - I/2.4 : Now also tests with [Intern] on Mac on Chrome, Safari, Firefox (3 failures, waiting for april version 53)
   - I/2.5 : Fix in behavior and test of util.browserModuleLocation
-  - I/1.2.5 : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
+  - I/1.2.5 : Relax a test to support use of '(<anonymous)' in Node 8.4; change to semver
 - II
-  - II/1.0 : First release on npm. The code is functional on node, and there is no need to wait for browser validation
-    to start using it on node.
+  - II/1.0 : First release on npm. The code is functional on Node, and there is no need to wait for browser validation
+    to start using it on Node.
   - II/1.1 : Use scope in package name
   - II/1.2 : Cosmetic changes
-  - II/2.1.3 : Relax a test to support use of '(<anonymous)' in node 8.4; change to semver
+  - II/2.1.3 : Relax a test to support use of '(<anonymous)' in Node 8.4; change to semver
 - III
   - III/3.0.0 : Now also supports contracts for (classic) constructors. In general, the prototype of an implementation
-    is "forwarded" to the contract function. The ECMAScript2015 "class" construct is not yet supported (a "class"
+    is “forwarded” to the contract function. The ECMAScript2015 “class” construct is not yet supported (a “class”
     generated constructor cannot be `call`ed or `apply`ed). This is an incompatible change, since we now require more of
     a general contract function. Also, from now on, we will use versioning differently. Since npm insists on semantic
     versioning, the major version number will be the arabic numeral of the roman mark version. We now use `yarn`, but
     that is optional.
-  - III/3.0.1 : Relax a test to support use of '(<anonymous)' in node 8.4
-  - III/3.1.0 : Works on Windows (node 8 and Chrome tested)
+  - III/3.0.1 : Relax a test to support use of '(<anonymous)' in Node 8.4
+  - III/3.1.0 : Works on Windows (Node 8 and Chrome tested)
   - III/3.1.1 : Update dependencies
 - IV
   - IV/4.0.0:
     - CI is realised completely, with automated tests for LTS Node versions and all major browsers on all major
       platforms. We no longer use Bitbucket or Bitbucket Pipelines. Everything is done with GitHub, [travis], and
-      [browserstack]
-    - dropped direct support for older JS and browsers - now geared toward Node 6 and higher; use `browserify` to
+      [browserstack].
+    - dropped direct support for older JS and browsers — now geared toward Node 6 and higher; use `browserify` to
       support browsers
     - fixed display name
     - support arrow functions
@@ -102,7 +102,7 @@ to create a browser distribution.
   - IV/4.0.4:
     - replace `must` with `should` in tests
   - IV/4.0.5:
-    - fix missing EOLs - these where lost in the 4.0.4 rebase
+    - fix missing EOLs — these where lost in the 4.0.4 rebase
   - IV/4.0.6:
     - test also on Node 12 and 13 (use 12 as dev env)
     - upgrade dependencies (dev)
