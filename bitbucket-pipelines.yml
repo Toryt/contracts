@@ -28,7 +28,6 @@ definitions:
     npm10: ~/.npm
     npm12: ~/.npm
     npm14: ~/.npm
-    npm15: ~/.npm
   branches:
     - branch: &fullTestAndTag
         - parallel:
@@ -56,12 +55,6 @@ definitions:
                 image: node:14
                 caches:
                   - npm14
-            - step:
-                <<: *test
-                name: Latest Node 15
-                image: node:15
-                caches:
-                  - npm15
         - parallel:
             - step:
                 name: Chrome - OSX
