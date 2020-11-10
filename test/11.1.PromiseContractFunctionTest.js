@@ -84,7 +84,7 @@ describe('PromiseContractFunction', function () {
   const positiveMessage = 'n must be positive'
   const overflowMessage = 'no overflow'
 
-  // noinspection JSUnresolvedFunction
+  // noinspection JSUnresolvedFunction,MagicNumberJS
   const defensiveIntegerSum = new PromiseContract({
     post: [
       (n, result) => Number.isInteger(result),
@@ -129,7 +129,7 @@ describe('PromiseContractFunction', function () {
     return Promise.resolve((n * (n + 1)) / 2)
   })
 
-  const defensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(n => {
+  const defensiveIntegerSumWrong = defensiveIntegerSum.contract.implementation(() => {
     return Promise.reject(wrongException) // wrong
   })
 
@@ -141,8 +141,6 @@ describe('PromiseContractFunction', function () {
   const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
   function callAndExpectFastException (self, func, parameter, expectException, recursive) {
-    // eslint-disable-next-line no-unused-vars
-    let result
     let endsNominally = false
     try {
       // result is not used

@@ -85,7 +85,7 @@ describe('_private/is', function () {
       const lines = error.stack.split(eol.stack)
       lines
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
-        .filter((line, index) => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
+        .filter(line => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
         .forEach(line => {
           const result = is.stackLocation(line)
           log(`${result}: ${line}`)
