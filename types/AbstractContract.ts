@@ -16,7 +16,14 @@
 
 // Minimum TypeScript Version: 4.0.5
 
-import { AbstractContract, AnyFunction, StackLocation } from '@toryt/contracts'
+import {
+  AbstractContract,
+  AnyFunction, ContractExceptions,
+  ContractParameters,
+  ContractResult,
+  ContractSignature, ContractThis,
+  StackLocation
+} from '@toryt/contracts'
 
 // $expectType object
 const aFunction = function aFunction (a: string, b: number) { return a + b }
@@ -38,8 +45,31 @@ const namePrefix = AbstractContract.namePrefix
 // $ExpectType boolean
 const isAContractFunction = AbstractContract.isAContractFunction(function () {})
 
-// $ExpectType AbstractContract<(a: string, b: number) => string, string>
-const subject = new AbstractContract<(a: string, b: number) => string, string>()
+interface SomeObject {
+  aProperty: number
+}
+
+interface SomeError {
+  aProperty: object
+}
+
+// $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
+const subject = new AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>()
 
 // $ExpectType string | object
 const subjectStackLocation: StackLocation | object = subject.location
+
+// $ExpectType (this: SomeObject, a: string, b: number) => string
+type contractSignature = ContractSignature<typeof subject>
+
+// $ExpectType SomeObject
+type contractThis = ContractThis<typeof subject>
+
+// $ExpectType [a: string, b: number]
+type contractParameters = ContractParameters<typeof subject>
+
+// $ExpectType string
+type contractResult = ContractResult<typeof subject>
+
+// $ExpectType string | SomeError
+type contractExceptions = ContractExceptions<typeof subject>
