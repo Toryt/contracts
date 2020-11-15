@@ -144,14 +144,13 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
 
   verify: boolean;
   verifyPostconditions: boolean;
-  //
-  // /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
-  // ['constructor']!: ContractConstructor<this>;
-  // // noinspection ParameterNamingConventionJS
-  // constructor(
-  //   kwargs: AbstractContractKwargs<F, Exceptions>,
-  //   _location?: StackLocation | typeof AbstractContract.internalLocation
-  // )
+
+  /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
+  ['constructor']: ContractConstructor<this>;
+  constructor (
+    kwargs: AbstractContractKwargs<F, Exceptions>,
+    _location?: StackLocation | typeof AbstractContract.internalLocation
+  )
   //
   // isImplementedBy (f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>>
   //

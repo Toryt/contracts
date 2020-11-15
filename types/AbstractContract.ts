@@ -54,8 +54,26 @@ interface SomeError {
   anErrorProperty: object
 }
 
+// MUDO test ok and nok AbstractContractKwargs
+
 // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
-const subject = new AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>()
+const subject = new AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>(
+  {
+    pre: [
+      () => true,
+      (a: string) => false,
+      (a: string, b: number) => false,
+      function (this: SomeObject, a: string, b: number) {return false}
+    ],
+    post: [
+      function (this: SomeObject, a: string, b: number, result: string) {return false}
+    ],
+    exception: [
+      function (this: SomeObject, a: string, b: number, exception: string | SomeError) {return false}
+    ]
+  },
+  'a stack location'
+)
 
 // $ExpectType string | object
 const subjectStackLocation: StackLocation | object = subject.location
