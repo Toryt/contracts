@@ -153,13 +153,12 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   )
   //
   // isImplementedBy (f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>>
-  //
-  // // noinspection FunctionNamingConventionJS
-  // get pre(): Array<Precondition<this>>
-  //
-  // get post(): Array<Postcondition<this>>
-  //
-  // get exception(): Array<ExceptionCondition<this>> // not ReadonlyArray: we have sliced
+
+  get pre (): Array<Precondition<this>> // not ReadonlyArray: we have sliced
+
+  get post (): Array<Postcondition<this>> // not ReadonlyArray: we have sliced
+
+  get exception (): Array<ExceptionCondition<this>> // not ReadonlyArray: we have sliced
 }
 
 export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =

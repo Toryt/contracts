@@ -169,6 +169,21 @@ Object.getPrototypeOf(subject).verifyPostconditions = 'not a boolean'
 // cannot do: $ExpectError: test says "any"
 subject.constructor.prototype.verifyPostconditions = {}
 
+// $ExpectType Precondition<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>[]
+const pre: Array<Precondition<typeof subject>> = subject.pre
+// $ExpectError
+subject.pre = []
+
+// $ExpectType Postcondition<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>[]
+const post: Array<Postcondition<typeof subject>> = subject.post
+// $ExpectError
+subject.post = []
+
+// $ExpectType ExceptionCondition<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>[]
+const exception: Array<ExceptionCondition<typeof subject>> = subject.exception
+// $ExpectError
+subject.exception = []
+
 // $ExpectType (this: SomeObject, a: string, b: number) => string
 type contractSignature = ContractSignature<typeof subject>
 
