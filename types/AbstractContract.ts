@@ -21,7 +21,7 @@ import {
   AnyFunction, ContractExceptions,
   ContractParameters,
   ContractResult,
-  ContractSignature, ContractThis,
+  ContractSignature, ContractThis, Precondition,
   StackLocation
 } from '@toryt/contracts'
 
@@ -173,3 +173,25 @@ type contractResult = ContractResult<typeof subject>
 
 // $ExpectType string | SomeError
 type contractExceptions = ContractExceptions<typeof subject>
+
+const preCondition1: Precondition<typeof subject> = () => true
+const preCondition1b: Precondition<typeof subject> = (c: string) => true
+const preCondition1c: Precondition<typeof subject> = (a: string | boolean) => true
+// $ExpectError
+const preCondition1d: Precondition<typeof subject> = (a: number) => true
+const preCondition2: Precondition<typeof subject> = (a: string) => false
+const preCondition3: Precondition<typeof subject> = (a: string, b: number) => false
+// $ExpectError
+const preCondition3b: Precondition<typeof subject> = (a: string, b: boolean) => false
+const preCondition4: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return false}
+const preCondition4b: Precondition<typeof subject> = function (this: object, a: string, b: number) {return false}
+// $ExpectError
+const preCondition4c: Precondition<typeof subject> = function (this: SomeError, a: string, b: number) {return false}
+// TODO this should fail, but it doesn't? TS interfaces are weird
+const preCondition4d: Precondition<typeof subject> = function (this: {}, a: string, b: number) {return false}
+// $ExpectError
+const preCondition5: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
+const preCondition6a: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
+const preCondition6b: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return ''}
+const preCondition6c: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return null}
+const preCondition6d: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {}
