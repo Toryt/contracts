@@ -106,9 +106,6 @@ const internalLocation = AbstractContract.internalLocation
 // $ExpectType string
 const namePrefix = AbstractContract.namePrefix
 
-// $ExpectType boolean
-const isAContractFunction = AbstractContract.isAContractFunction(function () {})
-
 // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
 const subject = new AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>(
   abstractContractKwargs,
@@ -120,6 +117,18 @@ const subjectNoExceptions = new AbstractContract<(this: SomeObject, a: string, b
   abstractContractKwargs,
   'a stack location'
 )
+
+// $ExpectType boolean
+const isAContractFunction = AbstractContract.isAContractFunction(function () {})
+// $ExpectType boolean
+const isAContractFunctionb = AbstractContract.isAContractFunction(45)
+
+const candidateContractFunction = 'this is a candidate contract function'
+if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFunction)) {
+  // tslint:disable-next-line:max-line-length
+  // TODO should be: $ExpectType  "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & GeneralContractFunctionProps<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  const typedCandidateContractFunction: GeneralContractFunction<typeof subject> = candidateContractFunction
+}
 
 // $ExpectType string | object
 const subjectStackLocation: StackLocation | object = subject.location
