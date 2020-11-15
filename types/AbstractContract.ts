@@ -31,6 +31,7 @@ const aFunction = function aFunction (a: string, b: number) { return a + b }
 // $expectType number
 const anAnyFunction: AnyFunction = aFunction
 
+// $expectType StackLocation
 const aStackLocation: StackLocation = 'this is a stack location'
 
 // $ExpectError
@@ -50,7 +51,7 @@ interface SomeObject {
 }
 
 interface SomeError {
-  aProperty: object
+  anErrorProperty: object
 }
 
 // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
@@ -58,6 +59,51 @@ const subject = new AbstractContract<(this: SomeObject, a: string, b: number) =>
 
 // $ExpectType string | object
 const subjectStackLocation: StackLocation | object = subject.location
+
+// $ExpectType GeneralContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+const abstractImplementation = subject.abstract
+
+// $ExpectType boolean
+const verify = subject.verify
+
+subject.verify = true
+subject.verify = false
+
+// $ExpectError
+subject.verify = 42
+
+// cannot do: $ExpectType boolean: test says "any"
+const protoVerify: boolean = subject.constructor.prototype.verify
+
+Object.getPrototypeOf(subject).verify = true
+Object.getPrototypeOf(subject).verify = false
+
+// cannot do: $ExpectError: test says "any"
+Object.getPrototypeOf(subject).verify = 'not a boolean'
+
+// cannot do: $ExpectError: test says "any"
+subject.constructor.prototype.verify = {}
+
+// $ExpectType boolean
+const verifyPostconditions = subject.verify
+
+subject.verifyPostconditions = true
+subject.verifyPostconditions = false
+
+// $ExpectError
+subject.verifyPostconditions = 42
+
+// cannot do: $ExpectType boolean: test says "any"
+const protoVerifyPostConditions: boolean = subject.constructor.prototype.verifyPostconditions
+
+Object.getPrototypeOf(subject).verifyPostconditions = true
+Object.getPrototypeOf(subject).verifyPostconditions = false
+
+// cannot do: $ExpectError: test says "any"
+Object.getPrototypeOf(subject).verifyPostconditions = 'not a boolean'
+
+// cannot do: $ExpectError: test says "any"
+subject.constructor.prototype.verifyPostconditions = {}
 
 // $ExpectType (this: SomeObject, a: string, b: number) => string
 type contractSignature = ContractSignature<typeof subject>

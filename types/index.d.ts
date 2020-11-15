@@ -140,10 +140,10 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   ): f is GeneralContractFunction<C>
 
   readonly location: StackLocation | typeof AbstractContract.internalLocation
-  // readonly abstract: GeneralContractFunction<this>;
-  //
-  // verify: boolean;
-  // verifyPostconditions: boolean;
+  readonly abstract: GeneralContractFunction<this>;
+
+  verify: boolean;
+  verifyPostconditions: boolean;
   //
   // /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
   // ['constructor']!: ContractConstructor<this>;
