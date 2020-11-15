@@ -151,8 +151,8 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     kwargs: AbstractContractKwargs<F, Exceptions>,
     _location?: StackLocation | typeof AbstractContract.internalLocation
   )
-  //
-  // isImplementedBy (f: any): f is GeneralContractFunction<AbstractContract<F, Exceptions>>
+
+  isImplementedBy (f: unknown): f is GeneralContractFunction<AbstractContract<F, Exceptions>>
 
   get pre (): Array<Precondition<this>> // not ReadonlyArray: we have sliced
 

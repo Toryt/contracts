@@ -169,6 +169,17 @@ Object.getPrototypeOf(subject).verifyPostconditions = 'not a boolean'
 // cannot do: $ExpectError: test says "any"
 subject.constructor.prototype.verifyPostconditions = {}
 
+// $ExpectType boolean
+const implementedBy = subject.isImplementedBy(() => 42)
+// $ExpectType boolean
+const implementedByb = subject.isImplementedBy([])
+
+const candidate = {}
+if (subject.isImplementedBy(candidate)) {
+  // $ExpectType GeneralContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  const typedCandidate: GeneralContractFunction<typeof subject> = candidate;
+}
+
 // $ExpectType Precondition<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>[]
 const pre: Array<Precondition<typeof subject>> = subject.pre
 // $ExpectError
