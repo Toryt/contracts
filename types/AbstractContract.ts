@@ -21,7 +21,7 @@ import {
   AnyFunction, ContractExceptions,
   ContractParameters,
   ContractResult,
-  ContractSignature, ContractThis, GeneralContractFunction, Postcondition, Precondition,
+  ContractSignature, ContractThis, ExceptionCondition, GeneralContractFunction, Postcondition, Precondition,
   StackLocation
 } from '@toryt/contracts'
 
@@ -111,6 +111,12 @@ const isAContractFunction = AbstractContract.isAContractFunction(function () {})
 
 // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
 const subject = new AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>(
+  abstractContractKwargs,
+  'a stack location'
+)
+
+// $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, never>
+const subjectNoExceptions = new AbstractContract<(this: SomeObject, a: string, b: number) => string, never>(
   abstractContractKwargs,
   'a stack location'
 )
@@ -231,3 +237,50 @@ const postCondition8: Postcondition<typeof subject> =
 // $ExpectError
 const postCondition8b: Postcondition<typeof subject> =
   function (this: SomeObject, a: string, b: number, result: string, thisFunction: GeneralContractFunction<AbstractContract<(a: object) => Date, never>>) {return true}
+
+const exceptionCondition1: ExceptionCondition<typeof subject> = () => true
+const exceptionCondition1b: ExceptionCondition<typeof subject> = (c: string) => true
+const exceptionCondition1c: ExceptionCondition<typeof subject> = (a: string | boolean) => true
+// $ExpectError
+const exceptionCondition1d: ExceptionCondition<typeof subject> = (a: number) => true
+const exceptionCondition2: ExceptionCondition<typeof subject> = (a: string) => false
+const exceptionCondition3: ExceptionCondition<typeof subject> = (a: string, b: number) => false
+// $ExpectError
+const exceptionCondition3b: ExceptionCondition<typeof subject> = (a: string, b: boolean) => false
+const exceptionCondition4: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return false}
+const exceptionCondition4b: ExceptionCondition<typeof subject> = function (this: object, a: string, b: number) {return false}
+// $ExpectError
+const exceptionCondition4c: ExceptionCondition<typeof subject> = function (this: SomeError, a: string, b: number) {return false}
+// TODO this should fail, but it doesn't? TS interfaces are weird
+const exceptionCondition4d: ExceptionCondition<typeof subject> = function (this: {}, a: string, b: number) {return false}
+// $ExpectError
+const exceptionCondition5: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
+const exceptionCondition6a: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
+const exceptionCondition6b: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return ''}
+const exceptionCondition6c: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return null}
+const exceptionCondition6d: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {}
+
+const exceptionCondition7: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: string | SomeError) {return true}
+// $ExpectError
+const exceptionCondition7b: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: string) {return true}
+// $ExpectError
+const exceptionCondition7c: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: SomeError) {return true}
+// $ExpectError
+const exceptionCondition7d: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: never) {return true}
+const exceptionCondition7e: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: unknown) {return true}
+// tslint:disable-next-line:no-any
+const exceptionCondition7f: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: any) {return true}
+
+const exceptionCondition8: ExceptionCondition<typeof subject> =
+  function (this: SomeObject, a: string, b: number, exc: string | SomeError, thisFunction: GeneralContractFunction<typeof subject>) {return true}
+// $ExpectError
+const exceptionCondition8b: ExceptionCondition<typeof subject> =
+  function (this: SomeObject, a: string, b: number, exc: string | SomeError, thisFunction: GeneralContractFunction<AbstractContract<(a: object) => Date, never>>) {return true}
+
+// MUDO if exception type is never, exception conditions should always be false
+const exceptionCondition9: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: never) {return true}
+const exceptionCondition9b: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: string) {return true}
+const exceptionCondition9c: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: SomeError) {return true}
+const exceptionCondition9e: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: unknown) {return true}
+// tslint:disable-next-line:no-any
+const exceptionCondition9f: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: any) {return true}
