@@ -17,7 +17,7 @@
 // Minimum TypeScript Version: 4.0.5
 
 import {
-  AbstractContract,
+  AbstractContract, AbstractContractKwargs,
   AnyFunction, ContractExceptions,
   ContractParameters,
   ContractResult,
@@ -25,14 +25,60 @@ import {
   StackLocation
 } from '@toryt/contracts'
 
-// $expectType object
-const aFunction = function aFunction (a: string, b: number) { return a + b }
+interface SomeObject {
+  aProperty: number
+}
 
-// $expectType number
+interface SomeError {
+  anErrorProperty: object
+}
+
+type AFunction = (this: SomeObject, a: string, b: number) => string
+
+// $expectType (this: SomeObject, a: string, b: number) => string
+const aFunction: AFunction = function aFunction (a: string, b: number) { return a + b }
+
+// $expectType AFunction
 const anAnyFunction: AnyFunction = aFunction
 
+// $ExpectError
+const abstractContractKwargs1: AbstractContractKwargs<AFunction, string | SomeError> = null
+
+// $ExpectError
+const abstractContractKwargs2: AbstractContractKwargs<AFunction, string | SomeError> = undefined
+
+// $ExpectType {}
+const abstractContractKwargs3: AbstractContractKwargs<AFunction, string | SomeError> = {}
+
+// $ExpectType { pre: never[]; }
+const abstractContractKwargs4: AbstractContractKwargs<AFunction, string | SomeError> = {
+  pre: []
+}
+
+// $ExpectType { post: never[]; }
+const abstractContractKwargs5: AbstractContractKwargs<AFunction, string | SomeError> = {
+  post: []
+}
+
+// $ExpectType { exception: never[]; }
+const abstractContractKwargs6: AbstractContractKwargs<AFunction, string | SomeError> = {
+  exception: []
+}
+
+// $ExpectType { pre: never[]; post: never[]; exception: never[]; }
+const abstractContractKwargs7: AbstractContractKwargs<AFunction, string | SomeError> = {
+  pre: [],
+  post: [],
+  exception: []
+}
+
+const abstractContractKwargs8: AbstractContractKwargs<AFunction, string | SomeError> = {
+  // $ExpectError
+  other: []
+}
+
 // $expectType StackLocation
-const aStackLocation: StackLocation = 'this is a stack location'
+const aStackLocation = 'this is a stack location'
 
 // $ExpectError
 const notAStackLocation: StackLocation = 42
@@ -45,16 +91,6 @@ const namePrefix = AbstractContract.namePrefix
 
 // $ExpectType boolean
 const isAContractFunction = AbstractContract.isAContractFunction(function () {})
-
-interface SomeObject {
-  aProperty: number
-}
-
-interface SomeError {
-  anErrorProperty: object
-}
-
-// MUDO test ok and nok AbstractContractKwargs
 
 // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
 const subject = new AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>(
