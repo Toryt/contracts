@@ -21,7 +21,7 @@ import {
   AnyFunction, ContractExceptions,
   ContractParameters,
   ContractResult,
-  ContractSignature, ContractThis, Precondition,
+  ContractSignature, ContractThis, GeneralContractFunction, Postcondition, Precondition,
   StackLocation
 } from '@toryt/contracts'
 
@@ -199,3 +199,35 @@ const preCondition6a: Precondition<typeof subject> = function (this: SomeObject,
 const preCondition6b: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return ''}
 const preCondition6c: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return null}
 const preCondition6d: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {}
+
+const postCondition1: Postcondition<typeof subject> = () => true
+const postCondition1b: Postcondition<typeof subject> = (c: string) => true
+const postCondition1c: Postcondition<typeof subject> = (a: string | boolean) => true
+// $ExpectError
+const postCondition1d: Postcondition<typeof subject> = (a: number) => true
+const postCondition2: Postcondition<typeof subject> = (a: string) => false
+const postCondition3: Postcondition<typeof subject> = (a: string, b: number) => false
+// $ExpectError
+const postCondition3b: Postcondition<typeof subject> = (a: string, b: boolean) => false
+const postCondition4: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return false}
+const postCondition4b: Postcondition<typeof subject> = function (this: object, a: string, b: number) {return false}
+// $ExpectError
+const postCondition4c: Postcondition<typeof subject> = function (this: SomeError, a: string, b: number) {return false}
+// TODO this should fail, but it doesn't? TS interfaces are weird
+const postCondition4d: Postcondition<typeof subject> = function (this: {}, a: string, b: number) {return false}
+// $ExpectError
+const postCondition5: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
+const postCondition6a: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
+const postCondition6b: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return ''}
+const postCondition6c: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return null}
+const postCondition6d: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {}
+
+const postCondition7: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number, result: string) {return true}
+// $ExpectError
+const postCondition7b: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number, result: Date) {return true}
+
+const postCondition8: Postcondition<typeof subject> =
+  function (this: SomeObject, a: string, b: number, result: string, thisFunction: GeneralContractFunction<typeof subject>) {return true}
+// $ExpectError
+const postCondition8b: Postcondition<typeof subject> =
+  function (this: SomeObject, a: string, b: number, result: string, thisFunction: GeneralContractFunction<AbstractContract<(a: object) => Date, never>>) {return true}
