@@ -77,6 +77,23 @@ const abstractContractKwargs8: AbstractContractKwargs<AFunction, string | SomeEr
   other: []
 }
 
+// tslint:disable-next-line:max-line-length
+// TODO should be: $ExpectType  { pre: ((a: string, b: number) => boolean)[]; post: ((this: SomeObject, a: string, b: number, result: string) => boolean)[]; exception: ((this: SomeObject, a: string, b: number, exception: string | SomeError) => boolean)[]; }
+const abstractContractKwargs: AbstractContractKwargs<AFunction, string | SomeError> = {
+  pre: [
+    () => true,
+    (a: string) => false,
+    (a: string, b: number) => false,
+    function (this: SomeObject, a: string, b: number) {return false}
+  ],
+  post: [
+    function (this: SomeObject, a: string, b: number, result: string) {return false}
+  ],
+  exception: [
+    function (this: SomeObject, a: string, b: number, exception: string | SomeError) {return false}
+  ]
+}
+
 // $expectType StackLocation
 const aStackLocation = 'this is a stack location'
 
@@ -94,20 +111,7 @@ const isAContractFunction = AbstractContract.isAContractFunction(function () {})
 
 // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
 const subject = new AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>(
-  {
-    pre: [
-      () => true,
-      (a: string) => false,
-      (a: string, b: number) => false,
-      function (this: SomeObject, a: string, b: number) {return false}
-    ],
-    post: [
-      function (this: SomeObject, a: string, b: number, result: string) {return false}
-    ],
-    exception: [
-      function (this: SomeObject, a: string, b: number, exception: string | SomeError) {return false}
-    ]
-  },
+  abstractContractKwargs,
   'a stack location'
 )
 
