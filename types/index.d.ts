@@ -124,6 +124,22 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   static readonly namePrefix: string
 
   /**
+   * This function is intended to be used as the bind function of contract functions. It makes sure
+   * that, when applied to a contract function, the result
+   * [is also a contract function]{@linkplain AbstractContract#isAContractFunction}.
+   * The bind aspect of the functionality is the same as {@link Function#prototype#bind}.
+   * The implementation of the resulting contract function is also bound in the same
+   * way as the resulting contract function itself.
+   *
+   * Note: in future versions this will no longer be a "static" function of AbstractContract.
+   */
+  static bindContractFunction<C extends AbstractContract<AnyFunction, unknown>> (
+    this: GeneralContractFunction<C>,
+    thisArg?: ContractThis<C>,
+    ...argArray: ContractParameters<C>
+  ): GeneralContractFunction<C>
+
+  /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function
    * given as a parameter is a Contract Function.
    *
