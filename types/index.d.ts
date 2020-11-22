@@ -15,20 +15,54 @@
  */
 
 // tslint:disable-next-line:no-any
-export type AnyFunction = (this: any, ...args: any[]) => any
+export type AnyFunction = (this: any, ...args: any[]) => any & {prototype: undefined | object}
 
 export type StackLocation = string
 
-export interface GeneralContractFunctionProps<C extends AbstractContract<AnyFunction, unknown>> extends Function {
+export type SubPrototype<F extends AnyFunction, SuperF extends AnyFunction>
+  = F extends {prototype: infer P} ? Omit<P, 'constructor'> & {constructor: F} : undefined
+
+export interface GeneralContractFunctionProps<F extends AnyFunction> extends AnyFunction {
+  readonly contract: AbstractContract<AnyFunction, unknown>
+  readonly implementation: F
+  readonly location: StackLocation
+  name: string
+
+  /* standard
+     - apply(this: Function, thisArg: any, argArray?: any): any;
+     - call(this: Function, thisArg: any, ...argArray: any[]): any;
+     - toString(): string;
+     - readonly length: number;
+
+     and non-standard
+     - arguments: any;
+     - caller: Function;  bind (thisArg: ThisParameterType<ContractThis<C>>, ...argArray: ContractParameters<C>): ContractFunction<C>
+   */
+
+  /* Standard bind is bind(this: Function, thisArg: any, ...argArray: any[]): any;
+     We can do slightly better. */
+  readonly bind: (thisArg: ThisParameterType<F>, ...argArray: Parameters<F>)
+    // tslint:disable-next-line:no-any
+    => (this: never, ...argArray: any[]) => ReturnType<F>
+
+  /* Standard prototype is prototype: any;
+     We can do better. */
+  prototype: SubPrototype<F, this>
+}
+
+export type GeneralContractFunction<F extends AnyFunction> = F & GeneralContractFunctionProps<F>
+
+export interface ContractFunctionProps<C extends AbstractContract<AnyFunction, unknown>>
+    extends GeneralContractFunctionProps<ContractSignature<C>> {
   readonly contract: C;
   readonly implementation: ContractSignature<C>;
   readonly location: StackLocation;
 
-  bind (thisArg: ThisParameterType<ContractThis<C>>, ...argArray: ContractParameters<C>): GeneralContractFunction<C>
+  bind (thisArg: ContractThis<C>, ...argArray: ContractParameters<C>): ContractFunction<C> // MUDO this is not correct! the resulting function has less arguments!
 }
 
-export type GeneralContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
-  ContractSignature<C> & GeneralContractFunctionProps<C>;
+export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
+  GeneralContractFunction<ContractSignature<C>> & ContractFunctionProps<C>;
 
 export type booleany = undefined | null | unknown
 
@@ -46,7 +80,7 @@ export type Precondition<C extends AbstractContract<AnyFunction, unknown>> =
  * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
  */
 export type Postcondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, GeneralContractFunction<C>]) => booleany
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]) => booleany
 
 /**
  * Boolean function: are `this`, `args`, and the thrown exception valid?
@@ -54,7 +88,7 @@ export type Postcondition<C extends AbstractContract<AnyFunction, unknown>> =
  * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
  */
 export type ExceptionCondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, GeneralContractFunction<C>]) => booleany
+  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, ContractFunction<C>]) => booleany
 
 export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
   pre?: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>> | null,
@@ -73,7 +107,7 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
     _location?: StackLocation | typeof AbstractContract.internalLocation
   ): C
 
-  isAContractFunction (f: unknown): f is GeneralContractFunction<C>
+  isAContractFunction (f: unknown): f is ContractFunction<C>
 }
 
 /**
@@ -134,10 +168,35 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * Note: in future versions this will no longer be a "static" function of AbstractContract.
    */
   static bindContractFunction<C extends AbstractContract<AnyFunction, unknown>> (
-    this: GeneralContractFunction<C>,
+    this: ContractFunction<C>,
     thisArg?: ContractThis<C>,
     ...argArray: ContractParameters<C>
-  ): GeneralContractFunction<C>
+  ): ContractFunction<C>
+
+  /**
+   * A General Contract Function is an implementation of an AbstractContract. This function verifies whether a function
+   * given as a parameter is a General Contract Function.
+   *
+   * To be a General Contract Function, the subject must
+   * <ul>
+   *   <li>be a function,</li>
+   *   <li>have a frozen `contract` property that refers to a AbstractContract,</li>
+   *   <li>have a frozen `implementation` property that refers to a function (which realizes the contract),</li>
+   *   <li>have a frozen `location` property, that has a value,</li>
+   *   <li>have a frozen `bind` property, which is {@link AbstractContract.bindContractFunction}, and</li>
+   *   <li>have a `name`, which is a string that gives information for a programmer to understand which contract
+   *     function this is, and</li>
+   *   <li>if the `implementation` function has a `prototype`, have a `prototype` property,
+   *     <ul>
+   *       <li>that is an object,</li>
+   *       <li>that has a `constructor` property that is the contract function, and</li>
+   *       <li>that has `f.implementation.prototype` in its prototype chain, or is equal to it.
+   *     </ul>
+   *   </li>
+   */
+  static isAGeneralContractFunction<F extends AnyFunction> (
+    f: F
+  ): f is GeneralContractFunction<F>
 
   /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function
@@ -145,7 +204,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    *
    * To be a Contract Function, the subject must
    * <ul>
-   *   <li>be a [general contract function]{@linkplain #isAGeneralContractFunction()},</li>
+   *   <li>be a [general contract function]{@linkplain #isAGeneralContractFunctionProps()},</li>
    *   <li>have a frozen `location` property, which is a string that represents a location in source code,
    *     outside this library.</li>
    * </ul>
@@ -153,10 +212,10 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   static isAContractFunction<C extends AbstractContract<AnyFunction, unknown>> (
     this: ContractConstructor<C>,
     f: unknown
-  ): f is GeneralContractFunction<C>
+  ): f is ContractFunction<C>
 
   readonly location: StackLocation | typeof AbstractContract.internalLocation
-  readonly abstract: GeneralContractFunction<this>;
+  readonly abstract: ContractFunction<this>;
 
   verify: boolean;
   verifyPostconditions: boolean;
@@ -168,7 +227,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     _location?: StackLocation | typeof AbstractContract.internalLocation
   )
 
-  isImplementedBy (f: unknown): f is GeneralContractFunction<AbstractContract<F, Exceptions>>
+  isImplementedBy (f: unknown): f is ContractFunction<this>
 
   get pre (): Array<Precondition<this>> // not ReadonlyArray: we have sliced
 
