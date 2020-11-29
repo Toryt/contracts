@@ -214,6 +214,30 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     f: unknown
   ): f is ContractFunction<C>
 
+  /**
+   * Helper function that transforms any function given as <code>contractFunction</code>
+   * into a [contract function]{@linkplain AbstractContract#isAContractFunction}
+   * for the given parameters.
+   *
+   * If {@code implFunction.prototype} exists, the {@code contractFunction.prototype} is changed to
+   * an object that refers to {@code contractFunction} as {@code contractFunction.prototype.constructor},
+   * is otherwise empty, and has {@code implFunction.prototype} as prototype.
+   *
+   * @param contractFunction - the regular {Function} to be transformed into a contract function
+   * @param contract - the contract <code>contractFunction</code> is a realisation of
+   * @param implFunction - the function that is used in <code>contractFunction</code> to realize the postconditions of
+   *                       <code>contract</code> under its preconditions
+   * @param location - the location outside this library that the resulting [contract function]{@linkplain
+   *                   AbstractContract#isAContractFunction} will carry, that says where it is defined.
+   * @returns `contractFunction`
+   */
+  static bless<C extends AbstractContract<AnyFunction, unknown>> (
+    contractFunction: ContractSignature<C>,
+    contract: C,
+    implFunction: ContractSignature<C>,
+    location: StackLocation | typeof AbstractContract.internalLocation
+  ): ContractFunction<C>
+
   readonly location: StackLocation | typeof AbstractContract.internalLocation
   readonly abstract: ContractFunction<this>;
 
