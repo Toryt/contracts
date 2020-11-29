@@ -195,7 +195,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    *   </li>
    */
   static isAGeneralContractFunction<F extends AnyFunction> (
-    f: F
+    f?: F
   ): f is GeneralContractFunction<F>
 
   /**
@@ -211,7 +211,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    */
   static isAContractFunction<C extends AbstractContract<AnyFunction, unknown>> (
     this: ContractConstructor<C>,
-    f: unknown
+    f?: unknown
   ): f is ContractFunction<C>
 
   /**
