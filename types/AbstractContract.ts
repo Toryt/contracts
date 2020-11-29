@@ -37,6 +37,8 @@ type AFunction = (this: SomeObject, a: string, b: number) => string
 
 // $expectType (this: SomeObject, a: string, b: number) => string
 const aFunction: AFunction = function aFunction (a: string, b: number) { return a + b }
+// $expectType (this: SomeObject, a: string, b: number) => string
+const aFunction2: AFunction = function aFunction (a: string, b: number) { return `${a}${b} more text`}
 
 // $expectType AFunction
 const anAnyFunction: AnyFunction = aFunction
@@ -224,6 +226,21 @@ if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFuncti
   const r1 = candidateContractFunction.apply(undefined, [true, new Date()])
   // TODO should be: $ExpectError
   const r2 = candidateContractFunction.call(undefined, true, new Date())
+
+  // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  const blessedA: ContractFunction<typeof subject> = AbstractContract.bless(candidateContractFunction, subject, aFunction, 'this is the location')
+  // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  const blessedB: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, 'this is the location')
+  // $ExpectError
+  const blessedC: ContractFunction<typeof subject> = AbstractContract.bless(anotherFunction, subject, aFunction2, 'this is the location')
+  // $ExpectError
+  const blessedD: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, {}, aFunction2, 'this is the location')
+  // $ExpectError
+  const blessedE: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, anotherFunction, 'this is the location')
+  // $ExpectError
+  const blessedF: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, true)
+  // $ExpectError
+  const blessedG: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, undefined)
 }
 
 // $ExpectType string | object
