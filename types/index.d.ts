@@ -193,6 +193,9 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    *       <li>that has `f.implementation.prototype` in its prototype chain, or is equal to it.
    *     </ul>
    *   </li>
+   *
+   * Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot freeze
+   * it, and not guaranteed in all engines.
    */
   static isAGeneralContractFunction<F extends AnyFunction> (
     f?: F
