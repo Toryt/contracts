@@ -244,11 +244,19 @@ if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFuncti
 }
 
 // $ExpectType false
-const itsFalseA: boolean = AbstractContract.falseCondition()
+const itsFalse1A: boolean = AbstractContract.falseCondition()
 // $ExpectType false
-const itsFalseB: boolean = AbstractContract.falseCondition('lalala')
+const itsFalse1B: boolean = AbstractContract.falseCondition('lalala')
 // TODO should be: $ExpectType false
-const itsFalseC: boolean = AbstractContract.falseCondition.call(someObject, 'lalala')
+const itsFalse1C: boolean = AbstractContract.falseCondition.call(someObject, 'lalala')
+
+// $ExpectType false
+const itsFalse2A: boolean = AbstractContract.mustNotHappen[0]()
+// $ExpectType false
+const itsFalse2B: boolean = AbstractContract.mustNotHappen[0]('lalala')
+
+// $ExpectError
+const itsFalse3: boolean = AbstractContract.mustNotHappen[1]()
 
 // $ExpectType string | object
 const subjectStackLocation: StackLocation | object = subject.location

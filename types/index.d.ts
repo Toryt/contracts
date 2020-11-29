@@ -110,6 +110,8 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
   isAContractFunction (f: unknown): f is ContractFunction<C>
 }
 
+export type FalseCondition = (this: unknown, ...args: unknown[]) => false
+
 /**
  * Abstract definition of a function contract.
  *
@@ -241,7 +243,9 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     location: StackLocation | typeof AbstractContract.internalLocation
   ): ContractFunction<C>
 
-  static falseCondition (this: unknown, ...args: unknown[]): false
+  static readonly falseCondition: FalseCondition
+
+  static readonly mustNotHappen: [FalseCondition]
 
   readonly location: StackLocation | typeof AbstractContract.internalLocation
   readonly abstract: ContractFunction<this>;
