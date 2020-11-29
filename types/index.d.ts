@@ -285,6 +285,14 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     ...args: [...ContractParameters<C>, unknown, ContractFunction<C>]
   ): ContractFunction<C>
 
+  // tslint:disable-next-line:no-any
+  static root: AbstractContract<any, any> & {
+    location: typeof AbstractContract.internalLocation
+    pre: typeof AbstractContract.mustNotHappen
+    post: []
+    exception: []
+  }
+
   readonly location: StackLocation | typeof AbstractContract.internalLocation
   readonly abstract: ContractFunction<this>;
 
