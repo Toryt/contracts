@@ -15,7 +15,7 @@
  */
 
 // tslint:disable-next-line:no-any
-export type AnyFunction = (this: any, ...args: any[]) => any & {prototype: undefined | object}
+export type AnyFunction = ((this: any, ...args: any[]) => any) & {prototype: undefined | object}
 
 export type StackLocation = string
 
