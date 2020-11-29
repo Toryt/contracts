@@ -116,17 +116,10 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
     location: StackLocation | typeof AbstractContract.internalLocation
   ): ContractFunction<C>
 
-  /**
-   * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
-   * this is the function call result, respectively, the thrown exception.
-   */
-  outcome (...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]): ContractResult<C>
+  outcome (...args: [...ContractParameters<C>, ContractResult<C> | ContractExceptions<C>, unknown]):
+    ContractResult<C> | ContractExceptions<C>
 
-  /**
-   * Returns the last element of an Array-like argument. In post- and exception conditions,
-   * this is the called contract function, bound to this. This can be used in recursive definitions.
-   */
-  callee (...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]): ContractFunction<C>
+  callee (...args: [...ContractParameters<C>, unknown, ContractFunction<C>]): ContractFunction<C>
 }
 
 export type FalseCondition = (this: unknown, ...args: unknown[]) => false
@@ -273,6 +266,24 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * because the conditions will always fail.
    */
   static readonly mustNotHappen: [FalseCondition]
+
+  /**
+   * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
+   * this is the function call result, respectively, the thrown exception.
+   *
+   * TODO should be split in result and exceptions for TS
+   */
+  static outcome<C extends AbstractContract<AnyFunction, unknown>> (
+    ...args: [...ContractParameters<C>, ContractResult<C> | ContractExceptions<C>, unknown]
+  ): ContractResult<C> | ContractExceptions<C>
+
+  /**
+   * Returns the last element of an Array-like argument. In post- and exception conditions,
+   * this is the called contract function, bound to this. This can be used in recursive definitions.
+   */
+  static callee<C extends AbstractContract<AnyFunction, unknown>> (
+    ...args: [...ContractParameters<C>, unknown, ContractFunction<C>]
+  ): ContractFunction<C>
 
   readonly location: StackLocation | typeof AbstractContract.internalLocation
   readonly abstract: ContractFunction<this>;
