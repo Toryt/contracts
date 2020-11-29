@@ -107,7 +107,15 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
     _location?: StackLocation | typeof AbstractContract.internalLocation
   ): C
 
-  isAContractFunction (f: unknown): f is ContractFunction<C>
+  isAContractFunction (f: ContractSignature<C> | unknown): f is ContractFunction<C>
+  bless (
+    contractFunction: ContractSignature<C>,
+    contract: C,
+    implFunction: ContractSignature<C>,
+    location: StackLocation | typeof AbstractContract.internalLocation
+  ): ContractFunction<C>
+  outcome (...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]): ContractResult<C>
+  callee (...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]): ContractFunction<C>
 }
 
 export type FalseCondition = (this: unknown, ...args: unknown[]) => false

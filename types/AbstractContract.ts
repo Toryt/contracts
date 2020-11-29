@@ -169,6 +169,8 @@ if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctio
   const r2 = anotherFunctionAsUnknown.call(undefined, true, new Date())
 }
 
+// MUDO repeat with a subtype to test constructor methods
+
 // $ExpectType boolean
 const isAContractFunctionA = AbstractContract.isAContractFunction(function () {})
 // $ExpectType boolean
