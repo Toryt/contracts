@@ -108,13 +108,24 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
   ): C
 
   isAContractFunction (f: ContractSignature<C> | unknown): f is ContractFunction<C>
+
   bless (
     contractFunction: ContractSignature<C>,
     contract: C,
     implFunction: ContractSignature<C>,
     location: StackLocation | typeof AbstractContract.internalLocation
   ): ContractFunction<C>
+
+  /**
+   * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
+   * this is the function call result, respectively, the thrown exception.
+   */
   outcome (...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]): ContractResult<C>
+
+  /**
+   * Returns the last element of an Array-like argument. In post- and exception conditions,
+   * this is the called contract function, bound to this. This can be used in recursive definitions.
+   */
   callee (...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]): ContractFunction<C>
 }
 
@@ -251,8 +262,16 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     location: StackLocation | typeof AbstractContract.internalLocation
   ): ContractFunction<C>
 
+  /**
+   * Function that always returns <code>false</code>.
+   */
   static readonly falseCondition: FalseCondition
 
+  /**
+   * Singleton array of {@linkplain AbstractContract#falseCondition}. Can be used the clearly signal
+   * that a function should never throw exceptions, or never end nominally, or should never be called,
+   * because the conditions will always fail.
+   */
   static readonly mustNotHappen: [FalseCondition]
 
   readonly location: StackLocation | typeof AbstractContract.internalLocation
