@@ -444,6 +444,7 @@
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
+    <inspection_tool class="TsLint" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="UnnecessaryContinueJS" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
