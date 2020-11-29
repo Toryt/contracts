@@ -241,6 +241,8 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     location: StackLocation | typeof AbstractContract.internalLocation
   ): ContractFunction<C>
 
+  static falseCondition (this: unknown, ...args: unknown[]): false
+
   readonly location: StackLocation | typeof AbstractContract.internalLocation
   readonly abstract: ContractFunction<this>;
 
