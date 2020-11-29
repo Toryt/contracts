@@ -146,6 +146,7 @@ if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctio
   const typedAnotherFunctionLocation: StackLocation = anotherFunctionAsUnknown.location
   // $ExpectType string
   const typedAnotherFunctionName = anotherFunctionAsUnknown.name
+
   // $ExpectError
   const typedBoundAnotherFunctionA = anotherFunctionAsUnknown.bind()
   // TODO should be: $ExpectError
@@ -154,8 +155,16 @@ if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctio
   const typedBoundAnotherFunctionC = anotherFunctionAsUnknown.bind(someObject, 'this is a string')
   // TODO should be: $ExpectType string
   const typedResult = typedBoundAnotherFunctionC(5)
+
   // TODO should be: SubPrototype<GeneralContractFunction<AFunction>, AFunction>
   const typedPrototype = anotherFunctionAsUnknown.prototype
+
+  // $ExpectType number
+  const typedLength = anotherFunctionAsUnknown.length
+  // TODO should be: $ExpectError
+  const r1 = anotherFunctionAsUnknown.apply(undefined, [true, new Date()])
+  // TODO should be: $ExpectError
+  const r2 = anotherFunctionAsUnknown.call(undefined, true, new Date())
 }
 
 // $ExpectType boolean
@@ -174,38 +183,47 @@ const isAContractFunctionF: boolean = AbstractContract.isAContractFunction(null)
 const candidateContractFunction = 'this is a candidate contract function'
 if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFunction)) {
   // tslint:disable-next-line:max-line-length
-  // TODO should be: $ExpectType  "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & ContractFunctionProps<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  // $ExpectType "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & GeneralContractFunctionProps<(this: SomeObject, a: string, b: number) => string> & ContractFunctionProps<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
   const typedCandidateContractFunction: ContractFunction<typeof subject> = candidateContractFunction
+  // tslint:disable-next-line:max-line-length
+  // TODO should be: $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError> : but we get a prefix for the exceptions
+  // TODO if we type the const below, we get "Type instantiation is excessively deep and possibly infinite.". Yeah, right.
+  // tslint:disable-next-line:max-line-length
+  // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown> & AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
+  const typedAnotherFunctionContract = candidateContractFunction.contract
+  // $ExpectType (this: SomeObject, a: string, b: number) => string
+  const typedAnotherFunctionImplementation = candidateContractFunction.implementation
+  // $ExpectType string
+  const typedAnotherFunctionLocation: StackLocation = candidateContractFunction.location
+  // $ExpectType string
+  const typedAnotherFunctionName = candidateContractFunction.name
 
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>: REASON: general call signature?
-  const boundContractFunction1A: ContractFunction<typeof subject> = AbstractContract.bindContractFunction.call(typedCandidateContractFunction, someObject, 'a string')
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
-  const boundContractFunction1B: ContractFunction<typeof subject> = AbstractContract.bindContractFunction.call(typedCandidateContractFunction, someObject)
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
-  const boundContractFunction1C: ContractFunction<typeof subject> = AbstractContract.bindContractFunction.call(typedCandidateContractFunction, someObject, 'a string', 5345)
-  // TODO should be: $ExpectError
-  const boundContractFunction1D: ContractFunction<typeof subject> = AbstractContract.bindContractFunction.call(typedCandidateContractFunction, someObject, 'a string', true)
-  // TODO should be: $ExpectError
-  const boundContractFunction1E: ContractFunction<typeof subject> = AbstractContract.bindContractFunction.call(typedCandidateContractFunction, someObject, true)
-  // TODO should be: $ExpectError
-  const boundContractFunction1F: ContractFunction<typeof subject> = AbstractContract.bindContractFunction.call(typedCandidateContractFunction, {someOtherProperty: false}, new Date())
-  // TODO should be: $ExpectError
-  const boundContractFunction1G: ContractFunction<typeof subject> = AbstractContract.bindContractFunction.call(typedCandidateContractFunction)
-
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>: REASON: general bind signature?
-  const boundContractFunction2A: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject, 'a string')
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
-  const boundContractFunction2B: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject)
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
-  const boundContractFunction2C: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject, 'a string', 5345)
-  // TODO should be: $ExpectError
-  const boundContractFunction2D: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject, 'a string', true)
-  // TODO should be: $ExpectError
-  const boundContractFunction2E: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject, true)
-  // TODO should be: $ExpectError
-  const boundContractFunction2F: ContractFunction<typeof subject> = typedCandidateContractFunction.bind({someOtherProperty: false}, new Date())
   // $ExpectError
-  const boundContractFunction2G: ContractFunction<typeof subject> = typedCandidateContractFunction.bind()
+  const boundContractFunction2G: ContractFunction<typeof subject> = candidateContractFunction.bind()
+  // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, a: string, b: number) => string, string | SomeError>>: REASON: general bind signature?
+  const boundContractFunction2B: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject)
+  // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, b: number) => string, string | SomeError>>: REASON: general bind signature?
+  const boundContractFunction2A: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string')
+  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: never) => string, string | SomeError>>
+  const boundContractFunction2C: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string', 5345)
+  // TODO should be: $ExpectError
+  const boundContractFunction2D: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string', true)
+  // TODO should be: $ExpectError
+  const boundContractFunction2E: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, true)
+  // TODO should be: $ExpectError
+  const boundContractFunction2F: ContractFunction<typeof subject> = candidateContractFunction.bind({someOtherProperty: false}, new Date())
+  // TODO should be: $ExpectType string
+  const typedResult = boundContractFunction2C()
+
+  // TODO should be: $ExpectType SubPrototype<GeneralContractFunction<AFunction>, AFunction>
+  const typedPrototype = candidateContractFunction.prototype
+
+  // $ExpectType number
+  const typedLength = candidateContractFunction.length
+  // TODO should be: $ExpectError
+  const r1 = candidateContractFunction.apply(undefined, [true, new Date()])
+  // TODO should be: $ExpectError
+  const r2 = candidateContractFunction.call(undefined, true, new Date())
 }
 
 // $ExpectType string | object
