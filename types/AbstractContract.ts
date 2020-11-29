@@ -119,9 +119,13 @@ const subjectNoExceptions = new AbstractContract<(this: SomeObject, a: string, b
 )
 
 // $ExpectType boolean
-const isAContractFunction = AbstractContract.isAContractFunction(function () {})
+const isAContractFunctionA = AbstractContract.isAContractFunction(function () {})
 // $ExpectType boolean
-const isAContractFunctionb = AbstractContract.isAContractFunction(45)
+const isAContractFunctionB = AbstractContract.isAContractFunction(45)
+// $ExpectType boolean
+const isAContractFunctionC: boolean = AbstractContract.isAContractFunction(undefined)
+// $ExpectType boolean
+const isAContractFunctionD: boolean = AbstractContract.isAContractFunction(null)
 
 const someObject: SomeObject = { aProperty: 101 }
 
