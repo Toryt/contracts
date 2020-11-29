@@ -163,11 +163,13 @@ const isAContractFunctionA = AbstractContract.isAContractFunction(function () {}
 // $ExpectType boolean
 const isAContractFunctionB = AbstractContract.isAContractFunction(45)
 // $ExpectType boolean
-const isAContractFunctionC: boolean = AbstractContract.isAContractFunction(undefined)
+const isAContractFunctionC = AbstractContract.isAContractFunction<AbstractContract<AFunction, unknown>>('this is a candidate contract function')
 // $ExpectType boolean
-const isAContractFunctionD: boolean = AbstractContract.isAContractFunction(null)
-
-const someObject: SomeObject = { aProperty: 101 }
+const isAContractFunctionD = AbstractContract.isAContractFunction<AbstractContract<AFunction, unknown>>(anotherFunction)
+// $ExpectType boolean
+const isAContractFunctionE: boolean = AbstractContract.isAContractFunction(undefined)
+// $ExpectType boolean
+const isAContractFunctionF: boolean = AbstractContract.isAContractFunction(null)
 
 const candidateContractFunction = 'this is a candidate contract function'
 if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFunction)) {
