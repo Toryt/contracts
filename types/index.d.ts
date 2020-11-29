@@ -19,11 +19,11 @@ export type AnyFunction = ((this: any, ...args: any[]) => any) & {prototype: und
 
 export type StackLocation = string
 
-export type SubPrototype<F extends AnyFunction, SuperF extends AnyFunction>
-  = F extends {prototype: infer P} ? Omit<P, 'constructor'> & {constructor: F} : undefined
+export type SubPrototype<SubF extends AnyFunction, SuperF extends AnyFunction>
+  = SuperF extends {prototype: infer P} ? Omit<P, 'constructor'> & {constructor: SubF} : undefined
 
 export interface GeneralContractFunctionProps<F extends AnyFunction> extends AnyFunction {
-  readonly contract: AbstractContract<AnyFunction, unknown>
+  readonly contract: AbstractContract<F, unknown>
   readonly implementation: F
   readonly location: StackLocation
   name: string
@@ -47,7 +47,7 @@ export interface GeneralContractFunctionProps<F extends AnyFunction> extends Any
 
   /* Standard prototype is prototype: any;
      We can do better. */
-  prototype: SubPrototype<F, this>
+  prototype: SubPrototype<this, F>
 }
 
 export type GeneralContractFunction<F extends AnyFunction> = F & GeneralContractFunctionProps<F>
@@ -198,7 +198,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * it, and not guaranteed in all engines.
    */
   static isAGeneralContractFunction<F extends AnyFunction> (
-    f?: F
+    f: F | unknown
   ): f is GeneralContractFunction<F>
 
   /**

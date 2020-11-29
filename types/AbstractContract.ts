@@ -118,6 +118,46 @@ const subjectNoExceptions = new AbstractContract<(this: SomeObject, a: string, b
   'a stack location'
 )
 
+function anotherFunction (a: boolean): number {return a ? 23 : 25}
+const someObject: SomeObject = { aProperty: 101 }
+
+// $ExpectType boolean
+const isAGeneralContractFunctionA = AbstractContract.isAGeneralContractFunction(function () {})
+// $ExpectType boolean
+const isAGeneralContractFunctionB = AbstractContract.isAGeneralContractFunction(45)
+// $ExpectType boolean
+const isAGeneralContractFunctionC = AbstractContract.isAGeneralContractFunction<AFunction>('this is a candidate contract function')
+// $ExpectType boolean
+const isAGeneralContractFunctionD = AbstractContract.isAGeneralContractFunction<AFunction>(anotherFunction)
+// $ExpectType boolean
+const isAGeneralContractFunctionE: boolean = AbstractContract.isAGeneralContractFunction(undefined)
+// $ExpectType boolean
+const isAGeneralContractFunctionF: boolean = AbstractContract.isAGeneralContractFunction(null)
+
+const anotherFunctionAsUnknown: unknown = anotherFunction
+if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctionAsUnknown)) {
+  // $ExpectType GeneralContractFunction<AFunction>
+  const typedAnotherFunction = anotherFunctionAsUnknown
+  // $ExpectType AbstractContract<AFunction, unknown>
+  const typedAnotherFunctionContract = anotherFunctionAsUnknown.contract
+  // $ExpectType AFunction
+  const typedAnotherFunctionImplementation = anotherFunctionAsUnknown.implementation
+  // $ExpectType string
+  const typedAnotherFunctionLocation: StackLocation = anotherFunctionAsUnknown.location
+  // $ExpectType string
+  const typedAnotherFunctionName = anotherFunctionAsUnknown.name
+  // $ExpectError
+  const typedBoundAnotherFunctionA = anotherFunctionAsUnknown.bind()
+  // TODO should be: $ExpectError
+  const typedBoundAnotherFunctionB = anotherFunctionAsUnknown.bind(undefined)
+  // TODO should be: $ExpectType (this: never, b: number) => string
+  const typedBoundAnotherFunctionC = anotherFunctionAsUnknown.bind(someObject, 'this is a string')
+  // TODO should be: $ExpectType string
+  const typedResult = typedBoundAnotherFunctionC(5)
+  // TODO should be: SubPrototype<GeneralContractFunction<AFunction>, AFunction>
+  const typedPrototype = anotherFunctionAsUnknown.prototype
+}
+
 // $ExpectType boolean
 const isAContractFunctionA = AbstractContract.isAContractFunction(function () {})
 // $ExpectType boolean
