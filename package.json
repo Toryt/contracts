@@ -89,7 +89,8 @@
   "standard": {
     "ignore": [
       "/scripts/common/",
-      "**/*.ts"
+      "**/*.ts",
+      "test-d/**.js"
     ]
   },
   "mocha": {
