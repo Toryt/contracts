@@ -14,16 +14,24 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectError } from 'tsd'
+import { expectAssignable, expectNotType, expectType } from 'tsd'
 import { StackLocation } from '../types'
 
-expectAssignable<StackLocation>(  '    at REPLServer.runBound [as eval] (domain.js:443:12)')
-expectError<StackLocation>(null)
-expectError<StackLocation>(undefined)
-expectError<StackLocation>(42)
-expectError<StackLocation>(true)
-expectError<StackLocation>(false)
-expectError<StackLocation>([])
-expectError<StackLocation>({})
+const aStringStackLocation = '    at REPLServer.runBound [as eval] (domain.js:443:12)'
+
+expectAssignable<StackLocation>(  aStringStackLocation)
+expectNotType<StackLocation>(  aStringStackLocation) // it's a string
+expectNotType<StackLocation>(null)
+expectNotType<StackLocation>(undefined)
+// noinspection MagicNumberJS
+expectNotType<StackLocation>(42)
+expectNotType<StackLocation>(true)
+expectNotType<StackLocation>(false)
+expectNotType<StackLocation>([])
+expectNotType<StackLocation>({})
+
+const stackLocation: StackLocation = aStringStackLocation
+expectType<StackLocation>(stackLocation)
+
 // sadly …
 expectAssignable<StackLocation>(  '')
