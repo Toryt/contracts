@@ -29,27 +29,23 @@ expectAssignable<undefined | object>(everyAnyFunctionHasAPrototype.prototype)
 // expectType<undefined | object>(everyAnyFunctionHasAPrototype.prototype)
 
 
-function SuperClass() {}
-
-const superProto = {
-  prop1: 'lala',
-  prop2: 42,
-  constructor: SuperClass
+class SuperClass {
+  prop1: string = 'lala'
+  prop2: number = 42
+  constructor() {}
 }
 
-SuperClass.prototype = superProto
-
-function SubClass(a: string) {
-  this.prop1 = a
+class SubClass extends SuperClass {
+  constructor (a:string) {
+    super();
+    this.prop1 = a
+  }
 }
-
-SubClass.prototype = new SuperClass()
-SubClass.prototype.constructor = SubClass
 
 expectType<SubPrototype<typeof SubClass, typeof SuperClass>>(SubClass.prototype)
 expectType<SubPrototype<typeof SubClass, typeof SuperClass>>({
-  ...superProto,
+  ...SuperClass.prototype,
   constructor: SubClass
 })
 
-expectNotType<SubPrototype<typeof SubClass, typeof SuperClass>>(superProto)
+expectNotType<SubPrototype<typeof SubClass, typeof SuperClass>>(SuperClass.prototype)
