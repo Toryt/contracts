@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectType } from 'tsd'
+import { expectAssignable, expectNotType, expectType } from 'tsd'
 import { AnyFunction } from '../types'
 
 interface SomeObject {
@@ -39,3 +39,16 @@ expectType<AFunction3>(aFunction3)
 expectAssignable<AFunction2>(aFunction3)
 expectAssignable<AFunction1>(aFunction3)
 expectAssignable<AnyFunction>(aFunction3)
+
+function EveryFunctionHasAPrototype() {}
+expectNotType<AnyFunction>(EveryFunctionHasAPrototype)
+expectAssignable<AnyFunction>(EveryFunctionHasAPrototype)
+expectType<any>(EveryFunctionHasAPrototype.prototype)
+// TODO but if the prototype is any, how can it be assignable to AnyFunction?
+expectAssignable<undefined | object>(EveryFunctionHasAPrototype.prototype)
+
+const everyAnyFunctionHasAPrototype: AnyFunction = () => {}
+expectType<AnyFunction>(everyAnyFunctionHasAPrototype)
+expectAssignable<undefined | object>(everyAnyFunctionHasAPrototype.prototype)
+// TODO unclear why this does not work: prototype still is any, although AnyFunction says it is undefined | object
+// expectType<undefined | object>(everyAnyFunctionHasAPrototype.prototype)
