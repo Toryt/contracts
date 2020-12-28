@@ -14,19 +14,22 @@
   limitations under the License.
  */
 
+/**
+ * Any function, arrow, or non-arrow, or a constructor defined with the `class` syntax.
+ *
+ * Note that {@link Function.prototype} is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do
+ * about that.
+ */
 // tslint:disable-next-line:no-any
-export type AnyFunction = ((this: any, ...args: any[]) => any) & {prototype: undefined | object}
+export type AnyFunction = ((this: any, ...args: any[]) => any) | (new (...args: any[]) => any)
 
 export type StackLocation = string
 
-export type SubPrototype<SubF extends AnyFunction, SuperF extends AnyFunction>
-  = SuperF extends {prototype: infer P} ? Omit<P, 'constructor'> & {constructor: SubF} : undefined
-
-export interface GeneralContractFunctionProps<F extends AnyFunction> extends AnyFunction {
+export interface GeneralContractFunctionProps<F extends AnyFunction> {
   readonly contract: AbstractContract<F, unknown>
   readonly implementation: F
   readonly location: StackLocation
-  name: string
+  name: string // readonly in `lib.es2015.core.d.ts`
 
   /* standard
      - apply(this: Function, thisArg: any, argArray?: any): any;
@@ -41,13 +44,9 @@ export interface GeneralContractFunctionProps<F extends AnyFunction> extends Any
 
   /* Standard bind is bind(this: Function, thisArg: any, ...argArray: any[]): any;
      We can do slightly better. */
-  readonly bind: (thisArg: ThisParameterType<F>, ...argArray: Parameters<F>)
-    // tslint:disable-next-line:no-any
-    => (this: never, ...argArray: any[]) => ReturnType<F>
-
-  /* Standard prototype is prototype: any;
-     We can do better. */
-  prototype: SubPrototype<this, F>
+  // readonly bind: (thisArg: ThisParameterType<F>, ...argArray: Parameters<F>)
+  //   // tslint:disable-next-line:no-any
+  //   => (this: never, ...argArray: any[]) => ReturnType<F>
 }
 
 export type GeneralContractFunction<F extends AnyFunction> = F & GeneralContractFunctionProps<F>

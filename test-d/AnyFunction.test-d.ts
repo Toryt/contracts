@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectNotType, expectType } from 'tsd'
+import { expectAssignable, expectError, expectNotType, expectType } from 'tsd'
 import { AnyFunction } from '../types'
 
 interface SomeObject {
@@ -40,15 +40,31 @@ expectAssignable<AFunction2>(aFunction3)
 expectAssignable<AFunction1>(aFunction3)
 expectAssignable<AnyFunction>(aFunction3)
 
-function EveryFunctionHasAPrototype() {}
-expectNotType<AnyFunction>(EveryFunctionHasAPrototype)
-expectAssignable<AnyFunction>(EveryFunctionHasAPrototype)
-expectType<any>(EveryFunctionHasAPrototype.prototype)
-// TODO but if the prototype is any, how can it be assignable to AnyFunction?
-expectAssignable<undefined | object>(EveryFunctionHasAPrototype.prototype)
+let anyFunction: AnyFunction = aFunction1
+expectType<AnyFunction>(anyFunction)
+expectType<CallableFunction['apply']>(anyFunction.apply)
+expectType<CallableFunction['call']>(anyFunction.call)
+// MUDO expectType<CallableFunction['bind']>(anyFunction.call)
+// `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
+expectType<any>(anyFunction.prototype)
+expectType<Function['toString']>(anyFunction.toString)
+expectType<number>(anyFunction.length)
 
-const everyAnyFunctionHasAPrototype: AnyFunction = () => {}
-expectType<AnyFunction>(everyAnyFunctionHasAPrototype)
-expectAssignable<undefined | object>(everyAnyFunctionHasAPrototype.prototype)
-// TODO unclear why this does not work: prototype still is any, although AnyFunction says it is undefined | object
-// expectType<undefined | object>(everyAnyFunctionHasAPrototype.prototype)
+class A {
+  constructor(a: string, b: number) {}
+}
+expectType<typeof A>(A)
+expectAssignable<new (a: string, b: number) => A>(A)
+expectAssignable<AnyFunction>(A)
+// (***) … but TS knows that the prototype of a constructor is the type of the class
+expectType<A>(A.prototype)
+
+let anyConstructor: AnyFunction = A
+expectType<AnyFunction>(anyConstructor)
+expectError<CallableFunction['apply']>(anyConstructor.apply) // MUDO this fails; why? the static type is the same as above
+expectType<NewableFunction['apply']>(anyConstructor.apply)
+expectType<NewableFunction['call']>(anyConstructor.call)
+// MUDO expectType<NewableFunction['bind']>(anyConstructor.call)
+expectType<any>(anyConstructor.prototype)
+expectType<Function['toString']>(anyConstructor.toString)
+expectType<number>(anyConstructor.length)
