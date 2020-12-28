@@ -15,13 +15,32 @@
  */
 
 /**
+ * Any function, arrow, or non-arrow.
+ *
+ * Note that {@link Function.prototype} is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do
+ * about that.
+ */
+// tslint:disable-next-line:no-any
+export type AnyCallableFunction = (this: any, ...args: any[]) => any
+
+/**
+ * Any constructor (notably, created with the `class` syntax).
+ *
+ * Note that {@link Function.prototype} is the type of the object being constructed.
+ *
+ * NOTE: I cannot find where this might be defined in the typescript `*.d.ts` files.
+ */
+// tslint:disable-next-line:no-any
+export type AnyNewableFunction = new (...args: any[]) => any
+
+/**
  * Any function, arrow, or non-arrow, or a constructor defined with the `class` syntax.
  *
  * Note that {@link Function.prototype} is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do
  * about that.
  */
 // tslint:disable-next-line:no-any
-export type AnyFunction = ((this: any, ...args: any[]) => any) | (new (...args: any[]) => any)
+export type AnyFunction = AnyCallableFunction | AnyNewableFunction
 
 export type StackLocation = string
 
@@ -317,7 +336,9 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
 export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =
   C extends AbstractContract<infer F, unknown> ? F : never
 export type ContractThis<C extends AbstractContract<AnyFunction, unknown>> = ThisParameterType<ContractSignature<C>>
-export type ContractParameters<C extends AbstractContract<AnyFunction, unknown>> = Parameters<ContractSignature<C>>
-export type ContractResult<C extends AbstractContract<AnyFunction, unknown>> = ReturnType<ContractSignature<C>>
+export type ContractParameters<C extends AbstractContract<AnyFunction, unknown>> =
+  C extends AbstractContract<infer F, unknown> ? F extends AnyNewableFunction ? ConstructorParameters<F> : F extends AnyCallableFunction ? Parameters<F> : never : never
+export type ContractResult<C extends AbstractContract<AnyFunction, unknown>> =
+  C extends AbstractContract<infer F, unknown> ? F extends AnyNewableFunction ? InstanceType<F> : F extends AnyCallableFunction ? ReturnType<F> : never : never
 export type ContractExceptions<C extends AbstractContract<AnyFunction, unknown>> =
   C extends AbstractContract<AnyFunction, infer Exceptions> ? Exceptions : never
