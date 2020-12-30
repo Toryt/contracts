@@ -90,7 +90,7 @@
     "ignore": [
       "/scripts/common/",
       "**/*.ts",
-      "test-d/**.js"
+      "test-d/*.js"
     ]
   },
   "mocha": {
