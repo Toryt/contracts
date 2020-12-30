@@ -16,7 +16,6 @@
 
 import {
   AbstractContract,
-  AnyNewableFunction,
   GeneralContractFunction,
   InternalLocation,
   StackLocation
