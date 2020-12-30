@@ -69,6 +69,25 @@ expectType<AFunction1['bind']>(aCallableGeneralContractFunctionB.bind)
 expectType<any>(aCallableGeneralContractFunctionB.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionB.prototype)
 
+let aCallableGeneralContractFunctionC: GeneralContractFunction<AFunction1, SomeError> =
+  aCallableGeneralContractFunction as GeneralContractFunction<AFunction1, SomeError>
+
+expectType<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunctionC)
+expectAssignable<AFunction1>(aCallableGeneralContractFunctionC)
+expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunctionC.contract)
+expectType<AFunction1>(aCallableGeneralContractFunctionC.implementation)
+expectType<StackLocation | InternalLocation>(aCallableGeneralContractFunctionC.location)
+expectType<string>(aCallableGeneralContractFunctionC.name)
+// NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
+expectType< (() => string) & (() => string)>(aCallableGeneralContractFunctionC.toString)
+expectAssignable<Function['toString']>(aCallableGeneralContractFunctionC.toString)
+expectType<AFunction1['apply']>(aCallableGeneralContractFunctionC.apply)
+expectType<AFunction1['call']>(aCallableGeneralContractFunctionC.call)
+expectType<AFunction1['bind']>(aCallableGeneralContractFunctionC.bind)
+// `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
+expectType<any>(aCallableGeneralContractFunctionC.prototype)
+expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionC.prototype)
+
 export class ANewableGeneralContractFunction {
   static readonly contract = new AbstractContract({})
   static readonly implementation = ANewableFunction
@@ -114,4 +133,22 @@ expectType<typeof ANewableFunction.call>(aNewableGeneralContractFunctionB.call)
 expectType<typeof ANewableFunction.bind>(aNewableGeneralContractFunctionB.bind)
 expectType<ANewableFunction>(aNewableGeneralContractFunctionB.prototype)
 expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionB.prototype)
+
+let aNewableGeneralContractFunctionC: GeneralContractFunction<typeof ANewableFunction, SomeError> =
+  ANewableGeneralContractFunction as GeneralContractFunction<typeof ANewableFunction, SomeError>
+
+expectType<GeneralContractFunction<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionC)
+expectAssignable<typeof ANewableFunction>(aNewableGeneralContractFunctionC)
+expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionC.contract)
+expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionC.implementation)
+expectType<StackLocation | InternalLocation>(aNewableGeneralContractFunctionC.location)
+expectType<string>(aNewableGeneralContractFunctionC.name)
+// NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
+expectType< (() => string) & (() => string)>(aNewableGeneralContractFunctionC.toString)
+expectAssignable<Function['toString']>(aNewableGeneralContractFunctionC.toString)
+expectType<typeof ANewableFunction.apply>(aNewableGeneralContractFunctionC.apply)
+expectType<typeof ANewableFunction.call>(aNewableGeneralContractFunctionC.call)
+expectType<typeof ANewableFunction.bind>(aNewableGeneralContractFunctionC.bind)
+expectType<ANewableFunction>(aNewableGeneralContractFunctionC.prototype)
+expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionC.prototype)
 
