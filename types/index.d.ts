@@ -45,6 +45,14 @@ export type AnyFunction = AnyCallableFunction | AnyNewableFunction
 export type StackLocation = string
 
 /**
+ * A contract function has the same signature as its implementation `F`, but adds a `contract`, `implementation`, and
+ * `location` property.
+ *
+ * The typing of `toString`, `length` (and not-standard `arguments` and `caller`) are inherited from `F`.
+ *
+ * The `name` of a contract function is a `string`, and is a modified version of the `name` of the
+ * `implementation` function.
+ *
  * The prototype of a ContractFunction is an instance of the prototype if the implementation, if any, with the
  * constructor changed to the contract function. This means a contract function that is a JavaScript constructor defines
  * a subclass of the "class" defined by the constructor implementation function. In TypeScript, types are structural
@@ -65,6 +73,12 @@ export type StackLocation = string
  *
  * This means the type of the prototype of the contract function is the same as the type of the prototype of the
  * implementation, and of the prototype of the contract signature.
+ *
+ * `call` and `apply` inherit their (generic) signatures from `F`, i.e., {@link CallableFunction} or
+ * {@link NewableFunction} respectively. Since TypeScript itself cannot do better, we don't need to either.
+ *
+ * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
+ * additional typed parameters ( `A0` … `A1`). For a contract function, we do the same, but we add the extra properties.
  */
 export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
   readonly contract: AbstractContract<F, Exceptions>
@@ -72,24 +86,7 @@ export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
   readonly location: StackLocation | InternalLocation
   name: string // readonly in `lib.es2015.core.d.ts`
 
-  /* standard
-   - apply(this: Function, thisArg: any, argArray?: any): any;
-   - call(this: Function, thisArg: any, ...argArray: any[]): any;
-   - toString(): string;
-   - readonly length: number;
-
-   and non-standard
-   - arguments: any;
-   - caller: Function;  bind (thisArg: ThisParameterType<ContractThis<C>>, ...argArray: ContractParameters<C>): ContractFunction<C>
-   */
-
-  /* Standard bind is bind(this: Function, thisArg: any, ...argArray: any[]): any;
-   We can do slightly better. */
-  // readonly bind: (thisArg: ThisParameterType<F>, ...argArray: Parameters<F>)
-  //   // tslint:disable-next-line:no-any
-  //   => (this: never, ...argArray: any[]) => ReturnType<F>
-
-// tslint:disable-next-line:no-any
+  // tslint:disable-next-line:no-any
   prototype: F extends AnyNewableFunction ? InstanceType<F> : F extends AnyCallableFunction ? any : undefined
 }
 
