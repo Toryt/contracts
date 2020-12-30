@@ -66,7 +66,7 @@ export type StackLocation = string
  * This means the type of the prototype of the contract function is the same as the type of the prototype of the
  * implementation, and of the prototype of the contract signature.
  */
-export interface GeneralContractFunctionProperties<F extends AnyFunction, Exceptions> {
+export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
   readonly location: StackLocation | InternalLocation
@@ -93,15 +93,10 @@ export interface GeneralContractFunctionProperties<F extends AnyFunction, Except
   prototype: F extends AnyNewableFunction ? InstanceType<F> : F extends AnyCallableFunction ? any : undefined
 }
 
-export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & GeneralContractFunctionProperties<F, Exceptions>
-
-export interface ContractFunctionProperties<C extends AbstractContract<AnyCallableFunction, unknown>>
-  extends GeneralContractFunctionProperties<ContractSignature<C>, ContractExceptions<C>> {
+export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
+  GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & {
   readonly contract: C
 }
-
-export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
-  GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & ContractFunctionProperties<C>
 
 export type booleany = undefined | null | unknown
 
