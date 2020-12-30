@@ -21,7 +21,7 @@ import {
   StackLocation
 } from '../types'
 import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction } from './subjects'
-import { expectAssignable, expectType } from 'tsd'
+import { expectAssignable, expectNotType, expectType } from 'tsd'
 
 function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string { return this.aProperty + a + b }
 aCallableGeneralContractFunction.contract = new AbstractContract({})
@@ -130,8 +130,10 @@ expectAssignable<Function['toString']>(aNewableGeneralContractFunctionB.toString
 expectType<typeof ANewableFunction.apply>(aNewableGeneralContractFunctionB.apply)
 expectType<typeof ANewableFunction.call>(aNewableGeneralContractFunctionB.call)
 expectType<typeof ANewableFunction.bind>(aNewableGeneralContractFunctionB.bind)
-expectType<ANewableFunction>(aNewableGeneralContractFunctionB.prototype)
-expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionB.prototype)
+expectNotType<ANewableFunction>(aNewableGeneralContractFunctionB.prototype)
+expectNotType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionB.prototype)
+expectAssignable<ANewableFunction>(aNewableGeneralContractFunctionB.prototype)
+expectAssignable<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionB.prototype)
 
 let aNewableGeneralContractFunctionC: GeneralContractFunction<typeof ANewableFunction, SomeError> =
   ANewableGeneralContractFunction as GeneralContractFunction<typeof ANewableFunction, SomeError>
@@ -148,6 +150,8 @@ expectAssignable<Function['toString']>(aNewableGeneralContractFunctionC.toString
 expectType<typeof ANewableFunction.apply>(aNewableGeneralContractFunctionC.apply)
 expectType<typeof ANewableFunction.call>(aNewableGeneralContractFunctionC.call)
 expectType<typeof ANewableFunction.bind>(aNewableGeneralContractFunctionC.bind)
-expectType<ANewableFunction>(aNewableGeneralContractFunctionC.prototype)
-expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionC.prototype)
+expectNotType<ANewableFunction>(aNewableGeneralContractFunctionC.prototype)
+expectNotType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionC.prototype)
+expectAssignable<ANewableFunction>(aNewableGeneralContractFunctionC.prototype)
+expectAssignable<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionC.prototype)
 
