@@ -356,18 +356,6 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   get exception (): Array<ExceptionCondition<this>> // not ReadonlyArray: we have sliced
 }
 
-/*
-NOTE: `implementation` returns a contract function.
-If the implementation function is a Newable, the resulting contract function is too,
-but it returns a "constructor" function with a different prototype. Essentially, objects created with
-the contract function are of a subtype of the objects created with the implementation function.
-
-However: in TS, structurel typing is used. Since no properties are added or changed for the created
-objects, for TS they are the same type.
-
-Yet, the prototype constructor property refers to a different constructor
- */
-
 export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =
   C extends AbstractContract<infer F, unknown> ? F : never
 export type ContractThis<C extends AbstractContract<AnyFunction, unknown>> = ThisParameterType<ContractSignature<C>>
