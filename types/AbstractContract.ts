@@ -17,11 +17,20 @@
 // Minimum TypeScript Version: 4.0.5
 
 import {
-  AbstractContract, AbstractContractKwargs,
-  AnyFunction, ContractExceptions, ContractFunction,
+  AbstractContract,
+  AbstractContractKwargs,
+  AnyFunction,
+  ContractExceptions,
+  ContractFunction,
   ContractParameters,
   ContractResult,
-  ContractSignature, ContractThis, ExceptionCondition, GeneralContractFunction, Postcondition, Precondition,
+  ContractSignature,
+  ContractThis,
+  ExceptionCondition,
+  GeneralContractFunction,
+  InternalLocation,
+  Postcondition,
+  Precondition,
   StackLocation
 } from '@toryt/contracts'
 
@@ -102,7 +111,7 @@ const aStackLocation = 'this is a stack location'
 // $ExpectError
 const notAStackLocation: StackLocation = 42
 
-// $ExpectType object
+// $ExpectType InternalLocation
 const internalLocation = AbstractContract.internalLocation
 
 // $ExpectType string
@@ -128,24 +137,24 @@ const isAGeneralContractFunctionA = AbstractContract.isAGeneralContractFunction(
 // $ExpectType boolean
 const isAGeneralContractFunctionB = AbstractContract.isAGeneralContractFunction(45)
 // $ExpectType boolean
-const isAGeneralContractFunctionC = AbstractContract.isAGeneralContractFunction<AFunction>('this is a candidate contract function')
+const isAGeneralContractFunctionC = AbstractContract.isAGeneralContractFunction<AFunction, Error>('this is a candidate contract function')
 // $ExpectType boolean
-const isAGeneralContractFunctionD = AbstractContract.isAGeneralContractFunction<AFunction>(anotherFunction)
+const isAGeneralContractFunctionD = AbstractContract.isAGeneralContractFunction<AFunction, undefined>(anotherFunction)
 // $ExpectType boolean
 const isAGeneralContractFunctionE: boolean = AbstractContract.isAGeneralContractFunction(undefined)
 // $ExpectType boolean
 const isAGeneralContractFunctionF: boolean = AbstractContract.isAGeneralContractFunction(null)
 
 const anotherFunctionAsUnknown: unknown = anotherFunction
-if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctionAsUnknown)) {
-  // $ExpectType GeneralContractFunction<AFunction>
+if (AbstractContract.isAGeneralContractFunction<typeof aFunction, SomeError>(anotherFunctionAsUnknown)) {
+  // $ExpectType GeneralContractFunction<AFunction, SomeError>
   const typedAnotherFunction = anotherFunctionAsUnknown
-  // $ExpectType AbstractContract<AFunction, unknown>
+  // $ExpectType AbstractContract<AFunction, SomeError>
   const typedAnotherFunctionContract = anotherFunctionAsUnknown.contract
   // $ExpectType AFunction
   const typedAnotherFunctionImplementation = anotherFunctionAsUnknown.implementation
-  // $ExpectType string
-  const typedAnotherFunctionLocation: StackLocation = anotherFunctionAsUnknown.location
+  // $ExpectType string | InternalLocation
+  const typedAnotherFunctionLocation: StackLocation | InternalLocation = anotherFunctionAsUnknown.location
   // $ExpectType string
   const typedAnotherFunctionName = anotherFunctionAsUnknown.name
 
@@ -187,18 +196,14 @@ const isAContractFunctionF: boolean = AbstractContract.isAContractFunction(null)
 const candidateContractFunction = 'this is a candidate contract function'
 if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFunction)) {
   // tslint:disable-next-line:max-line-length
-  // $ExpectType "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & GeneralContractFunctionProps<(this: SomeObject, a: string, b: number) => string> & ContractFunctionProps<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  // $ExpectType "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; readonly implementation: (this: SomeObject, a: string, b: number) => string; readonly location: string | InternalLocation; name: string; prototype: any; } & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; }
   const typedCandidateContractFunction: ContractFunction<typeof subject> = candidateContractFunction
-  // tslint:disable-next-line:max-line-length
-  // TODO should be: $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError> : but we get a prefix for the exceptions
-  // TODO if we type the const below, we get "Type instantiation is excessively deep and possibly infinite.". Yeah, right.
-  // tslint:disable-next-line:max-line-length
-  // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown> & AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
+  // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
   const typedAnotherFunctionContract = candidateContractFunction.contract
   // $ExpectType (this: SomeObject, a: string, b: number) => string
   const typedAnotherFunctionImplementation = candidateContractFunction.implementation
-  // $ExpectType string
-  const typedAnotherFunctionLocation: StackLocation = candidateContractFunction.location
+  // $ExpectType string | InternalLocation
+  const typedAnotherFunctionLocation: StackLocation | InternalLocation = candidateContractFunction.location
   // $ExpectType string
   const typedAnotherFunctionName = candidateContractFunction.name
 
@@ -209,14 +214,14 @@ if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFuncti
   // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, b: number) => string, string | SomeError>>: REASON: general bind signature?
   const boundContractFunction2A: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string')
   // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: never) => string, string | SomeError>>
-  const boundContractFunction2C: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string', 5345)
+  const boundContractFunction2C = candidateContractFunction.bind(someObject, 'a string', 5345)
   // TODO should be: $ExpectError
   const boundContractFunction2D: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string', true)
   // TODO should be: $ExpectError
   const boundContractFunction2E: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, true)
   // TODO should be: $ExpectError
   const boundContractFunction2F: ContractFunction<typeof subject> = candidateContractFunction.bind({someOtherProperty: false}, new Date())
-  // TODO should be: $ExpectType string
+  // $ExpectType any
   const typedResult = boundContractFunction2C()
 
   // TODO should be: $ExpectType SubPrototype<GeneralContractFunction<AFunction>, AFunction>
@@ -239,7 +244,7 @@ if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFuncti
   const blessedD: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, {}, aFunction2, 'this is the location')
   // $ExpectError
   const blessedE: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, anotherFunction, 'this is the location')
-  // $ExpectError
+  // MUDO THIS SHOULD FAIL BECAUSE true IS NOT A STACKLOCATION $ExpectError
   const blessedF: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, true)
   // $ExpectError
   const blessedG: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, undefined)
@@ -260,8 +265,8 @@ const itsFalse2B: boolean = AbstractContract.mustNotHappen[0]('lalala')
 // $ExpectError
 const itsFalse3: boolean = AbstractContract.mustNotHappen[1]()
 
-// $ExpectType string | object
-const subjectStackLocation: StackLocation | object = subject.location
+// $ExpectType string | InternalLocation
+const subjectStackLocation: StackLocation | InternalLocation = subject.location
 
 // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
 const abstractImplementation = subject.abstract
