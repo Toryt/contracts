@@ -36,7 +36,7 @@ Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   value: 'a general contract function name'
 })
 
-expectAssignable<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunction)
+expectAssignable<GeneralContractFunction<AFunction1>>(aCallableGeneralContractFunction)
 expectAssignable<AFunction1>(aCallableGeneralContractFunction)
 expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunction.contract)
 expectType<AFunction1>(aCallableGeneralContractFunction.implementation)
@@ -52,9 +52,9 @@ expectType<AFunction1['bind']>(aCallableGeneralContractFunction.bind)
 expectType<any>(aCallableGeneralContractFunction.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunction.prototype)
 
-let aCallableGeneralContractFunctionB: GeneralContractFunction<AFunction1, SomeError> = aCallableGeneralContractFunction
+let aCallableGeneralContractFunctionB: GeneralContractFunction<AFunction1> = aCallableGeneralContractFunction
 
-expectType<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunctionB)
+expectType<GeneralContractFunction<AFunction1>>(aCallableGeneralContractFunctionB)
 expectAssignable<AFunction1>(aCallableGeneralContractFunctionB)
 expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunctionB.contract)
 expectType<AFunction1>(aCallableGeneralContractFunctionB.implementation)
@@ -70,10 +70,10 @@ expectType<AFunction1['bind']>(aCallableGeneralContractFunctionB.bind)
 expectType<any>(aCallableGeneralContractFunctionB.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionB.prototype)
 
-let aCallableGeneralContractFunctionC: GeneralContractFunction<AFunction1, SomeError> =
-  aCallableGeneralContractFunction as GeneralContractFunction<AFunction1, SomeError>
+let aCallableGeneralContractFunctionC: GeneralContractFunction<AFunction1> =
+  aCallableGeneralContractFunction as GeneralContractFunction<AFunction1>
 
-expectType<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunctionC)
+expectType<GeneralContractFunction<AFunction1>>(aCallableGeneralContractFunctionC)
 expectAssignable<AFunction1>(aCallableGeneralContractFunctionC)
 expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunctionC.contract)
 expectType<AFunction1>(aCallableGeneralContractFunctionC.implementation)
@@ -103,7 +103,7 @@ Object.defineProperty(ANewableGeneralContractFunction, 'name', {
   value: 'a general contract function name'
 })
 
-expectAssignable<GeneralContractFunction<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction)
+expectAssignable<GeneralContractFunction<typeof ANewableFunction>>(ANewableGeneralContractFunction)
 expectAssignable<typeof ANewableFunction>(ANewableGeneralContractFunction)
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction.contract)
 expectType<typeof ANewableFunction>(ANewableGeneralContractFunction.implementation)
@@ -122,10 +122,10 @@ expectType<typeof ANewableFunction.prototype>(ANewableGeneralContractFunction.pr
 expectNotType<any>(ANewableGeneralContractFunction.prototype)
 expectType<Function>(ANewableGeneralContractFunction.prototype.constructor)
 
-let aNewableGeneralContractFunctionB: GeneralContractFunction<typeof ANewableFunction, SomeError> =
+let aNewableGeneralContractFunctionB: GeneralContractFunction<typeof ANewableFunction> =
   ANewableGeneralContractFunction
 
-expectType<GeneralContractFunction<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionB)
+expectType<GeneralContractFunction<typeof ANewableFunction>>(aNewableGeneralContractFunctionB)
 expectAssignable<typeof ANewableFunction>(aNewableGeneralContractFunctionB)
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionB.contract)
 expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionB.implementation)
@@ -144,10 +144,10 @@ expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionB.p
 expectNotType<any>(aNewableGeneralContractFunctionB.prototype)
 expectType<Function>(aNewableGeneralContractFunctionB.prototype.constructor)
 
-let aNewableGeneralContractFunctionC: GeneralContractFunction<typeof ANewableFunction, SomeError> =
-  ANewableGeneralContractFunction as GeneralContractFunction<typeof ANewableFunction, SomeError>
+let aNewableGeneralContractFunctionC: GeneralContractFunction<typeof ANewableFunction> =
+  ANewableGeneralContractFunction as GeneralContractFunction<typeof ANewableFunction>
 
-expectType<GeneralContractFunction<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionC)
+expectType<GeneralContractFunction<typeof ANewableFunction>>(aNewableGeneralContractFunctionC)
 expectAssignable<typeof ANewableFunction>(aNewableGeneralContractFunctionC)
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionC.contract)
 expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionC.implementation)

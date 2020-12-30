@@ -80,8 +80,8 @@ export type StackLocation = string
  * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
  * additional typed parameters ( `A0` … `A1`). For a contract function, we do the same, but we add the extra properties.
  */
-export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
-  readonly contract: AbstractContract<F, Exceptions>
+export type GeneralContractFunction<F extends AnyFunction> = F & {
+  readonly contract: AbstractContract<F, unknown>
   readonly implementation: F
   readonly location: StackLocation | InternalLocation
   name: string // readonly in `lib.es2015.core.d.ts`
@@ -91,7 +91,7 @@ export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
 }
 
 export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
-  GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & {
+  GeneralContractFunction<ContractSignature<C>> & {
   readonly contract: C
 }
 
@@ -246,7 +246,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    */
   static isAGeneralContractFunction<F extends AnyFunction> (
     f: F | unknown
-  ): f is GeneralContractFunction<F, unknown>
+  ): f is GeneralContractFunction<F>
 
   /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function

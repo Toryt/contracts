@@ -147,7 +147,7 @@ const isAGeneralContractFunctionF: boolean = AbstractContract.isAGeneralContract
 
 const anotherFunctionAsUnknown: unknown = anotherFunction
 if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctionAsUnknown)) {
-  // $ExpectType GeneralContractFunction<AFunction, unknown>
+  // $ExpectType GeneralContractFunction<AFunction>
   const typedAnotherFunction = anotherFunctionAsUnknown
   // $ExpectType AbstractContract<AFunction, unknown>
   const typedAnotherFunctionContract = anotherFunctionAsUnknown.contract
@@ -196,9 +196,10 @@ const isAContractFunctionF: boolean = AbstractContract.isAContractFunction(null)
 const candidateContractFunction = 'this is a candidate contract function'
 if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFunction)) {
   // tslint:disable-next-line:max-line-length
-  // $ExpectType "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; readonly implementation: (this: SomeObject, a: string, b: number) => string; readonly location: string | InternalLocation; name: string; prototype: any; } & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; }
+  // $ExpectType "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown>; readonly implementation: (this: SomeObject, a: string, b: number) => string; readonly location: string | InternalLocation; name: string; prototype: any; } & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; }
   const typedCandidateContractFunction: ContractFunction<typeof subject> = candidateContractFunction
-  // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
+  // tslint:disable-next-line:max-line-length
+  // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown> & AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
   const typedAnotherFunctionContract = candidateContractFunction.contract
   // $ExpectType (this: SomeObject, a: string, b: number) => string
   const typedAnotherFunctionImplementation = candidateContractFunction.implementation
