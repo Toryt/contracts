@@ -92,8 +92,26 @@ expectAssignable<StackLocation | InternalLocation>(ANewableGeneralContractFuncti
 expectType<string>(ANewableGeneralContractFunction.name)
 expectType<number>(ANewableGeneralContractFunction.length)
 expectType<Function['toString']>(ANewableGeneralContractFunction.toString)
-expectType<typeof ANewableFunction.call>(ANewableGeneralContractFunction.apply)
+expectType<typeof ANewableFunction.apply>(ANewableGeneralContractFunction.apply)
 expectType<typeof ANewableFunction.call>(ANewableGeneralContractFunction.call)
 expectType<typeof ANewableFunction.bind>(ANewableGeneralContractFunction.bind)
 expectType<ANewableGeneralContractFunction>(ANewableGeneralContractFunction.prototype)
 expectAssignable<typeof ANewableFunction.prototype>(ANewableGeneralContractFunction.prototype)
+
+let aNewableGeneralContractFunctionB: GeneralContractFunction<typeof ANewableFunction, SomeError> = ANewableGeneralContractFunction
+
+expectType<GeneralContractFunction<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionB)
+expectAssignable<typeof ANewableFunction>(aNewableGeneralContractFunctionB)
+expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionB.contract)
+expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionB.implementation)
+expectType<StackLocation | InternalLocation>(aNewableGeneralContractFunctionB.location)
+expectType<string>(aNewableGeneralContractFunctionB.name)
+// NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
+expectType< (() => string) & (() => string)>(aNewableGeneralContractFunctionB.toString)
+expectAssignable<Function['toString']>(aNewableGeneralContractFunctionB.toString)
+expectType<typeof ANewableFunction.apply>(aNewableGeneralContractFunctionB.apply)
+expectType<typeof ANewableFunction.call>(aNewableGeneralContractFunctionB.call)
+expectType<typeof ANewableFunction.bind>(aNewableGeneralContractFunctionB.bind)
+expectType<ANewableFunction>(aNewableGeneralContractFunctionB.prototype)
+expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionB.prototype)
+
