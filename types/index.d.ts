@@ -45,6 +45,17 @@ export type AnyFunction = AnyCallableFunction | AnyNewableFunction
 export type StackLocation = string
 
 export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
+export type SubPrototype<SubF extends AnyFunction, SuperF extends AnyFunction> =
+  SuperF extends {prototype: infer SuperPrototype}
+    // tslint:disable-next-line:no-any
+    ? SuperPrototype extends object // if SuperPrototype is `any`, we get the disjunction of both paths
+      ? SuperPrototype & { constructor: SubF }
+      :  {
+        constructor: SubF
+        [x: string]: unknown
+        [x: number]: unknown
+      }
+    : undefined
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
   readonly location: StackLocation | InternalLocation
