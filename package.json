@@ -11,6 +11,7 @@
     "pretest": "npm-check -i npm-check -i @toryt/contracts; npm outdated || exit 0",
     "dtslint": "dtslint --localTs node_modules/typescript/lib types",
     "tsd": "tsd",
+    "tsc": "tsc test-d/jsSubjects.js --allowJs --outDir build --target ES2020 -d",
     "test": "standard && nyc mocha 'test/**/*Test.js' && tsd && npm run dtslint",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
