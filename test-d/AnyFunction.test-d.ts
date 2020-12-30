@@ -14,15 +14,10 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectError, expectNotAssignable, expectNotType, expectType } from 'tsd'
+import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../types'
+import { aFunction1, AFunction1, aFunction2, AFunction2, aFunction3, AFunction3, ANewableFunction } from './subjects'
 
-interface SomeObject {
-  aProperty: number
-}
-
-type AFunction1 = (this: SomeObject, a: string, b: number) => string
-function aFunction1 (this: SomeObject, a: string, b: number): string { return this.aProperty + a + b }
 expectType<AFunction1>(aFunction1)
 expectAssignable<AnyCallableFunction>(aFunction1)
 expectNotAssignable<AnyNewableFunction>(aFunction1)
@@ -35,8 +30,6 @@ expectType<CallableFunction['bind']>(aFunction1.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aFunction1.prototype)
 
-type AFunction2 = (a: string, b: number) => string
-const aFunction2: AFunction2 = function aFunction2 (a, b) { return `${a}${b} more text` }
 expectType<AFunction2>(aFunction2)
 expectAssignable<AFunction1>(aFunction2)
 expectAssignable<AnyCallableFunction>(aFunction2)
@@ -50,8 +43,6 @@ expectType<CallableFunction['bind']>(aFunction1.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aFunction2.prototype)
 
-type AFunction3 = (a: string) => 'truth' | 'dare'
-const aFunction3: AFunction3 = function aFunction3 (a) { return a > 'm' ? 'truth' : 'dare' }
 expectType<AFunction3>(aFunction3)
 expectAssignable<AFunction2>(aFunction3)
 expectAssignable<AFunction1>(aFunction3)
@@ -93,9 +84,6 @@ expectType<CallableFunction['bind'] | NewableFunction['bind']>(anyFunction1b.bin
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(anyFunction1b.prototype)
 
-class ANewableFunction {
-  constructor(a: string, b: number) {}
-}
 expectType<typeof ANewableFunction>(ANewableFunction)
 expectAssignable<new (a: string, b: number) => ANewableFunction>(ANewableFunction)
 expectNotAssignable<AnyCallableFunction>(ANewableFunction)
