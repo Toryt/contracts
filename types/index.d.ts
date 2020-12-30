@@ -44,18 +44,29 @@ export type AnyFunction = AnyCallableFunction | AnyNewableFunction
 
 export type StackLocation = string
 
-export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
-export type SubPrototype<SubF extends AnyFunction, SuperF extends AnyFunction> =
-  SuperF extends {prototype: infer SuperPrototype}
-    // tslint:disable-next-line:no-any
-    ? SuperPrototype extends object // if SuperPrototype is `any`, we get the disjunction of both paths
-      ? SuperPrototype & { constructor: SubF }
-      :  {
-        constructor: SubF
-        [x: string]: unknown
-        [x: number]: unknown
-      }
-    : undefined
+/**
+ * The prototype of a ContractFunction is an instance of the prototype if the implementation, if any, with the
+ * constructor changed to the contract function. This means a contract function that is a JavaScript constructor defines
+ * a subclass of the "class" defined by the constructor implementation function. In TypeScript, types are structural
+ * (duck typing), and the structure of the instances created by the constructor contract function and the constructor
+ * implementation function is the same, so both create instances of the same TS type.
+ *
+ * In TypeScript, the prototype of a `CallableFunction` is `any`. If the function is an internal function, or an arrow
+ * function, `prototype` is `undefined`. The prototype of a contract function for such a signature also is of type
+ * `any`. This is inherited from {@link AnyCallableFunction}.
+ *
+ * This means the type of the prototype of the contract function is the same as the type of the prototype of the
+ * implementation, and of the prototype of the contract signature.
+ *
+ * In TypeScript, the prototype of a `NewableFunction` is the type of the instances being constructed by the constructor
+ * function. `NewableFunction`s in TypeScript are the result of using the `class` syntax, or an explicit type annotation
+ * as a newable function `new (…) => …`. The type of `prototype.constructor` of a `NewableFunction` is always
+ * the general {@link Function} in TypeScript however (this is not really type safe).
+ *
+ * This means the type of the prototype of the contract function is the same as the type of the prototype of the
+ * implementation, and of the prototype of the contract signature.
+ */
+export interface GeneralContractFunctionProperties<F extends AnyFunction, Exceptions> {
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
   readonly location: StackLocation | InternalLocation
@@ -77,14 +88,20 @@ export type SubPrototype<SubF extends AnyFunction, SuperF extends AnyFunction> =
   // readonly bind: (thisArg: ThisParameterType<F>, ...argArray: Parameters<F>)
   //   // tslint:disable-next-line:no-any
   //   => (this: never, ...argArray: any[]) => ReturnType<F>
+
+// tslint:disable-next-line:no-any
+  prototype: F extends AnyNewableFunction ? InstanceType<F> : F extends AnyCallableFunction ? any : undefined
+}
+
+export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & GeneralContractFunctionProperties<F, Exceptions>
+
+export interface ContractFunctionProperties<C extends AbstractContract<AnyCallableFunction, unknown>>
+  extends GeneralContractFunctionProperties<ContractSignature<C>, ContractExceptions<C>> {
+  readonly contract: C
 }
 
 export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
-  GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & {
-    readonly contract: C;
-
-    bind (thisArg: ContractThis<C>, ...argArray: ContractParameters<C>): ContractFunction<C> // MUDO this is not correct! the resulting function has less arguments!
-  }
+  GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & ContractFunctionProperties<C>
 
 export type booleany = undefined | null | unknown
 
@@ -338,6 +355,18 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
 
   get exception (): Array<ExceptionCondition<this>> // not ReadonlyArray: we have sliced
 }
+
+/*
+NOTE: `implementation` returns a contract function.
+If the implementation function is a Newable, the resulting contract function is too,
+but it returns a "constructor" function with a different prototype. Essentially, objects created with
+the contract function are of a subtype of the objects created with the implementation function.
+
+However: in TS, structurel typing is used. Since no properties are added or changed for the created
+objects, for TS they are the same type.
+
+Yet, the prototype constructor property refers to a different constructor
+ */
 
 export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =
   C extends AbstractContract<infer F, unknown> ? F : never
