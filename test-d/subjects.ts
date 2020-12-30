@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-interface SomeObject {
+export interface SomeObject {
   aProperty: number
 }
 
@@ -30,3 +30,8 @@ export const aFunction3: AFunction3 = function aFunction3 (a) { return a > 'm' ?
 export class ANewableFunction {
   constructor(a: string, b: number) {}
 }
+
+export interface SomeError {
+  anErrorProperty: object
+}
+

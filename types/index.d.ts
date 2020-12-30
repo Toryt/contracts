@@ -44,43 +44,36 @@ export type AnyFunction = AnyCallableFunction | AnyNewableFunction
 
 export type StackLocation = string
 
-export interface GeneralContractFunctionProps<F extends AnyFunction> {
-  readonly contract: AbstractContract<F, unknown>
+export type GeneralContractFunction<F extends AnyFunction, Exceptions> = F & {
+  readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
-  readonly location: StackLocation
+  readonly location: StackLocation | InternalLocation
   name: string // readonly in `lib.es2015.core.d.ts`
 
   /* standard
-     - apply(this: Function, thisArg: any, argArray?: any): any;
-     - call(this: Function, thisArg: any, ...argArray: any[]): any;
-     - toString(): string;
-     - readonly length: number;
+   - apply(this: Function, thisArg: any, argArray?: any): any;
+   - call(this: Function, thisArg: any, ...argArray: any[]): any;
+   - toString(): string;
+   - readonly length: number;
 
-     and non-standard
-     - arguments: any;
-     - caller: Function;  bind (thisArg: ThisParameterType<ContractThis<C>>, ...argArray: ContractParameters<C>): ContractFunction<C>
+   and non-standard
+   - arguments: any;
+   - caller: Function;  bind (thisArg: ThisParameterType<ContractThis<C>>, ...argArray: ContractParameters<C>): ContractFunction<C>
    */
 
   /* Standard bind is bind(this: Function, thisArg: any, ...argArray: any[]): any;
-     We can do slightly better. */
+   We can do slightly better. */
   // readonly bind: (thisArg: ThisParameterType<F>, ...argArray: Parameters<F>)
   //   // tslint:disable-next-line:no-any
   //   => (this: never, ...argArray: any[]) => ReturnType<F>
 }
 
-export type GeneralContractFunction<F extends AnyFunction> = F & GeneralContractFunctionProps<F>
-
-export interface ContractFunctionProps<C extends AbstractContract<AnyFunction, unknown>>
-    extends GeneralContractFunctionProps<ContractSignature<C>> {
-  readonly contract: C;
-  readonly implementation: ContractSignature<C>;
-  readonly location: StackLocation;
-
-  bind (thisArg: ContractThis<C>, ...argArray: ContractParameters<C>): ContractFunction<C> // MUDO this is not correct! the resulting function has less arguments!
-}
-
 export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
-  GeneralContractFunction<ContractSignature<C>> & ContractFunctionProps<C>;
+  GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & {
+    readonly contract: C;
+
+    bind (thisArg: ContractThis<C>, ...argArray: ContractParameters<C>): ContractFunction<C> // MUDO this is not correct! the resulting function has less arguments!
+  }
 
 export type booleany = undefined | null | unknown
 
@@ -114,10 +107,12 @@ export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
   exception?: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>> | null
 }
 
+export class InternalLocation {}
+
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
 export interface ContractConstructor<C extends AbstractContract<AnyFunction, unknown>> {
-  readonly internalLocation: object
+  readonly internalLocation: InternalLocation
   readonly namePrefix: string
 
   new (
@@ -131,7 +126,7 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
     contractFunction: ContractSignature<C>,
     contract: C,
     implFunction: ContractSignature<C>,
-    location: StackLocation | typeof AbstractContract.internalLocation
+    location: StackLocation | InternalLocation
   ): ContractFunction<C>
 
   outcome (...args: [...ContractParameters<C>, ContractResult<C> | ContractExceptions<C>, unknown]):
@@ -185,7 +180,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   /**
    * Object to be used as location for contracts and implementations that are generated inside this library.
    */
-  static readonly internalLocation: object
+  static readonly internalLocation: InternalLocation
 
   static readonly namePrefix: string
 
@@ -229,9 +224,9 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot freeze
    * it, and not guaranteed in all engines.
    */
-  static isAGeneralContractFunction<F extends AnyFunction> (
+  static isAGeneralContractFunction<F extends AnyFunction, Exceptions> (
     f: F | unknown
-  ): f is GeneralContractFunction<F>
+  ): f is GeneralContractFunction<F, Exceptions>
 
   /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function
@@ -311,7 +306,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     exception: []
   }
 
-  readonly location: StackLocation | typeof AbstractContract.internalLocation
+  readonly location: StackLocation | InternalLocation
   readonly abstract: ContractFunction<this>;
 
   verify: boolean;
