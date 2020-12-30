@@ -14,33 +14,86 @@
   limitations under the License.
  */
 
-import { AbstractContract, GeneralContractFunction, InternalLocation, StackLocation } from '../types'
-import { SomeObject, AFunction1, SomeError, aFunction1 } from './subjects'
+import {
+  AbstractContract,
+  AnyNewableFunction,
+  GeneralContractFunction,
+  InternalLocation,
+  StackLocation
+} from '../types'
+import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction } from './subjects'
 import { expectAssignable, expectType } from 'tsd'
 
-function aGeneralContractFunction (this: SomeObject, a: string, b: number): string { return this.aProperty + a + b }
-aGeneralContractFunction.contract = new AbstractContract({})
-aGeneralContractFunction.implementation = aFunction1
-aGeneralContractFunction.location = AbstractContract.internalLocation
-Object.defineProperty(aGeneralContractFunction, 'name', {
+function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string { return this.aProperty + a + b }
+aCallableGeneralContractFunction.contract = new AbstractContract({})
+aCallableGeneralContractFunction.implementation = aFunction1
+aCallableGeneralContractFunction.location = AbstractContract.internalLocation
+Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   configurable: false,
   enumerable: false,
   writable: false,
   value: 'a general contract function name'
 })
 
-expectAssignable<GeneralContractFunction<AFunction1, SomeError>>(aGeneralContractFunction)
-expectAssignable<AFunction1>(aGeneralContractFunction)
-expectType<AbstractContract<AFunction1, SomeError>>(aGeneralContractFunction.contract)
-expectType<AFunction1>(aGeneralContractFunction.implementation)
-expectType<InternalLocation>(aGeneralContractFunction.location)
-expectAssignable<StackLocation | InternalLocation>(aGeneralContractFunction.location)
-expectType<string>(aGeneralContractFunction.name)
+expectAssignable<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunction)
+expectAssignable<AFunction1>(aCallableGeneralContractFunction)
+expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunction.contract)
+expectType<AFunction1>(aCallableGeneralContractFunction.implementation)
+expectType<InternalLocation>(aCallableGeneralContractFunction.location)
+expectAssignable<StackLocation | InternalLocation>(aCallableGeneralContractFunction.location)
+expectType<string>(aCallableGeneralContractFunction.name)
+expectType<number>(aCallableGeneralContractFunction.length)
+expectType<Function['toString']>(aCallableGeneralContractFunction.toString)
+expectType<AFunction1['apply']>(aCallableGeneralContractFunction.apply)
+expectType<AFunction1['call']>(aCallableGeneralContractFunction.call)
+expectType<AFunction1['bind']>(aCallableGeneralContractFunction.bind)
+// `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
+expectType<any>(aCallableGeneralContractFunction.prototype)
+expectType<AFunction1['prototype']>(aCallableGeneralContractFunction.prototype)
 
-let aGeneralContractFunctionB: GeneralContractFunction<AFunction1, SomeError> = aGeneralContractFunction
-expectType<GeneralContractFunction<AFunction1, SomeError>>(aGeneralContractFunctionB)
-expectAssignable<AFunction1>(aGeneralContractFunctionB)
-expectType<AbstractContract<AFunction1, SomeError>>(aGeneralContractFunctionB.contract)
-expectType<AFunction1>(aGeneralContractFunctionB.implementation)
-expectType<StackLocation | InternalLocation>(aGeneralContractFunctionB.location)
-expectType<string>(aGeneralContractFunctionB.name)
+let aCallableGeneralContractFunctionB: GeneralContractFunction<AFunction1, SomeError> = aCallableGeneralContractFunction
+
+expectType<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunctionB)
+expectAssignable<AFunction1>(aCallableGeneralContractFunctionB)
+expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunctionB.contract)
+expectType<AFunction1>(aCallableGeneralContractFunctionB.implementation)
+expectType<StackLocation | InternalLocation>(aCallableGeneralContractFunctionB.location)
+expectType<string>(aCallableGeneralContractFunctionB.name)
+// NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
+expectType< (() => string) & (() => string)>(aCallableGeneralContractFunctionB.toString)
+expectAssignable<Function['toString']>(aCallableGeneralContractFunctionB.toString)
+expectType<AFunction1['apply']>(aCallableGeneralContractFunctionB.apply)
+expectType<AFunction1['call']>(aCallableGeneralContractFunctionB.call)
+expectType<AFunction1['bind']>(aCallableGeneralContractFunctionB.bind)
+// `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
+expectType<any>(aCallableGeneralContractFunctionB.prototype)
+expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionB.prototype)
+
+export class ANewableGeneralContractFunction {
+  static readonly contract = new AbstractContract({})
+  static readonly implementation = ANewableFunction
+  static readonly location = AbstractContract.internalLocation
+
+  constructor(a: string, b: number) {}
+}
+Object.defineProperty(ANewableGeneralContractFunction, 'name', {
+  configurable: false,
+  enumerable: false,
+  writable: false,
+  value: 'a general contract function name'
+})
+
+expectAssignable<GeneralContractFunction<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction)
+expectAssignable<typeof ANewableFunction>(ANewableGeneralContractFunction)
+expectType<AbstractContract<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction.contract)
+expectType<typeof ANewableFunction>(ANewableGeneralContractFunction.implementation)
+expectType<InternalLocation>(ANewableGeneralContractFunction.location)
+expectAssignable<StackLocation | InternalLocation>(ANewableGeneralContractFunction.location)
+expectType<string>(ANewableGeneralContractFunction.name)
+expectType<number>(ANewableGeneralContractFunction.length)
+expectType<Function['toString']>(ANewableGeneralContractFunction.toString)
+expectType<typeof ANewableFunction.call>(ANewableGeneralContractFunction.apply)
+expectType<typeof ANewableFunction.call>(ANewableGeneralContractFunction.call)
+expectType<typeof ANewableFunction.bind>(ANewableGeneralContractFunction.bind)
+expectType<ANewableGeneralContractFunction>(ANewableGeneralContractFunction.prototype)
+expectAssignable<typeof ANewableFunction.prototype>(ANewableGeneralContractFunction.prototype)
