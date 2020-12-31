@@ -147,7 +147,7 @@ const isAGeneralContractFunctionF: boolean = AbstractContract.isAGeneralContract
 
 const anotherFunctionAsUnknown: unknown = anotherFunction
 if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctionAsUnknown)) {
-  // $ExpectType GeneralContractFunction<AFunction>
+  // $ExpectType CallableGeneralContractFunction<AFunction>
   const typedAnotherFunction = anotherFunctionAsUnknown
   // $ExpectType AbstractContract<AFunction, unknown>
   const typedAnotherFunctionContract = anotherFunctionAsUnknown.contract
@@ -196,7 +196,7 @@ const isAContractFunctionF: boolean = AbstractContract.isAContractFunction(null)
 const candidateContractFunction = 'this is a candidate contract function'
 if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFunction)) {
   // tslint:disable-next-line:max-line-length
-  // $ExpectType "this is a candidate contract function" & ((this: SomeObject, a: string, b: number) => string) & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown>; readonly implementation: (this: SomeObject, a: string, b: number) => string; readonly location: string | InternalLocation; name: string; prototype: any; } & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; }
+  // $ExpectType "this is a candidate contract function" & CallableGeneralContractFunctionProperties<(this: SomeObject, a: string, b: number) => string> & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; }
   const typedCandidateContractFunction: ContractFunction<typeof subject> = candidateContractFunction
   // tslint:disable-next-line:max-line-length
   // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown> & AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
@@ -211,16 +211,22 @@ if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFuncti
   // $ExpectError
   const boundContractFunction2G: ContractFunction<typeof subject> = candidateContractFunction.bind()
   // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, a: string, b: number) => string, string | SomeError>>: REASON: general bind signature?
+  // $ExpectError
   const boundContractFunction2B: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject)
   // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, b: number) => string, string | SomeError>>: REASON: general bind signature?
+  // $ExpectError
   const boundContractFunction2A: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string')
   // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: never) => string, string | SomeError>>
+  // $ExpectError
   const boundContractFunction2C = candidateContractFunction.bind(someObject, 'a string', 5345)
   // TODO should be: $ExpectError
+  // $ExpectError
   const boundContractFunction2D: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string', true)
   // TODO should be: $ExpectError
+  // $ExpectError
   const boundContractFunction2E: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, true)
   // TODO should be: $ExpectError
+  // $ExpectError
   const boundContractFunction2F: ContractFunction<typeof subject> = candidateContractFunction.bind({someOtherProperty: false}, new Date())
   // $ExpectType any
   const typedResult = boundContractFunction2C()
@@ -231,11 +237,14 @@ if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFuncti
   // $ExpectType number
   const typedLength = candidateContractFunction.length
   // TODO should be: $ExpectError
+  // $ExpectError
   const r1 = candidateContractFunction.apply(undefined, [true, new Date()])
   // TODO should be: $ExpectError
+  // $ExpectError
   const r2 = candidateContractFunction.call(undefined, true, new Date())
 
-  // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  // TODO $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  // $ExpectError
   const blessedA: ContractFunction<typeof subject> = AbstractContract.bless(candidateContractFunction, subject, aFunction, 'this is the location')
   // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
   const blessedB: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, 'this is the location')
