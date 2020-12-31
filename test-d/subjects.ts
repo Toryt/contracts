@@ -18,6 +18,10 @@ export interface SomeObject {
   aProperty: number
 }
 
+export const someObject: SomeObject = {
+  aProperty: 54
+}
+
 export type AFunction1 = (this: SomeObject, a: string, b: number) => string
 export function aFunction1 (this: SomeObject, a: string, b: number): string { return this.aProperty + a + b }
 

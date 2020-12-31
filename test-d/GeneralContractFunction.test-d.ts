@@ -16,19 +16,34 @@
 
 import {
   AbstractContract,
+  CallableGeneralContractFunction,
   GeneralContractFunction,
   InternalLocation,
   StackLocation
 } from '../types'
-import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction } from './subjects'
+import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction, someObject } from './subjects'
 import { expectAssignable, expectNotType, expectType } from 'tsd'
 
 function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string {
   return this.aProperty + a + b
 }
+
+const anA = 'a'
+const aB = 5353
+
+const someArgs: [a: string, b: number] = [anA, aB]
+
+type CallableBind = <Bound extends unknown[], Unbound extends unknown[]> (
+  this: (this: SomeObject, ...args: [...Bound, ...Unbound]) => string,
+  thisArg: SomeObject,
+  ...bound: Bound
+) => CallableGeneralContractFunction<(...unbound: Unbound) => string>
+
 aCallableGeneralContractFunction.contract = new AbstractContract({})
 aCallableGeneralContractFunction.implementation = aFunction1
 aCallableGeneralContractFunction.location = AbstractContract.internalLocation
+aCallableGeneralContractFunction.bind2 =
+  aCallableGeneralContractFunction.bind as unknown as CallableBind
 Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   configurable: false,
   enumerable: false,
@@ -48,6 +63,14 @@ expectType<Function['toString']>(aCallableGeneralContractFunction.toString)
 expectType<AFunction1['apply']>(aCallableGeneralContractFunction.apply)
 expectType<AFunction1['call']>(aCallableGeneralContractFunction.call)
 expectType<AFunction1['bind']>(aCallableGeneralContractFunction.bind)
+/* NOTE The exact type of bind is too difficult to test. We do test its effects though. */
+expectAssignable<CallableBind>(aCallableGeneralContractFunction.bind2)
+expectAssignable<GeneralContractFunction<(a:string, b: number) => string>>(aCallableGeneralContractFunction.bind2(someObject))
+expectAssignable<string>(aCallableGeneralContractFunction.bind2(someObject)(anA, aB))
+expectAssignable<GeneralContractFunction<(b: number) => string>>(aCallableGeneralContractFunction.bind2(someObject, anA))
+expectAssignable<string>(aCallableGeneralContractFunction.bind2(someObject, anA)(aB))
+expectAssignable<GeneralContractFunction<() => string>>(aCallableGeneralContractFunction.bind2(someObject, anA, aB))
+expectAssignable<string>(aCallableGeneralContractFunction.bind2(someObject, anA, aB)())
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aCallableGeneralContractFunction.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunction.prototype)
@@ -66,6 +89,14 @@ expectAssignable<Function['toString']>(aCallableGeneralContractFunctionB.toStrin
 expectType<AFunction1['apply']>(aCallableGeneralContractFunctionB.apply)
 expectType<AFunction1['call']>(aCallableGeneralContractFunctionB.call)
 expectType<AFunction1['bind']>(aCallableGeneralContractFunctionB.bind)
+/* NOTE The exact type of bind is too difficult to test. We do test its effects though. */
+expectAssignable<CallableBind>(aCallableGeneralContractFunctionB.bind2)
+expectAssignable<GeneralContractFunction<(a:string, b: number) => string>>(aCallableGeneralContractFunctionB.bind2(someObject))
+expectAssignable<string>(aCallableGeneralContractFunctionB.bind2(someObject)(anA, aB))
+expectAssignable<GeneralContractFunction<(b: number) => string>>(aCallableGeneralContractFunctionB.bind2(someObject, anA))
+expectAssignable<string>(aCallableGeneralContractFunctionB.bind2(someObject, anA)(aB))
+expectAssignable<GeneralContractFunction<() => string>>(aCallableGeneralContractFunctionB.bind2(someObject, anA, aB))
+expectAssignable<string>(aCallableGeneralContractFunctionB.bind2(someObject, anA, aB)())
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aCallableGeneralContractFunctionB.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionB.prototype)
