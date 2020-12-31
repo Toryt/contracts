@@ -61,8 +61,22 @@ interface GeneralContractFunctionPropertiesBase<F extends AnyFunction> {
 
 interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunction>
   extends GeneralContractFunctionPropertiesBase<F> {
-  // based on https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
-  bind2 <Bound extends unknown[], Unbound extends unknown[]> (
+  /**
+   * A 'correct' version of {@link #bind}, which should override the definition of {@link #bind}
+   * for contract functions. This seems impossible however.
+   *
+   * - Just naming this `bind` adds an overload to the versions defined in {@link CallableFunction#bind}. Common usage
+   *   selects one of the original overloads, and not this one.
+   * - Defining this signature separately, and adding a regular property with that type to this interface has the same
+   *   effect.
+   * - Adding the original call signatures, with a changed return type (a {@link CallableGeneralContractFunction}) does
+   *   not work either.
+   * - Using {@link Omit} to remove the {@link CallableFunction#bind} overloads, only copies the properties of `F` as
+   *   object. We loose the signature of `F` that way.
+   *
+   * Based on https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
+   */
+  contractBind <Bound extends unknown[], Unbound extends unknown[]> (
     this: (this: ThisParameterType<F>, ...args: [...Bound, ...Unbound]) => ReturnType<F>,
     thisArg: ThisParameterType<F>,
     ...bound: Bound
@@ -79,8 +93,22 @@ export type CallableGeneralContractFunction<F extends AnyCallableFunction> =
 
 interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction>
   extends GeneralContractFunctionPropertiesBase<F> {
-  // based on https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
-  bind <Bound extends unknown[], Unbound extends unknown[]> (
+  /**
+   * A 'correct' version of {@link #bind}, which should override the definition of {@link #bind}
+   * for contract functions. This seems impossible however.
+   *
+   * - Just naming this `bind` adds an overload to the versions defined in {@link CallableFunction#bind}. Common usage
+   *   selects one of the original overloads, and not this one.
+   * - Defining this signature separately, and adding a regular property with that type to this interface has the same
+   *   effect.
+   * - Adding the original call signatures, with a changed return type (a {@link CallableGeneralContractFunction}) does
+   *   not work either.
+   * - Using {@link Omit} to remove the {@link CallableFunction#bind} overloads, only copies the properties of `F` as
+   *   object. We loose the signature of `F` that way.
+   *
+   * Based on https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
+   */
+  contractBind <Bound extends unknown[], Unbound extends unknown[]> (
     this: new (...args: [...Bound, ...Unbound]) => InstanceType<F>,
     // tslint:disable-next-line:no-any
     thisArg: any,
@@ -90,7 +118,7 @@ interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction>
   prototype: InstanceType<F>
 }
 
-type NewableGeneralContractFunction<F extends AnyNewableFunction> =
+export type NewableGeneralContractFunction<F extends AnyNewableFunction> =
   /* Without Omit<F, 'bind'> we overload, instead of override. But Omit<> also looses the signature of a function.
      There is no solution for this. */
   F & NewableGeneralContractFunctionProperties<F>

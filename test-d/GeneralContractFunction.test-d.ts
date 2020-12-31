@@ -19,6 +19,7 @@ import {
   CallableGeneralContractFunction,
   GeneralContractFunction,
   InternalLocation,
+  NewableGeneralContractFunction,
   StackLocation
 } from '../types'
 import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction, someObject } from './subjects'
@@ -42,7 +43,7 @@ type CallableBind = <Bound extends unknown[], Unbound extends unknown[]> (
 aCallableGeneralContractFunction.contract = new AbstractContract({})
 aCallableGeneralContractFunction.implementation = aFunction1
 aCallableGeneralContractFunction.location = AbstractContract.internalLocation
-aCallableGeneralContractFunction.bind2 =
+aCallableGeneralContractFunction.contractBind =
   aCallableGeneralContractFunction.bind as unknown as CallableBind
 Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   configurable: false,
@@ -66,14 +67,14 @@ expectType<string>(aCallableGeneralContractFunction.apply(someObject, someArgs))
 expectType<AFunction1['call']>(aCallableGeneralContractFunction.call)
 expectType<string>(aCallableGeneralContractFunction.call(someObject, anA, aB))
 expectType<AFunction1['bind']>(aCallableGeneralContractFunction.bind)
-/* NOTE The exact type of bind is too difficult to test. We do test its effects though. */
-expectAssignable<CallableBind>(aCallableGeneralContractFunction.bind2)
-expectAssignable<GeneralContractFunction<(a:string, b: number) => string>>(aCallableGeneralContractFunction.bind2(someObject))
-expectAssignable<string>(aCallableGeneralContractFunction.bind2(someObject)(anA, aB))
-expectAssignable<GeneralContractFunction<(b: number) => string>>(aCallableGeneralContractFunction.bind2(someObject, anA))
-expectAssignable<string>(aCallableGeneralContractFunction.bind2(someObject, anA)(aB))
-expectAssignable<GeneralContractFunction<() => string>>(aCallableGeneralContractFunction.bind2(someObject, anA, aB))
-expectAssignable<string>(aCallableGeneralContractFunction.bind2(someObject, anA, aB)())
+/* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
+expectAssignable<CallableBind>(aCallableGeneralContractFunction.contractBind)
+expectAssignable<GeneralContractFunction<(a:string, b: number) => string>>(aCallableGeneralContractFunction.contractBind(someObject))
+expectAssignable<string>(aCallableGeneralContractFunction.contractBind(someObject)(anA, aB))
+expectAssignable<GeneralContractFunction<(b: number) => string>>(aCallableGeneralContractFunction.contractBind(someObject, anA))
+expectAssignable<string>(aCallableGeneralContractFunction.contractBind(someObject, anA)(aB))
+expectAssignable<GeneralContractFunction<() => string>>(aCallableGeneralContractFunction.contractBind(someObject, anA, aB))
+expectAssignable<string>(aCallableGeneralContractFunction.contractBind(someObject, anA, aB)())
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aCallableGeneralContractFunction.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunction.prototype)
@@ -97,14 +98,14 @@ expectType<string>(aCallableGeneralContractFunctionB.apply(someObject, someArgs)
 expectType<AFunction1['call']>(aCallableGeneralContractFunctionB.call)
 expectType<string>(aCallableGeneralContractFunctionB.call(someObject, anA, aB))
 expectType<AFunction1['bind']>(aCallableGeneralContractFunctionB.bind)
-/* NOTE The exact type of bind is too difficult to test. We do test its effects though. */
-expectAssignable<CallableBind>(aCallableGeneralContractFunctionB.bind2)
-expectAssignable<GeneralContractFunction<(a:string, b: number) => string>>(aCallableGeneralContractFunctionB.bind2(someObject))
-expectAssignable<string>(aCallableGeneralContractFunctionB.bind2(someObject)(anA, aB))
-expectAssignable<GeneralContractFunction<(b: number) => string>>(aCallableGeneralContractFunctionB.bind2(someObject, anA))
-expectAssignable<string>(aCallableGeneralContractFunctionB.bind2(someObject, anA)(aB))
-expectAssignable<GeneralContractFunction<() => string>>(aCallableGeneralContractFunctionB.bind2(someObject, anA, aB))
-expectAssignable<string>(aCallableGeneralContractFunctionB.bind2(someObject, anA, aB)())
+/* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
+expectAssignable<CallableBind>(aCallableGeneralContractFunctionB.contractBind)
+expectAssignable<GeneralContractFunction<(a:string, b: number) => string>>(aCallableGeneralContractFunctionB.contractBind(someObject))
+expectAssignable<string>(aCallableGeneralContractFunctionB.contractBind(someObject)(anA, aB))
+expectAssignable<GeneralContractFunction<(b: number) => string>>(aCallableGeneralContractFunctionB.contractBind(someObject, anA))
+expectAssignable<string>(aCallableGeneralContractFunctionB.contractBind(someObject, anA)(aB))
+expectAssignable<GeneralContractFunction<() => string>>(aCallableGeneralContractFunctionB.contractBind(someObject, anA, aB))
+expectAssignable<string>(aCallableGeneralContractFunctionB.contractBind(someObject, anA, aB)())
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aCallableGeneralContractFunctionB.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionB.prototype)
@@ -127,14 +128,29 @@ expectType<string>(aCallableGeneralContractFunctionC.apply(someObject, someArgs)
 expectType<AFunction1['call']>(aCallableGeneralContractFunctionC.call)
 expectType<string>(aCallableGeneralContractFunctionC.call(someObject, anA, aB))
 expectType<AFunction1['bind']>(aCallableGeneralContractFunctionC.bind)
+/* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
+expectAssignable<CallableBind>(aCallableGeneralContractFunctionC.contractBind)
+expectAssignable<GeneralContractFunction<(a:string, b: number) => string>>(aCallableGeneralContractFunctionC.contractBind(someObject))
+expectAssignable<string>(aCallableGeneralContractFunctionC.contractBind(someObject)(anA, aB))
+expectAssignable<GeneralContractFunction<(b: number) => string>>(aCallableGeneralContractFunctionC.contractBind(someObject, anA))
+expectAssignable<string>(aCallableGeneralContractFunctionC.contractBind(someObject, anA)(aB))
+expectAssignable<GeneralContractFunction<() => string>>(aCallableGeneralContractFunctionC.contractBind(someObject, anA, aB))
+expectAssignable<string>(aCallableGeneralContractFunctionC.contractBind(someObject, anA, aB)())
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aCallableGeneralContractFunctionC.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionC.prototype)
+
+type NewableBind = <Bound extends unknown[], Unbound extends unknown[]> (
+  this: new (...args: [...Bound, ...Unbound]) => ANewableFunction,
+  thisArg: any,
+  ...bound: Bound
+) => NewableGeneralContractFunction<new (...unbound: Unbound) => ANewableFunction>
 
 export class ANewableGeneralContractFunction {
   static readonly contract = new AbstractContract({})
   static readonly implementation = ANewableFunction
   static readonly location = AbstractContract.internalLocation
+  static contractBind: NewableBind = ANewableFunction.bind as NewableBind
 
   constructor(a: string, b: number) {}
 }
@@ -147,6 +163,8 @@ Object.defineProperty(ANewableGeneralContractFunction, 'name', {
 
 expectAssignable<GeneralContractFunction<typeof ANewableFunction>>(ANewableGeneralContractFunction)
 expectAssignable<typeof ANewableFunction>(ANewableGeneralContractFunction)
+expectType<ANewableFunction>(new ANewableGeneralContractFunction(anA, aB))
+expectType<ANewableGeneralContractFunction>(new ANewableGeneralContractFunction(anA, aB))
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction.contract)
 expectType<typeof ANewableFunction>(ANewableGeneralContractFunction.implementation)
 expectType<InternalLocation>(ANewableGeneralContractFunction.location)
@@ -160,6 +178,17 @@ expectType<void>(ANewableFunction.apply(undefined, someArgs))
 expectType<typeof ANewableFunction.call>(ANewableGeneralContractFunction.call)
 expectType<void>(ANewableFunction.call(undefined, anA, aB))
 expectType<typeof ANewableFunction.bind>(ANewableGeneralContractFunction.bind)
+/* NOTE tsd does not complain here on exact type */
+expectType<NewableBind>(ANewableGeneralContractFunction.contractBind)
+const boundA1 = ANewableGeneralContractFunction.contractBind(someObject)
+expectAssignable<GeneralContractFunction<new (a:string, b: number) => ANewableGeneralContractFunction>>(boundA1)
+expectType<ANewableGeneralContractFunction>(new boundA1(anA, aB))
+const boundA2 = ANewableGeneralContractFunction.contractBind(someObject, anA)
+expectAssignable<GeneralContractFunction<new (b: number) => ANewableGeneralContractFunction>>(boundA2)
+expectType<ANewableGeneralContractFunction>(new boundA2(aB))
+const boundA3 = ANewableGeneralContractFunction.contractBind(someObject, anA, aB)
+expectAssignable<GeneralContractFunction<new () => ANewableGeneralContractFunction>>(boundA3)
+expectType<ANewableGeneralContractFunction>(new boundA3())
 expectType<ANewableGeneralContractFunction>(ANewableGeneralContractFunction.prototype)
 expectType<typeof ANewableFunction.prototype>(ANewableGeneralContractFunction.prototype)
 expectType<ANewableFunction>(ANewableGeneralContractFunction.prototype)
@@ -172,6 +201,8 @@ let aNewableGeneralContractFunctionB: GeneralContractFunction<typeof ANewableFun
 
 expectType<GeneralContractFunction<typeof ANewableFunction>>(aNewableGeneralContractFunctionB)
 expectAssignable<typeof ANewableFunction>(aNewableGeneralContractFunctionB)
+expectType<ANewableFunction>(new aNewableGeneralContractFunctionB(anA, aB))
+expectType<ANewableGeneralContractFunction>(new aNewableGeneralContractFunctionB(anA, aB))
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionB.contract)
 expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionB.implementation)
 expectType<StackLocation | InternalLocation>(aNewableGeneralContractFunctionB.location)
@@ -185,6 +216,17 @@ expectType<void>(aNewableGeneralContractFunctionB.apply(undefined, someArgs))
 expectType<typeof ANewableFunction.call>(aNewableGeneralContractFunctionB.call)
 expectType<void>(aNewableGeneralContractFunctionB.call(undefined, anA, aB))
 expectType<typeof ANewableFunction.bind>(aNewableGeneralContractFunctionB.bind)
+/* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
+expectAssignable<NewableBind>(aNewableGeneralContractFunctionB.contractBind)
+const boundB1 = aNewableGeneralContractFunctionB.contractBind(someObject)
+expectAssignable<GeneralContractFunction<new (a:string, b: number) => ANewableGeneralContractFunction>>(boundB1)
+expectType<ANewableGeneralContractFunction>(new boundB1(anA, aB))
+const boundB2 = aNewableGeneralContractFunctionB.contractBind(someObject, anA)
+expectAssignable<GeneralContractFunction<new (b: number) => ANewableGeneralContractFunction>>(boundB2)
+expectType<ANewableGeneralContractFunction>(new boundB2(aB))
+const boundB3 = aNewableGeneralContractFunctionB.contractBind(someObject, anA, aB)
+expectAssignable<GeneralContractFunction<new () => ANewableGeneralContractFunction>>(boundB3)
+expectType<ANewableGeneralContractFunction>(new boundB3())
 expectType<ANewableGeneralContractFunction>(aNewableGeneralContractFunctionB.prototype)
 expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionB.prototype)
 expectType<ANewableFunction>(aNewableGeneralContractFunctionB.prototype)
@@ -197,6 +239,8 @@ let aNewableGeneralContractFunctionC: GeneralContractFunction<typeof ANewableFun
 
 expectType<GeneralContractFunction<typeof ANewableFunction>>(aNewableGeneralContractFunctionC)
 expectAssignable<typeof ANewableFunction>(aNewableGeneralContractFunctionC)
+expectType<ANewableFunction>(new aNewableGeneralContractFunctionC(anA, aB))
+expectType<ANewableGeneralContractFunction>(new aNewableGeneralContractFunctionC(anA, aB))
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionC.contract)
 expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionC.implementation)
 expectType<StackLocation | InternalLocation>(aNewableGeneralContractFunctionC.location)
@@ -210,6 +254,17 @@ expectType<void>(aNewableGeneralContractFunctionC.apply(undefined, someArgs))
 expectType<typeof ANewableFunction.call>(aNewableGeneralContractFunctionC.call)
 expectType<void>(aNewableGeneralContractFunctionC.call(undefined, anA, aB))
 expectType<typeof ANewableFunction.bind>(aNewableGeneralContractFunctionC.bind)
+/* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
+expectAssignable<NewableBind>(aNewableGeneralContractFunctionC.contractBind)
+const boundC1 = aNewableGeneralContractFunctionC.contractBind(someObject)
+expectAssignable<GeneralContractFunction<new (a:string, b: number) => ANewableGeneralContractFunction>>(boundC1)
+expectType<ANewableGeneralContractFunction>(new boundC1(anA, aB))
+const boundC2 = aNewableGeneralContractFunctionC.contractBind(someObject, anA)
+expectAssignable<GeneralContractFunction<new (b: number) => ANewableGeneralContractFunction>>(boundC2)
+expectType<ANewableGeneralContractFunction>(new boundC2(aB))
+const boundC3 = aNewableGeneralContractFunctionC.contractBind(someObject, anA, aB)
+expectAssignable<GeneralContractFunction<new () => ANewableGeneralContractFunction>>(boundC3)
+expectType<ANewableGeneralContractFunction>(new boundC3())
 expectType<ANewableGeneralContractFunction>(aNewableGeneralContractFunctionC.prototype)
 expectType<typeof ANewableFunction.prototype>(aNewableGeneralContractFunctionC.prototype)
 expectType<ANewableFunction>(aNewableGeneralContractFunctionC.prototype)
