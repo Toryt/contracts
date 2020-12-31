@@ -14,6 +14,9 @@
   limitations under the License.
  */
 
+// do not automatically export
+export {}
+
 /**
  * Any function, arrow, or non-arrow.
  *
