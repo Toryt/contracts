@@ -61,84 +61,39 @@ interface GeneralContractFunctionPropertiesBase<F extends AnyFunction> {
 
 interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunction>
   extends GeneralContractFunctionPropertiesBase<F> {
-  bind<T> (this: T, thisArg: ThisParameterType<T>): OmitThisParameter<T>;
-  // tslint:disable-next-line:no-any
-  bind<T, A0, A extends any[], R> (this: (this: T, arg0: A0, ...args: A) => R, thisArg: T, arg0: A0):
-    CallableGeneralContractFunctionProperties<(...args: A) => R>
-  // tslint:disable-next-line:no-any
-  bind<T, A0, A1, A extends any[], R> (
-    this: (this: T, arg0: A0, arg1: A1, ...args: A) => R,
-    thisArg: T,
-    arg0: A0,
-    arg1: A1
-  ): CallableGeneralContractFunctionProperties<(...args: A) => R>
-  // tslint:disable-next-line:no-any
-  bind<T, A0, A1, A2, A extends any[], R> (
-    this: (this: T, arg0: A0, arg1: A1, arg2: A2, ...args: A) => R,
-    thisArg: T,
-    arg0: A0,
-    arg1: A1,
-    arg2: A2
-  ): CallableGeneralContractFunctionProperties<(...args: A) => R>
-  // tslint:disable-next-line:no-any
-  bind<T, A0, A1, A2, A3, A extends any[], R> (
-    this: (this: T, arg0: A0, arg1: A1, arg2: A2, arg3: A3, ...args: A) => R,
-    thisArg: T,
-    arg0: A0,
-    arg1: A1,
-    arg2: A2,
-    arg3: A3
-  ): CallableGeneralContractFunctionProperties<(...args: A) => R>
-  bind<T, AX, R> (this: (this: T, ...args: AX[]) => R, thisArg: T, ...args: AX[]):
-    CallableGeneralContractFunctionProperties<(...args: AX[]) => R>
+  // based on https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
+  bind2 <Bound extends unknown[], Unbound extends unknown[]> (
+    this: (this: ThisParameterType<F>, ...args: [...Bound, ...Unbound]) => ReturnType<F>,
+    thisArg: ThisParameterType<F>,
+    ...bound: Bound
+  ): CallableGeneralContractFunction<(...unbound: Unbound) => ReturnType<F>>
 
   // tslint:disable-next-line:no-any
   prototype: any
 }
 
+export type CallableGeneralContractFunction<F extends AnyCallableFunction> =
+  /* Without Omit<F, 'bind'> we overload, instead of override. But Omit<> also looses the signature of a function.
+     There is no solution for this. */
+  F & CallableGeneralContractFunctionProperties<F>
+
 interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction>
   extends GeneralContractFunctionPropertiesBase<F> {
-  // just returns T, because a NewableFunction does not care about this
-  // tslint:disable-next-line:no-any
-  bind<T> (this: T, thisArg: any): T;
-  // tslint:disable-next-line:no-any
-  bind<A0, A extends any[], R> (this: new (arg0: A0, ...args: A) => R, thisArg: any, arg0: A0):
-    NewableGeneralContractFunctionProperties<new (...args: A) => R>
-  // tslint:disable-next-line:no-any
-  bind<A0, A1, A extends any[], R> (this: new (arg0: A0, arg1: A1, ...args: A) => R, thisArg: any, arg0: A0, arg1: A1):
-    NewableGeneralContractFunctionProperties<new (...args: A) => R>
-  // tslint:disable-next-line:no-any
-  bind<A0, A1, A2, A extends any[], R> (
-    this: new (arg0: A0, arg1: A1, arg2: A2, ...args: A) => R,
+  // based on https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
+  bind <Bound extends unknown[], Unbound extends unknown[]> (
+    this: new (...args: [...Bound, ...Unbound]) => InstanceType<F>,
     // tslint:disable-next-line:no-any
     thisArg: any,
-    arg0: A0,
-    arg1: A1,
-    arg2: A2
-  ): NewableGeneralContractFunctionProperties<new (...args: A) => R>
-  // tslint:disable-next-line:no-any
-  bind<A0, A1, A2, A3, A extends any[], R> (
-    this: new (arg0: A0, arg1: A1, arg2: A2, arg3: A3, ...args: A) => R,
-    // tslint:disable-next-line:no-any
-    thisArg: any,
-    arg0: A0,
-    arg1: A1,
-    arg2: A2,
-    arg3: A3
-  ): NewableGeneralContractFunctionProperties<new (...args: A) => R>
-  // tslint:disable-next-line:no-any
-  bind<AX, R> (this: new (...args: AX[]) => R, thisArg: any, ...args: AX[]):
-    NewableGeneralContractFunctionProperties<new (...args: AX[]) => R>
+    ...bound: Bound
+  ): NewableGeneralContractFunction<new (...unbound: Unbound) => InstanceType<F>>
 
   prototype: InstanceType<F>
 }
 
-type GeneralContractFunctionProperties<F extends AnyFunction> =
-  F extends AnyNewableFunction
-    ? NewableGeneralContractFunctionProperties<F>
-    : F extends AnyCallableFunction
-      ? CallableGeneralContractFunctionProperties<F>
-      : undefined
+type NewableGeneralContractFunction<F extends AnyNewableFunction> =
+  /* Without Omit<F, 'bind'> we overload, instead of override. But Omit<> also looses the signature of a function.
+     There is no solution for this. */
+  F & NewableGeneralContractFunctionProperties<F>
 
 /**
  * A contract function has the same signature as its implementation `F`, but adds a `contract`, `implementation`, and
@@ -176,7 +131,12 @@ type GeneralContractFunctionProperties<F extends AnyFunction> =
  * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
  * additional typed parameters ( `A0` … `A1`). For a contract function, we do the same, but we add the extra properties.
  */
-export type GeneralContractFunction<F extends AnyFunction> = F & GeneralContractFunctionProperties<F>
+export type GeneralContractFunction<F extends AnyFunction> =
+  F extends AnyNewableFunction
+    ? NewableGeneralContractFunction<F>
+    : F extends AnyCallableFunction
+      ? CallableGeneralContractFunction<F>
+      : undefined
 
 export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
   (ContractSignature<C> extends AnyNewableFunction
