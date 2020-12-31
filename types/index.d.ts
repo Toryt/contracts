@@ -47,6 +47,99 @@ export type AnyFunction = AnyCallableFunction | AnyNewableFunction
 
 export type StackLocation = string
 
+interface GeneralContractFunctionPropertiesBase<F extends AnyFunction> {
+  readonly contract: AbstractContract<F, unknown>
+  readonly implementation: F
+  readonly location: StackLocation | InternalLocation
+  name: string // readonly in `lib.es2015.core.d.ts`
+}
+
+/* TODO: Actually, bind returns a function with less arguments, and thus a different contract!
+         And all conditions in that contract have less arguments too.
+         Furthermore, this now returns a _General_ContractFunction, so we need to strengthen / repeat this for
+         ContractFunction! */
+
+interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunction>
+  extends GeneralContractFunctionPropertiesBase<F> {
+  bind<T> (this: T, thisArg: ThisParameterType<T>): OmitThisParameter<T>;
+  // tslint:disable-next-line:no-any
+  bind<T, A0, A extends any[], R> (this: (this: T, arg0: A0, ...args: A) => R, thisArg: T, arg0: A0):
+    CallableGeneralContractFunctionProperties<(...args: A) => R>
+  // tslint:disable-next-line:no-any
+  bind<T, A0, A1, A extends any[], R> (
+    this: (this: T, arg0: A0, arg1: A1, ...args: A) => R,
+    thisArg: T,
+    arg0: A0,
+    arg1: A1
+  ): CallableGeneralContractFunctionProperties<(...args: A) => R>
+  // tslint:disable-next-line:no-any
+  bind<T, A0, A1, A2, A extends any[], R> (
+    this: (this: T, arg0: A0, arg1: A1, arg2: A2, ...args: A) => R,
+    thisArg: T,
+    arg0: A0,
+    arg1: A1,
+    arg2: A2
+  ): CallableGeneralContractFunctionProperties<(...args: A) => R>
+  // tslint:disable-next-line:no-any
+  bind<T, A0, A1, A2, A3, A extends any[], R> (
+    this: (this: T, arg0: A0, arg1: A1, arg2: A2, arg3: A3, ...args: A) => R,
+    thisArg: T,
+    arg0: A0,
+    arg1: A1,
+    arg2: A2,
+    arg3: A3
+  ): CallableGeneralContractFunctionProperties<(...args: A) => R>
+  bind<T, AX, R> (this: (this: T, ...args: AX[]) => R, thisArg: T, ...args: AX[]):
+    CallableGeneralContractFunctionProperties<(...args: AX[]) => R>
+
+  // tslint:disable-next-line:no-any
+  prototype: any
+}
+
+interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction>
+  extends GeneralContractFunctionPropertiesBase<F> {
+  // just returns T, because a NewableFunction does not care about this
+  // tslint:disable-next-line:no-any
+  bind<T> (this: T, thisArg: any): T;
+  // tslint:disable-next-line:no-any
+  bind<A0, A extends any[], R> (this: new (arg0: A0, ...args: A) => R, thisArg: any, arg0: A0):
+    NewableGeneralContractFunctionProperties<new (...args: A) => R>
+  // tslint:disable-next-line:no-any
+  bind<A0, A1, A extends any[], R> (this: new (arg0: A0, arg1: A1, ...args: A) => R, thisArg: any, arg0: A0, arg1: A1):
+    NewableGeneralContractFunctionProperties<new (...args: A) => R>
+  // tslint:disable-next-line:no-any
+  bind<A0, A1, A2, A extends any[], R> (
+    this: new (arg0: A0, arg1: A1, arg2: A2, ...args: A) => R,
+    // tslint:disable-next-line:no-any
+    thisArg: any,
+    arg0: A0,
+    arg1: A1,
+    arg2: A2
+  ): NewableGeneralContractFunctionProperties<new (...args: A) => R>
+  // tslint:disable-next-line:no-any
+  bind<A0, A1, A2, A3, A extends any[], R> (
+    this: new (arg0: A0, arg1: A1, arg2: A2, arg3: A3, ...args: A) => R,
+    // tslint:disable-next-line:no-any
+    thisArg: any,
+    arg0: A0,
+    arg1: A1,
+    arg2: A2,
+    arg3: A3
+  ): NewableGeneralContractFunctionProperties<new (...args: A) => R>
+  // tslint:disable-next-line:no-any
+  bind<AX, R> (this: new (...args: AX[]) => R, thisArg: any, ...args: AX[]):
+    NewableGeneralContractFunctionProperties<new (...args: AX[]) => R>
+
+  prototype: InstanceType<F>
+}
+
+type GeneralContractFunctionProperties<F extends AnyFunction> =
+  F extends AnyNewableFunction
+    ? NewableGeneralContractFunctionProperties<F>
+    : F extends AnyCallableFunction
+      ? CallableGeneralContractFunctionProperties<F>
+      : undefined
+
 /**
  * A contract function has the same signature as its implementation `F`, but adds a `contract`, `implementation`, and
  * `location` property.
@@ -83,20 +176,17 @@ export type StackLocation = string
  * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
  * additional typed parameters ( `A0` … `A1`). For a contract function, we do the same, but we add the extra properties.
  */
-export type GeneralContractFunction<F extends AnyFunction> = F & {
-  readonly contract: AbstractContract<F, unknown>
-  readonly implementation: F
-  readonly location: StackLocation | InternalLocation
-  name: string // readonly in `lib.es2015.core.d.ts`
-
-  // tslint:disable-next-line:no-any
-  prototype: F extends AnyNewableFunction ? InstanceType<F> : F extends AnyCallableFunction ? any : undefined
-}
+export type GeneralContractFunction<F extends AnyFunction> = F & GeneralContractFunctionProperties<F>
 
 export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
-  GeneralContractFunction<ContractSignature<C>> & {
-  readonly contract: C
-}
+  (ContractSignature<C> extends AnyNewableFunction
+   ? NewableGeneralContractFunctionProperties<ContractSignature<C>>
+   : ContractSignature<C> extends AnyCallableFunction
+     ? CallableGeneralContractFunctionProperties<ContractSignature<C>>
+     : undefined)
+  & {
+    readonly contract: C
+  }
 
 export type booleany = undefined | null | unknown
 
