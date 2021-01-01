@@ -179,36 +179,120 @@ export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
 export type booleany = undefined | null | unknown
 
 /**
- * Boolean function: are `this` and the `args` valid?
+ * Booleany function (predicate): are `this` and the `args` valid?
  *
- * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type Precondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: ContractParameters<C>) => booleany
+export type CallablePrecondition<F extends AnyCallableFunction> =
+  (this: ThisParameterType<F>, ...args: Parameters<F>) => booleany
 
 /**
- * Boolean function: are `this`, the `args`, and the `result` valid?
+ * Booleany function (predicate): are the `args` valid?
  *
- * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type Postcondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractResult<C>, ContractFunction<C>]) => booleany
+export type NewablePrecondition<F extends AnyNewableFunction> =
+  (...args: ConstructorParameters<F>) => booleany
 
 /**
- * Boolean function: are `this`, `args`, and the thrown exception valid?
+ * Booleany function (predicate): are `this` and the `args` valid?
  *
- * Returns a `boolean` in principle, but `any` in practice, which is interpreted as _truthy_.
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type ExceptionCondition<C extends AbstractContract<AnyFunction, unknown>> =
-  (this: ContractThis<C>, ...args: [...ContractParameters<C>, ContractExceptions<C>, ContractFunction<C>]) => booleany
+export type Precondition<F extends AnyFunction> =
+  F extends AnyNewableFunction
+    ? NewablePrecondition<F>
+    : F extends AnyCallableFunction
+      ? CallablePrecondition<F>
+      : never
 
-export interface AbstractContractKwargs<F extends AnyFunction, Exceptions> {
-  pre?: ReadonlyArray<Precondition<AbstractContract<F, Exceptions>>> | null,
-  post?: ReadonlyArray<Postcondition<AbstractContract<F, Exceptions>>> | null,
-  exception?: ReadonlyArray<ExceptionCondition<AbstractContract<F, Exceptions>>> | null
+/**
+ * Booleany function (predicate): are `this`, the `args`, and the `result` valid?
+ *
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
+ */
+export type CallablePostcondition<F extends AnyCallableFunction> =
+  (
+    this: ThisParameterType<F>,
+    ...args: [...Parameters<F>, ReturnType<F>, GeneralContractFunction<OmitThisParameter<F>>]
+  ) => booleany
+
+/**
+ * Booleany function (predicate): are the `args` and the created `result` valid?
+ *
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
+ */
+export type NewablePostcondition<F extends AnyNewableFunction> =
+  (
+    this: InstanceType<F>,
+    ...args: [...ConstructorParameters<F>, undefined, GeneralContractFunction<OmitThisParameter<F>>]
+  ) => booleany
+
+/**
+ * Booleany function (predicate): are `this`, the `args`, and the `result` valid?
+ *
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
+ */
+export type Postcondition<F extends AnyFunction> =
+  F extends AnyNewableFunction
+  ? NewablePostcondition<F>
+  : F extends AnyCallableFunction
+    ? CallablePostcondition<F>
+    : never
+
+/**
+ * Booleany function (predicate): are `this`, `args`, and the thrown exception valid?
+ *
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
+ */
+export type CallableExceptionCondition<F extends AnyCallableFunction, Exceptions> =
+  (
+    this: ThisParameterType<F>,
+    ...args: [...Parameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>>]
+  ) => booleany
+
+/**
+ * Booleany function (predicate): are the `args`, and the thrown exception valid?
+ *
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
+ */
+export type NewableExceptionCondition<F extends AnyNewableFunction, Exceptions> =
+  (
+    this: InstanceType<F>,
+    ...args: [...ConstructorParameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>>]
+  ) => booleany
+
+/**
+ * Booleany function (predicate): are `this`, `args`, and the thrown exception valid?
+ *
+ * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
+ */
+export type ExceptionCondition<F extends AnyFunction, Exceptions> =
+  F extends AnyNewableFunction
+  ? NewableExceptionCondition<F, Exceptions>
+  : F extends AnyCallableFunction
+    ? CallableExceptionCondition<F, Exceptions>
+    : never
+
+export interface CallableAbstractContractKwargs<F extends AnyCallableFunction, Exceptions> {
+  pre?: ReadonlyArray<CallablePrecondition<F>>,
+  post?: ReadonlyArray<CallablePostcondition<F>>,
+  exception?: ReadonlyArray<CallableExceptionCondition<F, Exceptions>>
+}
+
+export interface NewableAbstractContractKwargs<F extends AnyNewableFunction, Exceptions> {
+  pre?: ReadonlyArray<NewablePrecondition<F>>,
+  post?: ReadonlyArray<NewablePostcondition<F>>,
+  exception?: ReadonlyArray<NewableExceptionCondition<F, Exceptions>>
 }
 
 export class InternalLocation {}
+export type AbstractContractKwargs<F extends AnyFunction, Exceptions> =
+  F extends AnyNewableFunction
+  ? NewableAbstractContractKwargs<F, Exceptions>
+  : F extends AnyCallableFunction
+    ? CallableAbstractContractKwargs<F, Exceptions>
+    : never
 
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
