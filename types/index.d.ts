@@ -167,12 +167,7 @@ export type GeneralContractFunction<F extends AnyFunction, Exceptions> =
       : undefined
 
 export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
-  (ContractSignature<C> extends AnyNewableFunction
-   ? NewableGeneralContractFunctionProperties<ContractSignature<C>, ContractExceptions<C>>
-   : ContractSignature<C> extends AnyCallableFunction
-     ? CallableGeneralContractFunctionProperties<ContractSignature<C>, ContractExceptions<C>>
-     : undefined)
-  & {
+  GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & {
     readonly contract: C
   }
 
