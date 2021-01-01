@@ -286,13 +286,16 @@ export interface NewableAbstractContractKwargs<F extends AnyNewableFunction, Exc
   exception?: ReadonlyArray<NewableExceptionCondition<F, Exceptions>>
 }
 
-export class InternalLocation {}
 export type AbstractContractKwargs<F extends AnyFunction, Exceptions> =
   F extends AnyNewableFunction
   ? NewableAbstractContractKwargs<F, Exceptions>
   : F extends AnyCallableFunction
     ? CallableAbstractContractKwargs<F, Exceptions>
     : never
+
+export interface InternalLocation {
+  toString (): 'INTERNAL'
+}
 
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
