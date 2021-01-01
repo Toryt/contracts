@@ -47,8 +47,8 @@ export type AnyFunction = AnyCallableFunction | AnyNewableFunction
 
 export type StackLocation = string
 
-interface GeneralContractFunctionPropertiesBase<F extends AnyFunction> {
-  readonly contract: AbstractContract<F, unknown>
+interface GeneralContractFunctionPropertiesBase<F extends AnyFunction, Exceptions> {
+  readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
   readonly location: StackLocation | InternalLocation
   name: string // readonly in `lib.es2015.core.d.ts`
@@ -59,8 +59,8 @@ interface GeneralContractFunctionPropertiesBase<F extends AnyFunction> {
          Furthermore, this now returns a _General_ContractFunction, so we need to strengthen / repeat this for
          ContractFunction! */
 
-interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunction>
-  extends GeneralContractFunctionPropertiesBase<F> {
+interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunction, Exceptions>
+  extends GeneralContractFunctionPropertiesBase<F, Exceptions> {
   /**
    * A 'correct' version of {@link #bind}, which should override the definition of {@link #bind}
    * for contract functions. This seems impossible however.
@@ -80,19 +80,19 @@ interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunctio
     this: (this: ThisParameterType<F>, ...args: [...Bound, ...Unbound]) => ReturnType<F>,
     thisArg: ThisParameterType<F>,
     ...bound: Bound
-  ): CallableGeneralContractFunction<(...unbound: Unbound) => ReturnType<F>>
+  ): CallableGeneralContractFunction<(...unbound: Unbound) => ReturnType<F>, Exceptions>
 
   // tslint:disable-next-line:no-any
   prototype: any
 }
 
-export type CallableGeneralContractFunction<F extends AnyCallableFunction> =
+export type CallableGeneralContractFunction<F extends AnyCallableFunction, Exceptions> =
   /* Without Omit<F, 'bind'> we overload, instead of override. But Omit<> also looses the signature of a function.
      There is no solution for this. */
-  F & CallableGeneralContractFunctionProperties<F>
+  F & CallableGeneralContractFunctionProperties<F, Exceptions>
 
-interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction>
-  extends GeneralContractFunctionPropertiesBase<F> {
+interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction, Exceptions>
+  extends GeneralContractFunctionPropertiesBase<F, Exceptions> {
   /**
    * A 'correct' version of {@link #bind}, which should override the definition of {@link #bind}
    * for contract functions. This seems impossible however.
@@ -113,15 +113,15 @@ interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction>
     // tslint:disable-next-line:no-any
     thisArg: any,
     ...bound: Bound
-  ): NewableGeneralContractFunction<new (...unbound: Unbound) => InstanceType<F>>
+  ): NewableGeneralContractFunction<new (...unbound: Unbound) => InstanceType<F>, Exceptions>
 
   prototype: InstanceType<F>
 }
 
-export type NewableGeneralContractFunction<F extends AnyNewableFunction> =
+export type NewableGeneralContractFunction<F extends AnyNewableFunction, Exceptions> =
   /* Without Omit<F, 'bind'> we overload, instead of override. But Omit<> also looses the signature of a function.
      There is no solution for this. */
-  F & NewableGeneralContractFunctionProperties<F>
+  F & NewableGeneralContractFunctionProperties<F, Exceptions>
 
 /**
  * A contract function has the same signature as its implementation `F`, but adds a `contract`, `implementation`, and
@@ -159,18 +159,18 @@ export type NewableGeneralContractFunction<F extends AnyNewableFunction> =
  * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
  * additional typed parameters ( `A0` … `A1`). For a contract function, we do the same, but we add the extra properties.
  */
-export type GeneralContractFunction<F extends AnyFunction> =
+export type GeneralContractFunction<F extends AnyFunction, Exceptions> =
   F extends AnyNewableFunction
-    ? NewableGeneralContractFunction<F>
+    ? NewableGeneralContractFunction<F, Exceptions>
     : F extends AnyCallableFunction
-      ? CallableGeneralContractFunction<F>
+      ? CallableGeneralContractFunction<F, Exceptions>
       : undefined
 
 export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
   (ContractSignature<C> extends AnyNewableFunction
-   ? NewableGeneralContractFunctionProperties<ContractSignature<C>>
+   ? NewableGeneralContractFunctionProperties<ContractSignature<C>, ContractExceptions<C>>
    : ContractSignature<C> extends AnyCallableFunction
-     ? CallableGeneralContractFunctionProperties<ContractSignature<C>>
+     ? CallableGeneralContractFunctionProperties<ContractSignature<C>, ContractExceptions<C>>
      : undefined)
   & {
     readonly contract: C
@@ -214,7 +214,7 @@ export type Precondition<F extends AnyFunction> =
 export type CallablePostcondition<F extends AnyCallableFunction> =
   (
     this: ThisParameterType<F>,
-    ...args: [...Parameters<F>, ReturnType<F>, GeneralContractFunction<OmitThisParameter<F>>]
+    ...args: [...Parameters<F>, ReturnType<F>, GeneralContractFunction<OmitThisParameter<F>, unknown>]
   ) => booleany
 
 /**
@@ -225,7 +225,7 @@ export type CallablePostcondition<F extends AnyCallableFunction> =
 export type NewablePostcondition<F extends AnyNewableFunction> =
   (
     this: InstanceType<F>,
-    ...args: [...ConstructorParameters<F>, undefined, GeneralContractFunction<OmitThisParameter<F>>]
+    ...args: [...ConstructorParameters<F>, undefined, GeneralContractFunction<OmitThisParameter<F>, unknown>]
   ) => booleany
 
 /**
@@ -248,7 +248,7 @@ export type Postcondition<F extends AnyFunction> =
 export type CallableExceptionCondition<F extends AnyCallableFunction, Exceptions> =
   (
     this: ThisParameterType<F>,
-    ...args: [...Parameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>>]
+    ...args: [...Parameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>, Exceptions>]
   ) => booleany
 
 /**
@@ -259,7 +259,7 @@ export type CallableExceptionCondition<F extends AnyCallableFunction, Exceptions
 export type NewableExceptionCondition<F extends AnyNewableFunction, Exceptions> =
   (
     this: InstanceType<F>,
-    ...args: [...ConstructorParameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>>]
+    ...args: [...ConstructorParameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>, Exceptions>]
   ) => booleany
 
 /**
@@ -412,9 +412,9 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot freeze
    * it, and not guaranteed in all engines.
    */
-  static isAGeneralContractFunction<F extends AnyFunction> (
+  static isAGeneralContractFunction<F extends AnyFunction, Exceptions> (
     f: F | unknown
-  ): f is GeneralContractFunction<F>
+  ): f is GeneralContractFunction<F, Exceptions>
 
   /**
    * A Contract Function is an implementation of a Contract. This function verifies whether a function
@@ -495,7 +495,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   }
 
   readonly location: StackLocation | InternalLocation
-  readonly abstract: ContractFunction<this>;
+  // MUDO readonly abstract: ContractFunction<this>;
 
   verify: boolean;
   verifyPostconditions: boolean;
@@ -507,21 +507,49 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     _location?: StackLocation | typeof AbstractContract.internalLocation
   )
 
-  isImplementedBy (f: unknown): f is ContractFunction<this>
+  // MUDO should be ContractFunction<this>
+  isImplementedBy (f: unknown): f is GeneralContractFunction<F, Exceptions>
 
-  get pre (): Array<Precondition<this>> // not ReadonlyArray: we have sliced
+  get pre (): Array<
+    F extends AnyNewableFunction
+      ? NewablePrecondition<F>
+      : F extends AnyCallableFunction
+        ? CallablePrecondition<F>
+        : never
+  > // not ReadonlyArray: we have sliced
 
-  get post (): Array<Postcondition<this>> // not ReadonlyArray: we have sliced
+  get post (): Array<
+    F extends AnyNewableFunction
+      ? NewablePostcondition<F>
+      : F extends AnyCallableFunction
+        ? CallablePostcondition<F>
+        : never
+    > // not ReadonlyArray: we have sliced
 
-  get exception (): Array<ExceptionCondition<this>> // not ReadonlyArray: we have sliced
+  get exception (): Array<
+    F extends AnyNewableFunction
+      ? NewableExceptionCondition<F, Exceptions>
+      : F extends AnyCallableFunction
+        ? CallableExceptionCondition<F, Exceptions>
+        : never
+  > // not ReadonlyArray: we have sliced
 }
 
 export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =
   C extends AbstractContract<infer F, unknown> ? F : never
-export type ContractThis<C extends AbstractContract<AnyFunction, unknown>> = ThisParameterType<ContractSignature<C>>
+export type ContractThis<C extends AbstractContract<AnyFunction, unknown>> =
+  ThisParameterType<ContractSignature<C>>
 export type ContractParameters<C extends AbstractContract<AnyFunction, unknown>> =
-  C extends AbstractContract<infer F, unknown> ? F extends AnyNewableFunction ? ConstructorParameters<F> : F extends AnyCallableFunction ? Parameters<F> : never : never
+  ContractSignature<C> extends AnyNewableFunction
+    ? ConstructorParameters<ContractSignature<C>>
+    : ContractSignature<C> extends AnyCallableFunction
+      ? Parameters<ContractSignature<C>>
+      : never
 export type ContractResult<C extends AbstractContract<AnyFunction, unknown>> =
-  C extends AbstractContract<infer F, unknown> ? F extends AnyNewableFunction ? InstanceType<F> : F extends AnyCallableFunction ? ReturnType<F> : never : never
+  ContractSignature<C> extends AnyCallableFunction
+    ? ReturnType<ContractSignature<C>>
+    : never
+export type ContractInstanceType<C extends AbstractContract<AnyNewableFunction, unknown>> =
+  InstanceType<ContractSignature<C>>
 export type ContractExceptions<C extends AbstractContract<AnyFunction, unknown>> =
   C extends AbstractContract<AnyFunction, infer Exceptions> ? Exceptions : never
