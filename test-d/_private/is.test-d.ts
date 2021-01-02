@@ -105,6 +105,10 @@ if (frozenOwnProperty(something2, 'yetAnotherProperty')) {
   expectType<unknown>(something2.yetAnotherProperty)
   expectError(something2.yetAnotherProperty = 'cannot assign to readonly')
   expectType<string>(something2.aProperty)
+  /* TODO "Cannot assign to aProperty because it is a read-only property." This is _wrong_! It is not in the if above.
+          This should be allowed here
+  something2.aProperty = 'another value'
+  */
   expectType<boolean>(something2.anotherProperty)
   something2.anotherProperty = false
   expectType<false>(something2.anotherProperty)
