@@ -22,11 +22,7 @@ export function setAndFreeze<Obj extends object, PropName extends string, V exte
   readonly [K in PropName]: V
 };
 
-export function configurableDerived<
-  Obj extends object,
-  PropName extends string,
-  V extends unknown,
-> (
+export function configurableDerived<Obj extends object, PropName extends string, V extends unknown> (
   prototype: Obj,
   propertyName: PropName,
   derivation: (this: Obj) => V
@@ -34,11 +30,7 @@ export function configurableDerived<
   readonly [K in PropName]: V
 }
 
-export function frozenDerived<
-  Obj extends object,
-  PropName extends string,
-  V extends unknown,
-> (
+export function frozenDerived<Obj extends object, PropName extends string, V extends unknown> (
   prototype: Obj,
   propertyName: PropName,
   derivation: (this: Obj) => V
