@@ -18,6 +18,7 @@
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../lib/AnyFunction'
 import { GeneralContractFunction } from '../lib/GeneralContractFunction'
 import { StackLocation } from '../lib/_private/is'
+import { Booleany } from '../lib/Condition'
 
 export {}
 
@@ -26,15 +27,13 @@ export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
     readonly contract: C
   }
 
-export type booleany = undefined | null | unknown
-
 /**
  * Booleany function (predicate): are `this` and the `args` valid?
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
 export type CallablePrecondition<F extends AnyCallableFunction> =
-  (this: ThisParameterType<F>, ...args: Parameters<F>) => booleany
+  (this: ThisParameterType<F>, ...args: Parameters<F>) => Booleany
 
 /**
  * Booleany function (predicate): are the `args` valid?
@@ -42,7 +41,7 @@ export type CallablePrecondition<F extends AnyCallableFunction> =
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
 export type NewablePrecondition<F extends AnyNewableFunction> =
-  (...args: ConstructorParameters<F>) => booleany
+  (...args: ConstructorParameters<F>) => Booleany
 
 /**
  * Booleany function (predicate): are `this` and the `args` valid?
@@ -65,7 +64,7 @@ export type CallablePostcondition<F extends AnyCallableFunction> =
   (
     this: ThisParameterType<F>,
     ...args: [...Parameters<F>, ReturnType<F>, GeneralContractFunction<OmitThisParameter<F>, unknown>]
-  ) => booleany
+  ) => Booleany
 
 /**
  * Booleany function (predicate): are the `args` and the created `result` valid?
@@ -76,7 +75,7 @@ export type NewablePostcondition<F extends AnyNewableFunction> =
   (
     this: InstanceType<F>,
     ...args: [...ConstructorParameters<F>, undefined, GeneralContractFunction<OmitThisParameter<F>, unknown>]
-  ) => booleany
+  ) => Booleany
 
 /**
  * Booleany function (predicate): are `this`, the `args`, and the `result` valid?
@@ -99,7 +98,7 @@ export type CallableExceptionCondition<F extends AnyCallableFunction, Exceptions
   (
     this: ThisParameterType<F>,
     ...args: [...Parameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>, Exceptions>]
-  ) => booleany
+  ) => Booleany
 
 /**
  * Booleany function (predicate): are the `args`, and the thrown exception valid?
@@ -110,7 +109,7 @@ export type NewableExceptionCondition<F extends AnyNewableFunction, Exceptions> 
   (
     this: InstanceType<F>,
     ...args: [...ConstructorParameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>, Exceptions>]
-  ) => booleany
+  ) => Booleany
 
 /**
  * Booleany function (predicate): are `this`, `args`, and the thrown exception valid?
@@ -182,7 +181,7 @@ export type MustNotHappen = [FalseCondition]
  * An AbstractContract consists of an array of preconditions, an array of nominal postconditions,
  * and an array of exceptional postconditions.
  *
- * The conditions are functions whose result is interpreted as a booleany value.
+ * The conditions are functions whose result is interpreted as a Booleany value.
  * The conditions are called with the same `this` and arguments as the functional call in which they are
  * verified. When verifying nominal postconditions, the result of the function call is added as extra argument.
  * When verifying exceptional postconditions, the exception thrown by the function call is added as extra argument.
