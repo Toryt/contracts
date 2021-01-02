@@ -104,4 +104,4 @@ node_modules
 coverage
 contracts-*.js
 browser/test/suite.js
-test-d/**.js
+test-d/**/*.js
