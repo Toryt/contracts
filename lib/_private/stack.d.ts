@@ -26,7 +26,7 @@ import { StackLocation } from './is'
  * Note that in Safari, the result cannot be trusted. Safari skips (optimized?) stack frames. In Safari, this
  * will return 'a' stack line, but not necessarily a semantic meaningful one.
  */
-export function location(depth: number): StackLocation;
+export function location(depth?: number): StackLocation;
 
 // noinspection FunctionNamingConventionJS
 /**
@@ -40,7 +40,7 @@ export function location(depth: number): StackLocation;
  * Note that in Safari, the result cannot be trusted. Safari skips (optimized?) stack frames. In Safari, this
  * will return 'a' stack, but not necessarily a semantic meaningful one.
  */
-export function raw(depth: any): string;
+export function raw(depth?: number): string;
 
 /**
  * Boolean that says whether or not this platform skips forEach stack frames in an Error stack.

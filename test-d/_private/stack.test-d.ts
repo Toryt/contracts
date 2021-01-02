@@ -20,6 +20,8 @@ import { location, raw, skipsForEach } from '../../lib/_private/stack'
 
 const aDepth: number = 12
 
+expectType<StackLocation>(location())
 expectType<StackLocation>(location(aDepth))
+expectType<string>(raw())
 expectType<string>(raw(aDepth))
 expectType<boolean>(skipsForEach)
