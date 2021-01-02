@@ -319,6 +319,7 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
 }
 
 export type FalseCondition = (this: unknown, ...args: unknown[]) => false
+export type MustNotHappen = [FalseCondition]
 
 /**
  * Abstract definition of a function contract.
@@ -461,7 +462,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * that a function should never throw exceptions, or never end nominally, or should never be called,
    * because the conditions will always fail.
    */
-  static readonly mustNotHappen: [FalseCondition]
+  static readonly mustNotHappen: MustNotHappen
 
   /**
    * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
@@ -521,13 +522,16 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
         : never
     > // not ReadonlyArray: we have sliced
 
-  get exception (): Array<
-    F extends AnyNewableFunction
-      ? NewableExceptionCondition<F, Exceptions>
-      : F extends AnyCallableFunction
-        ? CallableExceptionCondition<F, Exceptions>
-        : never
-  > // not ReadonlyArray: we have sliced
+  get exception ():
+    Exceptions extends never
+      ? MustNotHappen
+      : Array<
+        F extends AnyNewableFunction
+          ? NewableExceptionCondition<F, Exceptions>
+          : F extends AnyCallableFunction
+            ? CallableExceptionCondition<F, Exceptions>
+            : never
+      > // not ReadonlyArray: we have sliced
 }
 
 export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =
