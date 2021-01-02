@@ -16,13 +16,11 @@
 
 import {
   AbstractContract,
-  CallableGeneralContractFunction,
-  GeneralContractFunction,
   InternalLocation,
-  NewableGeneralContractFunction,
 } from '../types'
 import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction, someObject } from './subjects'
 import { expectAssignable, expectNotType, expectType } from 'tsd'
+import { CallableGeneralContractFunction, NewableGeneralContractFunction, GeneralContractFunction } from '../lib/GeneralContractFunction'
 import { StackLocation } from '../lib/_private/is'
 
 function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string {
