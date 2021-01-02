@@ -137,19 +137,19 @@ const isAGeneralContractFunctionA = AbstractContract.isAGeneralContractFunction(
 // $ExpectType boolean
 const isAGeneralContractFunctionB = AbstractContract.isAGeneralContractFunction(45)
 // $ExpectType boolean
-const isAGeneralContractFunctionC = AbstractContract.isAGeneralContractFunction<AFunction, string | SomeError>('this is a candidate contract function')
+const isAGeneralContractFunctionC = AbstractContract.isAGeneralContractFunction<AFunction>('this is a candidate contract function')
 // $ExpectType boolean
-const isAGeneralContractFunctionD = AbstractContract.isAGeneralContractFunction<AFunction, string | SomeError>(anotherFunction)
+const isAGeneralContractFunctionD = AbstractContract.isAGeneralContractFunction<AFunction>(anotherFunction)
 // $ExpectType boolean
 const isAGeneralContractFunctionE: boolean = AbstractContract.isAGeneralContractFunction(undefined)
 // $ExpectType boolean
 const isAGeneralContractFunctionF: boolean = AbstractContract.isAGeneralContractFunction(null)
 
 const anotherFunctionAsUnknown: unknown = anotherFunction
-if (AbstractContract.isAGeneralContractFunction<typeof aFunction, string | SomeError>(anotherFunctionAsUnknown)) {
-  // $ExpectType CallableGeneralContractFunction<AFunction, string | SomeError>
+if (AbstractContract.isAGeneralContractFunction<typeof aFunction>(anotherFunctionAsUnknown)) {
+  // $ExpectType CallableGeneralContractFunction<AFunction, unknown>
   const typedAnotherFunction = anotherFunctionAsUnknown
-  // $ExpectType AbstractContract<AFunction, string | SomeError>
+  // $ExpectType AbstractContract<AFunction, unknown>
   const typedAnotherFunctionContract = anotherFunctionAsUnknown.contract
   // $ExpectType AFunction
   const typedAnotherFunctionImplementation = anotherFunctionAsUnknown.implementation
