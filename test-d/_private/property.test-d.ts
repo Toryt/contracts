@@ -15,10 +15,10 @@
  */
 
 import { expectAssignable, expectError, expectNotType, expectType } from 'tsd'
-import { configurableDerived, frozenDerived, setAndFreeze } from '../../lib/_private/property'
+import { configurableDerived, frozenDerived, frozenReadOnlyArray, setAndFreeze } from '../../lib/_private/property'
 
 const aNumber = 3543
-const aString = ' a string'
+const aString = 'a string'
 const anotherNumber = 523
 let something1 = {}
 const newPropName1 = 'a new property 1'
@@ -27,6 +27,12 @@ let something2 = {
   anotherProperty: true
 }
 const newPropName2 = 'a new property 2'
+interface Something3 {
+  _privateArray: ReadonlyArray<typeof aNumber | typeof aString>
+}
+let something3: Something3 = {
+  _privateArray: [aNumber, aString]
+}
 
 expectType<{}>(something1)
 setAndFreeze(something1, newPropName1, aNumber)
@@ -60,3 +66,12 @@ expectAssignable<{}>(something2)
 expectAssignable<string | boolean>(something2[newPropName2])
 expectType<string | true>(something2[newPropName2])
 expectError(something2[newPropName2] = false)
+
+expectType<Something3>(something3)
+frozenReadOnlyArray(something3, 'publicArray',  '_privateArray')
+expectNotType<Something3>(something3)
+expectType<Something3 & { readonly publicArray: (typeof aNumber| typeof aString)[]; }>(something3)
+expectAssignable<Something3>(something3)
+expectAssignable<Array<string | number>>(something3.publicArray)
+expectType<Array<typeof aNumber| typeof aString>>(something3.publicArray)
+expectError(something3.publicArray = [aString, aString])

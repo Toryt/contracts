@@ -38,4 +38,16 @@ export function frozenDerived<Obj extends object, PropName extends string, V ext
   readonly [K in PropName]: V
 }
 
-export function frozenReadOnlyArray(prototype: any, propertyName: any, privatePropName: any): void;
+export function frozenReadOnlyArray<
+  Obj extends {
+    [K in PrivatePropName]: ReadonlyArray<unknown>
+  },
+  PropName extends string,
+  PrivatePropName extends string
+> (
+  prototype: Obj,
+  propertyName: PropName,
+  privatePropName: PrivatePropName
+): asserts prototype is Obj & {
+  readonly [K in PropName]: Array<typeof prototype[PrivatePropName][number]>
+};
