@@ -1,5 +1,5 @@
 /*
- Copyright 2021 - 2021 by Jan Dockx
+  Copyright 2021 - 2021 by Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 import { ConditionError } from '../lib/ConditionError'
 import { expectAssignable, expectError, expectType } from 'tsd'
 import { ContractError } from '../lib/ContractError'
-import { aB, aCallableGeneralContractFunction, anA } from './subjects'
+import { aB, aCallableGeneralContractFunction, anA, ANewableGeneralContractFunction } from './subjects'
 import { GeneralContractFunction } from '../lib/GeneralContractFunction'
 import { AnyFunction } from '../lib/AnyFunction'
 import { Condition } from '../lib/Condition'
@@ -49,10 +49,19 @@ expectType<Condition>(aConditionError.condition)
 expectType<object | undefined>(aConditionError.self)
 expectType<ReadonlyArray<unknown>>(aConditionError._args)
 expectType<Array<unknown>>(aConditionError.args)
-expectError(aConditionError.contractFunction = anotherContractFunction)
+expectError(aConditionError.contractFunction = ANewableGeneralContractFunction)
 expectError(aConditionError.condition = () => false)
 expectError(aConditionError.self = {})
 expectError(aConditionError._args = [1, 4])
 expectError(aConditionError.args = [1, 4])
 
 expectType<string>(aConditionError.getDetails())
+
+const aNewableConditionError = new ConditionError(
+  ANewableGeneralContractFunction,
+  args => 0,
+  undefined,
+  [1, anA, {}, [aB]],
+  'a raw stack'
+)
+
