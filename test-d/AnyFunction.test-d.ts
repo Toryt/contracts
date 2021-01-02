@@ -15,8 +15,8 @@
  */
 
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
-import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../types'
 import { aFunction1, AFunction1, aFunction2, AFunction2, aFunction3, AFunction3, ANewableFunction } from './subjects'
+import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../lib/AnyFunction'
 
 expectType<AFunction1>(aFunction1)
 expectAssignable<AnyCallableFunction>(aFunction1)
