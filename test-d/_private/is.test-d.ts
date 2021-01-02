@@ -82,7 +82,7 @@ if (stack(something1)) {
   expectNotAssignable<object>(something1)
 }
 
-expectError(frozenOwnProperty(something2, 'does not exist'))
+expectType<boolean>(frozenOwnProperty(something2, 'does not exist'))
 expectType<string>(something2.aProperty)
 something2.aProperty = 'another value'
 expectType<string>(something2.aProperty)
@@ -93,11 +93,20 @@ expectAssignable<boolean>(something2.anotherProperty)
 if (frozenOwnProperty(something2, 'aProperty')) {
   expectType<string>(something2.aProperty)
   expectError(something2.aProperty = 'cannot assign to readonly')
-  expectType<string>(something2.aProperty)
   expectType<false>(something2.anotherProperty)
   expectAssignable<boolean>(something2.anotherProperty)
   something2.anotherProperty = true
   expectType<true>(something2.anotherProperty)
   expectAssignable<boolean>(something2.anotherProperty)
   expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly aProperty: string; }>(something2)
+}
+
+if (frozenOwnProperty(something2, 'yetAnotherProperty')) {
+  expectType<unknown>(something2.yetAnotherProperty)
+  expectError(something2.yetAnotherProperty = 'cannot assign to readonly')
+  expectType<string>(something2.aProperty)
+  expectType<boolean>(something2.anotherProperty)
+  something2.anotherProperty = false
+  expectType<false>(something2.anotherProperty)
+  expectAssignable<boolean>(something2.anotherProperty)
 }

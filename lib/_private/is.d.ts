@@ -20,7 +20,14 @@ export function functionArguments(a: any): a is IArguments;
 export function primitive(p: unknown): p is number | string | boolean;
 export function stackLocation(location: unknown): location is StackLocation;
 export function stack(stack: unknown): stack is string;
-export function frozenOwnProperty<Obj extends object, PropName extends keyof Obj>(obj: Obj, propName: PropName):
+
+/**
+ * Discover a `readonly` property.
+ *
+ * If the property was already known on `Obj`, we now know it is `readonly`, and has the type we new it had.
+ * If the property was not yet known on `Obj`, we now know it is `readonly`, and has type `unknown`.
+ */
+export function frozenOwnProperty<Obj extends object, PropName extends string>(obj: Obj, propName: PropName):
   obj is Obj & {
-    readonly [K in PropName]: typeof obj[PropName]
+    readonly [K in PropName]: PropName extends keyof Obj ? typeof obj[PropName] : unknown
   }
