@@ -16,8 +16,11 @@
 
 export type StackLocation = string
 
-export function functionArguments(a: any): boolean;
-export function primitive(p: any): boolean;
-export function stackLocation(location: any): boolean;
-export function stack(stack: any): boolean;
-export function frozenOwnProperty(obj: any, propName: any): boolean | undefined;
+export function functionArguments(a: any): a is IArguments;
+export function primitive(p: unknown): p is number | string | boolean;
+export function stackLocation(location: unknown): location is StackLocation;
+export function stack(stack: unknown): stack is string;
+export function frozenOwnProperty<Obj extends object, PropName extends keyof Obj>(obj: Obj, propName: PropName):
+  obj is Obj & {
+    readonly [K in PropName]: typeof obj[PropName]
+  }
