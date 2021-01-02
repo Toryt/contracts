@@ -14,6 +14,9 @@
   limitations under the License.
  */
 
+import { CallableGeneralContractFunction } from '../lib/GeneralContractFunction'
+import { AbstractContract } from '../types'
+
 export interface SomeObject {
   aProperty: number
 }
@@ -39,3 +42,29 @@ export interface SomeError {
   anErrorProperty: object
 }
 
+export function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string {
+  return this.aProperty + a + b
+}
+
+export const anA = 'a'
+export const aB = 5353
+
+export const someArgs: [a: string, b: number] = [anA, aB]
+
+export type CallableBind = <Bound extends unknown[], Unbound extends unknown[]> (
+  this: (this: SomeObject, ...args: [...Bound, ...Unbound]) => string,
+  thisArg: SomeObject,
+  ...bound: Bound
+) => CallableGeneralContractFunction<(...unbound: Unbound) => string, SomeError>
+
+aCallableGeneralContractFunction.contract = new AbstractContract<AFunction1, SomeError>({})
+aCallableGeneralContractFunction.implementation = aFunction1
+aCallableGeneralContractFunction.location = AbstractContract.internalLocation
+aCallableGeneralContractFunction.contractBind =
+  aCallableGeneralContractFunction.bind as unknown as CallableBind
+Object.defineProperty(aCallableGeneralContractFunction, 'name', {
+  configurable: false,
+  enumerable: false,
+  writable: false,
+  value: 'a general contract function name'
+})

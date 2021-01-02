@@ -18,37 +18,10 @@ import {
   AbstractContract,
   InternalLocation,
 } from '../types'
-import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction, someObject } from './subjects'
+import { AFunction1, SomeError, ANewableFunction, someObject, aCallableGeneralContractFunction, anA, aB, someArgs, CallableBind } from './subjects'
 import { expectAssignable, expectNotType, expectType } from 'tsd'
-import { CallableGeneralContractFunction, NewableGeneralContractFunction, GeneralContractFunction } from '../lib/GeneralContractFunction'
+import { NewableGeneralContractFunction, GeneralContractFunction } from '../lib/GeneralContractFunction'
 import { StackLocation } from '../lib/_private/is'
-
-function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string {
-  return this.aProperty + a + b
-}
-
-const anA = 'a'
-const aB = 5353
-
-const someArgs: [a: string, b: number] = [anA, aB]
-
-type CallableBind = <Bound extends unknown[], Unbound extends unknown[]> (
-  this: (this: SomeObject, ...args: [...Bound, ...Unbound]) => string,
-  thisArg: SomeObject,
-  ...bound: Bound
-) => CallableGeneralContractFunction<(...unbound: Unbound) => string, SomeError>
-
-aCallableGeneralContractFunction.contract = new AbstractContract<AFunction1, SomeError>({})
-aCallableGeneralContractFunction.implementation = aFunction1
-aCallableGeneralContractFunction.location = AbstractContract.internalLocation
-aCallableGeneralContractFunction.contractBind =
-  aCallableGeneralContractFunction.bind as unknown as CallableBind
-Object.defineProperty(aCallableGeneralContractFunction, 'name', {
-  configurable: false,
-  enumerable: false,
-  writable: false,
-  value: 'a general contract function name'
-})
 
 expectAssignable<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunction)
 expectAssignable<AFunction1>(aCallableGeneralContractFunction)
