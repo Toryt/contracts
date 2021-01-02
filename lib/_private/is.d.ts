@@ -16,6 +16,12 @@
 
 export type StackLocation = string
 
+export interface InternalLocation {
+  toString (): 'INTERNAL'
+}
+
+export type Location = StackLocation | InternalLocation
+
 export function functionArguments(a: any): a is IArguments;
 export function primitive(p: unknown): p is number | string | boolean;
 export function stackLocation(location: unknown): location is StackLocation;

@@ -15,17 +15,18 @@
  */
 
 import {
-  AbstractContract,
-  InternalLocation
+  AbstractContract
 } from '../types'
-import { StackLocation } from './_private/is'
+import { Location, StackLocation } from './_private/is'
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from './AnyFunction'
+
+
 
 // noinspection JSClassNamingConvention
 interface GeneralContractFunctionPropertiesBase<F extends AnyFunction, Exceptions> {
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
-  readonly location: StackLocation | InternalLocation
+  readonly location: Location
   name: string // readonly in `lib.es2015.core.d.ts`
 }
 

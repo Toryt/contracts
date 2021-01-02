@@ -17,7 +17,7 @@
 // do not automatically export
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../lib/AnyFunction'
 import { GeneralContractFunction } from '../lib/GeneralContractFunction'
-import { StackLocation } from '../lib/_private/is'
+import { Location, InternalLocation, StackLocation } from '../lib/_private/is'
 import { Booleany } from '../lib/Condition'
 
 export {}
@@ -142,9 +142,6 @@ export type AbstractContractKwargs<F extends AnyFunction, Exceptions> =
     ? CallableAbstractContractKwargs<F, Exceptions>
     : never
 
-export interface InternalLocation {
-  toString (): 'INTERNAL'
-}
 
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
@@ -163,7 +160,7 @@ export interface ContractConstructor<C extends AbstractContract<AnyFunction, unk
     contractFunction: ContractSignature<C>,
     contract: C,
     implFunction: ContractSignature<C>,
-    location: StackLocation | InternalLocation
+    location: Location
   ): ContractFunction<C>
 
   outcome (...args: [...ContractParameters<C>, ContractResult<C> | ContractExceptions<C>, unknown]):

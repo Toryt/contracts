@@ -16,19 +16,18 @@
 
 import {
   AbstractContract,
-  InternalLocation,
 } from '../types'
 import { AFunction1, SomeError, ANewableFunction, someObject, aCallableGeneralContractFunction, anA, aB, someArgs, CallableBind, ANewableGeneralContractFunction, NewableBind } from './subjects'
 import { expectAssignable, expectNotType, expectType } from 'tsd'
 import { NewableGeneralContractFunction, GeneralContractFunction } from '../lib/GeneralContractFunction'
-import { StackLocation } from '../lib/_private/is'
+import { Location, InternalLocation, StackLocation } from '../lib/_private/is'
 
 expectAssignable<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContractFunction)
 expectAssignable<AFunction1>(aCallableGeneralContractFunction)
 expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunction.contract)
 expectType<AFunction1>(aCallableGeneralContractFunction.implementation)
 expectType<InternalLocation>(aCallableGeneralContractFunction.location)
-expectAssignable<StackLocation | InternalLocation>(aCallableGeneralContractFunction.location)
+expectAssignable<Location>(aCallableGeneralContractFunction.location)
 expectType<string>(aCallableGeneralContractFunction.name)
 expectType<number>(aCallableGeneralContractFunction.length)
 expectType<Function['toString']>(aCallableGeneralContractFunction.toString)
@@ -58,7 +57,7 @@ expectType<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContr
 expectAssignable<AFunction1>(aCallableGeneralContractFunctionB)
 expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunctionB.contract)
 expectType<AFunction1>(aCallableGeneralContractFunctionB.implementation)
-expectType<StackLocation | InternalLocation>(aCallableGeneralContractFunctionB.location)
+expectType<Location>(aCallableGeneralContractFunctionB.location)
 expectType<string>(aCallableGeneralContractFunctionB.name)
 // NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
 expectType< (() => string) & (() => string)>(aCallableGeneralContractFunctionB.toString)
@@ -88,7 +87,7 @@ expectType<GeneralContractFunction<AFunction1, SomeError>>(aCallableGeneralContr
 expectAssignable<AFunction1>(aCallableGeneralContractFunctionC)
 expectType<AbstractContract<AFunction1, SomeError>>(aCallableGeneralContractFunctionC.contract)
 expectType<AFunction1>(aCallableGeneralContractFunctionC.implementation)
-expectType<StackLocation | InternalLocation>(aCallableGeneralContractFunctionC.location)
+expectType<Location>(aCallableGeneralContractFunctionC.location)
 expectType<string>(aCallableGeneralContractFunctionC.name)
 // NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
 expectType< (() => string) & (() => string)>(aCallableGeneralContractFunctionC.toString)
@@ -118,7 +117,7 @@ expectType<ANewableGeneralContractFunction>(new ANewableGeneralContractFunction(
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction.contract)
 expectType<typeof ANewableFunction>(ANewableGeneralContractFunction.implementation)
 expectType<InternalLocation>(ANewableGeneralContractFunction.location)
-expectAssignable<StackLocation | InternalLocation>(ANewableGeneralContractFunction.location)
+expectAssignable<Location>(ANewableGeneralContractFunction.location)
 expectType<string>(ANewableGeneralContractFunction.name)
 expectType<number>(ANewableGeneralContractFunction.length)
 expectType<Function['toString']>(ANewableGeneralContractFunction.toString)
@@ -155,7 +154,7 @@ expectType<ANewableFunction>(new aNewableGeneralContractFunctionB(anA, aB))
 expectType<ANewableGeneralContractFunction>(new aNewableGeneralContractFunctionB(anA, aB))
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionB.contract)
 expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionB.implementation)
-expectType<StackLocation | InternalLocation>(aNewableGeneralContractFunctionB.location)
+expectType<Location>(aNewableGeneralContractFunctionB.location)
 expectType<string>(aNewableGeneralContractFunctionB.name)
 // NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
 expectType< (() => string) & (() => string)>(aNewableGeneralContractFunctionB.toString)
@@ -193,7 +192,7 @@ expectType<ANewableFunction>(new aNewableGeneralContractFunctionC(anA, aB))
 expectType<ANewableGeneralContractFunction>(new aNewableGeneralContractFunctionC(anA, aB))
 expectType<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionC.contract)
 expectType<typeof ANewableFunction>(aNewableGeneralContractFunctionC.implementation)
-expectType<StackLocation | InternalLocation>(aNewableGeneralContractFunctionC.location)
+expectType<Location>(aNewableGeneralContractFunctionC.location)
 expectType<string>(aNewableGeneralContractFunctionC.name)
 // NOTE this seems to be a bug in TS: it determines the conjunction of 2 identical types, without simplification
 expectType< (() => string) & (() => string)>(aNewableGeneralContractFunctionC.toString)
