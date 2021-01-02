@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { CallableGeneralContractFunction } from '../lib/GeneralContractFunction'
+import { CallableGeneralContractFunction, NewableGeneralContractFunction } from '../lib/GeneralContractFunction'
 import { AbstractContract } from '../types'
 
 export interface SomeObject {
@@ -68,3 +68,25 @@ Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   writable: false,
   value: 'a general contract function name'
 })
+
+export type NewableBind = <Bound extends unknown[], Unbound extends unknown[]> (
+  this: new (...args: [...Bound, ...Unbound]) => ANewableFunction,
+  thisArg: any,
+  ...bound: Bound
+) => NewableGeneralContractFunction<new (...unbound: Unbound) => ANewableFunction, SomeError>
+
+export class ANewableGeneralContractFunction {
+  static readonly contract = new AbstractContract<typeof ANewableFunction, SomeError>({})
+  static readonly implementation = ANewableFunction
+  static readonly location = AbstractContract.internalLocation
+  static contractBind: NewableBind = ANewableFunction.bind as NewableBind
+
+  constructor(a: string, b: number) {}
+}
+Object.defineProperty(ANewableGeneralContractFunction, 'name', {
+  configurable: false,
+  enumerable: false,
+  writable: false,
+  value: 'a general contract function name'
+})
+

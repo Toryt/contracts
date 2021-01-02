@@ -19,7 +19,6 @@
 import {
   AbstractContract,
   AbstractContractKwargs,
-  AnyFunction,
   ContractExceptions,
   ContractFunction,
   ContractParameters,
@@ -27,12 +26,12 @@ import {
   ContractSignature,
   ContractThis,
   ExceptionCondition,
-  GeneralContractFunction,
   InternalLocation,
   Postcondition,
-  Precondition,
-  StackLocation
+  Precondition
 } from '@toryt/contracts'
+import { AnyFunction } from '../lib/AnyFunction'
+import { StackLocation } from '../lib/_private/is'
 
 interface SomeObject {
   aProperty: number

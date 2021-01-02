@@ -18,7 +18,7 @@ import {
   AbstractContract,
   InternalLocation,
 } from '../types'
-import { AFunction1, SomeError, ANewableFunction, someObject, aCallableGeneralContractFunction, anA, aB, someArgs, CallableBind } from './subjects'
+import { AFunction1, SomeError, ANewableFunction, someObject, aCallableGeneralContractFunction, anA, aB, someArgs, CallableBind, ANewableGeneralContractFunction, NewableBind } from './subjects'
 import { expectAssignable, expectNotType, expectType } from 'tsd'
 import { NewableGeneralContractFunction, GeneralContractFunction } from '../lib/GeneralContractFunction'
 import { StackLocation } from '../lib/_private/is'
@@ -110,27 +110,6 @@ expectAssignable<string>(aCallableGeneralContractFunctionC.contractBind(someObje
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aCallableGeneralContractFunctionC.prototype)
 expectType<AFunction1['prototype']>(aCallableGeneralContractFunctionC.prototype)
-
-type NewableBind = <Bound extends unknown[], Unbound extends unknown[]> (
-  this: new (...args: [...Bound, ...Unbound]) => ANewableFunction,
-  thisArg: any,
-  ...bound: Bound
-) => NewableGeneralContractFunction<new (...unbound: Unbound) => ANewableFunction, SomeError>
-
-export class ANewableGeneralContractFunction {
-  static readonly contract = new AbstractContract<typeof ANewableFunction, SomeError>({})
-  static readonly implementation = ANewableFunction
-  static readonly location = AbstractContract.internalLocation
-  static contractBind: NewableBind = ANewableFunction.bind as NewableBind
-
-  constructor(a: string, b: number) {}
-}
-Object.defineProperty(ANewableGeneralContractFunction, 'name', {
-  configurable: false,
-  enumerable: false,
-  writable: false,
-  value: 'a general contract function name'
-})
 
 expectAssignable<GeneralContractFunction<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction)
 expectAssignable<typeof ANewableFunction>(ANewableGeneralContractFunction)
