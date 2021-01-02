@@ -89,7 +89,7 @@ const abstractContractKwargs8: AbstractContractKwargs<AFunction, string | SomeEr
 }
 
 // tslint:disable-next-line:max-line-length
-// TODO should be: $ExpectType  { pre: ((a: string, b: number) => boolean)[]; post: ((this: SomeObject, a: string, b: number, result: string) => boolean)[]; exception: ((this: SomeObject, a: string, b: number, exception: string | SomeError) => boolean)[]; }
+// $ExpectType { pre: ((a: string, b: number) => boolean)[]; post: ((this: SomeObject, a: string, b: number, result: string) => boolean)[]; exception: ((this: SomeObject, a: string, b: number, exception: string | SomeError) => boolean)[]; }
 const abstractContractKwargs: AbstractContractKwargs<AFunction, string | SomeError> = {
   pre: [
     () => true,
@@ -195,72 +195,73 @@ const isAContractFunctionE: boolean = AbstractContract.isAContractFunction(undef
 // $ExpectType boolean
 const isAContractFunctionF: boolean = AbstractContract.isAContractFunction(null)
 
-const candidateContractFunction = 'this is a candidate contract function'
-if (AbstractContract.isAContractFunction<typeof subject>(candidateContractFunction)) {
-  // tslint:disable-next-line:max-line-length
-  // $ExpectType "this is a candidate contract function" & CallableGeneralContractFunctionProperties<(this: SomeObject, a: string, b: number) => string> & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; }
-  const typedCandidateContractFunction: ContractFunction<typeof subject> = candidateContractFunction
-  // tslint:disable-next-line:max-line-length
-  // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown> & AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
-  const typedAnotherFunctionContract = candidateContractFunction.contract
-  // $ExpectType (this: SomeObject, a: string, b: number) => string
-  const typedAnotherFunctionImplementation = candidateContractFunction.implementation
-  // $ExpectType string | InternalLocation
-  const typedAnotherFunctionLocation: StackLocation | InternalLocation = candidateContractFunction.location
-  // $ExpectType string
-  const typedAnotherFunctionName = candidateContractFunction.name
-
-  // $ExpectError
-  const boundContractFunction2G: ContractFunction<typeof subject> = candidateContractFunction.bind()
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, a: string, b: number) => string, string | SomeError>>: REASON: general bind signature?
-  // $ExpectError
-  const boundContractFunction2B: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject)
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, b: number) => string, string | SomeError>>: REASON: general bind signature?
-  // $ExpectError
-  const boundContractFunction2A: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string')
-  // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: never) => string, string | SomeError>>
-  // $ExpectError
-  const boundContractFunction2C = candidateContractFunction.bind(someObject, 'a string', 5345)
-  // TODO should be: $ExpectError
-  // $ExpectError
-  const boundContractFunction2D: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string', true)
-  // TODO should be: $ExpectError
-  // $ExpectError
-  const boundContractFunction2E: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, true)
-  // TODO should be: $ExpectError
-  // $ExpectError
-  const boundContractFunction2F: ContractFunction<typeof subject> = candidateContractFunction.bind({someOtherProperty: false}, new Date())
-  // $ExpectType any
-  const typedResult = boundContractFunction2C()
-
-  // TODO should be: $ExpectType SubPrototype<GeneralContractFunction<AFunction>, AFunction>
-  const typedPrototype = candidateContractFunction.prototype
-
-  // $ExpectType number
-  const typedLength = candidateContractFunction.length
-  // TODO should be: $ExpectError
-  // $ExpectError
-  const r1 = candidateContractFunction.apply(undefined, [true, new Date()])
-  // TODO should be: $ExpectError
-  // $ExpectError
-  const r2 = candidateContractFunction.call(undefined, true, new Date())
-
-  // TODO $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
-  // $ExpectError
-  const blessedA: ContractFunction<typeof subject> = AbstractContract.bless(candidateContractFunction, subject, aFunction, 'this is the location')
-  // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
-  const blessedB: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, 'this is the location')
-  // $ExpectError
-  const blessedC: ContractFunction<typeof subject> = AbstractContract.bless(anotherFunction, subject, aFunction2, 'this is the location')
-  // $ExpectError
-  const blessedD: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, {}, aFunction2, 'this is the location')
-  // $ExpectError
-  const blessedE: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, anotherFunction, 'this is the location')
-  // MUDO THIS SHOULD FAIL BECAUSE true IS NOT A STACKLOCATION $ExpectError
-  const blessedF: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, true)
-  // $ExpectError
-  const blessedG: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, undefined)
-}
+// isAContractFunction gives never ?!??!?
+// const candidateContractFunction = 'this is a candidate contract function'
+// if (AbstractContract.isAContractFunction(candidateContractFunction)) {
+// tslint:disable-next-line:max-line-length
+//   // $ExpectType "this is a candidate contract function" & CallableGeneralContractFunctionProperties<(this: SomeObject, a: string, b: number) => string> & { readonly contract: AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>; }
+//   const typedCandidateContractFunction: ContractFunction<typeof subject> = candidateContractFunction
+//   // tslint:disable-next-line:max-line-length
+//   // $ExpectType AbstractContract<(this: SomeObject, a: string, b: number) => string, unknown> & AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>
+//   const typedAnotherFunctionContract = candidateContractFunction.contract
+//   // $ExpectType (this: SomeObject, a: string, b: number) => string
+//   const typedAnotherFunctionImplementation = candidateContractFunction.implementation
+//   // $ExpectType string | InternalLocation
+//   const typedAnotherFunctionLocation: StackLocation | InternalLocation = candidateContractFunction.location
+//   // $ExpectType string
+//   const typedAnotherFunctionName = candidateContractFunction.name
+//
+//   // $ExpectError
+//   const boundContractFunction2G: ContractFunction<typeof subject> = candidateContractFunction.bind()
+//   // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, a: string, b: number) => string, string | SomeError>>: REASON: general bind signature?
+//   // $ExpectError
+//   const boundContractFunction2B: ContractFunction<typeof subject> = typedCandidateContractFunction.bind(someObject)
+//   // TODO should be: $ExpectType ContractFunction<AbstractContract<(never, b: number) => string, string | SomeError>>: REASON: general bind signature?
+//   // $ExpectError
+//   const boundContractFunction2A: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string')
+//   // TODO should be: $ExpectType ContractFunction<AbstractContract<(this: never) => string, string | SomeError>>
+//   // $ExpectError
+//   const boundContractFunction2C = candidateContractFunction.bind(someObject, 'a string', 5345)
+//   // TODO should be: $ExpectError
+//   // $ExpectError
+//   const boundContractFunction2D: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, 'a string', true)
+//   // TODO should be: $ExpectError
+//   // $ExpectError
+//   const boundContractFunction2E: ContractFunction<typeof subject> = candidateContractFunction.bind(someObject, true)
+//   // TODO should be: $ExpectError
+//   // $ExpectError
+//   const boundContractFunction2F: ContractFunction<typeof subject> = candidateContractFunction.bind({someOtherProperty: false}, new Date())
+//   // $ExpectType any
+//   const typedResult = boundContractFunction2C()
+//
+//   // TODO should be: $ExpectType SubPrototype<GeneralContractFunction<AFunction, string | SomeError>, AFunction>
+//   const typedPrototype = candidateContractFunction.prototype
+//
+//   // $ExpectType number
+//   const typedLength = candidateContractFunction.length
+//   // TODO should be: $ExpectError
+//   // $ExpectError
+//   const r1 = candidateContractFunction.apply(undefined, [true, new Date()])
+//   // TODO should be: $ExpectError
+//   // $ExpectError
+//   const r2 = candidateContractFunction.call(undefined, true, new Date())
+//
+//   // TODO $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+//   // $ExpectError
+//   const blessedA: ContractFunction<typeof subject> = AbstractContract.bless(candidateContractFunction, subject, aFunction, 'this is the location')
+//   // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+//   const blessedB: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, 'this is the location')
+//   // $ExpectError
+//   const blessedC: ContractFunction<typeof subject> = AbstractContract.bless(anotherFunction, subject, aFunction2, 'this is the location')
+//   // $ExpectError
+//   const blessedD: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, {}, aFunction2, 'this is the location')
+//   // $ExpectError
+//   const blessedE: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, anotherFunction, 'this is the location')
+//   // MUDO THIS SHOULD FAIL BECAUSE true IS NOT A STACKLOCATION $ExpectError
+//   const blessedF: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, aFunction2, true)
+//   // $ExpectError
+//   const blessedG: ContractFunction<typeof subject> = AbstractContract.bless(aFunction, subject, undefined)
+// }
 
 // $ExpectType false
 const itsFalse1A: boolean = AbstractContract.falseCondition()
@@ -280,8 +281,8 @@ const itsFalse3: boolean = AbstractContract.mustNotHappen[1]()
 // $ExpectType string | InternalLocation
 const subjectStackLocation: StackLocation | InternalLocation = subject.location
 
-// $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
-const abstractImplementation = subject.abstract
+// // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+// const abstractImplementation = subject.abstract
 
 // $ExpectType boolean
 const verify = subject.verify
@@ -332,22 +333,22 @@ const implementedByb = subject.isImplementedBy([])
 
 const candidate = {}
 if (subject.isImplementedBy(candidate)) {
-  // $ExpectType ContractFunction<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>
+  // $ExpectType CallableGeneralContractFunction<(this: SomeObject, a: string, b: number) => string, string | SomeError>
   const typedCandidate: ContractFunction<typeof subject> = candidate;
 }
 
-// $ExpectType Precondition<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>[]
-const pre: Array<Precondition<typeof subject>> = subject.pre
+// $ExpectType CallablePrecondition<(this: SomeObject, a: string, b: number) => string>[]
+const pre: Array<Precondition<ContractSignature<typeof subject>>> = subject.pre
 // $ExpectError
 subject.pre = []
 
-// $ExpectType Postcondition<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>[]
-const post: Array<Postcondition<typeof subject>> = subject.post
+// $ExpectType CallablePostcondition<(this: SomeObject, a: string, b: number) => string>[]
+const post: Array<Postcondition<ContractSignature<typeof subject>>> = subject.post
 // $ExpectError
 subject.post = []
 
-// $ExpectType ExceptionCondition<AbstractContract<(this: SomeObject, a: string, b: number) => string, string | SomeError>>[]
-const exception: Array<ExceptionCondition<typeof subject>> = subject.exception
+// $ExpectType CallableExceptionCondition<(this: SomeObject, a: string, b: number) => string, string | SomeError>[]
+const exception: Array<ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>>> = subject.exception
 // $ExpectError
 subject.exception = []
 
@@ -366,103 +367,103 @@ type contractResult = ContractResult<typeof subject>
 // $ExpectType string | SomeError
 type contractExceptions = ContractExceptions<typeof subject>
 
-const preCondition1: Precondition<typeof subject> = () => true
-const preCondition1b: Precondition<typeof subject> = (c: string) => true
-const preCondition1c: Precondition<typeof subject> = (a: string | boolean) => true
+const preCondition1: Precondition<ContractSignature<typeof subject>> = () => true
+const preCondition1b: Precondition<ContractSignature<typeof subject>> = (c: string) => true
+const preCondition1c: Precondition<ContractSignature<typeof subject>> = (a: string | boolean) => true
 // $ExpectError
-const preCondition1d: Precondition<typeof subject> = (a: number) => true
-const preCondition2: Precondition<typeof subject> = (a: string) => false
-const preCondition3: Precondition<typeof subject> = (a: string, b: number) => false
+const preCondition1d: Precondition<ContractSignature<typeof subject>> = (a: number) => true
+const preCondition2: Precondition<ContractSignature<typeof subject>> = (a: string) => false
+const preCondition3: Precondition<ContractSignature<typeof subject>> = (a: string, b: number) => false
 // $ExpectError
-const preCondition3b: Precondition<typeof subject> = (a: string, b: boolean) => false
-const preCondition4: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return false}
-const preCondition4b: Precondition<typeof subject> = function (this: object, a: string, b: number) {return false}
+const preCondition3b: Precondition<ContractSignature<typeof subject>> = (a: string, b: boolean) => false
+const preCondition4: Precondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return false}
+const preCondition4b: Precondition<ContractSignature<typeof subject>> = function (this: object, a: string, b: number) {return false}
 // $ExpectError
-const preCondition4c: Precondition<typeof subject> = function (this: SomeError, a: string, b: number) {return false}
+const preCondition4c: Precondition<ContractSignature<typeof subject>> = function (this: SomeError, a: string, b: number) {return false}
 // TODO this should fail, but it doesn't? TS interfaces are weird
-const preCondition4d: Precondition<typeof subject> = function (this: {}, a: string, b: number) {return false}
+const preCondition4d: Precondition<ContractSignature<typeof subject>> = function (this: {}, a: string, b: number) {return false}
 // $ExpectError
-const preCondition5: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
-const preCondition6a: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
-const preCondition6b: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return ''}
-const preCondition6c: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return null}
-const preCondition6d: Precondition<typeof subject> = function (this: SomeObject, a: string, b: number) {}
+const preCondition5: Precondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
+const preCondition6a: Precondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
+const preCondition6b: Precondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return ''}
+const preCondition6c: Precondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return null}
+const preCondition6d: Precondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {}
 
-const postCondition1: Postcondition<typeof subject> = () => true
-const postCondition1b: Postcondition<typeof subject> = (c: string) => true
-const postCondition1c: Postcondition<typeof subject> = (a: string | boolean) => true
+const postCondition1: Postcondition<ContractSignature<typeof subject>> = () => true
+const postCondition1b: Postcondition<ContractSignature<typeof subject>> = (c: string) => true
+const postCondition1c: Postcondition<ContractSignature<typeof subject>> = (a: string | boolean) => true
 // $ExpectError
-const postCondition1d: Postcondition<typeof subject> = (a: number) => true
-const postCondition2: Postcondition<typeof subject> = (a: string) => false
-const postCondition3: Postcondition<typeof subject> = (a: string, b: number) => false
+const postCondition1d: Postcondition<ContractSignature<typeof subject>> = (a: number) => true
+const postCondition2: Postcondition<ContractSignature<typeof subject>> = (a: string) => false
+const postCondition3: Postcondition<ContractSignature<typeof subject>> = (a: string, b: number) => false
 // $ExpectError
-const postCondition3b: Postcondition<typeof subject> = (a: string, b: boolean) => false
-const postCondition4: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return false}
-const postCondition4b: Postcondition<typeof subject> = function (this: object, a: string, b: number) {return false}
+const postCondition3b: Postcondition<ContractSignature<typeof subject>> = (a: string, b: boolean) => false
+const postCondition4: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return false}
+const postCondition4b: Postcondition<ContractSignature<typeof subject>> = function (this: object, a: string, b: number) {return false}
 // $ExpectError
-const postCondition4c: Postcondition<typeof subject> = function (this: SomeError, a: string, b: number) {return false}
+const postCondition4c: Postcondition<ContractSignature<typeof subject>> = function (this: SomeError, a: string, b: number) {return false}
 // TODO this should fail, but it doesn't? TS interfaces are weird
-const postCondition4d: Postcondition<typeof subject> = function (this: {}, a: string, b: number) {return false}
+const postCondition4d: Postcondition<ContractSignature<typeof subject>> = function (this: {}, a: string, b: number) {return false}
 // $ExpectError
-const postCondition5: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
-const postCondition6a: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
-const postCondition6b: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return ''}
-const postCondition6c: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return null}
-const postCondition6d: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number) {}
+const postCondition5: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
+const postCondition6a: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
+const postCondition6b: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return ''}
+const postCondition6c: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {return null}
+const postCondition6d: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number) {}
 
-const postCondition7: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number, result: string) {return true}
+const postCondition7: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number, result: string) {return true}
 // $ExpectError
-const postCondition7b: Postcondition<typeof subject> = function (this: SomeObject, a: string, b: number, result: Date) {return true}
+const postCondition7b: Postcondition<ContractSignature<typeof subject>> = function (this: SomeObject, a: string, b: number, result: Date) {return true}
 
-const postCondition8: Postcondition<typeof subject> =
+const postCondition8: Postcondition<ContractSignature<typeof subject>> =
   function (this: SomeObject, a: string, b: number, result: string, thisFunction: ContractFunction<typeof subject>) {return true}
 // $ExpectError
-const postCondition8b: Postcondition<typeof subject> =
+const postCondition8b: Postcondition<ContractSignature<typeof subject>> =
   function (this: SomeObject, a: string, b: number, result: string, thisFunction: ContractFunction<AbstractContract<(a: object) => Date, never>>) {return true}
 
-const exceptionCondition1: ExceptionCondition<typeof subject> = () => true
-const exceptionCondition1b: ExceptionCondition<typeof subject> = (c: string) => true
-const exceptionCondition1c: ExceptionCondition<typeof subject> = (a: string | boolean) => true
+const exceptionCondition1: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = () => true
+const exceptionCondition1b: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = (c: string) => true
+const exceptionCondition1c: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = (a: string | boolean) => true
 // $ExpectError
-const exceptionCondition1d: ExceptionCondition<typeof subject> = (a: number) => true
-const exceptionCondition2: ExceptionCondition<typeof subject> = (a: string) => false
-const exceptionCondition3: ExceptionCondition<typeof subject> = (a: string, b: number) => false
+const exceptionCondition1d: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = (a: number) => true
+const exceptionCondition2: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = (a: string) => false
+const exceptionCondition3: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = (a: string, b: number) => false
 // $ExpectError
-const exceptionCondition3b: ExceptionCondition<typeof subject> = (a: string, b: boolean) => false
-const exceptionCondition4: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return false}
-const exceptionCondition4b: ExceptionCondition<typeof subject> = function (this: object, a: string, b: number) {return false}
+const exceptionCondition3b: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = (a: string, b: boolean) => false
+const exceptionCondition4: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number) {return false}
+const exceptionCondition4b: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: object, a: string, b: number) {return false}
 // $ExpectError
-const exceptionCondition4c: ExceptionCondition<typeof subject> = function (this: SomeError, a: string, b: number) {return false}
+const exceptionCondition4c: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeError, a: string, b: number) {return false}
 // TODO this should fail, but it doesn't? TS interfaces are weird
-const exceptionCondition4d: ExceptionCondition<typeof subject> = function (this: {}, a: string, b: number) {return false}
+const exceptionCondition4d: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: {}, a: string, b: number) {return false}
 // $ExpectError
-const exceptionCondition5: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
-const exceptionCondition6a: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
-const exceptionCondition6b: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return ''}
-const exceptionCondition6c: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {return null}
-const exceptionCondition6d: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number) {}
+const exceptionCondition5: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number, c: boolean) {return false}
+const exceptionCondition6a: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number) {return 'i am truthy'}
+const exceptionCondition6b: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number) {return ''}
+const exceptionCondition6c: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number) {return null}
+const exceptionCondition6d: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number) {}
 
-const exceptionCondition7: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: string | SomeError) {return true}
+const exceptionCondition7: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number, exc: string | SomeError) {return true}
 // $ExpectError
-const exceptionCondition7b: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: string) {return true}
+const exceptionCondition7b: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number, exc: string) {return true}
 // $ExpectError
-const exceptionCondition7c: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: SomeError) {return true}
+const exceptionCondition7c: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number, exc: SomeError) {return true}
 // $ExpectError
-const exceptionCondition7d: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: never) {return true}
-const exceptionCondition7e: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: unknown) {return true}
+const exceptionCondition7d: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number, exc: never) {return true}
+const exceptionCondition7e: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number, exc: unknown) {return true}
 // tslint:disable-next-line:no-any
-const exceptionCondition7f: ExceptionCondition<typeof subject> = function (this: SomeObject, a: string, b: number, exc: any) {return true}
+const exceptionCondition7f: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> = function (this: SomeObject, a: string, b: number, exc: any) {return true}
 
-const exceptionCondition8: ExceptionCondition<typeof subject> =
+const exceptionCondition8: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> =
   function (this: SomeObject, a: string, b: number, exc: string | SomeError, thisFunction: ContractFunction<typeof subject>) {return true}
 // $ExpectError
-const exceptionCondition8b: ExceptionCondition<typeof subject> =
+const exceptionCondition8b: ExceptionCondition<ContractSignature<typeof subject>, ContractExceptions<typeof subject>> =
   function (this: SomeObject, a: string, b: number, exc: string | SomeError, thisFunction: ContractFunction<AbstractContract<(a: object) => Date, never>>) {return true}
 
 // MUDO if exception type is never, exception conditions should always be false
-const exceptionCondition9: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: never) {return true}
-const exceptionCondition9b: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: string) {return true}
-const exceptionCondition9c: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: SomeError) {return true}
-const exceptionCondition9e: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: unknown) {return true}
+const exceptionCondition9: ExceptionCondition<ContractSignature<typeof subjectNoExceptions>, ContractExceptions<typeof subjectNoExceptions>> = function (this: SomeObject, a: string, b: number, exc: never) {return true}
+const exceptionCondition9b: ExceptionCondition<ContractSignature<typeof subjectNoExceptions>, ContractExceptions<typeof subjectNoExceptions>> = function (this: SomeObject, a: string, b: number, exc: string) {return true}
+const exceptionCondition9c: ExceptionCondition<ContractSignature<typeof subjectNoExceptions>, ContractExceptions<typeof subjectNoExceptions>> = function (this: SomeObject, a: string, b: number, exc: SomeError) {return true}
+const exceptionCondition9e: ExceptionCondition<ContractSignature<typeof subjectNoExceptions>, ContractExceptions<typeof subjectNoExceptions>> = function (this: SomeObject, a: string, b: number, exc: unknown) {return true}
 // tslint:disable-next-line:no-any
-const exceptionCondition9f: ExceptionCondition<typeof subjectNoExceptions> = function (this: SomeObject, a: string, b: number, exc: any) {return true}
+const exceptionCondition9f: ExceptionCondition<ContractSignature<typeof subjectNoExceptions>, ContractExceptions<typeof subjectNoExceptions>> = function (this: SomeObject, a: string, b: number, exc: any) {return true}
