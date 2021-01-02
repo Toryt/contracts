@@ -33,5 +33,17 @@ export function configurableDerived<
 ): asserts prototype is Obj & {
   readonly [K in PropName]: V
 }
-export function frozenDerived(prototype: any, propertyName: any, derivation: any): void;
+
+export function frozenDerived<
+  Obj extends object,
+  PropName extends string,
+  V extends unknown,
+> (
+  prototype: Obj,
+  propertyName: PropName,
+  derivation: (this: Obj) => V
+): asserts prototype is Obj & {
+  readonly [K in PropName]: V
+}
+
 export function frozenReadOnlyArray(prototype: any, propertyName: any, privatePropName: any): void;

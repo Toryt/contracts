@@ -15,35 +15,48 @@
  */
 
 import { expectAssignable, expectError, expectNotType, expectType } from 'tsd'
-import { configurableDerived, setAndFreeze } from '../../lib/_private/property'
+import { configurableDerived, frozenDerived, setAndFreeze } from '../../lib/_private/property'
 
 const aNumber = 3543
 const aString = ' a string'
 const anotherNumber = 523
 let something1 = {}
-const newPropName = 'a new property'
+const newPropName1 = 'a new property 1'
 let something2 = {
   aProperty: 'a property value',
   anotherProperty: true
 }
+const newPropName2 = 'a new property 2'
 
 expectType<{}>(something1)
-setAndFreeze(something1, newPropName, aNumber)
+setAndFreeze(something1, newPropName1, aNumber)
 expectNotType<{}>(something1)
-expectType<{ readonly "a new property": number; }>(something1)
+expectType<{ readonly "a new property 1": number; }>(something1)
 expectAssignable<{}>(something1)
-expectType<number>(something1[newPropName])
-expectError(something1[newPropName] = anotherNumber)
+expectType<number>(something1[newPropName1])
+expectError(something1[newPropName1] = anotherNumber)
 
 expectType< { aProperty: string; anotherProperty: boolean; }>(something2)
 configurableDerived(
   something2,
-  newPropName,
+  newPropName1,
   function () { return this.anotherProperty ? this.aProperty : aNumber}
 )
 expectNotType<{}>(something2)
-expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly "a new property": string | typeof aNumber; }>(something2)
+expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly "a new property 1": string | typeof aNumber; }>(something2)
 expectAssignable<{}>(something2)
-expectAssignable<string | number>(something2[newPropName])
-expectType<string | typeof aNumber>(something2[newPropName])
-expectError(something2[newPropName] = anotherNumber)
+expectAssignable<string | number>(something2[newPropName1])
+expectType<string | typeof aNumber>(something2[newPropName1])
+expectError(something2[newPropName1] = anotherNumber)
+
+frozenDerived(
+  something2,
+  newPropName2,
+  function () { return this.anotherProperty ? true : this.aProperty}
+)
+expectNotType<{ aProperty: string; anotherProperty: boolean; } & { readonly "a new property 1": string | typeof aNumber; }>(something2)
+expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly "a new property 1": string | typeof aNumber; } & { readonly "a new property 2": string | true; }>(something2)
+expectAssignable<{}>(something2)
+expectAssignable<string | boolean>(something2[newPropName2])
+expectType<string | true>(something2[newPropName2])
+expectError(something2[newPropName2] = false)
