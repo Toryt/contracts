@@ -32,6 +32,10 @@ let something2 = {
   aProperty: 'a property value',
   anotherProperty: true
 }
+let something3 = {
+  aProperty: 'a property value',
+  anotherProperty: true
+}
 const aStack = `    at REPL1:1:1
     at Script.runInThisContext (vm.js:132:18)
     at REPLServer.defaultEval (repl.js:484:29)
@@ -113,4 +117,18 @@ if (frozenOwnProperty(something2, 'yetAnotherProperty')) {
   something2.anotherProperty = false
   expectType<false>(something2.anotherProperty)
   expectAssignable<boolean>(something2.anotherProperty)
+}
+
+expectType<{aProperty: string, anotherProperty: boolean}>(something3)
+if (!frozenOwnProperty(something3, 'anotherProperty')) {
+  /* TODO The "not frozen own property" makes us loose all type information, and that is not the intention. We should
+          keep at least what we already know …
+  expectType<{aProperty: string, anotherProperty: boolean}>(something3)
+  */
+  expectType<never>(something3)
+  /* TODO … and because it now is `never`, nothing works anymore
+  expectType<boolean>(something3.anotherProperty)
+  something2.anotherProperty = false
+  expectType<false>(something3.anotherProperty)
+  */
 }
