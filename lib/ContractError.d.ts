@@ -36,9 +36,9 @@ export declare class ContractError extends Error {
 
   readonly _rawStack: string // ~ private
 
-  readonly name: string;
-  readonly message: string;
-  get stack(): string;
+  readonly name: string
+  readonly message: string
+  get stack(): string
 
-  constructor(rawStack: string);
+  constructor(rawStack: string)
 }
