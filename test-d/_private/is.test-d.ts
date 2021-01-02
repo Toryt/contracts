@@ -1,5 +1,5 @@
 /*
- Copyright 2021 - 2021 by Jan Dockx
+ Copyright 2020 - 2021 by Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd'
+import { expectAssignable, expectError, expectNotAssignable, expectNotType, expectType } from 'tsd'
 import {
   frozenOwnProperty,
   functionArguments,
@@ -48,7 +48,22 @@ const aStack = `    at REPL1:1:1
     at REPLServer.Interface._line (readline.js:666:8)`
 
 
-expectAssignable<StackLocation>( aStackLocation)
+expectAssignable<StackLocation>(aStackLocation)
+expectNotType<StackLocation>(aStackLocation) // it's a string
+expectNotType<StackLocation>(null)
+expectNotType<StackLocation>(undefined)
+// noinspection MagicNumberJS
+expectNotType<StackLocation>(42)
+expectNotType<StackLocation>(true)
+expectNotType<StackLocation>(false)
+expectNotType<StackLocation>([])
+expectNotType<StackLocation>({})
+
+const typedStackLocation: StackLocation = aStackLocation
+expectType<StackLocation>(typedStackLocation)
+
+// sadly …
+expectAssignable<StackLocation>(  '')
 
 if (functionArguments(something1)) {
   expectAssignable<typeof something1>((function(a: string, b: number) { return arguments })(aString, aNumber))

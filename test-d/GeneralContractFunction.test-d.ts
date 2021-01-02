@@ -20,10 +20,10 @@ import {
   GeneralContractFunction,
   InternalLocation,
   NewableGeneralContractFunction,
-  StackLocation
 } from '../types'
 import { SomeObject, AFunction1, SomeError, aFunction1, ANewableFunction, someObject } from './subjects'
 import { expectAssignable, expectNotType, expectType } from 'tsd'
+import { StackLocation } from '../lib/_private/is'
 
 function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string {
   return this.aProperty + a + b

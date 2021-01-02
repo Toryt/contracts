@@ -17,9 +17,7 @@
 // do not automatically export
 export {}
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../lib/AnyFunction'
-
-
-export type StackLocation = string
+import { StackLocation } from '../lib/_private/is'
 
 interface GeneralContractFunctionPropertiesBase<F extends AnyFunction, Exceptions> {
   readonly contract: AbstractContract<F, Exceptions>
