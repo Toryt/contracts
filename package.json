@@ -11,7 +11,7 @@
     "pretest": "npm-check -i npm-check -i @toryt/contracts; npm outdated || exit 0",
     "dtslint": "dtslint --localTs node_modules/typescript/lib types",
     "tsd": "tsd",
-    "test": "standard && nyc mocha 'test/**/*Test.js' && tsd && npm run dtslint",
+    "test": "standard && nyc mocha 'test/**/*Test.js' && tsd",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "browserify": "browserify -s toryt.contracts.v --outfile contracts-v.js lib/index.js",
