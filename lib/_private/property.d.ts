@@ -14,11 +14,24 @@
  limitations under the License.
  */
 
-export function setAndFreeze<Obj extends object, PropName extends string, V extends unknown>(
-  obj: Obj, propName: PropName, value: V
+export function setAndFreeze<Obj extends object, PropName extends string, V extends unknown> (
+  obj: Obj,
+  propName: PropName,
+  value: V
 ): asserts obj is Obj & {
   readonly [K in PropName]: V
 };
-export function configurableDerived(prototype: any, propertyName: any, derivation: any): void;
+
+export function configurableDerived<
+  Obj extends object,
+  PropName extends string,
+  V extends unknown,
+> (
+  prototype: Obj,
+  propertyName: PropName,
+  derivation: (this: Obj) => V
+): asserts prototype is Obj & {
+  readonly [K in PropName]: V
+}
 export function frozenDerived(prototype: any, propertyName: any, derivation: any): void;
 export function frozenReadOnlyArray(prototype: any, propertyName: any, privatePropName: any): void;

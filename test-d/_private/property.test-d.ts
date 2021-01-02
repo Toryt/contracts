@@ -15,7 +15,7 @@
  */
 
 import { expectAssignable, expectError, expectNotType, expectType } from 'tsd'
-import { setAndFreeze } from '../../lib/_private/property'
+import { configurableDerived, setAndFreeze } from '../../lib/_private/property'
 
 const aNumber = 3543
 const aString = ' a string'
@@ -34,3 +34,16 @@ expectType<{ readonly "a new property": number; }>(something1)
 expectAssignable<{}>(something1)
 expectType<number>(something1[newPropName])
 expectError(something1[newPropName] = anotherNumber)
+
+expectType< { aProperty: string; anotherProperty: boolean; }>(something2)
+configurableDerived(
+  something2,
+  newPropName,
+  function () { return this.anotherProperty ? this.aProperty : aNumber}
+)
+expectNotType<{}>(something2)
+expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly "a new property": string | typeof aNumber; }>(something2)
+expectAssignable<{}>(something2)
+expectAssignable<string | number>(something2[newPropName])
+expectType<string | typeof aNumber>(something2[newPropName])
+expectError(something2[newPropName] = anotherNumber)
