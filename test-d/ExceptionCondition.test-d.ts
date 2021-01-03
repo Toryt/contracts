@@ -169,6 +169,12 @@ expectAssignable<CallableExceptionCondition<AFunction1, any>> (
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
+  function (this: SomeObject, a: string, b: number, exc: any): boolean {
+    return true
+  }
+)
+
+expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
     return true
   }
@@ -182,6 +188,11 @@ expectAssignable<CallableExceptionCondition<AFunction1, any>> (
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc?: SomeError): boolean {
+    return true
+  }
+)
+expectAssignable<CallableExceptionCondition<AFunction1, any>> (
+  function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
     return true
   }
 )
