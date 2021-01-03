@@ -142,7 +142,6 @@ export type AbstractContractKwargs<F extends AnyFunction, Exceptions> =
     ? CallableAbstractContractKwargs<F, Exceptions>
     : never
 
-
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
 export interface ContractConstructor<C extends AbstractContract<AnyFunction, unknown>> {
