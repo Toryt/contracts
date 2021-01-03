@@ -42,6 +42,15 @@ export interface SomeError {
   anErrorProperty: object
 }
 
+export const someError: SomeError = {
+  anErrorProperty: {}
+}
+
+export interface SomeSubError extends SomeError{
+  anErrorProperty: object
+  anotherErrorProperty: number
+}
+
 export function aCallableGeneralContractFunction (this: SomeObject, a: string, b: number): string {
   return this.aProperty + a + b
 }
