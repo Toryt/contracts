@@ -17,12 +17,46 @@
 import {
   AbstractContract
 } from '../types'
-import { Location, StackLocation } from './_private/is'
+import { Location } from './_private/is'
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from './AnyFunction'
 
+export type GeneralContractFunctionTwo<F extends AnyFunction, Exceptions> = F & {
+  readonly contract: AbstractContract<F, Exceptions>
+  readonly implementation: F
+  readonly location: Location
+  name: string // readonly in `lib.es2015.core.d.ts`
+  bind: BindContractFunction<F, Exceptions>
+  // tslint:disable-next-line:no-any
+  prototype: F extends AnyNewableFunction ? InstanceType<F> : any
 
+}
 
-// noinspection JSClassNamingConvention
+export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
+  Bound extends unknown[],
+  Unbound extends unknown[]
+> (
+  this: (this: ThisParameterType<F>, ...args: [...Bound, ...Unbound]) => ReturnType<F>,
+  thisArg: ThisParameterType<F>,
+  ...bound: Bound
+) => GeneralContractFunctionTwo<(...unbound: Unbound) => ReturnType<F>, Exceptions>
+
+export type NewableBind<F extends AnyNewableFunction, Exceptions> = <
+  Bound extends unknown[],
+  Unbound extends unknown[]
+> (
+  this: new (...args: [...Bound, ...Unbound]) => InstanceType<F>,
+  // tslint:disable-next-line:no-any
+  thisArg: any,
+  ...bound: Bound
+) => GeneralContractFunctionTwo<new (...unbound: Unbound) => InstanceType<F>, Exceptions>
+
+export type BindContractFunction<F extends AnyFunction, Exceptions> =
+  F extends AnyNewableFunction
+    ? NewableBind<F, Exceptions>
+    : F extends AnyCallableFunction
+      ? CallableBind<F, Exceptions>
+      : never
+                                                                                // noinspection JSClassNamingConvention
 interface GeneralContractFunctionPropertiesBase<F extends AnyFunction, Exceptions> {
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
