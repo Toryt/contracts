@@ -16,7 +16,7 @@
 
 import {
   AbstractContract
-} from '../types'
+} from '../types/index'
 import { Location } from './_private/is'
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from './AnyFunction'
 
