@@ -14,7 +14,10 @@
   limitations under the License.
  */
 
-import { CallableGeneralContractFunction, NewableGeneralContractFunction } from '../lib/GeneralContractFunction'
+import {
+  CallableBind,
+  NewableBind,
+} from '../lib/GeneralContractFunction'
 import { AbstractContract } from '../types'
 
 export interface SomeObject {
@@ -64,17 +67,11 @@ export const aB = 5353
 
 export const someArgs: [a: string, b: number] = [anA, aB]
 
-export type CallableBind = <Bound extends unknown[], Unbound extends unknown[]> (
-  this: (this: SomeObject, ...args: [...Bound, ...Unbound]) => string,
-  thisArg: SomeObject,
-  ...bound: Bound
-) => CallableGeneralContractFunction<(...unbound: Unbound) => string, SomeError>
-
 aCallableGeneralContractFunction.contract = new AbstractContract<AFunction1, SomeError>({})
 aCallableGeneralContractFunction.implementation = aFunction1
 aCallableGeneralContractFunction.location = AbstractContract.internalLocation
 aCallableGeneralContractFunction.contractBind =
-  aCallableGeneralContractFunction.bind as unknown as CallableBind
+  aCallableGeneralContractFunction.bind as unknown as CallableBind<AFunction1, SomeError>
 Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   configurable: false,
   enumerable: false,
@@ -82,17 +79,11 @@ Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   value: 'a general contract function name'
 })
 
-export type NewableBind = <Bound extends unknown[], Unbound extends unknown[]> (
-  this: new (...args: [...Bound, ...Unbound]) => ANewableFunction,
-  thisArg: any,
-  ...bound: Bound
-) => NewableGeneralContractFunction<new (...unbound: Unbound) => ANewableFunction, SomeError>
-
 export class ANewableGeneralContractFunction {
   static readonly contract = new AbstractContract<typeof ANewableFunction, SomeError>({})
   static readonly implementation = ANewableFunction
   static readonly location = AbstractContract.internalLocation
-  static contractBind: NewableBind = ANewableFunction.bind as NewableBind
+  static contractBind: NewableBind<typeof ANewableFunction, SomeError> = ANewableFunction.bind as NewableBind<typeof ANewableFunction, SomeError>
 
   constructor(a: string, b: number) {}
 }
