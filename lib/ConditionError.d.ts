@@ -91,18 +91,23 @@ declare class ConditionError extends ContractError {
   readonly args: Array<unknown>
 
   constructor(
-    /* "We will put a correct GCF in, but it can be any GCF.
-       It can be a GCF for AnyFunction, and any, all, or no exceptions.
+    /* We will put a correct GCF in, but it can be any GCF. It can be a GCF for AnyFunction, and any, all, or no
+       exceptions.
 
-       We do not want to only accept GCFs where the exceptions are `unknown`
-       (i.e., a GCF with a contract where the exception conditions can deal with
-       anything as exception)
+       We do not want to only accept GCFs where the exceptions are `unknown` (i.e., a GCF with a contract where the
+       exception conditions can deal with anything as exception).
+
+       That is different from a GCF with or without a type limitation, but with 0 exception conditions
+       (`exceptions === []`). That allows more exceptions than with a type limitation unknown. That is the most
+       permissive GCF.
+
+       We don't want to only accept GCFs where the exceptions are `never` (i.e., a GCF with a contract where the
+       exception conditions cannot be called).
 
        We _don't care_ about the exceptions.
 
-       It is ok if the GCF's contract has exception conditions that work for no
-       exceptions, or only for a particular type of exceptions. If will be internally
-       ok when we get it, and that is all we need to know." */
+       It is ok if the GCF's contract has exception conditions that work for no exceptions, or only for a particular
+       type of exceptions. If will be internally ok when we get it, and that is all we need to know. */
 
     contractFunction: GeneralContractFunction<AnyFunction, never>,
     condition: Condition,
