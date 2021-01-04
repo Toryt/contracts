@@ -91,6 +91,19 @@ declare class ConditionError extends ContractError {
   readonly args: Array<unknown>
 
   constructor(
+    /* "We will put a correct GCF in, but it can be any GCF.
+       It can be a GCF for AnyFunction, and any, all, or no exceptions.
+
+       We do not want to only accept GCFs where the exceptions are `unknown`
+       (i.e., a GCF with a contract where the exception conditions can deal with
+       anything as exception)
+
+       We _don't care_ about the exceptions.
+
+       It is ok if the GCF's contract has exception conditions that work for no
+       exceptions, or only for a particular type of exceptions. If will be internally
+       ok when we get it, and that is all we need to know." */
+
     contractFunction: GeneralContractFunction<AnyFunction, unknown>,
     condition: Condition,
     self: object | undefined,
