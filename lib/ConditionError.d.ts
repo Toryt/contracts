@@ -84,7 +84,7 @@ import { ContractError } from './ContractError'
  * </ul>
  */
 declare class ConditionError extends ContractError {
-  readonly contractFunction: GeneralContractFunction<AnyFunction, unknown>
+  readonly contractFunction: GeneralContractFunction<AnyFunction, never>
   readonly condition: Condition
   readonly self: object | undefined
   readonly _args: ReadonlyArray<unknown>
@@ -104,7 +104,7 @@ declare class ConditionError extends ContractError {
        exceptions, or only for a particular type of exceptions. If will be internally
        ok when we get it, and that is all we need to know." */
 
-    contractFunction: GeneralContractFunction<AnyFunction, unknown>,
+    contractFunction: GeneralContractFunction<AnyFunction, never>,
     condition: Condition,
     self: object | undefined,
     args: ArrayLike<unknown>,

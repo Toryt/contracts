@@ -34,7 +34,7 @@ expectType<ConditionError>(aConditionError)
 expectAssignable<ContractError>(aConditionError)
 expectAssignable<Error>(aConditionError)
 
-expectType<GeneralContractFunction<AnyFunction, unknown>>(aConditionError.contractFunction)
+expectType<GeneralContractFunction<AnyFunction, never>>(aConditionError.contractFunction)
 
 expectType<string>(aConditionError.name)
 expectType<string>(aConditionError.message)
@@ -44,7 +44,7 @@ expectError(aConditionError.message = 'another message')
 expectError(aConditionError._rawStack = 'another raw stack')
 expectError(aConditionError.stack = 'another stack')
 
-expectType<GeneralContractFunction<AnyFunction, unknown>>(aConditionError.contractFunction)
+expectType<GeneralContractFunction<AnyFunction, never>>(aConditionError.contractFunction)
 expectType<Condition>(aConditionError.condition)
 expectType<object | undefined>(aConditionError.self)
 expectType<ReadonlyArray<unknown>>(aConditionError._args)
