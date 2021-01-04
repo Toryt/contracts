@@ -14,11 +14,22 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
-import { aFunction1, AFunction1, aFunction2, AFunction2, aFunction3, AFunction3, ANewableFunction } from './subjects'
+import { expectAssignable, expectError, expectNotAssignable, expectNotType, expectType } from 'tsd'
+import {
+  aB,
+  aFunction1,
+  AFunction1,
+  aFunction2,
+  AFunction2,
+  aFunction3,
+  AFunction3,
+  anA,
+  ANewableFunction, someObject
+} from './subjects'
 import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../lib/AnyFunction'
 
 expectType<AFunction1>(aFunction1)
+expectType<string>(aFunction1.call(someObject, anA, aB))
 expectAssignable<AnyCallableFunction>(aFunction1)
 expectNotAssignable<AnyNewableFunction>(aFunction1)
 expectAssignable<AnyFunction>(aFunction1)
@@ -31,6 +42,7 @@ expectType<CallableFunction['bind']>(aFunction1.bind)
 expectType<any>(aFunction1.prototype)
 
 expectType<AFunction2>(aFunction2)
+expectType<string>(aFunction2(anA, aB))
 expectAssignable<AFunction1>(aFunction2)
 expectAssignable<AnyCallableFunction>(aFunction2)
 expectNotAssignable<AnyNewableFunction>(aFunction2)
@@ -44,6 +56,7 @@ expectType<CallableFunction['bind']>(aFunction1.bind)
 expectType<any>(aFunction2.prototype)
 
 expectType<AFunction3>(aFunction3)
+expectType<'truth' | 'dare'>(aFunction3(anA))
 expectAssignable<AFunction2>(aFunction3)
 expectAssignable<AFunction1>(aFunction3)
 expectAssignable<AnyCallableFunction>(aFunction3)
@@ -59,6 +72,8 @@ expectType<any>(aFunction3.prototype)
 
 let anyCallableFunction: AnyCallableFunction = aFunction1
 expectType<AnyCallableFunction>(anyCallableFunction)
+// MUDO: THIS SHOULD FAIL
+expectType<string>(anyCallableFunction.call(someObject, anA, aB))
 expectAssignable<AnyFunction>(anyCallableFunction)
 expectType<number>(anyCallableFunction.length)
 expectType<Function['toString']>(anyCallableFunction.toString)
@@ -67,6 +82,10 @@ expectType<CallableFunction['call']>(anyCallableFunction.call)
 expectType<CallableFunction['bind']>(anyCallableFunction.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(anyCallableFunction.prototype)
+
+let anyCallableFunction2: AnyCallableFunction = aFunction2
+expectType<AnyCallableFunction>(anyCallableFunction2)
+expectError(anyCallableFunction2(anA, aB))
 
 // without `as AnyFunction`, TS still sees this as AnyCallableFunction
 let anyFunction1a: AnyFunction = aFunction1
