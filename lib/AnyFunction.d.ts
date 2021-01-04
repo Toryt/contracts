@@ -22,7 +22,7 @@
  * about that.
  */
 // tslint:disable-next-line:no-any
-export type AnyCallableFunction = (this: any, ...args: any[]) => any
+export type AnyCallableFunction = (this: never, ...args: never[]) => unknown
 
 /**
  * Any constructor (notably, created with the `class` syntax).
@@ -32,7 +32,7 @@ export type AnyCallableFunction = (this: any, ...args: any[]) => any
  * NOTE: I cannot find where this might be defined in the typescript `*.d.ts` files.
  */
 // tslint:disable-next-line:no-any
-export type AnyNewableFunction = new (...args: any[]) => any
+export type AnyNewableFunction = new (...args: never[]) => unknown
 
 /**
  * Any function, arrow, or non-arrow, or a constructor defined with the `class` syntax.

@@ -116,3 +116,12 @@ expectType<CallableFunction['call'] | NewableFunction['call']>(anyFunction2b.cal
 expectType<CallableFunction['bind'] | NewableFunction['bind']>(anyFunction2b.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(anyFunction2b.prototype)
+
+interface Test<F extends AnyFunction> {
+  theFunction: F
+}
+
+const callableTest: Test<AFunction1> = {theFunction: aFunction1}
+expectType<AFunction1>(callableTest.theFunction)
+const newableTest: Test<typeof ANewableFunction> = {theFunction: ANewableFunction}
+expectType<typeof ANewableFunction>(newableTest.theFunction)
