@@ -97,6 +97,18 @@ expectNotAssignable<CallableExceptionCondition<AFunction1, unknown>> (
   }
 )
 
+expectNotAssignable<CallableExceptionCondition<AFunction1, unknown>> (
+  function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
+    return true
+  }
+)
+
+expectAssignable<CallableExceptionCondition<AFunction1, unknown>> (
+  function (this: SomeObject, a: string, b: number, exc: any): boolean {
+    return true
+  }
+)
+
 // exc can be undefined, but function only deals with SomeError
 expectNotAssignable<CallableExceptionCondition<AFunction1, undefined>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
@@ -116,8 +128,44 @@ expectAssignable<CallableExceptionCondition<AFunction1, undefined>> (
   }
 )
 
+expectAssignable<CallableExceptionCondition<AFunction1, undefined>> (
+  function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
+    return true
+  }
+)
+
+expectAssignable<CallableExceptionCondition<AFunction1, undefined>> (
+  function (this: SomeObject, a: string, b: number, exc: any): boolean {
+    return true
+  }
+)
+
 expectAssignable<CallableExceptionCondition<AFunction1, never>> (
   function (this: SomeObject, a: string, b: number, exc: never): boolean {
+    return true
+  }
+)
+
+expectAssignable<CallableExceptionCondition<AFunction1, never>> (
+  function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
+    return true
+  }
+)
+
+expectAssignable<CallableExceptionCondition<AFunction1, never>> (
+  function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
+    return true
+  }
+)
+
+expectAssignable<CallableExceptionCondition<AFunction1, never>> (
+  function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
+    return true
+  }
+)
+
+expectAssignable<CallableExceptionCondition<AFunction1, never>> (
+  function (this: SomeObject, a: string, b: number, exc: any): boolean {
     return true
   }
 )
@@ -161,6 +209,29 @@ expectAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
     return true
   }
 )
+
+expectAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
+  function (this: SomeObject, a: string, b: number, exc: any): boolean {
+    return true
+  }
+)
+
+expectNotAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
+  function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
+    return true
+  }
+)
+
+const unknown1: unknown = someError
+let notUnknown: SomeError
+expectError(notUnknown = unknown1)
+expectType<unknown>(unknown1)
+
+// any is assignable in 2 directions
+const any1: any = someError
+expectType<any>(any1)
+const notAny: SomeSubError = any1
+expectType<SomeSubError>(notAny)
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number): boolean {
