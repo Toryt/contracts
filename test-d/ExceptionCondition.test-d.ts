@@ -80,150 +80,151 @@ try {
 
 expectAssignable<CallableExceptionCondition<AFunction1, unknown>> (
     function (this: SomeObject, a: string, b: number): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number'
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, unknown>> (
   function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 // exc can be anything, but function only deals with SomeError
 expectNotAssignable<CallableExceptionCondition<AFunction1, unknown>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectNotAssignable<CallableExceptionCondition<AFunction1, unknown>> (
   function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, unknown>> (
   function (this: SomeObject, a: string, b: number, exc: any): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 // exc can be undefined, but function only deals with SomeError
 expectNotAssignable<CallableExceptionCondition<AFunction1, undefined>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, undefined>> (
   function (this: SomeObject, a: string, b: number, exc?: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, undefined>> (
   function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, undefined>> (
   function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, undefined>> (
   function (this: SomeObject, a: string, b: number, exc: any): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, never>> (
   function (this: SomeObject, a: string, b: number, exc: never): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, never>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, never>> (
   function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, never>> (
   function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, never>> (
   function (this: SomeObject, a: string, b: number, exc: any): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 // Error and SomeError are not related
 expectNotAssignable<CallableExceptionCondition<AFunction1, Error>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 // Error and SomeError are not related
 expectNotAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
   function (this: SomeObject, a: string, b: number, exc: Error): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 // cannot only accept subtypes of Exceptions
 expectNotAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
   function (this: SomeObject, a: string, b: number, exc: SomeSubError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 // accept super types of Exceptions
 expectAssignable<CallableExceptionCondition<AFunction1, SomeSubError>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
   function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
   function (this: SomeObject, a: string, b: number, exc: any): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectNotAssignable<CallableExceptionCondition<AFunction1, SomeError>> (
   function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 const unknown1: unknown = someError
 let notUnknown: SomeError
+// noinspection AssignmentResultUsedJS
 expectError(notUnknown = unknown1)
 expectType<unknown>(unknown1)
 
@@ -235,41 +236,41 @@ expectType<SomeSubError>(notAny)
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number'
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc: any): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc: unknown): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc?: SomeError): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 expectAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc: undefined): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
 
 expectNotAssignable<CallableExceptionCondition<AFunction1, any>> (
   function (this: SomeObject, a: string, b: number, exc: never): boolean {
-    return true
+    return typeof a === 'string' && typeof b === 'number' && !!exc
   }
 )
