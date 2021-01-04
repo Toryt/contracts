@@ -140,7 +140,14 @@ interface Test<F extends AnyFunction> {
   theFunction: F
 }
 
-const callableTest: Test<AFunction1> = {theFunction: aFunction1}
-expectType<AFunction1>(callableTest.theFunction)
+const callableTest: Test<AFunction2> = {theFunction: aFunction2}
+expectType<AFunction2>(callableTest.theFunction)
 const newableTest: Test<typeof ANewableFunction> = {theFunction: ANewableFunction}
 expectType<typeof ANewableFunction>(newableTest.theFunction)
+
+type AnyCFunction = (this: any, ...args: readonly any[]) => unknown
+let anyCFunction: AnyCFunction = aFunction2
+expectType<AnyCFunction>(anyCFunction)
+expectAssignable<AnyCallableFunction>(anyCFunction)
+// this call will fail, and TS should tell us, because does not because params are `any`: we are on our own
+expectType<unknown>(anyCFunction())
