@@ -15,7 +15,12 @@
  */
 
 import {
-  AbstractContract
+  AbstractContract,
+  ContractExceptions,
+  ContractInstanceType,
+  ContractResult,
+  ContractSignature,
+  ContractThis
 } from '../types/index'
 import { Location } from './_private/is'
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
@@ -53,14 +58,17 @@ import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewable
  * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
  * additional typed parameters ( `A0` … `A1`). For a contract function, we try to do better, but fail.
  */
-export type GeneralContractFunction<F extends NeverUnknownFunction, Exceptions> = F & {
-  readonly contract: AbstractContract<F, Exceptions>
-  readonly implementation: F
+export type GeneralContractFunction<C extends AbstractContract<NeverUnknownFunction, never>> = ContractSignature<C> & {
+  readonly contract: C
+  readonly implementation: ContractSignature<C>
   readonly location: Location
   name: string // readonly in `lib.es2015.core.d.ts`
-  bind: BindContractFunction<F, never>
-  // tslint:disable-next-line:no-any
-  prototype: F extends NeverUnknownNewableFunction ? InstanceType<F> : unknown
+  bind: ContractSignature<C> extends NeverUnknownNewableFunction
+        ? NewableBind<C>
+        : ContractSignature<C> extends NeverUnknownCallableFunction
+          ? CallableBind<C>
+          : never
+  prototype: ContractSignature<C> extends NeverUnknownNewableFunction ? InstanceType<ContractSignature<C>> : unknown
 
 }
 
@@ -121,25 +129,18 @@ export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
 
    Giving up. Using any[] for now.
  */
-export type CallableBind<F extends NeverUnknownCallableFunction, Exceptions> = <
+export type CallableBind<C extends AbstractContract<NeverUnknownCallableFunction, never>> = <
   Bound extends unknown[]
 > (
-  this: F,
-  thisArg: ThisParameterType<F>,
+  this: ContractSignature<C>,
+  thisArg: ContractThis<C>,
   ...bound: Bound
-) => GeneralContractFunction<(...unbound: any[]) => ReturnType<F>, Exceptions>
+) => GeneralContractFunction<AbstractContract<(...unbound: any[]) => ContractResult<C>, ContractExceptions<C>>>
 
-export type NewableBind<F extends NeverUnknownNewableFunction, Exceptions> = <
+export type NewableBind<C extends AbstractContract<NeverUnknownNewableFunction, never>> = <
   Bound extends unknown[],
 > (
-  this: F,
+  this: ContractSignature<C>,
   thisArg: unknown,
   ...bound: Bound
-) => GeneralContractFunction<new (...unbound: any[]) => InstanceType<F>, Exceptions>
-
-export type BindContractFunction<F extends NeverUnknownFunction, Exceptions> =
-  F extends NeverUnknownNewableFunction
-    ? NewableBind<F, Exceptions>
-    : F extends NeverUnknownCallableFunction
-      ? CallableBind<F, Exceptions>
-      : never
+) => GeneralContractFunction<AbstractContract<(new (...unbound: any[]) => ContractInstanceType<C>), ContractExceptions<C>>>

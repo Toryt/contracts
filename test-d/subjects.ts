@@ -71,7 +71,7 @@ aCallableGeneralContractFunction.contract = new AbstractContract<AFunction1, Som
 aCallableGeneralContractFunction.implementation = aFunction1
 aCallableGeneralContractFunction.location = AbstractContract.internalLocation
 aCallableGeneralContractFunction.contractBind =
-  aCallableGeneralContractFunction.bind as unknown as CallableBind<AFunction1, SomeError>
+  aCallableGeneralContractFunction.bind as unknown as CallableBind<AbstractContract<AFunction1, SomeError>>
 Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   configurable: false,
   enumerable: false,
@@ -83,7 +83,7 @@ export class ANewableGeneralContractFunction {
   static readonly contract = new AbstractContract<typeof ANewableFunction, SomeError>({})
   static readonly implementation = ANewableFunction
   static readonly location = AbstractContract.internalLocation
-  static bind: NewableBind<typeof ANewableFunction, SomeError> = ANewableFunction.bind as NewableBind<typeof ANewableFunction, SomeError>
+  static bind: NewableBind<AbstractContract<typeof ANewableFunction, SomeError>> = ANewableFunction.bind as NewableBind<AbstractContract<typeof ANewableFunction, SomeError>>
 
   constructor(a: string, b: number) {}
 }
