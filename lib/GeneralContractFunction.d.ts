@@ -69,7 +69,7 @@ export type GeneralContractFunction<F extends NeverUnknownFunction, Exceptions> 
   This should be
 
 export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
-  Bound extends readonly unknown[]
+  Bound extends unknown[]
 > (
   this: F,
   thisArg: ThisParameterType<F>,
@@ -86,7 +86,7 @@ export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
    …
    "
 
-   (AnyCallableFunction = (this: never, ...args: readonly never[]) => unknown)
+   (AnyCallableFunction = (this: never, ...args: never[]) => unknown)
 
    "
    …
@@ -100,29 +100,29 @@ export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
 
    to
 
-   (this: never, ...args: readonly never[]) => unknown
+   (this: never, ...args: never[]) => unknown
 
-   we must be able to assign `readonly never[]` to `Unbound`, but TS continues:
+   we must be able to assign `never[]` to `Unbound`, but TS continues:
 
 
    "
    …
-   Type readonly never[] is not assignable to type Unbound.
-   Unbound could be instantiated with an arbitrary type which could be unrelated to readonly never[].
+   Type never[] is not assignable to type Unbound.
+   Unbound could be instantiated with an arbitrary type which could be unrelated to never[].
    "
 
    No, it couldn't! Because it is a tuple, that is a part of Parameters<F>, which means it is a tuple
    where are the elements are at least `unknown`.
 
    Making clear with a conditional type that Unbound is an array does not help. Making it Readonly
-   does not help. Removing readonly from `AnyCallableFunction` makes tsd go haywire.
+   does not help.
 
    (and analogue for NewableBind)
 
    Giving up. Using any[] for now.
  */
 export type CallableBind<F extends NeverUnknownCallableFunction, Exceptions> = <
-  Bound extends readonly unknown[]
+  Bound extends unknown[]
 > (
   this: F,
   thisArg: ThisParameterType<F>,
@@ -130,7 +130,7 @@ export type CallableBind<F extends NeverUnknownCallableFunction, Exceptions> = <
 ) => GeneralContractFunction<(...unbound: any[]) => ReturnType<F>, Exceptions>
 
 export type NewableBind<F extends NeverUnknownNewableFunction, Exceptions> = <
-  Bound extends readonly unknown[],
+  Bound extends unknown[],
 > (
   this: F,
   thisArg: unknown,

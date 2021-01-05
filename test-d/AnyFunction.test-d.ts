@@ -29,9 +29,9 @@ import {
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from '../lib/AnyFunction'
 
 
-type NeverUnknownF = (...args: readonly never[]) => unknown
-type AnyUnknownF = (...args: readonly any[]) => unknown
-type UnknownUnknownF = (...args: readonly unknown[]) => unknown
+type NeverUnknownF = (...args: never[]) => unknown
+type AnyUnknownF = (...args: any[]) => unknown
+type UnknownUnknownF = (...args: unknown[]) => unknown
 type NoArgsUnknownF = () => unknown
 
 const neverUnknownFunction: NeverUnknownF = (a: never, b: never) => '' + a + b

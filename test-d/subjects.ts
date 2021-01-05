@@ -65,7 +65,7 @@ export function aCallableGeneralContractFunction (this: SomeObject, a: string, b
 export const anA = 'a'
 export const aB = 5353
 
-export const someArgs: readonly [a: string, b: number] = [anA, aB]
+export const someArgs: [a: string, b: number] = [anA, aB]
 
 aCallableGeneralContractFunction.contract = new AbstractContract<AFunction1, SomeError>({})
 aCallableGeneralContractFunction.implementation = aFunction1
