@@ -16,4 +16,4 @@
 
 export type Booleany = undefined | null | unknown
 
-export type Condition = (this: unknown, ...args: ReadonlyArray<unknown>) => Booleany
+export type Condition = (this: never, ...args: never[]) => Booleany
