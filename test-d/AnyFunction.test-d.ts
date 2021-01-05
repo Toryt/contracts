@@ -262,10 +262,17 @@ expectType<CallableFunction['bind']>(aFunction1.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aFunction3.prototype)
 
-let anyCallableFunction: AnyCallableFunction = aFunction1
+let anyCallableFunction: AnyCallableFunction = aFunction2
+/*
+anyCallableFunction(anA, aB)
+
+ "The this context of type void is not assignable to method's this of type never."
+
+ Or, in short, cannot call never function, as expected.
+ (cannot be detected with tsd??)
+*/
 expectType<AnyCallableFunction>(anyCallableFunction)
-// MUDO: THIS SHOULD FAIL
-expectType<string>(anyCallableFunction.call(someObject, anA, aB))
+expectNotAssignable<AnyNewableFunction>(anyCallableFunction)
 expectAssignable<AnyFunction>(anyCallableFunction)
 expectType<number>(anyCallableFunction.length)
 expectType<Function['toString']>(anyCallableFunction.toString)
@@ -274,10 +281,6 @@ expectType<CallableFunction['call']>(anyCallableFunction.call)
 expectType<CallableFunction['bind']>(anyCallableFunction.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(anyCallableFunction.prototype)
-
-let anyCallableFunction2: AnyCallableFunction = aFunction2
-expectType<AnyCallableFunction>(anyCallableFunction2)
-expectError(anyCallableFunction2(anA, aB))
 
 // without `as AnyFunction`, TS still sees this as AnyCallableFunction
 let anyFunction1a: AnyFunction = aFunction1
@@ -327,19 +330,3 @@ expectType<CallableFunction['call'] | NewableFunction['call']>(anyFunction2b.cal
 expectType<CallableFunction['bind'] | NewableFunction['bind']>(anyFunction2b.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(anyFunction2b.prototype)
-
-interface Test<F extends AnyFunction> {
-  theFunction: F
-}
-
-const callableTest: Test<AFunction2> = {theFunction: aFunction2}
-expectType<AFunction2>(callableTest.theFunction)
-const newableTest: Test<typeof ANewableFunction> = {theFunction: ANewableFunction}
-expectType<typeof ANewableFunction>(newableTest.theFunction)
-
-type AnyCFunction = (this: any, ...args: readonly any[]) => unknown
-let anyCFunction: AnyCFunction = aFunction2
-expectType<AnyCFunction>(anyCFunction)
-expectAssignable<AnyCallableFunction>(anyCFunction)
-// this call will fail, and TS should tell us, because does not because params are `any`: we are on our own
-expectType<unknown>(anyCFunction())
