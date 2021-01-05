@@ -18,16 +18,16 @@ import {
   AbstractContract
 } from '../types/index'
 import { Location } from './_private/is'
-import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from './AnyFunction'
+import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
 
-export type GeneralContractFunctionTwo<F extends AnyFunction, Exceptions> = F & {
+export type GeneralContractFunctionTwo<F extends NeverUnknownFunction, Exceptions> = F & {
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
   readonly location: Location
   name: string // readonly in `lib.es2015.core.d.ts`
   bind: BindContractFunction<F, never>
   // tslint:disable-next-line:no-any
-  prototype: F extends AnyNewableFunction ? InstanceType<F> : unknown
+  prototype: F extends NeverUnknownNewableFunction ? InstanceType<F> : unknown
 
 }
 
@@ -88,7 +88,7 @@ export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
 
    Giving up. Using any[] for now.
  */
-export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
+export type CallableBind<F extends NeverUnknownCallableFunction, Exceptions> = <
   Bound extends readonly unknown[]
 > (
   this: F,
@@ -96,7 +96,7 @@ export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
   ...bound: Bound
 ) => GeneralContractFunctionTwo<(...unbound: any[]) => ReturnType<F>, Exceptions>
 
-export type NewableBind<F extends AnyNewableFunction, Exceptions> = <
+export type NewableBind<F extends NeverUnknownNewableFunction, Exceptions> = <
   Bound extends readonly unknown[],
 > (
   this: F,
@@ -104,15 +104,15 @@ export type NewableBind<F extends AnyNewableFunction, Exceptions> = <
   ...bound: Bound
 ) => GeneralContractFunctionTwo<new (...unbound: any[]) => InstanceType<F>, Exceptions>
 
-export type BindContractFunction<F extends AnyFunction, Exceptions> =
-  F extends AnyNewableFunction
+export type BindContractFunction<F extends NeverUnknownFunction, Exceptions> =
+  F extends NeverUnknownNewableFunction
     ? NewableBind<F, Exceptions>
-    : F extends AnyCallableFunction
+    : F extends NeverUnknownCallableFunction
       ? CallableBind<F, Exceptions>
       : never
 
 // noinspection JSClassNamingConvention
-interface GeneralContractFunctionPropertiesBase<F extends AnyFunction, Exceptions> {
+interface GeneralContractFunctionPropertiesBase<F extends NeverUnknownFunction, Exceptions> {
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
   readonly location: Location
@@ -120,7 +120,7 @@ interface GeneralContractFunctionPropertiesBase<F extends AnyFunction, Exception
 }
 
 // noinspection JSClassNamingConvention
-interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunction, Exceptions>
+interface CallableGeneralContractFunctionProperties<F extends NeverUnknownCallableFunction, Exceptions>
   extends GeneralContractFunctionPropertiesBase<F, Exceptions> {
   /**
    * A 'correct' version of {@link #bind}, which should override the definition of {@link #bind}
@@ -146,13 +146,13 @@ interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunctio
   prototype: unknown
 }
 
-export type CallableGeneralContractFunction<F extends AnyCallableFunction, Exceptions> =
+export type CallableGeneralContractFunction<F extends NeverUnknownCallableFunction, Exceptions> =
 /* Without Omit<F, 'bind'> we overload, instead of override. But Omit<> also looses the signature of a function.
  There is no solution for this. */
   F & CallableGeneralContractFunctionProperties<F, Exceptions>
 
 // noinspection JSClassNamingConvention
-interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction, Exceptions>
+interface NewableGeneralContractFunctionProperties<F extends NeverUnknownNewableFunction, Exceptions>
   extends GeneralContractFunctionPropertiesBase<F, Exceptions> {
   /**
    * A 'correct' version of {@link #bind}, which should override the definition of {@link #bind}
@@ -179,7 +179,7 @@ interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction,
   prototype: InstanceType<F>
 }
 
-export type NewableGeneralContractFunction<F extends AnyNewableFunction, Exceptions> =
+export type NewableGeneralContractFunction<F extends NeverUnknownNewableFunction, Exceptions> =
 /* Without Omit<F, 'bind'> we overload, instead of override. But Omit<> also looses the signature of a function.
  There is no solution for this. */
   F & NewableGeneralContractFunctionProperties<F, Exceptions>
@@ -201,7 +201,7 @@ export type NewableGeneralContractFunction<F extends AnyNewableFunction, Excepti
  *
  * In TypeScript, the prototype of a `CallableFunction` is `any`. If the function is an internal function, or an arrow
  * function, `prototype` is `undefined`. The prototype of a contract function for such a signature also is of type
- * `any`. This is inherited from {@link AnyCallableFunction}.
+ * `any`. This is inherited from {@link NeverUnknownCallableFunction}.
  *
  * This means the type of the prototype of the contract function is the same as the type of the prototype of the
  * implementation, and of the prototype of the contract signature.
@@ -220,9 +220,9 @@ export type NewableGeneralContractFunction<F extends AnyNewableFunction, Excepti
  * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
  * additional typed parameters ( `A0` … `A1`). For a contract function, we do the same, but we add the extra properties.
  */
-export type GeneralContractFunction<F extends AnyFunction, Exceptions> =
-  F extends AnyNewableFunction
+export type GeneralContractFunction<F extends NeverUnknownFunction, Exceptions> =
+  F extends NeverUnknownNewableFunction
   ? NewableGeneralContractFunction<F, Exceptions>
-  : F extends AnyCallableFunction
+  : F extends NeverUnknownCallableFunction
     ? CallableGeneralContractFunction<F, Exceptions>
     : undefined

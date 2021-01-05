@@ -30,7 +30,7 @@ import {
   Postcondition,
   Precondition
 } from '@toryt/contracts'
-import { AnyFunction } from '../lib/AnyFunction'
+import { NeverUnknownFunction } from '../lib/AnyFunction'
 import { StackLocation } from '../lib/_private/is'
 
 interface SomeObject {
@@ -49,7 +49,7 @@ const aFunction: AFunction = function aFunction (a: string, b: number) { return 
 const aFunction2: AFunction = function aFunction (a: string, b: number) { return `${a}${b} more text`}
 
 // $expectType AFunction
-const anAnyFunction: AnyFunction = aFunction
+const anAnyFunction: NeverUnknownFunction = aFunction
 
 // $ExpectError
 const abstractContractKwargs1: AbstractContractKwargs<AFunction, string | SomeError> = null

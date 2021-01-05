@@ -26,7 +26,7 @@ import {
   anA,
   ANewableFunction, someObject
 } from './subjects'
-import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../lib/AnyFunction'
+import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from '../lib/AnyFunction'
 
 
 type NeverUnknownFunction = (...args: readonly never[]) => unknown
@@ -222,9 +222,9 @@ expectType<unknown>(noArgsUnknownFunctionUnknown.theFunction())
 
 expectType<AFunction1>(aFunction1)
 expectType<string>(aFunction1.call(someObject, anA, aB))
-expectAssignable<AnyCallableFunction>(aFunction1)
-expectNotAssignable<AnyNewableFunction>(aFunction1)
-expectAssignable<AnyFunction>(aFunction1)
+expectAssignable<NeverUnknownCallableFunction>(aFunction1)
+expectNotAssignable<NeverUnknownNewableFunction>(aFunction1)
+expectAssignable<NeverUnknownFunction>(aFunction1)
 expectType<number>(aFunction1.length)
 expectType<Function['toString']>(aFunction1.toString)
 expectType<CallableFunction['apply']>(aFunction1.apply)
@@ -236,9 +236,9 @@ expectType<any>(aFunction1.prototype)
 expectType<AFunction2>(aFunction2)
 expectType<string>(aFunction2(anA, aB))
 expectAssignable<AFunction1>(aFunction2)
-expectAssignable<AnyCallableFunction>(aFunction2)
-expectNotAssignable<AnyNewableFunction>(aFunction2)
-expectAssignable<AnyFunction>(aFunction2)
+expectAssignable<NeverUnknownCallableFunction>(aFunction2)
+expectNotAssignable<NeverUnknownNewableFunction>(aFunction2)
+expectAssignable<NeverUnknownFunction>(aFunction2)
 expectType<number>(aFunction2.length)
 expectType<Function['toString']>(aFunction2.toString)
 expectType<CallableFunction['apply']>(aFunction2.apply)
@@ -251,9 +251,9 @@ expectType<AFunction3>(aFunction3)
 expectType<'truth' | 'dare'>(aFunction3(anA))
 expectAssignable<AFunction2>(aFunction3)
 expectAssignable<AFunction1>(aFunction3)
-expectAssignable<AnyCallableFunction>(aFunction3)
-expectNotAssignable<AnyNewableFunction>(aFunction3)
-expectAssignable<AnyFunction>(aFunction3)
+expectAssignable<NeverUnknownCallableFunction>(aFunction3)
+expectNotAssignable<NeverUnknownNewableFunction>(aFunction3)
+expectAssignable<NeverUnknownFunction>(aFunction3)
 expectType<number>(aFunction3.length)
 expectType<Function['toString']>(aFunction3.toString)
 expectType<CallableFunction['apply']>(aFunction3.apply)
@@ -262,7 +262,7 @@ expectType<CallableFunction['bind']>(aFunction1.bind)
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aFunction3.prototype)
 
-let anyCallableFunction: AnyCallableFunction = aFunction2
+let anyCallableFunction: NeverUnknownCallableFunction = aFunction2
 /*
 anyCallableFunction(anA, aB)
 
@@ -271,9 +271,9 @@ anyCallableFunction(anA, aB)
  Or, in short, cannot call never function, as expected.
  (cannot be detected with tsd??)
 */
-expectType<AnyCallableFunction>(anyCallableFunction)
-expectNotAssignable<AnyNewableFunction>(anyCallableFunction)
-expectAssignable<AnyFunction>(anyCallableFunction)
+expectType<NeverUnknownCallableFunction>(anyCallableFunction)
+expectNotAssignable<NeverUnknownNewableFunction>(anyCallableFunction)
+expectAssignable<NeverUnknownFunction>(anyCallableFunction)
 expectType<number>(anyCallableFunction.length)
 expectType<Function['toString']>(anyCallableFunction.toString)
 expectType<CallableFunction['apply']>(anyCallableFunction.apply)
@@ -283,13 +283,13 @@ expectType<CallableFunction['bind']>(anyCallableFunction.bind)
 expectType<any>(anyCallableFunction.prototype)
 
 // without `as AnyFunction`, TS still sees this as AnyCallableFunction
-let anyFunction1a: AnyFunction = aFunction1
-expectAssignable<AnyFunction>(anyFunction1a)
-expectNotType<AnyNewableFunction>(anyFunction1a)
-expectType<AnyCallableFunction>(anyFunction1a)
+let anyFunction1a: NeverUnknownFunction = aFunction1
+expectAssignable<NeverUnknownFunction>(anyFunction1a)
+expectNotType<NeverUnknownNewableFunction>(anyFunction1a)
+expectType<NeverUnknownCallableFunction>(anyFunction1a)
 
-let anyFunction1b: AnyFunction = aFunction1 as AnyFunction
-expectType<AnyFunction>(anyFunction1b)
+let anyFunction1b: NeverUnknownFunction = aFunction1 as NeverUnknownFunction
+expectType<NeverUnknownFunction>(anyFunction1b)
 expectType<number>(anyFunction1b.length)
 expectType<Function['toString']>(anyFunction1b.toString)
 expectType<CallableFunction['apply'] | NewableFunction['apply']>(anyFunction1b.apply)
@@ -300,9 +300,9 @@ expectType<any>(anyFunction1b.prototype)
 
 expectType<typeof ANewableFunction>(ANewableFunction)
 expectAssignable<new (a: string, b: number) => ANewableFunction>(ANewableFunction)
-expectNotAssignable<AnyCallableFunction>(ANewableFunction)
-expectAssignable<AnyNewableFunction>(ANewableFunction)
-expectAssignable<AnyFunction>(ANewableFunction)
+expectNotAssignable<NeverUnknownCallableFunction>(ANewableFunction)
+expectAssignable<NeverUnknownNewableFunction>(ANewableFunction)
+expectAssignable<NeverUnknownFunction>(ANewableFunction)
 expectType<number>(ANewableFunction.length)
 expectType<Function['toString']>(ANewableFunction.toString)
 expectType<NewableFunction['apply']>(ANewableFunction.apply)
@@ -312,17 +312,17 @@ expectType<NewableFunction['bind']>(ANewableFunction.bind)
 expectType<ANewableFunction>(ANewableFunction.prototype)
 
 // without `as AnyFunction`, TS still sees this as AnyCallableFunction
-let anyFunction2a: AnyFunction = ANewableFunction
-expectNotType<AnyFunction>(anyFunction2a)
-expectAssignable<AnyFunction>(anyFunction2a)
-expectNotType<AnyCallableFunction>(anyFunction2a)
-expectType<AnyNewableFunction>(anyFunction2a)
+let anyFunction2a: NeverUnknownFunction = ANewableFunction
+expectNotType<NeverUnknownFunction>(anyFunction2a)
+expectAssignable<NeverUnknownFunction>(anyFunction2a)
+expectNotType<NeverUnknownCallableFunction>(anyFunction2a)
+expectType<NeverUnknownNewableFunction>(anyFunction2a)
 // (***) … but TS does not know that the prototype of a constructor is the type of the class
 expectNotType<ANewableFunction>(anyFunction2a.prototype)
 expectType<any>(anyFunction2a.prototype)
 
-let anyFunction2b: AnyFunction = ANewableFunction as AnyFunction
-expectType<AnyFunction>(anyFunction2b)
+let anyFunction2b: NeverUnknownFunction = ANewableFunction as NeverUnknownFunction
+expectType<NeverUnknownFunction>(anyFunction2b)
 expectType<number>(anyFunction1b.length)
 expectType<Function['toString']>(anyFunction2b.toString)
 expectType<CallableFunction['apply'] | NewableFunction['apply']>(anyFunction2b.apply)

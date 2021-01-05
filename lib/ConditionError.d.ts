@@ -1,5 +1,5 @@
 import { GeneralContractFunction } from './GeneralContractFunction'
-import { AnyFunction } from './AnyFunction'
+import { NeverUnknownFunction } from './AnyFunction'
 import { Condition } from './Condition'
 import { ContractError } from './ContractError'
 
@@ -84,7 +84,7 @@ import { ContractError } from './ContractError'
  * </ul>
  */
 declare class ConditionError extends ContractError {
-  readonly contractFunction: GeneralContractFunction<AnyFunction, never>
+  readonly contractFunction: GeneralContractFunction<NeverUnknownFunction, never>
   readonly condition: Condition
   readonly self: unknown
   readonly _args: ReadonlyArray<unknown>
@@ -109,7 +109,7 @@ declare class ConditionError extends ContractError {
        It is ok if the GCF's contract has exception conditions that work for no exceptions, or only for a particular
        type of exceptions. If will be internally ok when we get it, and that is all we need to know. */
 
-    contractFunction: GeneralContractFunction<AnyFunction, never>,
+    contractFunction: GeneralContractFunction<NeverUnknownFunction, never>,
     condition: Condition,
     self: unknown,
     args: ArrayLike<unknown>,

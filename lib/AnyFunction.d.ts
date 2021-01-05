@@ -21,7 +21,7 @@
  * Note that {@link Function.prototype} is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do
  * about that.
  */
-export type AnyCallableFunction = (this: never, ...args: readonly never[]) => unknown
+export type NeverUnknownCallableFunction = (this: never, ...args: readonly never[]) => unknown
 
 /**
  * Any constructor (notably, created with the `class` syntax).
@@ -30,7 +30,7 @@ export type AnyCallableFunction = (this: never, ...args: readonly never[]) => un
  *
  * NOTE: I cannot find where this might be defined in the typescript `*.d.ts` files.
  */
-export type AnyNewableFunction = new (...args: readonly never[]) => unknown
+export type NeverUnknownNewableFunction = new (...args: readonly never[]) => unknown
 
 /**
  * Any function, arrow, or non-arrow, or a constructor defined with the `class` syntax.
@@ -39,4 +39,4 @@ export type AnyNewableFunction = new (...args: readonly never[]) => unknown
  * about that.
  */
 // tslint:disable-next-line:no-any
-export type AnyFunction = AnyCallableFunction | AnyNewableFunction
+export type NeverUnknownFunction = NeverUnknownCallableFunction | NeverUnknownNewableFunction

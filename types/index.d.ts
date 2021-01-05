@@ -15,14 +15,14 @@
  */
 
 // do not automatically export
-import { AnyCallableFunction, AnyFunction, AnyNewableFunction } from '../lib/AnyFunction'
+import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from '../lib/AnyFunction'
 import { GeneralContractFunction } from '../lib/GeneralContractFunction'
 import { Location, InternalLocation, StackLocation } from '../lib/_private/is'
 import { Booleany } from '../lib/Condition'
 
 export {}
 
-export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
+export type ContractFunction<C extends AbstractContract<NeverUnknownFunction, unknown>> =
   GeneralContractFunction<ContractSignature<C>, ContractExceptions<C>> & {
     readonly contract: C
   }
@@ -32,7 +32,7 @@ export type ContractFunction<C extends AbstractContract<AnyFunction, unknown>> =
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type CallablePrecondition<F extends AnyCallableFunction> =
+export type CallablePrecondition<F extends NeverUnknownCallableFunction> =
   (this: ThisParameterType<F>, ...args: Parameters<F>) => Booleany
 
 /**
@@ -40,7 +40,7 @@ export type CallablePrecondition<F extends AnyCallableFunction> =
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type NewablePrecondition<F extends AnyNewableFunction> =
+export type NewablePrecondition<F extends NeverUnknownNewableFunction> =
   (...args: ConstructorParameters<F>) => Booleany
 
 /**
@@ -48,10 +48,10 @@ export type NewablePrecondition<F extends AnyNewableFunction> =
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type Precondition<F extends AnyFunction> =
-  F extends AnyNewableFunction
+export type Precondition<F extends NeverUnknownFunction> =
+  F extends NeverUnknownNewableFunction
     ? NewablePrecondition<F>
-    : F extends AnyCallableFunction
+    : F extends NeverUnknownCallableFunction
       ? CallablePrecondition<F>
       : never
 
@@ -60,7 +60,7 @@ export type Precondition<F extends AnyFunction> =
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type CallablePostcondition<F extends AnyCallableFunction> =
+export type CallablePostcondition<F extends NeverUnknownCallableFunction> =
   (
     this: ThisParameterType<F>,
     ...args: [...Parameters<F>, ReturnType<F>, GeneralContractFunction<OmitThisParameter<F>, unknown>]
@@ -71,7 +71,7 @@ export type CallablePostcondition<F extends AnyCallableFunction> =
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type NewablePostcondition<F extends AnyNewableFunction> =
+export type NewablePostcondition<F extends NeverUnknownNewableFunction> =
   (
     this: InstanceType<F>,
     ...args: [...ConstructorParameters<F>, undefined, GeneralContractFunction<OmitThisParameter<F>, unknown>]
@@ -82,10 +82,10 @@ export type NewablePostcondition<F extends AnyNewableFunction> =
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type Postcondition<F extends AnyFunction> =
-  F extends AnyNewableFunction
+export type Postcondition<F extends NeverUnknownFunction> =
+  F extends NeverUnknownNewableFunction
   ? NewablePostcondition<F>
-  : F extends AnyCallableFunction
+  : F extends NeverUnknownCallableFunction
     ? CallablePostcondition<F>
     : never
 
@@ -94,7 +94,7 @@ export type Postcondition<F extends AnyFunction> =
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type CallableExceptionCondition<F extends AnyCallableFunction, Exceptions> =
+export type CallableExceptionCondition<F extends NeverUnknownCallableFunction, Exceptions> =
   (
     this: ThisParameterType<F>,
     ...args: [...Parameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>, Exceptions>]
@@ -105,7 +105,7 @@ export type CallableExceptionCondition<F extends AnyCallableFunction, Exceptions
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type NewableExceptionCondition<F extends AnyNewableFunction, Exceptions> =
+export type NewableExceptionCondition<F extends NeverUnknownNewableFunction, Exceptions> =
   (
     this: InstanceType<F>,
     ...args: [...ConstructorParameters<F>, Exceptions, GeneralContractFunction<OmitThisParameter<F>, Exceptions>]
@@ -116,35 +116,35 @@ export type NewableExceptionCondition<F extends AnyNewableFunction, Exceptions> 
  *
  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
  */
-export type ExceptionCondition<F extends AnyFunction, Exceptions> =
-  F extends AnyNewableFunction
+export type ExceptionCondition<F extends NeverUnknownFunction, Exceptions> =
+  F extends NeverUnknownNewableFunction
   ? NewableExceptionCondition<F, Exceptions>
-  : F extends AnyCallableFunction
+  : F extends NeverUnknownCallableFunction
     ? CallableExceptionCondition<F, Exceptions>
     : never
 
-export interface CallableAbstractContractKwargs<F extends AnyCallableFunction, Exceptions> {
+export interface CallableAbstractContractKwargs<F extends NeverUnknownCallableFunction, Exceptions> {
   pre?: ReadonlyArray<CallablePrecondition<F>>,
   post?: ReadonlyArray<CallablePostcondition<F>>,
   exception?: ReadonlyArray<CallableExceptionCondition<F, Exceptions>>
 }
 
-export interface NewableAbstractContractKwargs<F extends AnyNewableFunction, Exceptions> {
+export interface NewableAbstractContractKwargs<F extends NeverUnknownNewableFunction, Exceptions> {
   pre?: ReadonlyArray<NewablePrecondition<F>>,
   post?: ReadonlyArray<NewablePostcondition<F>>,
   exception?: ReadonlyArray<NewableExceptionCondition<F, Exceptions>>
 }
 
-export type AbstractContractKwargs<F extends AnyFunction, Exceptions> =
-  F extends AnyNewableFunction
+export type AbstractContractKwargs<F extends NeverUnknownFunction, Exceptions> =
+  F extends NeverUnknownNewableFunction
   ? NewableAbstractContractKwargs<F, Exceptions>
-  : F extends AnyCallableFunction
+  : F extends NeverUnknownCallableFunction
     ? CallableAbstractContractKwargs<F, Exceptions>
     : never
 
 /* See https://fettblog.eu/typescript-interface-constructor-pattern/ for constructor interface pattern.
    See https://github.com/microsoft/TypeScript/issues/3841 for open issue.  */
-export interface ContractConstructor<C extends AbstractContract<AnyFunction, unknown>> {
+export interface ContractConstructor<C extends AbstractContract<NeverUnknownFunction, unknown>> {
   readonly internalLocation: InternalLocation
   readonly namePrefix: string
 
@@ -210,7 +210,7 @@ export type MustNotHappen = [FalseCondition]
  *
  * The `_location` argument is for internal use, and might be removed.
  */
-export class AbstractContract<F extends AnyFunction, Exceptions> {
+export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   /**
    * Object to be used as location for contracts and implementations that are generated inside this library.
    */
@@ -228,7 +228,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    *
    * Note: in future versions this will no longer be a "static" function of AbstractContract.
    */
-  static bindContractFunction<C extends AbstractContract<AnyFunction, unknown>> (
+  static bindContractFunction<C extends AbstractContract<NeverUnknownFunction, unknown>> (
     this: ContractFunction<C>,
     thisArg?: ContractThis<C>,
     ...argArray: ContractParameters<C>
@@ -258,7 +258,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot freeze
    * it, and not guaranteed in all engines.
    */
-  static isAGeneralContractFunction<F extends AnyFunction> (
+  static isAGeneralContractFunction<F extends NeverUnknownFunction> (
     f: F | unknown
   ): f is GeneralContractFunction<F, unknown>
 
@@ -273,7 +273,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    *     outside this library.</li>
    * </ul>
    */
-  static isAContractFunction<C extends AbstractContract<AnyFunction, unknown>> (
+  static isAContractFunction<C extends AbstractContract<NeverUnknownFunction, unknown>> (
     this: ContractConstructor<C>,
     f: ContractSignature<C> | unknown
   ): f is ContractFunction<C>
@@ -295,7 +295,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    *                   AbstractContract#isAContractFunction} will carry, that says where it is defined.
    * @returns `contractFunction`
    */
-  static bless<C extends AbstractContract<AnyFunction, unknown>> (
+  static bless<C extends AbstractContract<NeverUnknownFunction, unknown>> (
     contractFunction: ContractSignature<C>,
     contract: C,
     implFunction: ContractSignature<C>,
@@ -320,7 +320,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    *
    * TODO should be split in result and exceptions for TS
    */
-  static outcome<C extends AbstractContract<AnyFunction, unknown>> (
+  static outcome<C extends AbstractContract<NeverUnknownFunction, unknown>> (
     ...args: [...ContractParameters<C>, ContractResult<C> | ContractExceptions<C>, unknown]
   ): ContractResult<C> | ContractExceptions<C>
 
@@ -328,7 +328,7 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
    * Returns the last element of an Array-like argument. In post- and exception conditions,
    * this is the called contract function, bound to this. This can be used in recursive definitions.
    */
-  static callee<C extends AbstractContract<AnyFunction, unknown>> (
+  static callee<C extends AbstractContract<NeverUnknownFunction, unknown>> (
     ...args: [...ContractParameters<C>, unknown, ContractFunction<C>]
   ): ContractFunction<C>
 
@@ -357,17 +357,17 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
   isImplementedBy (f: unknown): f is GeneralContractFunction<F, Exceptions>
 
   get pre (): Array<
-    F extends AnyNewableFunction
+    F extends NeverUnknownNewableFunction
       ? NewablePrecondition<F>
-      : F extends AnyCallableFunction
+      : F extends NeverUnknownCallableFunction
         ? CallablePrecondition<F>
         : never
   > // not ReadonlyArray: we have sliced
 
   get post (): Array<
-    F extends AnyNewableFunction
+    F extends NeverUnknownNewableFunction
       ? NewablePostcondition<F>
-      : F extends AnyCallableFunction
+      : F extends NeverUnknownCallableFunction
         ? CallablePostcondition<F>
         : never
     > // not ReadonlyArray: we have sliced
@@ -376,29 +376,29 @@ export class AbstractContract<F extends AnyFunction, Exceptions> {
     Exceptions extends never
       ? MustNotHappen
       : Array<
-        F extends AnyNewableFunction
+                 F extends NeverUnknownNewableFunction
           ? NewableExceptionCondition<F, Exceptions>
-          : F extends AnyCallableFunction
+          : F extends NeverUnknownCallableFunction
             ? CallableExceptionCondition<F, Exceptions>
             : never
       > // not ReadonlyArray: we have sliced
 }
 
-export type ContractSignature<C extends AbstractContract<AnyFunction, unknown>> =
+export type ContractSignature<C extends AbstractContract<NeverUnknownFunction, unknown>> =
   C extends AbstractContract<infer F, unknown> ? F : never
-export type ContractThis<C extends AbstractContract<AnyFunction, unknown>> =
+export type ContractThis<C extends AbstractContract<NeverUnknownFunction, unknown>> =
   ThisParameterType<ContractSignature<C>>
-export type ContractParameters<C extends AbstractContract<AnyFunction, unknown>> =
-  ContractSignature<C> extends AnyNewableFunction
+export type ContractParameters<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+  ContractSignature<C> extends NeverUnknownNewableFunction
     ? ConstructorParameters<ContractSignature<C>>
-    : ContractSignature<C> extends AnyCallableFunction
+    : ContractSignature<C> extends NeverUnknownCallableFunction
       ? Parameters<ContractSignature<C>>
       : never
-export type ContractResult<C extends AbstractContract<AnyFunction, unknown>> =
-  ContractSignature<C> extends AnyCallableFunction
+export type ContractResult<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+  ContractSignature<C> extends NeverUnknownCallableFunction
     ? ReturnType<ContractSignature<C>>
     : never
-export type ContractInstanceType<C extends AbstractContract<AnyNewableFunction, unknown>> =
+export type ContractInstanceType<C extends AbstractContract<NeverUnknownNewableFunction, unknown>> =
   InstanceType<ContractSignature<C>>
-export type ContractExceptions<C extends AbstractContract<AnyFunction, unknown>> =
-  C extends AbstractContract<AnyFunction, infer Exceptions> ? Exceptions : never
+export type ContractExceptions<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+  C extends AbstractContract<NeverUnknownFunction, infer Exceptions> ? Exceptions : never
