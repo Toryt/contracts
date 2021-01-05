@@ -25,30 +25,84 @@ export type GeneralContractFunctionTwo<F extends AnyFunction, Exceptions> = F & 
   readonly implementation: F
   readonly location: Location
   name: string // readonly in `lib.es2015.core.d.ts`
-  bind: BindContractFunction<F, Exceptions>
+  bind: BindContractFunction<F, never>
   // tslint:disable-next-line:no-any
-  prototype: F extends AnyNewableFunction ? InstanceType<F> : any
+  prototype: F extends AnyNewableFunction ? InstanceType<F> : unknown
 
 }
 
+/* TODO: correct this workaround.
+
+  This should be
+
 export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
-  Bound extends unknown[],
-  Unbound extends unknown[]
+  Bound extends readonly unknown[]
 > (
-  this: (this: ThisParameterType<F>, ...args: [...Bound, ...Unbound]) => ReturnType<F>,
+  this: F,
   thisArg: ThisParameterType<F>,
   ...bound: Bound
-) => GeneralContractFunctionTwo<(...unbound: Unbound) => ReturnType<F>, Exceptions>
+) => F extends (...args: [...Bound, ... infer Unbound]) => any
+  ? GeneralContractFunctionTwo<(...unbound: Unbound) => ReturnType<F>, Exceptions>
+  : never
+
+   but TS says:
+
+   "
+   Type (...unbound: Unbound) => ReturnType<F> does not satisfy the constraint AnyFunction.
+   Type (...unbound: Unbound) => ReturnType<F> is not assignable to type AnyCallableFunction.
+   …
+   "
+
+   (AnyCallableFunction = (this: never, ...args: readonly never[]) => unknown)
+
+   "
+   …
+   Types of parameters unbound and args are incompatible.
+   …
+   "
+
+   The parameter types must be contravariant, so to assign
+
+   (...unbound: Unbound) => ReturnType<F>
+
+   to
+
+   (this: never, ...args: readonly never[]) => unknown
+
+   we must be able to assign `readonly never[]` to `Unbound`, but TS continues:
+
+
+   "
+   …
+   Type readonly never[] is not assignable to type Unbound.
+   Unbound could be instantiated with an arbitrary type which could be unrelated to readonly never[].
+   "
+
+   No, it couldn't! Because it is a tuple, that is a part of Parameters<F>, which means it is a tuple
+   where are the elements are at least `unknown`.
+
+   Making clear with a conditional type that Unbound is an array does not help. Making it Readonly
+   does not help. Removing readonly from `AnyCallableFunction` makes tsd go haywire.
+
+   (and analogue for NewableBind)
+
+   Giving up. Using any[] for now.
+ */
+export type CallableBind<F extends AnyCallableFunction, Exceptions> = <
+  Bound extends readonly unknown[]
+> (
+  this: F,
+  thisArg: ThisParameterType<F>,
+  ...bound: Bound
+) => GeneralContractFunctionTwo<(...unbound: any[]) => ReturnType<F>, Exceptions>
 
 export type NewableBind<F extends AnyNewableFunction, Exceptions> = <
-  Bound extends unknown[],
-  Unbound extends unknown[]
+  Bound extends readonly unknown[],
 > (
-  this: new (...args: [...Bound, ...Unbound]) => InstanceType<F>,
-  // tslint:disable-next-line:no-any
-  thisArg: any,
+  this: F,
+  thisArg: unknown,
   ...bound: Bound
-) => GeneralContractFunctionTwo<new (...unbound: Unbound) => InstanceType<F>, Exceptions>
+) => GeneralContractFunctionTwo<new (...unbound: any[]) => InstanceType<F>, Exceptions>
 
 export type BindContractFunction<F extends AnyFunction, Exceptions> =
   F extends AnyNewableFunction
@@ -56,7 +110,8 @@ export type BindContractFunction<F extends AnyFunction, Exceptions> =
     : F extends AnyCallableFunction
       ? CallableBind<F, Exceptions>
       : never
-                                                                                // noinspection JSClassNamingConvention
+
+// noinspection JSClassNamingConvention
 interface GeneralContractFunctionPropertiesBase<F extends AnyFunction, Exceptions> {
   readonly contract: AbstractContract<F, Exceptions>
   readonly implementation: F
@@ -83,13 +138,12 @@ interface CallableGeneralContractFunctionProperties<F extends AnyCallableFunctio
    * Based on https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
    */
   contractBind <Bound extends unknown[], Unbound extends unknown[]> (
-    this: (this: ThisParameterType<F>, ...args: [...Bound, ...Unbound]) => ReturnType<F>,
+    this: F,
     thisArg: ThisParameterType<F>,
     ...bound: Bound
-  ): CallableGeneralContractFunction<(...unbound: Unbound) => ReturnType<F>, Exceptions>
+  ): CallableGeneralContractFunction<(...unbound: any[]) => ReturnType<F>, Exceptions>
 
-  // tslint:disable-next-line:no-any
-  prototype: any
+  prototype: unknown
 }
 
 export type CallableGeneralContractFunction<F extends AnyCallableFunction, Exceptions> =
@@ -120,7 +174,7 @@ interface NewableGeneralContractFunctionProperties<F extends AnyNewableFunction,
     // tslint:disable-next-line:no-any
     thisArg: any,
     ...bound: Bound
-  ): NewableGeneralContractFunction<new (...unbound: Unbound) => InstanceType<F>, Exceptions>
+  ): NewableGeneralContractFunction<new (...unbound: any[]) => InstanceType<F>, Exceptions>
 
   prototype: InstanceType<F>
 }
