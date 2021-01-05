@@ -18,7 +18,7 @@ import {
   AbstractContract,
 } from '../types'
 import { AFunction1, SomeError, ANewableFunction, someObject, aCallableGeneralContractFunction, anA, aB, someArgs, ANewableGeneralContractFunction } from './subjects'
-import { expectAssignable, expectNotType, expectType } from 'tsd'
+import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
 import { CallableBind, GeneralContractFunction, NewableBind } from '../lib/GeneralContractFunction'
 import { Location, InternalLocation } from '../lib/_private/is'
 
@@ -37,13 +37,18 @@ expectType<string>(aCallableGeneralContractFunction.apply(someObject, someArgs))
 expectType<AFunction1['call']>(aCallableGeneralContractFunction.call)
 expectType<string>(aCallableGeneralContractFunction.call(someObject, anA, aB))
 expectType<AFunction1['bind']>(aCallableGeneralContractFunction.bind)
-/* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
 expectAssignable<CallableBind<AFunction1, SomeError>>(aCallableGeneralContractFunction.bind)
-expectAssignable<GeneralContractFunction<(a:string, b: number) => string, SomeError>>(aCallableGeneralContractFunction.bind(someObject))
+// TODO this is still using the overloaded CallableFunction methods
+expectNotAssignable<GeneralContractFunction<(a:string, b: number) => string, SomeError>>(aCallableGeneralContractFunction.bind(someObject))
+expectAssignable<(a:string, b: number) => string>(aCallableGeneralContractFunction.bind(someObject))
 expectAssignable<string>(aCallableGeneralContractFunction.bind(someObject)(anA, aB))
-expectAssignable<GeneralContractFunction<(b: number) => string, SomeError>>(aCallableGeneralContractFunction.bind(someObject, anA))
+// TODO this is still using the overloaded CallableFunction methods
+expectNotAssignable<GeneralContractFunction<(b: number) => string, SomeError>>(aCallableGeneralContractFunction.bind(someObject, anA))
+expectAssignable<(b: number) => string>(aCallableGeneralContractFunction.bind(someObject, anA))
 expectAssignable<string>(aCallableGeneralContractFunction.bind(someObject, anA)(aB))
-expectAssignable<GeneralContractFunction<() => string, SomeError>>(aCallableGeneralContractFunction.bind(someObject, anA, aB))
+// TODO this is still using the overloaded CallableFunction methods
+expectNotAssignable<GeneralContractFunction<() => string, SomeError>>(aCallableGeneralContractFunction.bind(someObject, anA, aB))
+expectAssignable<() => string>(aCallableGeneralContractFunction.bind(someObject, anA, aB))
 expectAssignable<string>(aCallableGeneralContractFunction.bind(someObject, anA, aB)())
 // `prototype` is defined with type `any` in `lib.es5.d.ts`, and there is nothing we can do about that … (***)
 expectType<any>(aCallableGeneralContractFunction.prototype)
@@ -65,10 +70,11 @@ expectType<AFunction1['apply']>(aCallableGeneralContractFunctionB.apply)
 expectType<string>(aCallableGeneralContractFunctionB.apply(someObject, someArgs))
 expectType<AFunction1['call']>(aCallableGeneralContractFunctionB.call)
 expectType<string>(aCallableGeneralContractFunctionB.call(someObject, anA, aB))
-expectType<AFunction1['bind']>(aCallableGeneralContractFunctionB.bind)
-/* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
-expectAssignable<CallableBind>(aCallableGeneralContractFunctionB.bind)
-expectAssignable<GeneralContractFunction<(a:string, b: number) => string, SomeError>>(aCallableGeneralContractFunctionB.bind(someObject))
+expectType<AFunction1['bind'] & CallableBind<AFunction1, SomeError>>(aCallableGeneralContractFunctionB.bind)
+expectAssignable<CallableBind<AFunction1, SomeError>>(aCallableGeneralContractFunctionB.bind)
+// TODO this is still using the overloaded CallableFunction methods
+expectNotAssignable<GeneralContractFunction<(a:string, b: number) => string, SomeError>>(aCallableGeneralContractFunctionB.bind(someObject))
+expectAssignable<(a:string, b: number) => string>(aCallableGeneralContractFunctionB.bind(someObject))
 expectAssignable<string>(aCallableGeneralContractFunctionB.bind(someObject)(anA, aB))
 expectAssignable<GeneralContractFunction<(b: number) => string, SomeError>>(aCallableGeneralContractFunctionB.bind(someObject, anA))
 expectAssignable<string>(aCallableGeneralContractFunctionB.bind(someObject, anA)(aB))
@@ -97,7 +103,7 @@ expectType<AFunction1['call']>(aCallableGeneralContractFunctionC.call)
 expectType<string>(aCallableGeneralContractFunctionC.call(someObject, anA, aB))
 expectType<AFunction1['bind']>(aCallableGeneralContractFunctionC.bind)
 /* NOTE tsd says that for the next line, expectType does not work. But the output _is_ the same? */
-expectAssignable<CallableBind>(aCallableGeneralContractFunctionC.bind)
+expectType<CallableBind<AFunction1, SomeError>>(aCallableGeneralContractFunctionC.bind)
 expectAssignable<GeneralContractFunction<(a:string, b: number) => string, SomeError>>(aCallableGeneralContractFunctionC.bind(someObject))
 expectAssignable<string>(aCallableGeneralContractFunctionC.bind(someObject)(anA, aB))
 expectAssignable<GeneralContractFunction<(b: number) => string, SomeError>>(aCallableGeneralContractFunctionC.bind(someObject, anA))
@@ -124,9 +130,9 @@ expectType<typeof ANewableFunction.apply>(ANewableGeneralContractFunction.apply)
 expectType<void>(ANewableFunction.apply(undefined, someArgs))
 expectType<typeof ANewableFunction.call>(ANewableGeneralContractFunction.call)
 expectType<void>(ANewableFunction.call(undefined, anA, aB))
-expectType<typeof ANewableFunction.bind>(ANewableGeneralContractFunction.bind)
+expectType<NewableBind<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction.bind)
 /* NOTE tsd does not complain here on exact type */
-expectType<NewableBind>(ANewableGeneralContractFunction.bind)
+expectType<NewableBind<typeof ANewableFunction, SomeError>>(ANewableGeneralContractFunction.bind)
 const boundA1 = ANewableGeneralContractFunction.bind(someObject)
 expectAssignable<GeneralContractFunction<new (a:string, b: number) => ANewableGeneralContractFunction, SomeError>>(boundA1)
 expectType<ANewableGeneralContractFunction>(new boundA1(anA, aB))
