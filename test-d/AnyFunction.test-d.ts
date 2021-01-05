@@ -29,25 +29,25 @@ import {
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from '../lib/AnyFunction'
 
 
-type NeverUnknownFunction = (...args: readonly never[]) => unknown
-type AnyUnknownFunction = (...args: readonly any[]) => unknown
-type UnknownUnknownFunction = (...args: readonly unknown[]) => unknown
-type NoArgsUnknownFunction = () => unknown
+type NeverUnknownF = (...args: readonly never[]) => unknown
+type AnyUnknownF = (...args: readonly any[]) => unknown
+type UnknownUnknownF = (...args: readonly unknown[]) => unknown
+type NoArgsUnknownF = () => unknown
 
-const neverUnknownFunction: NeverUnknownFunction = (a: never, b: never) => '' + a + b
+const neverUnknownFunction: NeverUnknownF = (a: never, b: never) => '' + a + b
 expectError(neverUnknownFunction(anA, aB)) // cannot call a never function
 expectError(neverUnknownFunction(undefined, undefined)) // cannot call a never function
 expectType<unknown>(neverUnknownFunction()) // surprise!
 
-const anyUnknownFunction: AnyUnknownFunction = (a: any, b: any) => '' + a + b
+const anyUnknownFunction: AnyUnknownF = (a: any, b: any) => '' + a + b
 expectType<unknown>(anyUnknownFunction(anA, aB))
 expectType<unknown>(anyUnknownFunction())
 
-const unknownUnknownFunction: AnyUnknownFunction = (a: unknown, b: unknown) => '' + a + b
+const unknownUnknownFunction: AnyUnknownF = (a: unknown, b: unknown) => '' + a + b
 expectType<unknown>(unknownUnknownFunction(anA, aB))
 expectType<unknown>(unknownUnknownFunction())
 
-const noArgsUnknownFunction: NoArgsUnknownFunction = () => ''
+const noArgsUnknownFunction: NoArgsUnknownF = () => ''
 expectType<unknown>(noArgsUnknownFunction())
 
 expectType<string>(aFunction2(anA, aB))
@@ -57,108 +57,108 @@ interface NeverUnknownFunctionConstrained<F extends NeverUnknownFunction> {
   theFunction: F
 }
 
-const neverUnknownFunctionNever: NeverUnknownFunctionConstrained<NeverUnknownFunction> = {theFunction: neverUnknownFunction}
-expectType<NeverUnknownFunction>(neverUnknownFunctionNever.theFunction)
-expectNotAssignable<AnyUnknownFunction>(neverUnknownFunctionNever.theFunction)
-expectNotAssignable<UnknownUnknownFunction>(neverUnknownFunctionNever.theFunction)
+const neverUnknownFunctionNever: NeverUnknownFunctionConstrained<NeverUnknownF> = {theFunction: neverUnknownFunction}
+expectType<NeverUnknownF>(neverUnknownFunctionNever.theFunction)
+expectNotAssignable<AnyUnknownF>(neverUnknownFunctionNever.theFunction)
+expectNotAssignable<UnknownUnknownF>(neverUnknownFunctionNever.theFunction)
 expectNotAssignable<AFunction2>(neverUnknownFunctionNever.theFunction)
 expectError(neverUnknownFunctionNever.theFunction(anA, aB)) // cannot call a never function
 expectType<unknown>(neverUnknownFunctionNever.theFunction()) // surpise!
 
-const neverUnknownFunctionAny: NeverUnknownFunctionConstrained<AnyUnknownFunction> = {theFunction: anyUnknownFunction}
-expectAssignable<NeverUnknownFunction>(neverUnknownFunctionAny.theFunction)
-expectType<AnyUnknownFunction>(neverUnknownFunctionAny.theFunction)
-expectAssignable<UnknownUnknownFunction>(neverUnknownFunctionAny.theFunction)
+const neverUnknownFunctionAny: NeverUnknownFunctionConstrained<AnyUnknownF> = {theFunction: anyUnknownFunction}
+expectAssignable<NeverUnknownF>(neverUnknownFunctionAny.theFunction)
+expectType<AnyUnknownF>(neverUnknownFunctionAny.theFunction)
+expectAssignable<UnknownUnknownF>(neverUnknownFunctionAny.theFunction)
 expectNotAssignable<AFunction2>(neverUnknownFunctionAny.theFunction)
 expectType<unknown>(neverUnknownFunctionAny.theFunction(anA, aB))
 expectType<unknown>(neverUnknownFunctionAny.theFunction())
 
-const neverUnknownFunctionUnknown: NeverUnknownFunctionConstrained<UnknownUnknownFunction> = {theFunction: unknownUnknownFunction}
-expectAssignable<NeverUnknownFunction>(neverUnknownFunctionUnknown.theFunction)
-expectAssignable<AnyUnknownFunction>(neverUnknownFunctionUnknown.theFunction)
-expectType<UnknownUnknownFunction>(neverUnknownFunctionUnknown.theFunction)
+const neverUnknownFunctionUnknown: NeverUnknownFunctionConstrained<UnknownUnknownF> = {theFunction: unknownUnknownFunction}
+expectAssignable<NeverUnknownF>(neverUnknownFunctionUnknown.theFunction)
+expectAssignable<AnyUnknownF>(neverUnknownFunctionUnknown.theFunction)
+expectType<UnknownUnknownF>(neverUnknownFunctionUnknown.theFunction)
 expectNotAssignable<AFunction2>(neverUnknownFunctionUnknown.theFunction)
 expectType<unknown>(neverUnknownFunctionUnknown.theFunction(anA, aB))
 expectType<unknown>(neverUnknownFunctionUnknown.theFunction())
 
 const neverUnknownFunctionFunction2: NeverUnknownFunctionConstrained<AFunction2> = {theFunction: aFunction2}
 // Assignable because we will not call `theFunction`, which we know requires a: string, with a never
-expectAssignable<NeverUnknownFunction>(neverUnknownFunctionFunction2.theFunction)
+expectAssignable<NeverUnknownF>(neverUnknownFunctionFunction2.theFunction)
 // Assignable because we can call `theFunction`, which we know requires a: string, with an any
-expectAssignable<AnyUnknownFunction>(neverUnknownFunctionFunction2.theFunction)
+expectAssignable<AnyUnknownF>(neverUnknownFunctionFunction2.theFunction)
 // Not assignable because this would mean we could call `theFunction`, which we know requires a: string, with an unknown
-expectNotAssignable<UnknownUnknownFunction>(neverUnknownFunctionFunction2.theFunction)
+expectNotAssignable<UnknownUnknownF>(neverUnknownFunctionFunction2.theFunction)
 expectType<AFunction2>(neverUnknownFunctionFunction2.theFunction)
 expectType<string>(neverUnknownFunctionFunction2.theFunction(anA, aB))
 expectError(neverUnknownFunctionFunction2.theFunction())
 
-interface AnyUnknownFunctionConstrained<F extends AnyUnknownFunction> {
+interface AnyUnknownFunctionConstrained<F extends AnyUnknownF> {
   theFunction: F
 }
 
 /*
- const anyUnknownFunctionNever: AnyUnknownFunctionConstrained<NeverUnknownFunction> = {theFunction: neverUnknownFunction}
+ const anyUnknownFunctionNever: AnyUnknownFunctionConstrained<NeverUnknownF> = {theFunction: neverUnknownFunction}
 
- Type NeverUnknownFunction does not satisfy the constraint AnyUnknownFunction.
+ Type NeverUnknownF does not satisfy the constraint AnyUnknownF.
  Types of parameters args and args are incompatible.
  Type any is not assignable to type never.
  */
 
 // the rest is the same
 
-const anyUnknownFunctionAny: AnyUnknownFunctionConstrained<AnyUnknownFunction> = {theFunction: anyUnknownFunction}
-expectAssignable<NeverUnknownFunction>(anyUnknownFunctionAny.theFunction)
-expectType<AnyUnknownFunction>(anyUnknownFunctionAny.theFunction)
-expectAssignable<UnknownUnknownFunction>(anyUnknownFunctionAny.theFunction)
+const anyUnknownFunctionAny: AnyUnknownFunctionConstrained<AnyUnknownF> = {theFunction: anyUnknownFunction}
+expectAssignable<NeverUnknownF>(anyUnknownFunctionAny.theFunction)
+expectType<AnyUnknownF>(anyUnknownFunctionAny.theFunction)
+expectAssignable<UnknownUnknownF>(anyUnknownFunctionAny.theFunction)
 expectNotAssignable<AFunction2>(anyUnknownFunctionAny.theFunction)
 expectType<unknown>(anyUnknownFunctionAny.theFunction(anA, aB))
 expectType<unknown>(anyUnknownFunctionAny.theFunction())
 
-const anyUnknownFunctionUnknown: AnyUnknownFunctionConstrained<UnknownUnknownFunction> = {theFunction: unknownUnknownFunction}
-expectAssignable<NeverUnknownFunction>(anyUnknownFunctionUnknown.theFunction)
-expectAssignable<AnyUnknownFunction>(anyUnknownFunctionUnknown.theFunction)
-expectType<UnknownUnknownFunction>(anyUnknownFunctionUnknown.theFunction)
+const anyUnknownFunctionUnknown: AnyUnknownFunctionConstrained<UnknownUnknownF> = {theFunction: unknownUnknownFunction}
+expectAssignable<NeverUnknownF>(anyUnknownFunctionUnknown.theFunction)
+expectAssignable<AnyUnknownF>(anyUnknownFunctionUnknown.theFunction)
+expectType<UnknownUnknownF>(anyUnknownFunctionUnknown.theFunction)
 expectNotAssignable<AFunction2>(anyUnknownFunctionUnknown.theFunction)
 expectType<unknown>(anyUnknownFunctionUnknown.theFunction(anA, aB))
 expectType<unknown>(anyUnknownFunctionUnknown.theFunction())
 
 const anyUnknownFunctionFunction2: AnyUnknownFunctionConstrained<AFunction2> = {theFunction: aFunction2}
 // Assignable because we will not call `theFunction`, which we know requires a: string, with a never
-expectAssignable<NeverUnknownFunction>(anyUnknownFunctionFunction2.theFunction)
+expectAssignable<NeverUnknownF>(anyUnknownFunctionFunction2.theFunction)
 // Assignable because we can call `theFunction`, which we know requires a: string, with an any
-expectAssignable<AnyUnknownFunction>(anyUnknownFunctionFunction2.theFunction)
+expectAssignable<AnyUnknownF>(anyUnknownFunctionFunction2.theFunction)
 // Not assignable because this would mean we could call `theFunction`, which we know requires a: string, with an unknown
-expectNotAssignable<UnknownUnknownFunction>(anyUnknownFunctionFunction2.theFunction)
+expectNotAssignable<UnknownUnknownF>(anyUnknownFunctionFunction2.theFunction)
 expectType<AFunction2>(anyUnknownFunctionFunction2.theFunction)
 expectType<string>(anyUnknownFunctionFunction2.theFunction(anA, aB))
 expectError(anyUnknownFunctionFunction2.theFunction())
 
-interface UnknownUnknownFunctionConstrained<F extends UnknownUnknownFunction> {
+interface UnknownUnknownFunctionConstrained<F extends UnknownUnknownF> {
   theFunction: F
 }
 
 /*
- const unknownUnknownFunctionNever: UnknownUnknownFunctionConstrained<NeverUnknownFunction> = {theFunction: neverUnknownFunction}
+ const unknownUnknownFunctionNever: UnknownUnknownFunctionConstrained<NeverUnknownF> = {theFunction: neverUnknownFunction}
 
- Type NeverUnknownFunction does not satisfy the constraint AnyUnknownFunction.
+ Type NeverUnknownF does not satisfy the constraint AnyUnknownF.
  Types of parameters args and args are incompatible.
  Type unknown is not assignable to type never.
  */
 
 // the same to start, but …
 
-const unknownUnknownFunctionAny: UnknownUnknownFunctionConstrained<AnyUnknownFunction> = {theFunction: unknownUnknownFunction}
-expectAssignable<NeverUnknownFunction>(unknownUnknownFunctionAny.theFunction)
-expectType<AnyUnknownFunction>(unknownUnknownFunctionAny.theFunction)
-expectAssignable<UnknownUnknownFunction>(unknownUnknownFunctionAny.theFunction)
+const unknownUnknownFunctionAny: UnknownUnknownFunctionConstrained<AnyUnknownF> = {theFunction: unknownUnknownFunction}
+expectAssignable<NeverUnknownF>(unknownUnknownFunctionAny.theFunction)
+expectType<AnyUnknownF>(unknownUnknownFunctionAny.theFunction)
+expectAssignable<UnknownUnknownF>(unknownUnknownFunctionAny.theFunction)
 expectNotAssignable<AFunction2>(unknownUnknownFunctionAny.theFunction)
 expectType<unknown>(unknownUnknownFunctionAny.theFunction(anA, aB))
 expectType<unknown>(unknownUnknownFunctionAny.theFunction())
 
-const unknownUnknownFunctionUnknown: UnknownUnknownFunctionConstrained<UnknownUnknownFunction> = {theFunction: unknownUnknownFunction}
-expectAssignable<NeverUnknownFunction>(unknownUnknownFunctionUnknown.theFunction)
-expectAssignable<AnyUnknownFunction>(unknownUnknownFunctionUnknown.theFunction)
-expectType<UnknownUnknownFunction>(unknownUnknownFunctionUnknown.theFunction)
+const unknownUnknownFunctionUnknown: UnknownUnknownFunctionConstrained<UnknownUnknownF> = {theFunction: unknownUnknownFunction}
+expectAssignable<NeverUnknownF>(unknownUnknownFunctionUnknown.theFunction)
+expectAssignable<AnyUnknownF>(unknownUnknownFunctionUnknown.theFunction)
+expectType<UnknownUnknownF>(unknownUnknownFunctionUnknown.theFunction)
 expectNotAssignable<AFunction2>(unknownUnknownFunctionUnknown.theFunction)
 expectType<unknown>(unknownUnknownFunctionUnknown.theFunction(anA, aB))
 expectType<unknown>(unknownUnknownFunctionUnknown.theFunction())
@@ -176,36 +176,36 @@ expectType<unknown>(unknownUnknownFunctionUnknown.theFunction())
 
  In other words, the "top type" for functions cannot be `UnknownUnknownFunction`, because then we cannot assign any
  regular function. `unknown` is the top type, and for the arguments contravariance applies. We actually need the bottom
- type for arguments in the top type for functions. That is `never` and `NeverUnknownFunction`.
+ type for arguments in the top type for functions. That is `never` and `NeverUnknownF`.
 
- `AnyUnknownFunction` works too, except that we cannot use `NeverUnknownFunction` as argument. But `AnyUnknownFunction`
+ `AnyUnknownF` works too, except that we cannot use `NeverUnknownF` as argument. But `AnyUnknownF`
  is just giving up, because then anything goes (as the examples show).
  */
 
-interface NoArgsUnknownFunctionConstrained<F extends NoArgsUnknownFunction> {
+interface NoArgsUnknownFunctionConstrained<F extends NoArgsUnknownF> {
   theFunction: F
 }
 
-const noArgsUnknownFunctionNever: NoArgsUnknownFunctionConstrained<NeverUnknownFunction> = {theFunction: noArgsUnknownFunction}
-expectType<NeverUnknownFunction>(noArgsUnknownFunctionNever.theFunction)
-expectNotAssignable<AnyUnknownFunction>(noArgsUnknownFunctionNever.theFunction)
-expectNotAssignable<UnknownUnknownFunction>(noArgsUnknownFunctionNever.theFunction)
+const noArgsUnknownFunctionNever: NoArgsUnknownFunctionConstrained<NeverUnknownF> = {theFunction: noArgsUnknownFunction}
+expectType<NeverUnknownF>(noArgsUnknownFunctionNever.theFunction)
+expectNotAssignable<AnyUnknownF>(noArgsUnknownFunctionNever.theFunction)
+expectNotAssignable<UnknownUnknownF>(noArgsUnknownFunctionNever.theFunction)
 expectNotAssignable<AFunction2>(noArgsUnknownFunctionNever.theFunction)
 expectError(noArgsUnknownFunctionNever.theFunction(anA, aB)) // cannot call a never function
 expectType<unknown>(noArgsUnknownFunctionNever.theFunction()) // surpise!
 
-const noArgsUnknownFunctionAny: NoArgsUnknownFunctionConstrained<AnyUnknownFunction> = {theFunction: anyUnknownFunction}
-expectAssignable<NeverUnknownFunction>(noArgsUnknownFunctionAny.theFunction)
-expectType<AnyUnknownFunction>(noArgsUnknownFunctionAny.theFunction)
-expectAssignable<UnknownUnknownFunction>(noArgsUnknownFunctionAny.theFunction)
+const noArgsUnknownFunctionAny: NoArgsUnknownFunctionConstrained<AnyUnknownF> = {theFunction: anyUnknownFunction}
+expectAssignable<NeverUnknownF>(noArgsUnknownFunctionAny.theFunction)
+expectType<AnyUnknownF>(noArgsUnknownFunctionAny.theFunction)
+expectAssignable<UnknownUnknownF>(noArgsUnknownFunctionAny.theFunction)
 expectNotAssignable<AFunction2>(noArgsUnknownFunctionAny.theFunction)
 expectType<unknown>(noArgsUnknownFunctionAny.theFunction(anA, aB))
 expectType<unknown>(noArgsUnknownFunctionAny.theFunction())
 
-const noArgsUnknownFunctionUnknown: NoArgsUnknownFunctionConstrained<UnknownUnknownFunction> = {theFunction: unknownUnknownFunction}
-expectAssignable<NeverUnknownFunction>(noArgsUnknownFunctionUnknown.theFunction)
-expectAssignable<AnyUnknownFunction>(noArgsUnknownFunctionUnknown.theFunction)
-expectType<UnknownUnknownFunction>(noArgsUnknownFunctionUnknown.theFunction)
+const noArgsUnknownFunctionUnknown: NoArgsUnknownFunctionConstrained<UnknownUnknownF> = {theFunction: unknownUnknownFunction}
+expectAssignable<NeverUnknownF>(noArgsUnknownFunctionUnknown.theFunction)
+expectAssignable<AnyUnknownF>(noArgsUnknownFunctionUnknown.theFunction)
+expectType<UnknownUnknownF>(noArgsUnknownFunctionUnknown.theFunction)
 expectNotAssignable<AFunction2>(noArgsUnknownFunctionUnknown.theFunction)
 expectType<unknown>(noArgsUnknownFunctionUnknown.theFunction(anA, aB))
 expectType<unknown>(noArgsUnknownFunctionUnknown.theFunction())
@@ -213,12 +213,15 @@ expectType<unknown>(noArgsUnknownFunctionUnknown.theFunction())
 /*
  const noArgsUnknownFunctionFunction2: NoArgsUnknownFunctionConstrained<AFunction2> = {theFunction: aFunction2}
 
- Type AFunction2 does not satisfy the constraint NoArgsUnknownFunction.
+ Type AFunction2 does not satisfy the constraint NoArgsUnknownF.
 
- So `NoArgsUnknownFunction` is no alternative. The reason is that we would be allowed to call `theFunction`, which
+ So `NoArgsUnknownF` is no alternative. The reason is that we would be allowed to call `theFunction`, which
  _requires_ 2 parameters, with 0 parameters. Note that we can always call a function with more parameters than required,
  but not with less.
  */
+
+
+// start of real tests
 
 expectType<AFunction1>(aFunction1)
 expectType<string>(aFunction1.call(someObject, anA, aB))
