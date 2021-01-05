@@ -353,8 +353,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
     _location?: StackLocation | typeof AbstractContract.internalLocation
   )
 
-  // MUDO should be ContractFunction<this>
-  isImplementedBy (f: unknown): f is GeneralContractFunction<F, Exceptions>
+  isImplementedBy (f: unknown): f is ContractFunction<this>
 
   get pre (): Array<
     F extends NeverUnknownNewableFunction
