@@ -83,7 +83,7 @@ export class ANewableGeneralContractFunction {
   static readonly contract = new AbstractContract<typeof ANewableFunction, SomeError>({})
   static readonly implementation = ANewableFunction
   static readonly location = AbstractContract.internalLocation
-  static contractBind: NewableBind<typeof ANewableFunction, SomeError> = ANewableFunction.bind as NewableBind<typeof ANewableFunction, SomeError>
+  static bind: NewableBind<typeof ANewableFunction, SomeError> = ANewableFunction.bind as NewableBind<typeof ANewableFunction, SomeError>
 
   constructor(a: string, b: number) {}
 }
