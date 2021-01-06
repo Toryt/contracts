@@ -1,8 +1,7 @@
 import { GeneralContractFunction } from './GeneralContractFunction'
-import { NeverUnknownFunction } from './AnyFunction'
 import { Condition } from './Condition'
 import { ContractError } from './ContractError'
-import { AbstractContract } from './AbstractContract'
+import { BaseContract } from './AbstractContract'
 
 // noinspection LocalVariableNamingConventionJS
 /**
@@ -85,7 +84,7 @@ import { AbstractContract } from './AbstractContract'
  * </ul>
  */
 declare class ConditionError extends ContractError {
-  readonly contractFunction: GeneralContractFunction<AbstractContract<NeverUnknownFunction, never>>
+  readonly contractFunction: GeneralContractFunction<BaseContract>
   readonly condition: Condition
   readonly self: unknown
   readonly _args: ReadonlyArray<unknown>
@@ -110,7 +109,7 @@ declare class ConditionError extends ContractError {
        It is ok if the GCF's contract has exception conditions that work for no exceptions, or only for a particular
        type of exceptions. If will be internally ok when we get it, and that is all we need to know. */
 
-    contractFunction: GeneralContractFunction<AbstractContract<NeverUnknownFunction, never>>,
+    contractFunction: GeneralContractFunction<BaseContract>,
     condition: Condition,
     self: unknown,
     args: ArrayLike<unknown>,

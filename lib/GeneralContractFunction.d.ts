@@ -15,14 +15,14 @@
  */
 
 import {
-  AbstractContract,
+  AbstractContract, BaseContract,
   ContractExceptions,
   ContractInstanceType,
   ContractResult,
   ContractSignature,
   ContractThis
 } from './AbstractContract'
-import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
+import { NeverUnknownCallableFunction, NeverUnknownNewableFunction } from './AnyFunction'
 import { Location } from './Location'
 
 /**
@@ -58,7 +58,7 @@ import { Location } from './Location'
  * TypeScript offers a generic definition of `bind` that is type safe for a call with the `thisArg` and up to 4
  * additional typed parameters ( `A0` … `A1`). For a contract function, we try to do better, but fail.
  */
-export type GeneralContractFunction<C extends AbstractContract<NeverUnknownFunction, never>> = ContractSignature<C> & {
+export type GeneralContractFunction<C extends BaseContract> = ContractSignature<C> & {
   readonly contract: C
   readonly implementation: ContractSignature<C>
   readonly location: Location

@@ -230,6 +230,8 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //     > // not ReadonlyArray: we have sliced
 }
 
+export type BaseContract = AbstractContract<NeverUnknownFunction, never>
+
 export type ContractSignature<C extends AbstractContract<NeverUnknownFunction, unknown>> =
   C extends AbstractContract<infer F, unknown> ? F : never
 export type ContractThis<C extends AbstractContract<NeverUnknownFunction, unknown>> =

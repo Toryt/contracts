@@ -19,9 +19,8 @@ import { expectAssignable, expectError, expectType } from 'tsd'
 import { ContractError } from '../lib/ContractError'
 import { aB, aCallableGeneralContractFunction, anA, ANewableGeneralContractFunction } from './subjects'
 import { GeneralContractFunction } from '../lib/GeneralContractFunction'
-import { NeverUnknownFunction } from '../lib/AnyFunction'
 import { Condition } from '../lib/Condition'
-import { AbstractContract } from '../lib/AbstractContract'
+import { BaseContract } from '../lib/AbstractContract'
 
 const aConditionError = new ConditionError(
   aCallableGeneralContractFunction,
@@ -35,7 +34,7 @@ expectType<ConditionError>(aConditionError)
 expectAssignable<ContractError>(aConditionError)
 expectAssignable<Error>(aConditionError)
 
-expectType<GeneralContractFunction<AbstractContract<NeverUnknownFunction, never>>>(aConditionError.contractFunction)
+expectType<GeneralContractFunction<BaseContract>>(aConditionError.contractFunction)
 
 expectType<string>(aConditionError.name)
 expectType<string>(aConditionError.message)
@@ -45,7 +44,7 @@ expectError(aConditionError.message = 'another message')
 expectError(aConditionError._rawStack = 'another raw stack')
 expectError(aConditionError.stack = 'another stack')
 
-expectType<GeneralContractFunction<AbstractContract<NeverUnknownFunction, never>>>(aConditionError.contractFunction)
+expectType<GeneralContractFunction<BaseContract>>(aConditionError.contractFunction)
 expectType<Condition>(aConditionError.condition)
 expectType<unknown>(aConditionError.self)
 expectType<ReadonlyArray<unknown>>(aConditionError._args)
