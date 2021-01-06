@@ -18,6 +18,7 @@ import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewable
 import { EverythingGoes, FalseCondition, MustNotHappen } from './Condition'
 import { InternalLocation, Location, StackLocation } from './Location'
 import { Precondition } from './Precondition'
+import { GeneralContractFunction } from './GeneralContractFunction'
 
 /**
  * Abstract definition of a function contract.
@@ -202,7 +203,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
     _location?: Location
   )
 
-  // isImplementedBy (f: unknown): f is ContractFunction<this>
+  isImplementedBy (f: unknown): f is GeneralContractFunction<this>
 
   readonly pre: Array<Precondition<F>> // not ReadonlyArray: we have sliced
 
