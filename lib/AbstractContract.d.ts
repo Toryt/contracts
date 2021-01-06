@@ -17,6 +17,7 @@
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
 import { EverythingGoes, FalseCondition, MustNotHappen } from './Condition'
 import { InternalLocation, Location, StackLocation } from './Location'
+import { Precondition } from './Precondition'
 
 /**
  * Abstract definition of a function contract.
@@ -200,16 +201,11 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
     kwargs: object, // MUDO AbstractContractKwargs<F, Exceptions>,
     _location?: Location
   )
-  //
+
   // isImplementedBy (f: unknown): f is ContractFunction<this>
-  //
-  // get pre (): Array<
-  //   F extends NeverUnknownNewableFunction
-  //     ? NewablePrecondition<F>
-  //     : F extends NeverUnknownCallableFunction
-  //       ? CallablePrecondition<F>
-  //       : never
-  // > // not ReadonlyArray: we have sliced
+
+  readonly pre: Array<Precondition<F>> // not ReadonlyArray: we have sliced
+
   //
   // get post (): Array<
   //   F extends NeverUnknownNewableFunction
@@ -259,8 +255,9 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
  * preconditions, or all its preconditions always return truthy.
  *
  * The limit for `F` is then to require infinite arguments, of a type all other argument types are super types of, i.e.,
- * `never`. This is expressed by the arguments tuple of type `never[]`. In the limit `F` has at least 1 precondition
- * that always returns falsy.
+ * `never`. This is expressed by the arguments tuple of type `never[]`. In the limit, in every situation, there is at
+ * least 1 preconditions of `F` that returns falsy. This is something we cannot express in the type system. One special
+ * case of this is where there is at least 1 precondition that always returns falsy.
  *
  * `F'` can return a subtype of the return type of `F`, excluding `undefined`, `null`, or `void`, if the
  * return type of `F` did not allow that. Notably, in the limit, it could return `never` (and never end nominally, i.e.,
@@ -301,11 +298,15 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
  * assignable to `AbstractContract<F, Exceptions>`, and in the limit, to
  * `AbstractContract<NeverUnknownFunction, unknown>`
  */
-export type BaseContract = AbstractContract<NeverUnknownFunction, unknown> /*& {
-  pre: MustNotHappen,
-  post: EverythingGoes,
-  exception: EverythingGoes
-}*/
+export type BaseContract = AbstractContract<NeverUnknownFunction, unknown> & {
+  // cannot limit pre more, to allow for extensibility
+  // post: EverythingGoes,
+  // exception: EverythingGoes
+}
+
+export type RootContract = BaseContract & {
+  pre: MustNotHappen
+}
 
 /**
  * Contract functions uphold every contract. Its contract functions can be called with any or no arguments, and never

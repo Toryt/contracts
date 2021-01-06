@@ -22,5 +22,5 @@ export type Booleany = Falsy | unknown
 export type Condition = (this: never, ...args: never[]) => Booleany
 export type TrueCondition = () => unknown
 export type FalseCondition = (this: unknown, ...args: unknown[]) => Falsy
-export type MustNotHappen = [FalseCondition] // at least 1 false condition, non-empty
+export type MustNotHappen = Condition[] & [FalseCondition] // at least 1 false condition, non-empty
 export type EverythingGoes = TrueCondition[] // empty array, or all true conditions

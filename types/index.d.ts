@@ -23,34 +23,6 @@ import { InternalLocation, Location, StackLocation } from '../lib/Location'
 export {}
 //
 // /**
-//  * Booleany function (predicate): are `this` and the `args` valid?
-//  *
-//  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
-//  */
-// export type CallablePrecondition<F extends NeverUnknownCallableFunction> =
-//   (this: ThisParameterType<F>, ...args: Parameters<F>) => Booleany
-//
-// /**
-//  * Booleany function (predicate): are the `args` valid?
-//  *
-//  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
-//  */
-// export type NewablePrecondition<F extends NeverUnknownNewableFunction> =
-//   (...args: ConstructorParameters<F>) => Booleany
-//
-// /**
-//  * Booleany function (predicate): are `this` and the `args` valid?
-//  *
-//  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
-//  */
-// export type Precondition<F extends NeverUnknownFunction> =
-//   F extends NeverUnknownNewableFunction
-//     ? NewablePrecondition<F>
-//     : F extends NeverUnknownCallableFunction
-//       ? CallablePrecondition<F>
-//       : never
-//
-// /**
 //  * Booleany function (predicate): are `this`, the `args`, and the `result` valid?
 //  *
 //  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
