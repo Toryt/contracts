@@ -63,6 +63,18 @@ export type GeneralContractFunction<C extends AbstractContract<NeverUnknownFunct
   readonly implementation: ContractSignature<C>
   readonly location: Location
   name: string // readonly in `lib.es2015.core.d.ts`
+  /* NOTE: Sadly, bind cannot be defined correctly. It _should_ return a contract function, but as it is, it is
+           inherited from `CallableFunction` or `NewableFunction`, where there are a number of overloads.
+           This needs to be a function that takes the signature of `ContractSignature<C>`, adds properties, inherits
+           some properties, but overrides `bind`. There seems no way to do this.
+           When this is _not_ defined as a conjunction with `ContractSignature<C>` in some way, we cannot be called
+           (we are not a `Function`). When we are defined as a conjunction with `ContractSignature<C>`, we inherit its
+           overloaded definition.
+           Adding a new definition for `bind` here, either as a method, or as a property, just adds to the overload,
+           but does not override.
+           Using `Omit`, or similar constructs, to remove bind from the `ContractSignature<C>` before conjunction also
+           removes ability to be called: we can only get an object with the properties, not a callable `Function`.
+   */
   // MUDO
   // bind: ContractSignature<C> extends NeverUnknownNewableFunction
   //       ? NewableBind<C>
