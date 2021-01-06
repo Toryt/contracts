@@ -128,6 +128,3 @@ export {}
 //
 //   callee (...args: [...ContractParameters<C>, unknown, ContractFunction<C>]): ContractFunction<C>
 // }
-
-export type FalseCondition = (this: unknown, ...args: unknown[]) => false
-export type MustNotHappen = [FalseCondition]

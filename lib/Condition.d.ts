@@ -14,6 +14,13 @@
   limitations under the License.
  */
 
-export type Booleany = undefined | null | unknown
+// noinspection MagicNumberJS
+export type Falsy = undefined | null | '' | 0  | -0 | 0n | false // | NaN, but TS does not support that
+// there is no way to express truthy in TS
+export type Booleany = Falsy | unknown
 
 export type Condition = (this: never, ...args: never[]) => Booleany
+export type TrueCondition = () => unknown
+export type FalseCondition = (this: unknown, ...args: unknown[]) => Falsy
+export type MustNotHappen = [FalseCondition] // at least 1 false condition, non-empty
+export type EverythingGoes = TrueCondition[] // empty array, or all true conditions

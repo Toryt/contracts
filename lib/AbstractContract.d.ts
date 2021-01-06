@@ -15,7 +15,7 @@
  */
 
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
-import { FalseCondition, MustNotHappen } from '../types'
+import { EverythingGoes, FalseCondition, MustNotHappen } from './Condition'
 import { InternalLocation, Location, StackLocation } from './Location'
 
 /**
