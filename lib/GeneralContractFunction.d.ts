@@ -63,11 +63,12 @@ export type GeneralContractFunction<C extends AbstractContract<NeverUnknownFunct
   readonly implementation: ContractSignature<C>
   readonly location: Location
   name: string // readonly in `lib.es2015.core.d.ts`
-  bind: ContractSignature<C> extends NeverUnknownNewableFunction
-        ? NewableBind<C>
-        : ContractSignature<C> extends NeverUnknownCallableFunction
-          ? CallableBind<C>
-          : never
+  // MUDO
+  // bind: ContractSignature<C> extends NeverUnknownNewableFunction
+  //       ? NewableBind<C>
+  //       : ContractSignature<C> extends NeverUnknownCallableFunction
+  //         ? CallableBind<C>
+  //         : never
   prototype: ContractSignature<C> extends NeverUnknownNewableFunction ? InstanceType<ContractSignature<C>> : unknown
 
 }
