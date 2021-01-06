@@ -38,7 +38,7 @@ export type AFunction3 = (a: string) => 'truth' | 'dare'
 export const aFunction3: AFunction3 = function aFunction3 (a) { return a > 'm' ? 'truth' : 'dare' }
 
 export class ANewableFunction {
-  private a: string
+  a: string
   private b: number
   constructor(a: string, b: number) {
     this.a = a
@@ -84,18 +84,14 @@ Object.defineProperty(aCallableGeneralContractFunction, 'name', {
   value: 'a general contract function name'
 })
 
-export class ANewableGeneralContractFunction {
+export class ANewableGeneralContractFunction extends ANewableFunction {
   static readonly contract = new AbstractContract<typeof ANewableFunction, SomeError>({})
   static readonly implementation = ANewableFunction
   static readonly location = AbstractContract.internalLocation
   static bind: NewableBind<AbstractContract<typeof ANewableFunction, SomeError>> = ANewableFunction.bind as NewableBind<AbstractContract<typeof ANewableFunction, SomeError>>
 
-  private a: string
-  private b: number
-
   constructor(a: string, b: number) {
-    this.a = a
-    this.b = b
+    super(a, b)
   }
 }
 Object.defineProperty(ANewableGeneralContractFunction, 'name', {
