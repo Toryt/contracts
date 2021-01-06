@@ -160,7 +160,7 @@ expectType<Function>(ANewableGeneralContractFunction.prototype.constructor)
 let aNewableGeneralContractFunctionB: GeneralContractFunction<AbstractContract<typeof ANewableFunction, SomeError>> =
   ANewableGeneralContractFunction
 
-expectType<GeneralContractFunction<AbstractContract<typeof ANewableFunction, SomeError>>(aNewableGeneralContractFunctionB)
+expectType<GeneralContractFunction<AbstractContract<typeof ANewableFunction, SomeError>>>(aNewableGeneralContractFunctionB)
 expectAssignable<typeof ANewableFunction>(aNewableGeneralContractFunctionB)
 expectType<ANewableFunction>(new aNewableGeneralContractFunctionB(anA, aB))
 expectType<ANewableGeneralContractFunction>(new aNewableGeneralContractFunctionB(anA, aB))
