@@ -2,7 +2,7 @@ import { GeneralContractFunction } from './GeneralContractFunction'
 import { NeverUnknownFunction } from './AnyFunction'
 import { Condition } from './Condition'
 import { ContractError } from './ContractError'
-import { AbstractContract } from '../types/index'
+import { AbstractContract } from './AbstractContract'
 
 // noinspection LocalVariableNamingConventionJS
 /**

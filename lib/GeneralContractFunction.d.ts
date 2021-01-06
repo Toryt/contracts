@@ -21,7 +21,7 @@ import {
   ContractResult,
   ContractSignature,
   ContractThis
-} from '../types/index'
+} from './AbstractContract'
 import { Location } from './_private/is'
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
 

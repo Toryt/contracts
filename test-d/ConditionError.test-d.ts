@@ -21,7 +21,7 @@ import { aB, aCallableGeneralContractFunction, anA, ANewableGeneralContractFunct
 import { GeneralContractFunction } from '../lib/GeneralContractFunction'
 import { NeverUnknownFunction } from '../lib/AnyFunction'
 import { Condition } from '../lib/Condition'
-import { AbstractContract } from '../types'
+import { AbstractContract } from '../lib/AbstractContract'
 
 const aConditionError = new ConditionError(
   aCallableGeneralContractFunction,

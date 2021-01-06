@@ -18,7 +18,7 @@ import {
   CallableBind,
   NewableBind,
 } from '../lib/GeneralContractFunction'
-import { AbstractContract } from '../types'
+import { AbstractContract } from '../lib/AbstractContract'
 
 export interface SomeObject {
   aProperty: number

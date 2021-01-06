@@ -17,7 +17,7 @@
 import { Booleany } from './Condition'
 import { GeneralContractFunction } from './GeneralContractFunction'
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
-import { AbstractContract } from '../types'
+import { AbstractContract } from './AbstractContract'
 
 /**
  * Booleany function (predicate): are `this`, `args`, and the thrown exception valid?

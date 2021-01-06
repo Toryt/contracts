@@ -14,9 +14,7 @@
   limitations under the License.
  */
 
-import {
-  AbstractContract,
-} from '../types'
+import { AbstractContract } from '../lib/AbstractContract'
 import { AFunction1, SomeError, ANewableFunction, someObject, aCallableGeneralContractFunction, anA, aB, someArgs, ANewableGeneralContractFunction } from './subjects'
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
 import { CallableBind, GeneralContractFunction, NewableBind } from '../lib/GeneralContractFunction'
