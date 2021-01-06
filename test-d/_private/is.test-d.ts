@@ -261,3 +261,34 @@ expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly another
 
 // TODO are these TS bugs? or tsd bugs?
 // TODO note that these issues do not occur with the other predicates
+
+
+// function-ability is retained
+// TODO: this does NOT work for functions
+function aFunction(a: number): number {
+  return 2 * a
+}
+aFunction.someProperty = 'a value'
+
+// noinspection MagicNumberJS
+expectType<number>(aFunction(499343))
+if (frozenOwnProperty(aFunction, 'someProperty')) {
+  // noinspection MagicNumberJS
+  expectType<number>(aFunction(499343))
+  expectType<string>(aFunction.someProperty)
+  // TODO: it does not work for a known property
+  // noinspection MagicNumberJS
+  aFunction.someProperty = 423
+}
+// noinspection MagicNumberJS
+expectType<number>(aFunction(499343))
+
+if (frozenOwnProperty(aFunction, 'aPropertyThatDoesntExistYet')) {
+  // noinspection MagicNumberJS
+  expectType<number>(aFunction(499343))
+  // TODO: it does not work for an unknown
+  expectError/*expectType<unknown>*/(aFunction.aPropertyThatDoesntExistYet)
+}
+// noinspection MagicNumberJS
+expectType<number>(aFunction(499343))
+
