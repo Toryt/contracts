@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectError, expectNotAssignable, expectNotType, expectType } from 'tsd'
+import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd'
 import {
   frozenOwnProperty,
   functionArguments,
@@ -24,10 +24,12 @@ import {
 } from '../../lib/_private/is'
 import { StackLocation } from '../../lib/Location'
 
-const aStackLocation = '    at REPLServer.emit (events.js:327:22)\n'
 const aNumber = 3543
 const aString = ' a string'
-let something1 = {}
+const argumentsObject = (function(a: string, b: number) { return arguments })(aString, aNumber)
+let something1 = {
+  someProperty: true
+}
 let something2 = {
   aProperty: 'a property value',
   anotherProperty: true
@@ -47,60 +49,125 @@ const aStack = `    at REPL1:1:1
     at REPLServer.Interface._onLine (readline.js:337:10)
     at REPLServer.Interface._line (readline.js:666:8)`
 
+// prepare
+expectType<IArguments>(argumentsObject)
+expectNotAssignable<IArguments>(something1)
+expectNotAssignable<typeof something1>(argumentsObject)
 
-expectAssignable<StackLocation>(aStackLocation)
-expectNotType<StackLocation>(aStackLocation) // it's a string
-expectNotType<StackLocation>(null)
-expectNotType<StackLocation>(undefined)
 // noinspection MagicNumberJS
-expectNotType<StackLocation>(42)
-expectNotType<StackLocation>(true)
-expectNotType<StackLocation>(false)
-expectNotType<StackLocation>([])
-expectNotType<StackLocation>({})
+expectType<3543>(aNumber)
+expectAssignable<number>(aNumber)
+expectNotAssignable<number>(something1)
+expectNotAssignable<typeof something1>(aNumber)
 
-const typedStackLocation: StackLocation = aStackLocation
-expectType<StackLocation>(typedStackLocation)
+expectType<' a string'>(aString)
+expectAssignable<string>(aString)
+expectNotAssignable<string>(something1)
+expectNotAssignable<typeof something1>(aString)
 
-// sadly …
-expectAssignable<StackLocation>(  '')
+expectType<true>(true)
+expectAssignable<boolean>(true)
+expectNotAssignable<boolean>(something1)
+expectNotAssignable<typeof something1>(true)
 
+expectType<typeof something2>(something2)
+expectNotAssignable<typeof something2>(something1)
+expectNotAssignable<typeof something1>(something2)
+
+// test is.functionArguments
+expectType<boolean>(functionArguments(something1))
 if (functionArguments(something1)) {
-  expectAssignable<typeof something1>((function(a: string, b: number) { return arguments })(aString, aNumber))
-  expectNotAssignable<typeof something1>(something2)
-  expectNotAssignable<typeof something1>(aString)
-  expectNotAssignable<typeof something1>(aNumber)
-  expectNotAssignable<typeof something1>([aString, aNumber])
-  expectType<IArguments>(something1)
+  expectAssignable<IArguments>(something1)
   expectType<any>(something1[aNumber])
   expectType<number>(something1.length)
   expectType<Function>(something1.callee)
-}
 
+  expectType<{ someProperty: boolean; } & IArguments>(something1)
+  expectAssignable<object>(something1) // because the type of something1 is preserved too
+
+  expectNotAssignable<typeof something1>(aNumber)
+  expectNotAssignable<typeof something1>(aString)
+  expectNotAssignable<typeof something1>(true)
+  expectNotAssignable<typeof something1>(argumentsObject) // because the type of something1 is preserved too
+  expectNotAssignable<typeof something1>(something2)
+  expectNotAssignable<typeof something1>([aString, aNumber])
+} else {
+  expectType<{ someProperty: boolean; }>(something1)
+  expectNotAssignable<IArguments>(something1)
+}
+expectType<{ someProperty: boolean; }>(something1)
+expectNotAssignable<IArguments>(something1)
+
+// test is.primitive
+expectNotAssignable<IArguments>(something1)
+expectNotAssignable<typeof something1>(argumentsObject)
+expectType<boolean>(primitive(something1))
 if (primitive(something1)) {
-  expectAssignable<typeof something1>(aNumber)
-  expectAssignable<typeof something1>(aString)
-  expectAssignable<typeof something1>(true)
-  expectType<number | string | boolean>(something1)
-  expectNotAssignable<object>(something1)
-}
+  expectAssignable<number | string | boolean>(something1)
 
+  expectType<{ someProperty: boolean; } & (number | string | boolean)>(something1)
+  expectAssignable<object>(something1) // because the type of something1 is preserved too
+
+  expectNotAssignable<typeof something1>(aNumber) // because the type of something1 is preserved too
+  expectNotAssignable<typeof something1>(aString) // because the type of something1 is preserved too
+  expectNotAssignable<typeof something1>(true) // because the type of something1 is preserved too
+  expectNotAssignable<typeof something1>(argumentsObject)
+  expectNotAssignable<typeof something1>(something2)
+  expectNotAssignable<typeof something1>([aString, aNumber])
+} else {
+  expectType<{ someProperty: boolean; }>(something1)
+  expectNotAssignable<number | string | boolean>(something1)
+}
+expectType<{ someProperty: boolean; }>(something1)
+expectNotAssignable<number | string | boolean>(something1)
+
+// test is.stackLocation
+expectType<boolean>(stackLocation(something1))
 if (stackLocation(something1)) {
-  expectAssignable<typeof something1>(aString)
-  expectType<StackLocation>(something1)
-  expectNotAssignable<typeof something1>(aNumber)
-  expectNotAssignable<typeof something1>(true)
-  expectNotAssignable<object>(something1)
-}
+  expectAssignable<StackLocation>(something1)
 
+  expectType<{ someProperty: boolean; } & StackLocation>(something1)
+  expectAssignable<string>(something1) // because StackLocation is just a string alias
+  expectAssignable<object>(something1) // because the type of something1 is preserved too
+
+  expectNotAssignable<typeof something1>(aNumber)
+  expectNotAssignable<typeof something1>(aString) // because the type of something1 is preserved too
+  expectNotAssignable<typeof something1>(true)
+  expectNotAssignable<typeof something1>(argumentsObject)
+  expectNotAssignable<typeof something1>(something2)
+  expectNotAssignable<typeof something1>([aString, aNumber])
+} else {
+  expectType<{ someProperty: boolean; }>(something1)
+  expectNotAssignable<StackLocation>(something1)
+}
+expectType<{ someProperty: boolean; }>(something1)
+expectNotAssignable<StackLocation>(something1)
+
+// test is.stack
+expectType<boolean>(stack(something1))
 if (stack(something1)) {
-  expectAssignable<typeof something1>(aStack)
-  expectType<string>(something1)
-  expectNotAssignable<typeof something1>(aNumber)
-  expectNotAssignable<typeof something1>(true)
-  expectNotAssignable<object>(something1)
-}
+  expectAssignable<string>(something1)
 
+  expectType<{ someProperty: boolean; } & string>(something1)
+  expectAssignable<string>(something1)
+  expectAssignable<object>(something1) // because the type of something1 is preserved too
+
+  expectNotAssignable<typeof something1>(aNumber)
+  expectNotAssignable<typeof something1>(aString) // because the type of something1 is preserved too
+  expectNotAssignable<typeof something1>(true)
+  expectNotAssignable<typeof something1>(argumentsObject)
+  expectNotAssignable<typeof something1>(something2)
+  expectNotAssignable<typeof something1>([aString, aNumber])
+} else {
+  expectType<{ someProperty: boolean; }>(something1)
+  expectNotAssignable<string>(something1)
+}
+expectType<{ someProperty: boolean; }>(something1)
+expectNotAssignable<string>(something1)
+
+// test is.frozenOwnProperty
+// starting position
+expectType<{ aProperty: string; anotherProperty: boolean }>(something2)
 expectType<boolean>(frozenOwnProperty(something2, 'does not exist'))
 expectType<string>(something2.aProperty)
 something2.aProperty = 'another value'
@@ -109,31 +176,68 @@ expectType<boolean>(something2.anotherProperty)
 something2.anotherProperty = false
 expectType<false>(something2.anotherProperty)
 expectAssignable<boolean>(something2.anotherProperty)
+
 if (frozenOwnProperty(something2, 'aProperty')) {
+  expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly aProperty: string; }>(something2)
   expectType<string>(something2.aProperty)
   expectError(something2.aProperty = 'cannot assign to readonly')
+
+  // unchanged
   expectType<false>(something2.anotherProperty)
   expectAssignable<boolean>(something2.anotherProperty)
   something2.anotherProperty = true
   expectType<true>(something2.anotherProperty)
   expectAssignable<boolean>(something2.anotherProperty)
-  expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly aProperty: string; }>(something2)
 }
 
+// outside the if, nothing should have changed; repeat starting position
+/* TODO: the following should be true, because we are outside the if, but TS says it is not true …
+expectType<{ aProperty: string; anotherProperty: boolean }>(something2)
+
+         instead, we see the same type we see inside the if, which should be wrong: */
+expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly aProperty: string; }>(something2)
+
+expectType<boolean>(frozenOwnProperty(something2, 'does not exist'))
+expectType<string>(something2.aProperty)
+/* TODO: the following should be allowed, but we are kept from assigning by TS
+
+something2.aProperty = 'another value'
+
+         instead we get an error:
+
+         Cannot assign to aProperty because it is a read-only property
+ */
+expectError(something2.aProperty = 'another value')
+expectType<string>(something2.aProperty)
+/* TODO: yet, the assignment of true in the if was _not_ remembered; also the setup was not remembered (there the type
+         was false) */
+expectType<boolean>(something2.anotherProperty)
+something2.anotherProperty = false
+expectType<false>(something2.anotherProperty)
+expectAssignable<boolean>(something2.anotherProperty)
+
 if (frozenOwnProperty(something2, 'yetAnotherProperty')) {
+/* TODO: the following should be true, because we are outside the if, but TS says it is not true …
+  expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly yetAnotherProperty: unknown; }>(something2)
+
+         instead, we see an extra conjunction, from the previous if: */
+  expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly aProperty: string; } & { readonly yetAnotherProperty: unknown; }>(something2)
+
   expectType<unknown>(something2.yetAnotherProperty)
+
   expectError(something2.yetAnotherProperty = 'cannot assign to readonly')
   expectType<string>(something2.aProperty)
   /* TODO "Cannot assign to aProperty because it is a read-only property." This is _wrong_! It is not in the if above.
           This should be allowed here
   something2.aProperty = 'another value'
   */
-  expectType<boolean>(something2.anotherProperty)
-  something2.anotherProperty = false
-  expectType<false>(something2.anotherProperty)
+  expectType<false>(something2.anotherProperty) // not boolean, because of the assignment in the repeat
+  something2.anotherProperty = true
+  expectType<true>(something2.anotherProperty)
   expectAssignable<boolean>(something2.anotherProperty)
 }
 
+// now demonstrate that the negation does nothing, on a fresh object
 expectType<{aProperty: string, anotherProperty: boolean}>(something3)
 if (!frozenOwnProperty(something3, 'anotherProperty')) {
   /* TODO The "not frozen own property" makes us loose all type information, and that is not the intention. We should
@@ -147,3 +251,13 @@ if (!frozenOwnProperty(something3, 'anotherProperty')) {
   expectType<false>(something3.anotherProperty)
   */
 }
+
+// afterwards, nothing is changed
+/* TODO: that is, nothing should have changed …
+expectType<{aProperty: string, anotherProperty: boolean}>(something3)
+
+         but it is! */
+expectType<{ aProperty: string; anotherProperty: boolean; } & { readonly anotherProperty: boolean; }>(something3)
+
+// TODO are these TS bugs? or tsd bugs?
+// TODO note that these issues do not occur with the other predicates

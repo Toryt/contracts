@@ -16,7 +16,7 @@
 
 import { StackLocation } from '../Location'
 
-export function functionArguments(a: any): a is IArguments;
+export function functionArguments(a: unknown): a is IArguments;
 export function primitive(p: unknown): p is number | string | boolean;
 export function stackLocation(location: unknown): location is StackLocation;
 export function stack(stack: unknown): stack is string;
