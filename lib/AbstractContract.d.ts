@@ -16,7 +16,7 @@
 
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
 import { EverythingGoes, FalseCondition, MustNotHappen } from './Condition'
-import { InternalLocation, Location, StackLocation } from './Location'
+import { InternalLocation, Location } from './Location'
 import { Precondition } from './Precondition'
 import { GeneralContractFunction } from './GeneralContractFunction'
 
@@ -189,7 +189,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //   exception: []
   // }
 
-  readonly location: StackLocation | InternalLocation
+  readonly location: Location
   // MUDO readonly abstract: ContractFunction<this>;
 
   verify: boolean;
