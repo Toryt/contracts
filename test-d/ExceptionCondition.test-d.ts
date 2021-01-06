@@ -16,7 +16,7 @@
 
 import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd'
 import { AFunction1, someError, SomeError, SomeObject, SomeSubError } from './subjects'
-import { CallableExceptionCondition } from '../types'
+import { CallableExceptionCondition } from '../lib/ExceptionCondition'
 
 function canThrowSomeError (): void {
   throw someError

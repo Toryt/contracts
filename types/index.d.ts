@@ -84,40 +84,6 @@ export {}
 //     ? CallablePostcondition<F>
 //     : never
 //
-// /**
-//  * Booleany function (predicate): are `this`, `args`, and the thrown exception valid?
-//  *
-//  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
-//  */
-// export type CallableExceptionCondition<F extends NeverUnknownCallableFunction, Exceptions> =
-//   (
-//     this: ThisParameterType<F>,
-//     ...args: [...Parameters<F>, Exceptions, GeneralContractFunction<AbstractContract<OmitThisParameter<F>, Exceptions>>]
-//   ) => Booleany
-//
-// /**
-//  * Booleany function (predicate): are the `args`, and the thrown exception valid?
-//  *
-//  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
-//  */
-// export type NewableExceptionCondition<F extends NeverUnknownNewableFunction, Exceptions> =
-//   (
-//     this: InstanceType<F>,
-//     ...args: [...ConstructorParameters<F>, Exceptions, GeneralContractFunction<AbstractContract<OmitThisParameter<F>, Exceptions>>]
-//   ) => Booleany
-//
-// /**
-//  * Booleany function (predicate): are `this`, `args`, and the thrown exception valid?
-//  *
-//  * Returns a `boolean` in principle, but `unknown` in practice, which is interpreted as _truthy_ or _falsy_.
-//  */
-// export type ExceptionCondition<F extends NeverUnknownFunction, Exceptions> =
-//   F extends NeverUnknownNewableFunction
-//   ? NewableExceptionCondition<F, Exceptions>
-//   : F extends NeverUnknownCallableFunction
-//     ? CallableExceptionCondition<F, Exceptions>
-//     : never
-//
 // export interface CallableAbstractContractKwargs<F extends NeverUnknownCallableFunction, Exceptions> {
 //   pre?: ReadonlyArray<CallablePrecondition<F>>,
 //   post?: ReadonlyArray<CallablePostcondition<F>>,
