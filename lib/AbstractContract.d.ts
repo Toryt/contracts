@@ -195,6 +195,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
 
   // /* See https://github.com/microsoft/TypeScript/issues/3841#issuecomment-502845949 */
   // ['constructor']: ContractConstructor<this>;
+  // noinspection ParameterNamingConventionJS
   constructor (
     kwargs: object, // MUDO AbstractContractKwargs<F, Exceptions>,
     _location?: Location
@@ -230,7 +231,91 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //     > // not ReadonlyArray: we have sliced
 }
 
-export type BaseContract = AbstractContract<NeverUnknownFunction, never>
+/**
+ * A variable `let rcf: ContractFunction<RootContract>` must be assignable by every contract function.
+ *
+ * ### Assignability of contract functions
+ *
+ * A variable `let cf: ContractFunction<C>`, with `C = AbstractContract<F, Exceptions>`, must be assignable by every
+ * contract function that can safely be called with the knowledge we get from `C`. With that knowledge, we know that
+ *
+ * - we need to call `cf` with arguments assignable to the arguments of `F`, adhering to the preconditions of `C`
+ * - the nominal result will be assignable to the return type of `F`, and adhere to the postconditions of `C`
+ * - we need to deal with exceptions being thrown that are assignable to `Exceptions`, and adhere to the exception
+ *   conditions of `C`
+ *
+ * So a function `F'` that
+ *
+ * - works when called with arguments assignable to the arguments of `F`, adhering to the preconditions of `C`,
+ * - returns a nominal result that is assignable to the return type of `F`, and adheres to the postconditions of `C`,
+ * - or throws exceptions that are assignable to `Exceptions`, and adhere to the exception conditions of `C`
+ *
+ * can be assigned to `cf`.
+ *
+ * `F'` can require less arguments, but not more (it can have more optional arguments), or require the arguments to be
+ * of a super type of the respective argument required by `F`. In the limit, `F'` requires no arguments. The
+ * preconditions that apply to the arguments of `F'` can return falsy in less cases than those of
+ * `C`, but not in more cases. A form of this is to have less preconditions. In the limit, `F'` can has no
+ * preconditions, or all its preconditions always return truthy.
+ *
+ * The limit for `F` is then to require infinite arguments, of a type all other argument types are super types of, i.e.,
+ * `never`. This is expressed by the arguments tuple of type `never[]`. In the limit `F` has at least 1 precondition
+ * that always returns falsy.
+ *
+ * `F'` can return a subtype of the return type of `F`, excluding `undefined`, `null`, or `void`, if the
+ * return type of `F` did not allow that. Notably, in the limit, it could return `never` (and never end nominally, i.e.,
+ * never end, or always end exceptionally). The postconditions that apply to the result of `F'` can return falsy in
+ * more cases than those of `C`, but not in less cases. A form of this is to have more postconditions. In the limit,
+ * `F'` has at least 1 postcondition that always returns falsy.
+ *
+ * The limit for `F` is then to have a return type that is a super type of all other types, i.e., `unknown`. In the
+ * limit `F` has no postconditions, or all its postconditions always return truthy.
+ *
+ * `F'` can throw subtypes of `Exceptions`, excluding `undefined`, or `null`, if the return type of `F` did not allow
+ * that. Notably, in the limit, it could throw `never` (and never end exceptionally, i.e., never end, or always end
+ * nominally). The exception conditions that apply to the exceptions that can be thrown by `F'` can return falsy in
+ * more cases than those of `C`, but not in less cases. A form of this is to have more exception conditions. In the
+ * limit, `F'` has at least 1 exception condition that always returns falsy.
+ *
+ * The limit for `F` is then to have an exception type that is a super type of all other types, i.e., `unknown`. In the
+ * limit `F` has no exception conditions, or all its exception conditions always return truthy.
+ *
+ * ### implementation
+ *
+ * A function `I` offered as implementation to a contract `C = AbstractContract<F, Exceptions>` will be called with
+ * arguments that are defined in `F`, and is expected to return a value of the result type of `F` when it ends
+ * nominally.
+ *
+ * `I` can require less arguments, but not more (it can have more optional arguments), or require the arguments to be of
+ * a super type of the respective argument required by `F`. In the limit, `I` requires no arguments.
+ *
+ * `I` can return a subtype of the return type of `F`, excluding `undefined`, `null`, or `void`, if the return type of
+ * `F` did not allow that. Notably, in the limit, it could return `never` (and never end nominally, i.e., never end, or
+ * always end exceptionally).
+ *
+ * In other words, `I` must be assignable to `F` to be acceptable as implementation function of `C`. In the limit, a
+ * function of type `() => never & (new () => never)` can be used as implementation of any contract. On the other side,
+ * `AbstractContact<NeverUnknownFunction, ->` accepts any function as implementation.
+ *
+ * Note that, when `I` is assignable to `F`, and `EI` is assignable to `Exceptions`, `AbstractContract<I, EI>` is
+ * assignable to `AbstractContract<F, Exceptions>`, and in the limit, to
+ * `AbstractContract<NeverUnknownFunction, unknown>`
+ */
+export type BaseContract = AbstractContract<NeverUnknownFunction, unknown> /*& {
+  pre: MustNotHappen,
+  post: EverythingGoes,
+  exception: EverythingGoes
+}*/
+
+/**
+ * Contract functions uphold every contract. Its contract functions can be called with any or no arguments, and never
+ * end nominally, nor exceptionally, so they adhere to any postconditions, and any exception conditions.
+ */
+export type NeverContract = AbstractContract<() => never & (new () => never), never> & {
+  pre: EverythingGoes,
+  post: MustNotHappen,
+  exception: MustNotHappen
+}
 
 export type ContractSignature<C extends BaseContract> =
   C extends AbstractContract<infer F, unknown> ? F : never
