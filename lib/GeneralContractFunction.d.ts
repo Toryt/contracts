@@ -22,8 +22,8 @@ import {
   ContractSignature,
   ContractThis
 } from './AbstractContract'
-import { Location } from './_private/is'
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
+import { Location } from './Location'
 
 /**
  * A contract function has the same signature as its implementation `F`, but adds a `contract`, `implementation`, and

@@ -14,7 +14,7 @@
  limitations under the License.
  */
 
-import { StackLocation } from './is'
+import { StackLocation } from '../Location'
 
 /**
  * The (depth + 1)nd line from a stack trace created here, after the `toString()` (the `toString()` might prepended

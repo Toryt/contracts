@@ -17,8 +17,8 @@
 // do not automatically export
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from '../lib/AnyFunction'
 import { GeneralContractFunction } from '../lib/GeneralContractFunction'
-import { Location, InternalLocation, StackLocation } from '../lib/_private/is'
 import { Booleany } from '../lib/Condition'
+import { InternalLocation, Location, StackLocation } from '../lib/Location'
 
 export {}
 //

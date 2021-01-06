@@ -15,8 +15,8 @@
  */
 
 import { NeverUnknownCallableFunction, NeverUnknownFunction, NeverUnknownNewableFunction } from './AnyFunction'
-import { InternalLocation, Location, StackLocation } from './_private/is'
 import { FalseCondition, MustNotHappen } from '../types'
+import { InternalLocation, Location, StackLocation } from './Location'
 
 /**
  * Abstract definition of a function contract.

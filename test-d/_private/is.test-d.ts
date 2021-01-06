@@ -20,9 +20,9 @@ import {
   functionArguments,
   primitive,
   stack,
-  stackLocation,
-  StackLocation
+  stackLocation
 } from '../../lib/_private/is'
+import { StackLocation } from '../../lib/Location'
 
 const aStackLocation = '    at REPLServer.emit (events.js:327:22)\n'
 const aNumber = 3543

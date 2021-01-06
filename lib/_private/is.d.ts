@@ -14,13 +14,7 @@
  limitations under the License.
  */
 
-export type StackLocation = string
-
-export interface InternalLocation {
-  toString (): 'INTERNAL'
-}
-
-export type Location = StackLocation | InternalLocation
+import { StackLocation } from '../Location'
 
 export function functionArguments(a: any): a is IArguments;
 export function primitive(p: unknown): p is number | string | boolean;

@@ -31,7 +31,7 @@ import {
   Precondition
 } from '@toryt/contracts'
 import { NeverUnknownFunction } from '../lib/AnyFunction'
-import { StackLocation } from '../lib/_private/is'
+import { StackLocation } from '../lib/Location'
 
 interface SomeObject {
   aProperty: number

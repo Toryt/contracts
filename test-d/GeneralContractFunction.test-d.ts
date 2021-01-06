@@ -18,7 +18,7 @@ import { AbstractContract } from '../lib/AbstractContract'
 import { AFunction1, SomeError, ANewableFunction, someObject, aCallableGeneralContractFunction, anA, aB, someArgs, ANewableGeneralContractFunction } from './subjects'
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
 import { CallableBind, GeneralContractFunction, NewableBind } from '../lib/GeneralContractFunction'
-import { Location, InternalLocation } from '../lib/_private/is'
+import { InternalLocation, Location } from '../lib/Location'
 
 expectAssignable<GeneralContractFunction<AbstractContract<AFunction1, SomeError>>>(aCallableGeneralContractFunction)
 expectAssignable<AFunction1>(aCallableGeneralContractFunction)

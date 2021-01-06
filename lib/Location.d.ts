@@ -14,14 +14,10 @@
   limitations under the License.
  */
 
-import { expectType } from 'tsd'
-import { location, raw, skipsForEach } from '../../lib/_private/stack'
-import { StackLocation } from '../../lib/Location'
+export type StackLocation = string
 
-const aDepth: number = 12
+export interface InternalLocation {
+  toString (): 'INTERNAL'
+}
 
-expectType<StackLocation>(location())
-expectType<StackLocation>(location(aDepth))
-expectType<string>(raw())
-expectType<string>(raw(aDepth))
-expectType<boolean>(skipsForEach)
+export type Location = StackLocation | InternalLocation
