@@ -88,7 +88,7 @@ export class ANewableGeneralContractFunction extends ANewableFunction {
   static readonly contract = new AbstractContract<typeof ANewableFunction, SomeError>({})
   static readonly implementation = ANewableFunction
   static readonly location = AbstractContract.internalLocation
-  static bind: NewableBind<AbstractContract<typeof ANewableFunction, SomeError>> = ANewableFunction.bind as NewableBind<AbstractContract<typeof ANewableFunction, SomeError>>
+  // MUDO static bind: NewableBind<AbstractContract<typeof ANewableFunction, SomeError>> = ANewableFunction.bind as NewableBind<AbstractContract<typeof ANewableFunction, SomeError>>
 
   constructor(a: string, b: number) {
     super(a, b)
