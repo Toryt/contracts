@@ -75,7 +75,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //  *
   //  * Note: in future versions this will no longer be a "static" function of AbstractContract.
   //  */
-  // static bindContractFunction<C extends AbstractContract<NeverUnknownFunction, unknown>> (
+  // static bindContractFunction<C extends BaseContract> (
   //   this: GeneralContractFunction<C>,
   //   thisArg?: ContractThis<C>,
   //   ...argArray: ContractParameters<C>
@@ -120,7 +120,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //  *     outside this library.</li>
   //  * </ul>
   //  */
-  // static isAContractFunction<C extends AbstractContract<NeverUnknownFunction, unknown>> (
+  // static isAContractFunction<C extends BaseContract> (
   //   this: ContractConstructor<C>,
   //   f: ContractSignature<C> | unknown
   // ): f is ContractFunction<C>
@@ -142,7 +142,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //  *                   AbstractContract#isAContractFunction} will carry, that says where it is defined.
   //  * @returns `contractFunction`
   //  */
-  // static bless<C extends AbstractContract<NeverUnknownFunction, unknown>> (
+  // static bless<C extends BaseContract> (
   //   contractFunction: ContractSignature<C>,
   //   contract: C,
   //   implFunction: ContractSignature<C>,
@@ -167,7 +167,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //  *
   //  * TODO should be split in result and exceptions for TS
   //  */
-  // static outcome<C extends AbstractContract<NeverUnknownFunction, unknown>> (
+  // static outcome<C extends BaseContract> (
   //   ...args: [...ContractParameters<C>, ContractResult<C> | ContractExceptions<C>, unknown]
   // ): ContractResult<C> | ContractExceptions<C>
   //
@@ -175,7 +175,7 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
   //  * Returns the last element of an Array-like argument. In post- and exception conditions,
   //  * this is the called contract function, bound to this. This can be used in recursive definitions.
   //  */
-  // static callee<C extends AbstractContract<NeverUnknownFunction, unknown>> (
+  // static callee<C extends BaseContract> (
   //   ...args: [...ContractParameters<C>, unknown, ContractFunction<C>]
   // ): ContractFunction<C>
   //
@@ -232,21 +232,21 @@ export class AbstractContract<F extends NeverUnknownFunction, Exceptions> {
 
 export type BaseContract = AbstractContract<NeverUnknownFunction, never>
 
-export type ContractSignature<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+export type ContractSignature<C extends BaseContract> =
   C extends AbstractContract<infer F, unknown> ? F : never
-export type ContractThis<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+export type ContractThis<C extends BaseContract> =
   ThisParameterType<ContractSignature<C>>
-export type ContractParameters<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+export type ContractParameters<C extends BaseContract> =
   ContractSignature<C> extends NeverUnknownNewableFunction
   ? ConstructorParameters<ContractSignature<C>>
   : ContractSignature<C> extends NeverUnknownCallableFunction
     ? Parameters<ContractSignature<C>>
     : never
-export type ContractResult<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+export type ContractResult<C extends BaseContract> =
   ContractSignature<C> extends NeverUnknownCallableFunction
   ? ReturnType<ContractSignature<C>>
   : never
 export type ContractInstanceType<C extends AbstractContract<NeverUnknownNewableFunction, unknown>> =
   InstanceType<ContractSignature<C>>
-export type ContractExceptions<C extends AbstractContract<NeverUnknownFunction, unknown>> =
+export type ContractExceptions<C extends BaseContract> =
   C extends AbstractContract<NeverUnknownFunction, infer Exceptions> ? Exceptions : never
