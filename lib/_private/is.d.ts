@@ -31,3 +31,5 @@ export function frozenOwnProperty<Obj extends object, PropName extends string>(o
   obj is Obj & {
     readonly [K in PropName]: PropName extends keyof Obj ? typeof obj[PropName] : unknown
   }
+
+// Note that er need the conjunction with Obj, for the case where obj is a function, to retain the function-ability
