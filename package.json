@@ -72,7 +72,7 @@
     "just.randomstring": "^0.1.1",
     "legally": "^3.5.8",
     "mocha": "^8.2.1",
-    "mochify": "^6.1.1",
+    "mochify": "^7.0.0",
     "npm-check": "^5.7.1",
     "nyc": "^15.1.0",
     "prettier-standard": "^16.4.1",
