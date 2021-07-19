@@ -7,13 +7,31 @@ const build = bitbucketBuild
   : `manual ${new Date().toISOString()}`
 console.log(`build: ${build}`)
 
+let credentials
+try {
+  // JSON file is in git ignore
+  credentials = require('./browserstack_credentials.json')
+  console.log('using browserstack credentials from `browserstack_credentials.json`')
+} catch (ignore) {
+  if (!process.env.BROWSERSTACK_USERNAME || !process.env.BROWSERSTACK_ACCESS_KEY) {
+    throw new Error(
+      'No browserstack credentials found. Provide them in `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY` ' +
+        'environment variables, or in the git-ignored file `browserstack_credentials.json`'
+    )
+  }
+  credentials = { userName: process.env.BROWSERSTACK_USERNAME, accessKey: process.env.BROWSERSTACK_ACCESS_KEY }
+  console.log(
+    'using browserstack credentials from `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY` environment variables'
+  )
+}
+
 const capabilitiesBase = {
   project: 'Toryt contracts',
   build: build,
   'browserstack.video': false,
   'browserstack.console': 'verbose',
-  'browserstack.user': process.env.BROWSERSTACK_USERNAME,
-  'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY
+  'browserstack.user': credentials.userName,
+  'browserstack.key': credentials.accessKey
 }
 
 const osVersion = {

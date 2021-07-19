@@ -12,3 +12,4 @@ contracts-*.js
 .eslintignore
 .nvmrc
 .prettierrc.yaml
+browserstack_credentials.json
