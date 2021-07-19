@@ -25,19 +25,12 @@ definitions:
           - git submodule update --init
           - scripts/common/npm/testCi.sh
   caches:
-    npm10: ~/.npm
     npm12: ~/.npm
     npm14: ~/.npm
-    npm15: ~/.npm
+    npm16: ~/.npm
   branches:
     - branch: &fullTestAndTag
         - parallel:
-            - step:
-                <<: *test
-                name: Latest Node 10
-                image: node:10
-                caches:
-                  - npm10
             - step:
                 <<: *test
                 name: Latest Node 12
@@ -58,10 +51,10 @@ definitions:
                   - npm14
             - step:
                 <<: *test
-                name: Latest Node 15
-                image: node:15
+                name: Latest Node 16
+                image: node:16
                 caches:
-                  - npm15
+                  - npm16
         - parallel:
             - step:
                 name: Chrome - OSX
