@@ -151,8 +151,8 @@ because open source projects are more easily found there. Issues and pull reques
 
 ## Browsers
 
-Some workarounds were made to accommodate different Safari. This only concerns using `Error` stack traces to report
-where a contract has failed.
+Some workarounds were made to accommodate different behavior in Safari. This only concerns using `Error` stack traces to
+report where a contract has failed.
 
 Safari support for traces is bad. First of all, Safari haphazardly skips frames in its stack trace. Second, there is a
 difference in the stack traces generated when using Safari 'live', and via Web Driver. In the latter case, no lines or
