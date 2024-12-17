@@ -79,7 +79,7 @@ describe('javascript/Object', function () {
     // noinspection MagicNumberJS
     const value = 42
 
-    function defineAProp (obj) {
+    function defineAProp(obj) {
       // noinspection MagicNumberJS
       Object.defineProperty(obj, propName, {
         configurable: true,

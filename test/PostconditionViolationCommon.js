@@ -24,7 +24,7 @@ const common = require('./ConditionViolationCommon')
 const PostconditionViolation = require('../lib/PostconditionViolation')
 const should = require('should')
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(PostconditionViolation)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'result')
@@ -32,14 +32,14 @@ function expectInvariants (subject) {
   subject.stack.should.containEql(report.value(subject.result))
 }
 
-function expectConstructorPost (executionResult, contractFunction, condition, self, args, result) {
+function expectConstructorPost(executionResult, contractFunction, condition, self, args, result) {
   // noinspection JSUnresolvedVariable
   common.expectConstructorPost.apply(undefined, arguments)
   // noinspection JSUnresolvedVariable
   should(executionResult.result).equal(result)
 }
 
-function expectDetailsPost (subject, result) {
+function expectDetailsPost(subject, result) {
   // noinspection JSUnresolvedFunction
   common.expectDetailsPost(subject, result)
   // noinspection JSUnresolvedVariable
@@ -47,7 +47,7 @@ function expectDetailsPost (subject, result) {
 }
 
 // noinspection ParameterNamingConventionJS
-function expectProperties (exception, Type, contractFunction, condition, self, args, result) {
+function expectProperties(exception, Type, contractFunction, condition, self, args, result) {
   common.expectProperties.apply(undefined, arguments)
   // noinspection JSUnresolvedVariable
   exception.result.should.equal(result)
@@ -55,7 +55,7 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
 
 const resultCaseGenerators = testUtil.anyCasesGenerators('result')
 
-function doctorArgs (args, boundContractFunction, result) {
+function doctorArgs(args, boundContractFunction, result) {
   const doctored = Array.prototype.slice.call(args)
   // noinspection MagicNumberJS
   const r = arguments.length >= 3 ? result : 42

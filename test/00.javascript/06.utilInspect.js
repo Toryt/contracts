@@ -21,7 +21,7 @@
 const util = require('util')
 const cases = require('../_cases')
 
-function test (thing, circular) {
+function test(thing, circular) {
   const result = util.inspect(thing)
   console.log(result)
   result.should.be.a.String()

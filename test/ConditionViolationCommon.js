@@ -25,7 +25,7 @@ const ConditionViolation = require('../lib/ConditionViolation')
 const conditionMetaErrorCommon = require('./ConditionMetaErrorCommon')
 const should = require('should')
 
-function isArguments (o) {
+function isArguments(o) {
   const str = '' + o
   str.should.equal('[object Arguments]')
 }
@@ -42,7 +42,7 @@ const selfVerifyCases = [
   }
 ]
 
-function args () {
+function args() {
   return arguments
 }
 
@@ -61,7 +61,7 @@ const argsVerifyCases = [
   }
 ]
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(ConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectFrozenPropertyOnAPrototype(subject, 'verify')
@@ -71,7 +71,7 @@ function expectInvariants (subject) {
   subject.verifyAll.should.be.a.Function()
 }
 
-function expectConstructorPost (result, contractFunction, condition, self, args) {
+function expectConstructorPost(result, contractFunction, condition, self, args) {
   // noinspection JSUnresolvedVariable
   common.expectConstructorPost(result, contractFunction, condition, self, args, result._rawStack)
   common.expectProperties.call(undefined, result, ConditionViolation, contractFunction, condition, self, args)
@@ -79,37 +79,37 @@ function expectConstructorPost (result, contractFunction, condition, self, args)
 }
 
 // noinspection JSUnusedLocalSymbols
-function doctorArgs (args, boundContractFunction) {
+function doctorArgs(args, boundContractFunction) {
   return args
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
   common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
   const that = this
 
   const verifyConditionCases = [
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         // no return
       },
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return false
       },
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return true
       },
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         throw new Error('This condition fails with an error')
@@ -118,25 +118,25 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
 
   const verifyPromiseConditionCases = [
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return Promise.resolve()
       },
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return Promise.resolve(false)
       },
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return Promise.resolve(true)
       },
     () =>
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return Promise.reject(new Error('This condition fails with an error'))
@@ -336,67 +336,67 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
   const verifyAllConditionsCases = [
     () => [],
     () => [
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return false
       }
     ],
     () => [
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return true
       }
     ],
     () => [
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return {}
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return true
       },
-      function f2 () {
+      function f2() {
         f2.self = this
         f2.args = arguments
         return true
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return true
       },
-      function f2 () {
+      function f2() {
         f2.self = this
         f2.args = arguments
         return false
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return true
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return true
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         throw new Error('This condition fails with an error')
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return true
@@ -495,60 +495,60 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
 
   const verifyAllPromiseConditionsCases = verifyAllConditionsCases.concat([
     () => [
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return Promise.resolve(false)
       }
     ],
     () => [
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return Promise.resolve(true)
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return Promise.resolve(true)
       },
-      function f2 () {
+      function f2() {
         f2.self = this
         f2.args = arguments
         return Promise.resolve(true)
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return Promise.resolve(true)
       },
-      function f2 () {
+      function f2() {
         f2.self = this
         f2.args = arguments
         return Promise.resolve(false)
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return Promise.resolve(true)
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return Promise.resolve(true)
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return Promise.reject(new Error('This condition fails with an error'))
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return Promise.resolve(true)
@@ -556,104 +556,104 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
     ],
     // mixed
     () => [
-      function f () {
+      function f() {
         f.self = this
         f.args = arguments
         return {}
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return true
       },
-      function f2 () {
+      function f2() {
         f2.self = this
         f2.args = arguments
         return Promise.resolve(true)
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return true
       },
-      function f2 () {
+      function f2() {
         f2.self = this
         f2.args = arguments
         return false
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return Promise.resolve(true)
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return true
       },
-      function f2 () {
+      function f2() {
         f2.self = this
         f2.args = arguments
         return Promise.resolve(false)
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return Promise.resolve(true)
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return true
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return Promise.reject(new Error('This condition fails with an error'))
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return true
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return Promise.resolve(true)
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         throw new Error('This condition fails with an error')
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return true
       }
     ],
     () => [
-      function f1 () {
+      function f1() {
         f1.self = this
         f1.args = arguments
         return Promise.resolve(false)
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         throw new Error('This condition fails with an error')
       },
-      function f3 () {
+      function f3() {
         f3.self = this
         f3.args = arguments
         return true
@@ -677,7 +677,7 @@ function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGe
             const failures = []
             let metaErrorCondition = null // only 1 meta error per test case
 
-            function determineExpected (i) {
+            function determineExpected(i) {
               if (i >= conditions.length) {
                 return Promise.resolve()
               }

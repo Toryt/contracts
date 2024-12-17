@@ -20,7 +20,7 @@
 
 /* Load AsyncContractFunction test only when async is supported (not on Node6) */
 
-function supportsAsync () {
+function supportsAsync() {
   try {
     // eslint-disable-next-line
     eval('async () => {}')

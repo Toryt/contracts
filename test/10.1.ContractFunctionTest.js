@@ -41,7 +41,7 @@ const cases = require('./_cases')
 
 // noinspection FunctionTooLongJS
 describe('ContractFunction', function () {
-  function fibonacciImpl (n) {
+  function fibonacciImpl(n) {
     return n <= 1 ? n : fibonacci(n - 1) + fibonacci(n - 2)
   }
 
@@ -75,7 +75,7 @@ describe('ContractFunction', function () {
   const wrongParameter = 4
   const wrongResult = -3
 
-  const fibonacciWrong = fibonacci.contract.implementation(function fWrong (n) {
+  const fibonacciWrong = fibonacci.contract.implementation(function fWrong(n) {
     // noinspection IfStatementWithTooManyBranchesJS
     if (n === 0) {
       return 0
@@ -211,7 +211,7 @@ describe('ContractFunction', function () {
 
   const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
-  function callAndExpectException (self, func, parameter, expectException, recursive) {
+  function callAndExpectException(self, func, parameter, expectException, recursive) {
     let endsNominally = false
     try {
       // result is not used
@@ -270,7 +270,7 @@ describe('ContractFunction', function () {
     endsNominally.should.be.false()
   }
 
-  function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
+  function failsOnPreconditionViolation(self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
       callAndExpectException(self, func, parameter, exception => {
         exception.should.be.an.instanceof(PreconditionViolation)
@@ -290,7 +290,7 @@ describe('ContractFunction', function () {
     pre: [cases.intentionallyFailingFunction]
   })
 
-  function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
+  function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectException(self, functionWithAMetaError, param, exception => {
       exception.should.be.an.instanceof(ConditionMetaError)
@@ -311,7 +311,7 @@ describe('ContractFunction', function () {
     })
   }
 
-  function expectPostProperties (self, contractFunction, exception) {
+  function expectPostProperties(self, contractFunction, exception) {
     postconditionViolationCommon.expectProperties(
       exception,
       PostconditionViolation,
@@ -323,7 +323,7 @@ describe('ContractFunction', function () {
     )
   }
 
-  function expectExceptionProperties (self, contractFunction, exception) {
+  function expectExceptionProperties(self, contractFunction, exception) {
     exceptionConditionViolationCommon.expectProperties(
       exception,
       ExceptionConditionViolation,
@@ -341,7 +341,7 @@ describe('ContractFunction', function () {
     fibonacci: fibonacci.contract.implementation(function (n) {
       return n <= 1 ? n : this.fibonacci(n - 1) + this.fibonacci(n - 2)
     }),
-    fibonacciWrong: fibonacci.contract.implementation(function fWrong (n) {
+    fibonacciWrong: fibonacci.contract.implementation(function fWrong(n) {
       // noinspection IfStatementWithTooManyBranchesJS
       if (n === 0) {
         return 0
@@ -464,7 +464,7 @@ describe('ContractFunction', function () {
     })
 
     // noinspection ParameterNamingConventionJS
-    function expectConstructorToWork (PersonImplementation, doBind) {
+    function expectConstructorToWork(PersonImplementation, doBind) {
       // noinspection LocalVariableNamingConventionJS, JSUnresolvedFunction
       let ContractPerson = PersonConstructorContract.implementation(PersonImplementation)
       if (doBind) {

@@ -26,8 +26,8 @@ const eol = require('../../lib/_private/eol')
 describe('_private/stack', function () {
   describe('#location', function () {
     it('returns the expected line without arguments', function () {
-      function aFirstFunction () {
-        function aSecondFunction () {
+      function aFirstFunction() {
+        function aSecondFunction() {
           return stack.location()
         }
 
@@ -46,10 +46,10 @@ describe('_private/stack', function () {
       is.stackLocation(result).should.be.true()
     })
     it('returns the expected line 2 deep', function () {
-      function aFirstFunction () {
-        function aSecondFunction () {
-          function aThirdFunction () {
-            function aFourthFunction () {
+      function aFirstFunction() {
+        function aSecondFunction() {
+          function aThirdFunction() {
+            function aFourthFunction() {
               return stack.location(2)
             }
 
@@ -77,23 +77,23 @@ describe('_private/stack', function () {
 
   describe('#raw', function () {
     it('returns the expected stack without arguments', function () {
-      function aFourthFunction () {
-        function aFifthFunction () {
+      function aFourthFunction() {
+        function aFifthFunction() {
           return stack.raw()
         }
 
         return aFifthFunction()
       }
 
-      function aSecondFunction () {
-        function aThirdFunction () {
+      function aSecondFunction() {
+        function aThirdFunction() {
           return aFourthFunction()
         }
 
         return aThirdFunction()
       }
 
-      function aFirstFunction () {
+      function aFirstFunction() {
         return aSecondFunction()
       }
 
@@ -114,35 +114,35 @@ describe('_private/stack', function () {
       is.stack(result).should.be.true()
     })
     it('returns the expected stack. 2 deep', function () {
-      function skipTwo (skip) {
-        function skipOne (skip) {
+      function skipTwo(skip) {
+        function skipOne(skip) {
           return stack.raw(skip + 1)
         }
 
         return skipOne(skip + 1)
       }
 
-      function skipThree (skip) {
+      function skipThree(skip) {
         return skipTwo(skip + 1)
       }
 
-      function aFourthFunction () {
-        function aFifthFunction () {
+      function aFourthFunction() {
+        function aFifthFunction() {
           return skipThree(0)
         }
 
         return aFifthFunction()
       }
 
-      function aSecondFunction () {
-        function aThirdFunction () {
+      function aSecondFunction() {
+        function aThirdFunction() {
           return aFourthFunction()
         }
 
         return aThirdFunction()
       }
 
-      function aFirstFunction () {
+      function aFirstFunction() {
         return aSecondFunction()
       }
 

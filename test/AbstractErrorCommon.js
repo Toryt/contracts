@@ -22,7 +22,7 @@ const AbstractError = require('../lib/AbstractContract').AbstractError
 const testUtil = require('./_util/testUtil')
 const common = require('./ContractErrorCommon')
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(AbstractError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'name')
@@ -35,13 +35,13 @@ function expectInvariants (subject) {
   Object.getPrototypeOf(subject).message.should.equal(AbstractError.message)
 }
 
-function expectConstructorPost (result, message, contract, rawStack) {
+function expectConstructorPost(result, message, contract, rawStack) {
   common.expectConstructorPost(result, message, rawStack)
   result.contract.should.equal(contract)
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
   common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
   // NOP: no methods here

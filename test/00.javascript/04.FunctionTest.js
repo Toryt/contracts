@@ -23,7 +23,7 @@ const testUtil = require('../_util/testUtil')
 describe('javascript/Function', function () {
   describe('#bind()', function () {
     it('keeps a call of a bound function with another this bound to the bound this', function () {
-      function testF () {
+      function testF() {
         return this.property
       }
 
@@ -41,7 +41,7 @@ describe('javascript/Function', function () {
       otherThisResult.should.equal(boundThisPropertyValue)
     })
     it('has no prototype', function () {
-      function testF (p) {
+      function testF(p) {
         return 'just a function that returns ' + p
       }
 
@@ -64,7 +64,7 @@ describe('javascript/Function', function () {
           JSON.stringify(boundThis),
         function () {
           // noinspection FunctionNamingConventionJS
-          function TestC (pA, pB) {
+          function TestC(pA, pB) {
             Object.getPrototypeOf(this).should.equal(TestC.prototype)
             this.pA = pA
             this.pB = pB
@@ -107,7 +107,7 @@ describe('javascript/Function', function () {
       Function.prototype.should.not.have.property('prototype')
     })
     ;[
-      function simpleF () {
+      function simpleF() {
         return 'This is a very simple function.'
       }
       // TODO support class construct
@@ -116,7 +116,7 @@ describe('javascript/Function', function () {
          https://www.ecma-international.org/ecma-262/6.0/index.html#sec-method-definitions-runtime-semantics-propertydefinitionevaluation */
     ].forEach(function (f) {
       it('exists on function ' + f, function () {
-        function otherSimpleF () {
+        function otherSimpleF() {
           return 'This is another very simple function.'
         }
 
@@ -151,7 +151,7 @@ describe('javascript/Function', function () {
       })
     })
     it('is writable for a simple function', function () {
-      function simpleF () {
+      function simpleF() {
         return 'This is a very simple function.'
       }
 
@@ -199,7 +199,7 @@ describe('javascript/Function', function () {
   })
   describe('new', function () {
     ;[
-      function simpleF () {
+      function simpleF() {
         return 'This is a very simple function.'
       }
       // TODO support class construct
@@ -237,7 +237,7 @@ describe('javascript/Function', function () {
   describe('name', function () {
     describe('isolated', function () {
       it('the name of a function is explicit', function () {
-        function thisIsAFunction () {}
+        function thisIsAFunction() {}
 
         thisIsAFunction.name.should.equal('thisIsAFunction')
       })
@@ -252,7 +252,7 @@ describe('javascript/Function', function () {
         thisIsAFunction.name.should.equal('thisIsAFunction')
       })
       it('the name of a named function is fixed', function () {
-        const thisIsAnotherFunction = function thisIsAFunction () {}
+        const thisIsAnotherFunction = function thisIsAFunction() {}
 
         thisIsAnotherFunction.name.should.equal('thisIsAFunction')
       })
@@ -269,14 +269,14 @@ describe('javascript/Function', function () {
         obj.thisIsAFunction.name.should.equal('thisIsAFunction')
       })
       it('the name of a named function method is fixed', function () {
-        const obj = { thisIsAnotherFunction: function thisIsAFunction () {} }
+        const obj = { thisIsAnotherFunction: function thisIsAFunction() {} }
 
         obj.thisIsAnotherFunction.name.should.equal('thisIsAFunction')
       })
     })
     describe('argument', function () {
       it('the name of an anonymous function argument is the empty string', function () {
-        function test (f) {
+        function test(f) {
           f.name.should.be.a.String()
           f.name.should.equal('')
         }
@@ -284,7 +284,7 @@ describe('javascript/Function', function () {
         test(function () {})
       })
       it('the name of an arrow function argument is the empty string', function () {
-        function test (f) {
+        function test(f) {
           f.name.should.be.a.String()
           f.name.should.equal('')
         }
@@ -292,22 +292,22 @@ describe('javascript/Function', function () {
         test(() => null)
       })
       it('the name of an named function argument is fixed', function () {
-        function test (f) {
+        function test(f) {
           f.name.should.equal('thisIsAFunction')
         }
 
-        test(function thisIsAFunction () {})
+        test(function thisIsAFunction() {})
       })
     })
     describe('inline', function () {
       it('the name of an anonymous function is the empty string', function () {
-        ;(function () {}.name.should.equal(''))
+        ;(function () {}).name.should.equal('')
       })
       it('the name of an arrow function is the empty string', function () {
         ;(() => null).name.should.equal('')
       })
       it('the name of an named function is fixed', function () {
-        ;(function thisIsAFunction () {}.name.should.equal('thisIsAFunction'))
+        ;(function thisIsAFunction() {}).name.should.equal('thisIsAFunction')
       })
     })
   })

@@ -51,7 +51,7 @@ describe('javascript/Error', function () {
     })
   })
 
-  function okForFF (s) {
+  function okForFF(s) {
     if (isFF) {
       should(s).be.ok()
     } else {
@@ -103,15 +103,15 @@ describe('javascript/Error', function () {
       }
     )
     it('has a stack, that reports where the error is created, and the entire stack, except for Safari', function () {
-      function createAnErrorOne () {
+      function createAnErrorOne() {
         return new Error(message)
       }
 
-      function createAnErrorTwo () {
+      function createAnErrorTwo() {
         return createAnErrorOne()
       }
 
-      function throwAnError () {
+      function throwAnError() {
         throw createAnErrorTwo()
       }
 
@@ -151,7 +151,7 @@ describe('javascript/Error', function () {
       }
     })
     it('has a stack, that reports where the error is created, and the entire stack, when immediately thrown', function () {
-      function createAnErrorOne () {
+      function createAnErrorOne() {
         try {
           // noinspection ExceptionCaughtLocallyJS
           throw new Error(message)
@@ -160,11 +160,11 @@ describe('javascript/Error', function () {
         }
       }
 
-      function createAnErrorTwo () {
+      function createAnErrorTwo() {
         throw createAnErrorOne()
       }
 
-      function throwAnError () {
+      function throwAnError() {
         createAnErrorTwo()
       }
 
@@ -189,28 +189,28 @@ describe('javascript/Error', function () {
     })
     it('has a stack, that reports where Error.captureStackTrace is called last', function () {
       // https://nodejs.org/api/errors.html#errors_error_capturestacktrace_targetobject_constructoropt
-      function createAnError () {
+      function createAnError() {
         return new Error(message)
       }
 
       // noinspection FunctionNamingConventionJS
-      function captureTheStackTrace1 (err) {
+      function captureTheStackTrace1(err) {
         Error.captureStackTrace(err)
       }
 
-      function throwAnError () {
+      function throwAnError() {
         const anError = createAnError()
         captureTheStackTrace1(anError) // this will be overwritten
         throw anError
       }
 
       // noinspection FunctionNamingConventionJS
-      function captureTheStackTrace2 (err) {
+      function captureTheStackTrace2(err) {
         captureTheStackTrace1(err)
       }
 
       // noinspection FunctionNamingConventionJS
-      function captureTheStackTrace3 (err) {
+      function captureTheStackTrace3(err) {
         captureTheStackTrace2(err)
       }
 

@@ -21,7 +21,7 @@
 const common = require('./ImplementationContractCommon')
 const PromiseContract = require('../lib/PromiseContract')
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(PromiseContract)
 }
 

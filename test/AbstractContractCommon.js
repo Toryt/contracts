@@ -97,7 +97,7 @@ const constructorExceptionCases = [
 
 const location = eol.stack + '    at /'
 
-function expectInvariants (/* AbstractContract */ subject) {
+function expectInvariants(/* AbstractContract */ subject) {
   subject.should.be.an.instanceof(AbstractContract)
   testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
   /* MUDO given a contract c, and contract function cf = c.implementation(…), cf.contract !== c, but
@@ -142,7 +142,7 @@ function expectInvariants (/* AbstractContract */ subject) {
   }
 }
 
-function expectArrayPost (result, array, propName, privatePropName) {
+function expectArrayPost(result, array, propName, privatePropName) {
   result[propName].should.be.an.Array()
   if (!array) {
     if (propName === 'exception' || propName === 'fastException') {
@@ -159,7 +159,7 @@ function expectArrayPost (result, array, propName, privatePropName) {
   }
 }
 
-function expectConstructorPost (pre, post, exception, location, result) {
+function expectConstructorPost(pre, post, exception, location, result) {
   expectArrayPost(result, pre, 'pre', '_pre')
   expectArrayPost(result, post, 'post', '_post')
   expectArrayPost(result, exception, 'exception', '_exception')
@@ -168,15 +168,15 @@ function expectConstructorPost (pre, post, exception, location, result) {
 }
 
 // noinspection OverlyComplexFunctionJS, ParameterNamingConventionJS
-function createCandidateContractFunction (
+function createCandidateContractFunction(
   ContractConstructor,
   doNotFreezeProperty,
   otherPropertyName,
   otherPropertyValue
 ) {
-  function candidate () {}
+  function candidate() {}
 
-  function impl () {}
+  function impl() {}
 
   let contract =
     otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AbstractContract)({})
@@ -222,7 +222,7 @@ function createCandidateContractFunction (
 }
 
 // noinspection ParameterNamingConventionJS
-function generateIAGCFTests (ContractConstructor, isAXXXContractFunction) {
+function generateIAGCFTests(ContractConstructor, isAXXXContractFunction) {
   it(
     'says yes if there is an implementation Function, an AbstractContract, and a location, and all 3 ' +
       'properties are frozen, and it has the expected name',
@@ -275,7 +275,7 @@ function generateIAGCFTests (ContractConstructor, isAXXXContractFunction) {
 }
 
 // noinspection FunctionNamingConventionJS, ParameterNamingConventionJS
-function generateConstructorMethodsDescriptions (ContractConstructor) {
+function generateConstructorMethodsDescriptions(ContractConstructor) {
   describe('@isAContractFunction', function () {
     generateIAGCFTests(ContractConstructor, ContractConstructor.isAContractFunction)
     notAFunctionNorAContract
@@ -299,7 +299,7 @@ function generateConstructorMethodsDescriptions (ContractConstructor) {
 }
 
 // noinspection FunctionNamingConventionJS,JSUnusedLocalSymbols
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
   const self = this
 
   describe('#isImplementedBy()', function () {

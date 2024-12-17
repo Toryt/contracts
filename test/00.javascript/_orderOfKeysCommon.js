@@ -18,16 +18,16 @@
 
 const randomString = require('just.randomstring')
 
-function randomName (/* Number */ n) {
+function randomName(/* Number */ n) {
   const nString = '$$' + n + '$$'
   return randomString() + nString
 }
 
-function nFromRandomName (/* String */ str) {
+function nFromRandomName(/* String */ str) {
   return Number.parseInt(/\$\$(\d+)\$\$/.exec(str)[1])
 }
 
-function prepareAnObject (/* Number */ startValue, /* Number */ nrOfProperties) {
+function prepareAnObject(/* Number */ startValue, /* Number */ nrOfProperties) {
   const max = startValue + nrOfProperties
   const o = {}
   for (let i = startValue; i < max; i++) {
@@ -36,7 +36,7 @@ function prepareAnObject (/* Number */ startValue, /* Number */ nrOfProperties) 
   return o
 }
 
-function prepareAnObjectWithAProto () {
+function prepareAnObjectWithAProto() {
   // noinspection MagicNumberJS
   const oProto1 = prepareAnObject(200, 10)
   // noinspection MagicNumberJS

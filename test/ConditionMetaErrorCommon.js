@@ -24,7 +24,7 @@ const common = require('./ConditionErrorCommon')
 const ConditionMetaError = require('../lib/ConditionMetaError')
 const should = require('should')
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(ConditionMetaError)
   if (subject.error) {
     Object.isFrozen(subject.error).should.be.true()
@@ -38,7 +38,7 @@ function expectInvariants (subject) {
   subject.message.should.containEql('(' + subject.error + ')')
 }
 
-function expectConstructorPost (result, contractFunction, condition, self, args, error, rawStack) {
+function expectConstructorPost(result, contractFunction, condition, self, args, error, rawStack) {
   common.expectConstructorPost.call(undefined, result, contractFunction, condition, self, args, rawStack)
   should(result.error).equal(error)
 }
@@ -70,7 +70,7 @@ const errorCases = [
   { a: 1, b: 'b', c: {}, d: { d1: undefined, d2: 'd2', d3: { d31: 31 } } }
 ]
 
-function expectDetailsPost (subject, result) {
+function expectDetailsPost(subject, result) {
   common.expectDetailsPost(subject, result)
   result.should.containEql(report.extensiveThrown(subject.error))
   if (subject.error && subject.error.stack) {

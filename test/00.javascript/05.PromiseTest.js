@@ -34,7 +34,7 @@ describe('javascript/Promise', function () {
       })
     })
     it('can be produced with a Promise function', function () {
-      function promiseFunction (throws) {
+      function promiseFunction(throws) {
         if (throws) {
           throw fastException
         }

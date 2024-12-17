@@ -24,7 +24,7 @@ const is = require('../lib/_private/is')
 const common = require('./AbstractContractCommon')
 const AbstractContract = require('../lib/AbstractContract')
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   common.expectInvariants(subject)
   is.stackLocation(subject.location).should.be.true()
   // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
@@ -34,12 +34,12 @@ function expectInvariants (subject) {
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
   common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
   const self = this
 
   describe('#implementation', function () {
-    function expectPost (contract, implFunction, location, result) {
+    function expectPost(contract, implFunction, location, result) {
       contract.isImplementedBy(result).should.be.true()
       // noinspection JSUnresolvedFunction
       AbstractContract.isAContractFunction(result).should.be.true()

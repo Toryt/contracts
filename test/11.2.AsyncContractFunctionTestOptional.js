@@ -43,7 +43,7 @@ const cases = require('./_cases')
 
 // noinspection FunctionTooLongJS
 describe('PromiseContractFunction - AsyncFunctions', function () {
-  async function fibonacciImpl (n) {
+  async function fibonacciImpl(n) {
     if (n <= 1) {
       return n
     }
@@ -80,7 +80,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
   const wrongParameter = 4
   const wrongResult = -3
 
-  const fibonacciWrong = fibonacci.contract.implementation(async function fWrong (n) {
+  const fibonacciWrong = fibonacci.contract.implementation(async function fWrong(n) {
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
         // noinspection IfStatementWithTooManyBranchesJS
@@ -176,7 +176,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
 
   const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
-  async function callAndExpectRejection (self, func, parameter, expectException) {
+  async function callAndExpectRejection(self, func, parameter, expectException) {
     try {
       if (!self) {
         // noinspection JSUnusedAssignment
@@ -237,14 +237,15 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
          - node12: alternating ('[[internal]]' and '    at async Promise.all (index 1)' - in self.fibonacciWrong,
            in a setTimeout)
        */
-        const expectReference = /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise\.catch\.then|promise\.catch\.rejection|about:blank|Anonymous|runMicrotasksCallback|async Promise.all \(index 1\)/
+        const expectReference =
+          /\[\[internal]]|callAndExpectRejection|anonymous|conditionResult\.catch\.then|conditionResult\.catch\.err|promise\.catch\.then|promise\.catch\.rejection|about:blank|Anonymous|runMicrotasksCallback|async Promise.all \(index 1\)/
         testUtil.log(stackLines[0])
         stackLines[0].should.match(expectReference)
       }
     }
   }
 
-  function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
+  function failsOnPreconditionViolation(self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, async function () {
       await callAndExpectRejection(self, func, parameter, exception => {
         exception.should.be.an.instanceof(PreconditionViolation)
@@ -264,7 +265,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
     pre: [cases.intentionallyFailingFunction]
   })
 
-  async function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
+  async function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     await callAndExpectRejection(self, functionWithAMetaError, param, exception => {
       exception.should.be.an.instanceof(ConditionMetaError)
@@ -285,7 +286,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
     })
   }
 
-  function expectNotAPromisePostProperties (self, contractFunction, exception) {
+  function expectNotAPromisePostProperties(self, contractFunction, exception) {
     postconditionViolationCommon.expectProperties(
       exception,
       PostconditionViolation,
@@ -297,7 +298,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
     )
   }
 
-  function expectPostProperties (self, contractFunction, exception) {
+  function expectPostProperties(self, contractFunction, exception) {
     postconditionViolationCommon.expectProperties(
       exception,
       PostconditionViolation,
@@ -309,7 +310,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
     )
   }
 
-  function expectExceptionProperties (self, contractFunction, exception) {
+  function expectExceptionProperties(self, contractFunction, exception) {
     exceptionConditionViolationCommon.expectProperties(
       exception,
       ExceptionConditionViolation,
@@ -331,7 +332,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       const results = await Promise.all([this.fibonacci(n - 1), this.fibonacci(n - 2)])
       return results[0] + results[1]
     }),
-    fibonacciWrong: fibonacci.contract.implementation(async function fWrong (n) {
+    fibonacciWrong: fibonacci.contract.implementation(async function fWrong(n) {
       const thisSelf = this
       return new Promise((resolve, reject) => {
         setTimeout(async () => {
@@ -807,7 +808,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
 
       it('fails with a meta-error when an exception condition is kaput', async function () {
         // noinspection JSUnresolvedFunction
-        const implementation = contractWithAFailingExceptionCondition.implementation(async function reject () {
+        const implementation = contractWithAFailingExceptionCondition.implementation(async function reject() {
           throw anExceptedException
         })
         implementation.contract.verifyPostconditions = true

@@ -20,7 +20,7 @@ const should = require('should')
 const os = require('os')
 
 // noinspection FunctionNamingConventionJS
-function x () {
+function x() {
   if (arguments.length <= 0) {
     return []
   }
@@ -39,7 +39,7 @@ function x () {
   )
 }
 
-function expectOwnFrozenProperty (subject, propertyName) {
+function expectOwnFrozenProperty(subject, propertyName) {
   const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
   propertyDescriptor.should.be.ok()
   propertyDescriptor.enumerable.should.be.true()
@@ -53,7 +53,7 @@ function expectOwnFrozenProperty (subject, propertyName) {
 }
 
 // noinspection FunctionNamingConventionJS
-function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
+function prototypeThatHasOwnPropertyDescriptor(subject, propertyName) {
   if (!subject) {
     return subject
   }
@@ -64,7 +64,7 @@ function prototypeThatHasOwnPropertyDescriptor (subject, propertyName) {
 }
 
 // noinspection FunctionNamingConventionJS
-function expectDerivedPropertyOnAPrototype (subject, propertyName, configurable) {
+function expectDerivedPropertyOnAPrototype(subject, propertyName, configurable) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
   const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, propertyName)
   propertyDescriptor.should.be.ok()
@@ -76,22 +76,22 @@ function expectDerivedPropertyOnAPrototype (subject, propertyName, configurable)
 }
 
 // noinspection FunctionNamingConventionJS
-function expectConfigurableDerivedPropertyOnAPrototype (subject, propertyName) {
+function expectConfigurableDerivedPropertyOnAPrototype(subject, propertyName) {
   expectDerivedPropertyOnAPrototype(subject, propertyName, true)
 }
 
 // noinspection FunctionNamingConventionJS
-function expectFrozenDerivedPropertyOnAPrototype (subject, propertyName) {
+function expectFrozenDerivedPropertyOnAPrototype(subject, propertyName) {
   expectDerivedPropertyOnAPrototype(subject, propertyName, false)
 }
 
-function expectFrozenPropertyOnAPrototype (subject, propertyName) {
+function expectFrozenPropertyOnAPrototype(subject, propertyName) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
   expectOwnFrozenProperty(prototype, propertyName)
 }
 
 // noinspection FunctionNamingConventionJS
-function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (subject, propName, privatePropName) {
+function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propName, privatePropName) {
   subject.should.have.ownProperty(privatePropName) // array not shared
   subject[privatePropName].should.be.an.Array()
   this.expectOwnFrozenProperty(subject, privatePropName)
@@ -104,7 +104,7 @@ function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField (subject, prop
   failFunction.should.throw(TypeError)
 }
 
-function expectToBeArrayOfFunctions (a) {
+function expectToBeArrayOfFunctions(a) {
   a.should.be.an.Array()
   a.forEach(element => {
     element.should.be.a.Function()
@@ -114,29 +114,29 @@ function expectToBeArrayOfFunctions (a) {
 const doLog = false
 
 // noinspection FunctionNamingConventionJS
-function log () {
+function log() {
   if (doLog) {
     console.log.apply(undefined, arguments)
     console.log()
   }
 }
 
-function showStack (exc) {
+function showStack(exc) {
   log('Exception stack%s---------------%s%s', os.EOL, os.EOL, exc.stack)
 }
 
-function regExpEscape (s) {
+function regExpEscape(s) {
   // http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
   return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-function propertyIsWritable (object, propertyName) {
+function propertyIsWritable(object, propertyName) {
   const prototype = prototypeThatHasOwnPropertyDescriptor(object, propertyName)
   const pd = prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
   return !pd || pd.writable
 }
 
-function anyCasesGenerators (discriminator) {
+function anyCasesGenerators(discriminator) {
   // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
   const generators = [
     () => new Error('This is a ' + discriminator + ' case'),
@@ -177,7 +177,7 @@ function anyCasesGenerators (discriminator) {
 
 // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 // noinspection OverlyComplexFunctionJS
-function environment () {
+function environment() {
   // eslint-disable-next-line
   if (new Function('try {return this === global;}catch(e){return false;}')()) {
     console.log('Node (no User Agent)')
@@ -250,7 +250,7 @@ function environment () {
   return undefined
 }
 
-function trimLineAndColumnPattern (stackLine) {
+function trimLineAndColumnPattern(stackLine) {
   return (
     stackLine
       // node, chrome
@@ -260,13 +260,13 @@ function trimLineAndColumnPattern (stackLine) {
   )
 }
 
-function mustBeCallerLocation (actual, expected) {
+function mustBeCallerLocation(actual, expected) {
   expected.should.be.a.String()
   trimLineAndColumnPattern(expected).should.equal(trimLineAndColumnPattern(actual))
 }
 
 // also deals with arrays that contain Symbol
-function safeToString (s) {
+function safeToString(s) {
   try {
     return String(s)
   } catch (ignore) {

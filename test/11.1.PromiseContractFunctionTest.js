@@ -40,7 +40,7 @@ const cases = require('./_cases')
 
 // noinspection FunctionTooLongJS
 describe('PromiseContractFunction', function () {
-  function fibonacciImpl (n) {
+  function fibonacciImpl(n) {
     return n <= 1
       ? Promise.resolve(n)
       : /* prettier-ignore */ Promise
@@ -63,7 +63,7 @@ describe('PromiseContractFunction', function () {
   const wrongParameter = 4
   const wrongResult = -3
 
-  const fibonacciWrong = fibonacci.contract.implementation(function fWrong (n) {
+  const fibonacciWrong = fibonacci.contract.implementation(function fWrong(n) {
     return new Promise(resolve => {
       setTimeout(() => {
         // noinspection IfStatementWithTooManyBranchesJS
@@ -140,7 +140,7 @@ describe('PromiseContractFunction', function () {
 
   const resultWhenMetaError = 'This is the result or exception when we get a meta error'
 
-  function callAndExpectFastException (self, func, parameter, expectException, recursive) {
+  function callAndExpectFastException(self, func, parameter, expectException, recursive) {
     let endsNominally = false
     try {
       // result is not used
@@ -200,7 +200,7 @@ describe('PromiseContractFunction', function () {
     endsNominally.should.be.false()
   }
 
-  function callAndExpectRejection (self, func, parameter, expectException, recursive) {
+  function callAndExpectRejection(self, func, parameter, expectException, recursive) {
     // eslint-disable-next-line no-unused-vars
     let promise
     if (!self) {
@@ -260,7 +260,8 @@ describe('PromiseContractFunction', function () {
              - Edge
              - node 6
            */
-          const expectReference = /\[\[internal]]|anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
+          const expectReference =
+            /\[\[internal]]|anonymous|conditionResult\.catch\.err|promise.catch.then|promise.catch.rejection|about:blank|Anonymous|runMicrotasksCallback/
           if (!recursive) {
             stackLines[0].should.match(expectReference) // because it is in the event loop; this is not our code
           } else {
@@ -272,7 +273,7 @@ describe('PromiseContractFunction', function () {
       })
   }
 
-  function failsOnPreconditionViolation (self, func, parameter, violatedCondition) {
+  function failsOnPreconditionViolation(self, func, parameter, violatedCondition) {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
       callAndExpectFastException(self, func, parameter, exception => {
         exception.should.be.an.instanceof(PreconditionViolation)
@@ -292,7 +293,7 @@ describe('PromiseContractFunction', function () {
     pre: [cases.intentionallyFailingFunction]
   })
 
-  function failsOnMetaErrorFast (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
+  function failsOnMetaErrorFast(self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     callAndExpectFastException(self, functionWithAMetaError, param, exception => {
       exception.should.be.an.instanceof(ConditionMetaError)
@@ -313,7 +314,7 @@ describe('PromiseContractFunction', function () {
     })
   }
 
-  function failsOnMetaError (self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
+  function failsOnMetaError(self, functionWithAMetaError, conditionWithAMetaError, extraArgs) {
     const param = 'a parameter'
     return callAndExpectRejection(self, functionWithAMetaError, param, exception => {
       exception.should.be.an.instanceof(ConditionMetaError)
@@ -334,7 +335,7 @@ describe('PromiseContractFunction', function () {
     })
   }
 
-  function expectNotAPromisePostProperties (self, contractFunction, exception) {
+  function expectNotAPromisePostProperties(self, contractFunction, exception) {
     postconditionViolationCommon.expectProperties(
       exception,
       PostconditionViolation,
@@ -346,7 +347,7 @@ describe('PromiseContractFunction', function () {
     )
   }
 
-  function expectPostProperties (self, contractFunction, exception) {
+  function expectPostProperties(self, contractFunction, exception) {
     postconditionViolationCommon.expectProperties(
       exception,
       PostconditionViolation,
@@ -358,7 +359,7 @@ describe('PromiseContractFunction', function () {
     )
   }
 
-  function expectFastExceptionProperties (self, contractFunction, exception) {
+  function expectFastExceptionProperties(self, contractFunction, exception) {
     exceptionConditionViolationCommon.expectProperties(
       exception,
       ExceptionConditionViolation,
@@ -370,7 +371,7 @@ describe('PromiseContractFunction', function () {
     )
   }
 
-  function expectExceptionProperties (self, contractFunction, exception) {
+  function expectExceptionProperties(self, contractFunction, exception) {
     exceptionConditionViolationCommon.expectProperties(
       exception,
       ExceptionConditionViolation,
@@ -393,7 +394,7 @@ describe('PromiseContractFunction', function () {
           .all([self.fibonacci(n - 1), self.fibonacci(n - 2)])
           .then(function (result) { return result[0] + result[1] })
     }),
-    fibonacciWrong: fibonacci.contract.implementation(function fWrong (n) {
+    fibonacciWrong: fibonacci.contract.implementation(function fWrong(n) {
       return new Promise(resolve => {
         setTimeout(() => {
           // noinspection IfStatementWithTooManyBranchesJS
@@ -1020,7 +1021,7 @@ describe('PromiseContractFunction', function () {
 
       it('fails with a meta-error when an exception condition is kaput', function () {
         // noinspection JSUnresolvedFunction
-        const implementation = contractWithAFailingExceptionCondition.implementation(function reject () {
+        const implementation = contractWithAFailingExceptionCondition.implementation(function reject() {
           return Promise.reject(anExceptedException)
         })
         implementation.contract.verifyPostconditions = true

@@ -24,26 +24,26 @@ const common = require('./ConditionViolationCommon')
 const ExceptionConditionViolation = require('../lib/ExceptionConditionViolation')
 const should = require('should')
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(ExceptionConditionViolation)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'exception')
   subject.stack.should.containEql(report.extensiveThrown(subject.exception))
 }
 
-function expectConstructorPost (executionResult, contractFunction, condition, self, args, exception) {
+function expectConstructorPost(executionResult, contractFunction, condition, self, args, exception) {
   // noinspection JSUnresolvedVariable
   common.expectConstructorPost.apply(undefined, arguments)
   should(executionResult.exception).equal(exception)
 }
 
 // noinspection ParameterNamingConventionJS
-function expectProperties (exception, Type, contractFunction, condition, self, args, thrownException) {
+function expectProperties(exception, Type, contractFunction, condition, self, args, thrownException) {
   common.expectProperties.apply(undefined, arguments)
   exception.exception.should.equal(thrownException)
 }
 
-function expectDetailsPost (subject, result) {
+function expectDetailsPost(subject, result) {
   // noinspection JSUnresolvedFunction
   common.expectDetailsPost(subject, result)
   result.should.containEql(subject.exception)
@@ -51,7 +51,7 @@ function expectDetailsPost (subject, result) {
 
 const exceptionCaseGenerators = testUtil.anyCasesGenerators('exception')
 
-function doctorArgs (args, boundContractFunction, exception) {
+function doctorArgs(args, boundContractFunction, exception) {
   const doctored = Array.prototype.slice.call(args)
   const e = arguments.length >= 3 ? exception : new Error('Dummy exception for ExceptionConditionViolation')
   doctored.push(e) // an exception

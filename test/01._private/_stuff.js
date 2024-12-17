@@ -21,7 +21,7 @@
 // eslint-disable-next-line
 const getGlobal = new Function('return this;')
 
-function generateMutableStuff () {
+function generateMutableStuff() {
   // noinspection JSPrimitiveTypeWrapperUsage
   const result = [
     { subject: { a: 4 }, expected: 'object' },

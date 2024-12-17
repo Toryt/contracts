@@ -53,7 +53,7 @@ const osVersion = {
     Edge has trouble with the contract function name (test workaround)
  */
 
-function createConfig (definition) {
+function createConfig(definition) {
   return {
     hostname: 'hub-cloud.browserstack.com',
     port: 80,
@@ -61,7 +61,7 @@ function createConfig (definition) {
   }
 }
 
-function desktop (definition) {
+function desktop(definition) {
   return createConfig({
     name: `${definition.browser} - ${definition.os} ${definition.os_version || osVersion[definition.os]}`,
     capabilities: Object.assign(
@@ -75,7 +75,7 @@ function desktop (definition) {
   })
 }
 
-function mobile (device) {
+function mobile(device) {
   return createConfig({
     name: device,
     capabilities: Object.assign(

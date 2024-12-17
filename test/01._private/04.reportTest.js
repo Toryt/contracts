@@ -29,7 +29,7 @@ const cases = require('../_cases')
 
 describe('_private/report', function () {
   describe('#conciseCondition', function () {
-    function isAConciseVersion (original, concise) {
+    function isAConciseVersion(original, concise) {
       const split = ('' + concise).split(report.conciseSeparator)
       const cleanOriginal = original
         .replace(/[\r\n]/g, ' ')
@@ -47,7 +47,7 @@ describe('_private/report', function () {
       return result
     }
 
-    function expectGeneralPostconditions (result, expected) {
+    function expectGeneralPostconditions(result, expected) {
       log('result: %s', result)
       result.should.not.containEql(eol.n)
       result.should.not.containEql(eol.rn)
@@ -64,7 +64,7 @@ describe('_private/report', function () {
     })
 
     // noinspection FunctionNamingConventionJS
-    function generateMultiLineAnonymousFunction () {
+    function generateMultiLineAnonymousFunction() {
       return function () {
         // trim: spaces at start
         let x = '  This is a multi-line function'
@@ -121,7 +121,7 @@ this function should have a name   ` // trim
     const toStringString = 'This is the toString'
     const stackString = 'This is the stack'
 
-    function stackDoesNotContainToString () {
+    function stackDoesNotContainToString() {
       return {
         stack: stackString,
         toString: function () {
@@ -130,7 +130,7 @@ this function should have a name   ` // trim
       }
     }
 
-    function stackDoesContainToString () {
+    function stackDoesContainToString() {
       return {
         stack: toStringString + eol.stack + stackString,
         toString: function () {

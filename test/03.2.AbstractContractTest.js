@@ -152,7 +152,7 @@ describe('AbstractContract', function () {
   const argsResult = 'a result'
   const argsCallee = function () {}
   const argsCase = ['lala', 'lulu', 4, argsResult, argsCallee]
-  function args () {
+  function args() {
     return arguments
   }
   const argsCases = [

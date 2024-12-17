@@ -26,7 +26,7 @@ const abstractContractCommon = require('./AbstractContractCommon')
 const AbstractContract = require('../lib/AbstractContract')
 const Contract = require('../lib/Contract')
 
-function expectConstructorPost (pre, post, exception, fastException, location, result) {
+function expectConstructorPost(pre, post, exception, fastException, location, result) {
   // noinspection JSUnresolvedFunction
   common.expectConstructorPost(pre, post, exception, location, result)
   // noinspection JSUnresolvedFunction

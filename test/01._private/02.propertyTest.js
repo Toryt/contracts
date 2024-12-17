@@ -50,7 +50,7 @@ describe('_private/property', function () {
       Object.setPrototypeOf(subject, {})
       const propertyName = 'a new property'
 
-      function getter () {
+      function getter() {
         return this.expectedOfGetter
       }
 
@@ -71,7 +71,7 @@ describe('_private/property', function () {
       Object.setPrototypeOf(subject, {})
       const propertyName = 'a new property'
 
-      function getter () {
+      function getter() {
         return this.expectedOfGetter
       }
 

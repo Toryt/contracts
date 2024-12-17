@@ -24,7 +24,7 @@ const testUtil = require('./_util/testUtil')
 
 const contract = new Contract({ pre: [cases.intentionallyFailingFunction] })
 
-function isIntelliJOnNodeGT12 (fixture) {
+function isIntelliJOnNodeGT12(fixture) {
   // noinspection JSUnresolvedVariable
   if (!fixture.test.intellij_test_node) {
     return false

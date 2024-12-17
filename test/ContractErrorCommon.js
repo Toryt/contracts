@@ -23,7 +23,7 @@ const testUtil = require('./_util/testUtil')
 const is = require('../lib/_private/is')
 const stackEOL = require('../lib/_private/eol').stack
 
-function expectStackInvariants (subject) {
+function expectStackInvariants(subject) {
   const stack = subject.stack
   stack.should.be.a.String()
   const startOfStack = subject.name + ': ' + subject.message + stackEOL
@@ -39,7 +39,7 @@ function expectStackInvariants (subject) {
   restOfStack.should.containEql(subject._rawStack)
 }
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(ContractError)
   testUtil.expectOwnFrozenProperty(Object.getPrototypeOf(subject), 'name')
   subject.name.should.be.a.String()
@@ -52,7 +52,7 @@ function expectInvariants (subject) {
   expectStackInvariants(subject)
 }
 
-function expectConstructorPost (result, message, rawStack) {
+function expectConstructorPost(result, message, rawStack) {
   Object.isExtensible(result).should.be.true()
   result.name.should.equal(result.constructor.name)
   result.message.should.equal(message)
@@ -60,7 +60,7 @@ function expectConstructorPost (result, message, rawStack) {
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
   // NOP: no methods here
 }
 

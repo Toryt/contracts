@@ -86,8 +86,8 @@ describe('javascript/syntax', function () {
     })
   })
 
-  function throwTest (toThrow) {
-    function thrower () {
+  function throwTest(toThrow) {
+    function thrower() {
       throw toThrow
     }
 
@@ -157,17 +157,17 @@ describe('javascript/syntax', function () {
   describe('instanceof', function () {
     it('does not depend on the constructor property of a prototype', function () {
       // noinspection FunctionNamingConventionJS
-      function Base () {}
+      function Base() {}
       Base.prototype.constructor = 'Second something else'
 
       // noinspection FunctionNamingConventionJS
-      function Derived () {}
+      function Derived() {}
       Derived.prototype = Object.create(Base.prototype, {
         constructor: { value: 'First something else' }
       })
 
       // noinspection FunctionNamingConventionJS
-      function Unrelated () {}
+      function Unrelated() {}
 
       const instance = new Derived()
 
@@ -179,17 +179,17 @@ describe('javascript/syntax', function () {
     })
     it('is not true for the prototype itself', function () {
       // noinspection FunctionNamingConventionJS
-      function Base () {}
+      function Base() {}
       Base.prototype.constructor = 'Second something else'
 
       // noinspection FunctionNamingConventionJS
-      function Derived () {}
+      function Derived() {}
       Derived.prototype = Object.create(Base.prototype, {
         constructor: { value: 'First something else' }
       })
 
       // noinspection FunctionNamingConventionJS
-      function Unrelated () {}
+      function Unrelated() {}
 
       ;(Derived.prototype instanceof Derived).should.be.false()
       /* ;'s necessary with this strange syntax */

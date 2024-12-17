@@ -52,7 +52,7 @@ const any = [
 
 const intentionalError = new Error('This condition intentionally fails.')
 
-function intentionallyFailingFunction () {
+function intentionallyFailingFunction() {
   throw intentionalError
 }
 

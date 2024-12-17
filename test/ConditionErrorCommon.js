@@ -32,7 +32,7 @@ const conditionCase = function () {
   return 'This simulates a condition'
 }
 
-function generateMultiLineAnonFunction () {
+function generateMultiLineAnonFunction() {
   return function () {
     let x = 'This is a multi-line function'
     x += 'The intention of this test'
@@ -47,7 +47,7 @@ function generateMultiLineAnonFunction () {
 
 const conditionCases = [conditionCase, generateMultiLineAnonFunction()]
 
-function functionWithAName () {}
+function functionWithAName() {}
 property.setAndFreeze(functionWithAName, 'name', '  This is a name  ') // trim
 conditionCases.push(functionWithAName)
 const other = generateMultiLineAnonFunction()
@@ -71,7 +71,7 @@ const oneSelfCase = selfCaseGenerators[selfCaseGenerators.length - 1]()
 let argsCases = [[], testUtil.anyCasesGenerators('arguments element').map(g => g())]
 argsCases = argsCases.concat(
   argsCases.map(c => {
-    function asArgs (args) {
+    function asArgs(args) {
       return arguments
     }
 
@@ -80,7 +80,7 @@ argsCases = argsCases.concat(
 )
 const oneArgsCase = argsCases[argsCases.length - 1]
 
-function expectInvariants (subject) {
+function expectInvariants(subject) {
   subject.should.be.an.instanceof(ConditionError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
@@ -101,7 +101,7 @@ function expectInvariants (subject) {
 }
 
 // noinspection ParameterNamingConventionJS
-function expectProperties (exception, Type, contractFunction, condition, self, args) {
+function expectProperties(exception, Type, contractFunction, condition, self, args) {
   exception.should.be.an.Error()
   exception.should.be.instanceof(Type)
   // noinspection JSUnresolvedVariable
@@ -112,13 +112,13 @@ function expectProperties (exception, Type, contractFunction, condition, self, a
   exception.args.should.eql(Array.prototype.slice.call(args))
 }
 
-function expectConstructorPost (result, contractFunction, condition, self, args, rawStack) {
+function expectConstructorPost(result, contractFunction, condition, self, args, rawStack) {
   common.expectConstructorPost(result, result.message, rawStack)
   expectProperties(result, ConditionError, contractFunction, condition, self, args)
   Object.isExtensible(result).should.be.true()
 }
 
-function expectDetailsPost (subject, result) {
+function expectDetailsPost(subject, result) {
   result.should.be.a.String()
   // noinspection JSUnresolvedVariable
   result.should.containEql(report.conciseCondition('', subject.condition))
@@ -131,7 +131,7 @@ function expectDetailsPost (subject, result) {
 }
 
 // noinspection FunctionNamingConventionJS
-function generatePrototypeMethodsDescriptions (oneSubjectGenerator, allSubjectGenerators) {
+function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
   common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
   const self = this
