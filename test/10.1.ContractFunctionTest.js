@@ -536,7 +536,7 @@ describe('ContractFunction', function () {
     })
     describe('meta-error', function () {
       it('fails with a meta-error when a precondition is kaput', function () {
-        //noinspection JSUnresolvedReference
+        // noinspection JSUnresolvedReference
         failsOnMetaError(
           undefined,
           contractWithAFailingPre.implementation(function () {
@@ -552,7 +552,7 @@ describe('ContractFunction', function () {
           })
         }
 
-        //noinspection JSUnresolvedReference
+        // noinspection JSUnresolvedReference
         failsOnMetaError(self, self.method, contractWithAFailingPre.pre[0])
       })
       it('does not fail when a precondition is kaput when verify is false', function () {
@@ -635,7 +635,7 @@ describe('ContractFunction', function () {
           return resultWhenMetaError
         })
         implementation.contract.verifyPostconditions = true
-        //noinspection JSUnresolvedReference
+        // noinspection JSUnresolvedReference
         failsOnMetaError(undefined, implementation, contractWithAFailingPost.post[0], [
           resultWhenMetaError,
           implementation
@@ -649,7 +649,7 @@ describe('ContractFunction', function () {
         }
         self.method.contract.verifyPostconditions = true
 
-        //noinspection JSUnresolvedReference
+        // noinspection JSUnresolvedReference
         failsOnMetaError(self, self.method, contractWithAFailingPost.post[0], [
           resultWhenMetaError,
           self.method.bind(self)

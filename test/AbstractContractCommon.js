@@ -41,19 +41,19 @@ const someConditions = [
   }
 ]
 
-//noinspection JSCheckFunctionSignatures
+// noinspection JSCheckFunctionSignatures
 const preCases = [
   function () {
     return null
   }
 ].concat(someConditions)
-//noinspection JSCheckFunctionSignatures
+// noinspection JSCheckFunctionSignatures
 const postCases = [
   function () {
     return null
   }
 ].concat(someConditions)
-//noinspection JSCheckFunctionSignatures
+// noinspection JSCheckFunctionSignatures
 const exceptionCases = [
   function () {
     return null
@@ -81,19 +81,19 @@ const notAFunctionNorAContract = [
   new String('lalala')
 ]
 
-//noinspection JSCheckFunctionSignatures
+// noinspection JSCheckFunctionSignatures
 const constructorPreCases = [
   function () {
     return undefined
   }
 ].concat(preCases)
-//noinspection JSCheckFunctionSignatures
+// noinspection JSCheckFunctionSignatures
 const constructorPostCases = [
   function () {
     return undefined
   }
 ].concat(postCases)
-//noinspection JSCheckFunctionSignatures
+// noinspection JSCheckFunctionSignatures
 const constructorExceptionCases = [
   function () {
     return undefined

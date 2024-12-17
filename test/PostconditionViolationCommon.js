@@ -35,7 +35,7 @@ function expectConstructorPost(executionResult, contractFunction, condition, sel
 }
 
 function expectDetailsPost(subject, result) {
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   common.expectDetailsPost(subject, result)
   result.should.containEql(subject.result)
 }

@@ -31,7 +31,7 @@ describe('ConditionMetaError', function () {
 
   describe('#ConditionMetaError()', function () {
     common.errorCases.forEach(error => {
-      //noinspection JSUnresolvedReference
+      // noinspection JSUnresolvedReference
       it(
         'creates an instance with all toppings for ' + common.oneSelfCase + ' - ' + common.oneArgsCase + ' - ' + error,
         function () {

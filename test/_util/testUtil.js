@@ -169,7 +169,7 @@ function anyCasesGenerators(discriminator) {
     () => []
   ]
   const result = generators.slice()
-  //noinspection JSCheckFunctionSignatures
+  // noinspection JSCheckFunctionSignatures
   result.push(() => generators.map(g => g()))
   return result
 }

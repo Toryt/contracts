@@ -379,7 +379,7 @@ describe('ContractFunction-ArrowFunctions', function () {
     })
     describe('meta-error', function () {
       it('fails with a meta-error when a precondition is kaput', function () {
-        //noinspection JSUnresolvedReference
+        // noinspection JSUnresolvedReference
         failsOnMetaError(
           undefined,
           contractWithAFailingPre.implementation(() => resultWhenMetaError),

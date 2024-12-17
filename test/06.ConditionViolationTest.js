@@ -39,7 +39,7 @@ describe('ConditionViolation', function () {
           const contractFunction = common.createCandidateContractFunction()
           // noinspection JSUnresolvedVariable
           const result = new ConditionViolation(contractFunction, common.conditionCase, self, args)
-          //noinspection JSUnresolvedReference
+          // noinspection JSUnresolvedReference
           common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
           common.expectInvariants(result)
           result.should.not.have.ownProperty('message')
@@ -50,13 +50,13 @@ describe('ConditionViolation', function () {
     })
   })
 
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   common.generatePrototypeMethodsDescriptions(
     () =>
       new ConditionViolation(common.createCandidateContractFunction(), common.conditionCase, null, common.argsCases[0]),
     testUtil.x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
       const self = parameters[1]()
-      //noinspection JSUnresolvedReference
+      // noinspection JSUnresolvedReference
       return {
         subject: () =>
           new ConditionViolation(common.createCandidateContractFunction(), parameters[0], self, parameters[2]),

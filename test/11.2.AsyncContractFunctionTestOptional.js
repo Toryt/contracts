@@ -414,7 +414,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       await defensiveIntegerSum(oneHundred)
     })
     it("doesn't interfere when the implementation is correct too, testing conditions", async function () {
-      //noinspection MagicNumberJS
+      // noinspection MagicNumberJS
       this.timeout(5000)
 
       const oneHundred = 100
@@ -449,7 +449,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive function, rejection', async function () {
-      //noinspection JSCheckFunctionSignatures
+      // noinspection JSCheckFunctionSignatures
       await defensiveIntegerSum(defensiveSumFastExcParameter).should.be.rejectedWith(Error, { message: integerMessage })
     })
     it('works with a defensive function, rejection, testing conditions', async function () {
@@ -465,14 +465,14 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       }
     })
     it('works with a defensive method, rejection', async function () {
-      //noinspection JSCheckFunctionSignatures
+      // noinspection JSCheckFunctionSignatures
       await self
         .defensiveIntegerSum(defensiveSumFastExcParameter)
         .should.be.rejectedWith(Error, { message: integerMessage })
     })
     it('works with a defensive method, rejection, testing conditions', async function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
-      //noinspection JSCheckFunctionSignatures
+      // noinspection JSCheckFunctionSignatures
       await self
         .defensiveIntegerSum(defensiveSumFastExcParameter)
         .should.be.rejectedWith(Error, { message: integerMessage })

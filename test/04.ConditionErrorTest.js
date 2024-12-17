@@ -27,7 +27,7 @@ describe('ConditionError', function () {
       common.argsCases.forEach(args => {
         const self = selfCaseGenerator()
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          //noinspection JSCheckFunctionSignatures
+          // noinspection JSCheckFunctionSignatures
           const contractFunction = common.createCandidateContractFunction()
           const rawStack = stack.raw()
           const result = new ConditionError(contractFunction, common.conditionCase, self, args, rawStack)
@@ -45,7 +45,7 @@ describe('ConditionError', function () {
     () => new ConditionError(common.conditionCase, null, common.argsCases[0], stack.raw()),
     testUtil.x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
       const self = parameters[1]()
-      //noinspection JSCheckFunctionSignatures
+      // noinspection JSCheckFunctionSignatures
       return {
         subject: () =>
           new ConditionError(common.createCandidateContractFunction(), parameters[0], self, parameters[2], stack.raw()),

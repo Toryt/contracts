@@ -148,7 +148,7 @@ describe('javascript/Error', function () {
     it('has a stack, that reports where the error is created, and the entire stack, when immediately thrown', function () {
       function createAnErrorOne() {
         try {
-          //noinspection ExceptionCaughtLocallyJS
+          // noinspection ExceptionCaughtLocallyJS
           throw new Error(message)
         } catch (result) {
           return result
@@ -211,7 +211,7 @@ describe('javascript/Error', function () {
           throwAnError()
         } catch (err1) {
           captureTheStackTrace3(err1)
-          //noinspection ExceptionCaughtLocallyJS
+          // noinspection ExceptionCaughtLocallyJS
           throw err1
         }
       } catch (err2) {

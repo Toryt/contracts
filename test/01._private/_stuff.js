@@ -47,7 +47,7 @@ function generateMutableStuff() {
   return result
 }
 
-//noinspection SpellCheckingInspection
+// noinspection SpellCheckingInspection
 const stuff = [
   { subject: undefined, expected: 'undefined', isPrimitive: false },
   { subject: null, expected: 'null', isPrimitive: false },

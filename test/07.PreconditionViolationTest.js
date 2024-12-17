@@ -35,14 +35,14 @@ describe('PreconditionViolation', function () {
       common.argsCases.forEach(args => {
         const self = selfCaseGenerator()
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          //noinspection JSUnresolvedReference
+          // noinspection JSUnresolvedReference
           const contractFunction = common.createCandidateContractFunction()
           // noinspection JSUnresolvedReference
           const result = new PreconditionViolation(contractFunction, common.conditionCase, self, args)
           // noinspection JSUnresolvedReference
           common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
           common.expectInvariants(result)
-          //noinspection JSUnresolvedReference
+          // noinspection JSUnresolvedReference
           testUtil.log('result.stack:\n%s', result.stack)
         })
       })

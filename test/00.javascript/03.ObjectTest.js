@@ -20,7 +20,7 @@ const should = require('should')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
 
 function stuff() {
-  //noinspection JSPrimitiveTypeWrapperUsage
+  // noinspection JSPrimitiveTypeWrapperUsage
   return [
     undefined,
     null,

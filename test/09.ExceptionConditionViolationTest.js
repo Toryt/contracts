@@ -20,7 +20,7 @@ const testUtil = require('./_util/testUtil')
 const common = require('./ExceptionConditionViolationCommon')
 const ExceptionConditionViolation = require('../lib/ExceptionConditionViolation')
 
-//noinspection JSUnresolvedReference
+// noinspection JSUnresolvedReference
 const argsCases = common.argsCases.filter(a => Array.isArray(a))
 
 describe('ExceptionConditionViolation', function () {
@@ -61,7 +61,7 @@ describe('ExceptionConditionViolation', function () {
     })
   })
 
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   const cases = testUtil
     .x(common.conditionCases, [() => common.oneSelfCase], [() => common.oneArgsCase], common.exceptionCaseGenerators)
     .concat(
@@ -74,7 +74,7 @@ describe('ExceptionConditionViolation', function () {
     )
     .concat(testUtil.x([common.conditionCase], [() => common.oneSelfCase], argsCases, [() => new Error('test error')]))
 
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   common.generatePrototypeMethodsDescriptions(
     () => {
       // noinspection JSUnresolvedReference

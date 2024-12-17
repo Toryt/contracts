@@ -82,7 +82,7 @@ function expectInvariants(subject) {
   subject.should.be.an.instanceof(ConditionError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   AbstractContract.isAGeneralContractFunction(subject.contractFunction).should.be.true()
   subject.condition.should.be.a.Function()
   testUtil.expectOwnFrozenProperty(subject, 'condition')
@@ -91,7 +91,7 @@ function expectInvariants(subject) {
   testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'args', '_args')
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'message')
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'stack')
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   subject.message.should.containEql(subject.contractFunction.name)
   subject.message.should.containEql(report.conciseCondition('condition', subject.condition))
 }
@@ -100,7 +100,7 @@ function expectInvariants(subject) {
 function expectProperties(exception, Type, contractFunction, condition, self, args) {
   exception.should.be.an.Error()
   exception.should.be.instanceof(Type)
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   exception.contractFunction.should.equal(contractFunction)
   exception.condition.should.equal(condition)
   should(exception.self).equal(self)
@@ -116,7 +116,7 @@ function expectConstructorPost(result, contractFunction, condition, self, args, 
 function expectDetailsPost(subject, result) {
   result.should.be.a.String()
   result.should.containEql(report.conciseCondition('', subject.condition))
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   result.should.containEql(stackEOL + subject.contractFunction.contract.location)
   result.should.containEql(report.value(subject.self))
   Array.prototype.forEach.call(subject.args, arg => {
@@ -134,7 +134,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
     allSubjectGenerators.forEach(generator => {
       it('returns the details as expected for ' + generator.description, function () {
         const subject = generator.subject()
-        //noinspection JSUnresolvedReference
+        // noinspection JSUnresolvedReference
         const result = subject.getDetails()
         testUtil.log(result)
         self.expectDetailsPost(subject, result)

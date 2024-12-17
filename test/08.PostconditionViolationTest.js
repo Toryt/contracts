@@ -20,7 +20,7 @@ const testUtil = require('./_util/testUtil')
 const common = require('./PostconditionViolationCommon')
 const PostconditionViolation = require('../lib/PostconditionViolation')
 
-//noinspection JSUnresolvedReference
+// noinspection JSUnresolvedReference
 const argsCases = common.argsCases.filter(a => Array.isArray(a))
 
 describe('PostconditionViolation', function () {
@@ -83,7 +83,7 @@ describe('PostconditionViolation', function () {
       const self = parameters[1]()
       return {
         subject: () => {
-          //noinspection JSUnresolvedReference
+          // noinspection JSUnresolvedReference
           const contractFunction = common.createCandidateContractFunction()
           const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
           return new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs)

@@ -52,7 +52,7 @@ describe('javascript/syntax', function () {
         count++
         const current = orderOfKeysCommon.nFromRandomName(key)
         current.should.equal(previous + 1)
-        //noinspection MagicNumberJS
+        // noinspection MagicNumberJS
         previous = current === 9 ? 99 : current === 109 ? 199 : current
       }
       // noinspection MagicNumberJS
@@ -132,7 +132,7 @@ describe('javascript/syntax', function () {
       const name = 'This is a name'
       let thrown = false
       try {
-        //noinspection JSPrimitiveTypeWrapperUsage
+        // noinspection JSPrimitiveTypeWrapperUsage
         subject.name = name
       } catch (err) {
         thrown = true
@@ -153,7 +153,7 @@ describe('javascript/syntax', function () {
 
   describe('instanceof', function () {
     it('does not depend on the constructor property of a prototype', function () {
-      //noinspection FunctionNamingConventionJS
+      // noinspection FunctionNamingConventionJS
       function Base() {}
       Base.prototype.constructor = 'Second something else'
 

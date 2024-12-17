@@ -58,7 +58,7 @@ describe('Contract', function () {
               post: postConditions,
               exception: exceptionConditions
             })
-            //noinspection JSUnresolvedReference
+            // noinspection JSUnresolvedReference
             common.expectConstructorPost(preConditions, postConditions, exceptionConditions, stack.location(), result)
           })
         })

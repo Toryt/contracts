@@ -93,7 +93,7 @@ describe('PromiseContract', function () {
     })
   })
 
-  //noinspection JSUnresolvedReference
+  // noinspection JSUnresolvedReference
   common.generateConstructorMethodsDescriptions(PromiseContract)
 
   // noinspection JSUnresolvedReference
