@@ -419,7 +419,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
           const self = selfGenerator()
           const args = argGenerator()
           const conditionsRepresentation = conditions.map(c => ('' + c).replace(/\s+/g, ' ')).join(', ')
-          // noinspection FunctionTooLongJS
+          // noinspection FunctionTooLongJS,JSCheckFunctionSignatures
           it('works for [' + conditionsRepresentation + '] - ' + self + ' - ' + args, function () {
             const subject = oneSubjectGenerator()
             const contractFunction = common.createCandidateContractFunction()
@@ -452,6 +452,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
               conditions.length.should.be.greaterThanOrEqual(1) // otherwise, there can be no failure
               firstFailure.should.be.ok() // metaError or a false condition
               if (metaError) {
+                //noinspection JSUnresolvedReference
                 conditionMetaErrorCommon.expectProperties(
                   exc,
                   ConditionMetaError,
@@ -676,6 +677,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
           const self = selfGenerator()
           const args = argGenerator()
           const conditionsRepresentation = conditions.map(c => ('' + c).replace(/\s+/g, ' ')).join(', ')
+          //noinspection JSCheckFunctionSignatures
           it('works for [' + conditionsRepresentation + '] - ' + self + ' - ' + args, function () {
             const subject = oneSubjectGenerator()
             const contractFunction = common.createCandidateContractFunction()

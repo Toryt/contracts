@@ -24,7 +24,7 @@ const common = require('./AbstractErrorCommon')
 
 describe('AbstractError', function () {
   describe('#AbstractError()', function () {
-    it('creates an instance with all toppings for AbstractContract.root', function () {
+    it('creates an instance with all toppings for `AbstractContract.root`', function () {
       const rawStack = stack.raw()
       const result = new AbstractError(AbstractContract.root, rawStack)
       common.expectConstructorPost(result, AbstractError.message, AbstractContract.root, rawStack)

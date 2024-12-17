@@ -105,7 +105,7 @@ this function should have a name   ` // trim
           expectGeneralPostconditions(result, prefix + ' ' + safeToString(f))
         })
       } else {
-        it(`returns the name with the prefix, when there is an f and it has a name, for ${safeToString(
+        it(`returns the name with the prefix, when there is an \`f\` and it has a name, for ${safeToString(
           f
         )}`, function () {
           expectGeneralPostconditions(result, prefix + ' ' + f.name)
@@ -242,7 +242,7 @@ this function should have a name   ` // trim
       after(function () {
         util.inspect = this.utilInspect
       })
-      it('returns a message when util.inspect fails with an error with a message', function () {
+      it('returns a message when `util.inspect` fails with an error with a message', function () {
         this.error = cases.intentionalError
         const v = {} // an object triggers the interesting branch
         const result = report.value(v)
@@ -251,7 +251,7 @@ this function should have a name   ` // trim
         result.should.endWith(`(${cases.intentionalError.message})`)
         log()
       })
-      it('returns a message when util.inspect fails with an error without a message', function () {
+      it('returns a message when `util.inspect` fails with an error without a message', function () {
         this.error = new Error()
         const v = {} // an object triggers the interesting branch
         const result = report.value(v)

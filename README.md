@@ -94,8 +94,8 @@ to create a browser distribution.
   - IV/4.0.1:
     - fix issue with stack trace of condition errors in Chrome ≥ v73
   - IV/4.0.2:
-    - fix bug with circular structures in this (and other arguments) with util.inspect (It actually turns out there are
-      2 separate, separate bugs in IntelliJ and mocha-reporter)
+    - fix bug with circular structures in this (and other arguments) with `util.inspect` (It actually turns out there
+      are 2 separate, separate bugs in IntelliJ and mocha-reporter)
   - IV/4.0.3:
     - fix bug in determination of Contract Violation location on Windows. It turns out that Node (8, at least) in
       Windows uses \n as EOL in stack traces, and not os.EOL.
@@ -150,7 +150,7 @@ to create a browser distribution.
 
 This project is maintained in [Bitbucket](https://bitbucket.org/toryt/contracts) (repo, CI, issues, pull requests, …).
 
-Branches are copied automatically to [Github](https://github.com/Toryt/contracts) by CI. This is done as backup, and
+Branches are copied automatically to [GitHub](https://github.com/Toryt/contracts) by CI. This is done as backup, and
 because open source projects are more easily found there. Issues and pull requests there will not be reviewed.
 
 ### npm

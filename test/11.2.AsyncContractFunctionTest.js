@@ -33,8 +33,8 @@ function supportsAsync() {
 }
 
 if (supportsAsync()) {
-  console.log('async is supported: also running 10.2.AsyncContractFunctionTestOptional')
+  console.log('async is supported: also running `10.2.AsyncContractFunctionTestOptional`')
   require('./11.2.AsyncContractFunctionTestOptional')
 } else {
-  console.log('async is NOT supported: not running 10.2.AsyncContractFunctionTestOptional')
+  console.log('async is NOT supported: not running `10.2.AsyncContractFunctionTestOptional`')
 }

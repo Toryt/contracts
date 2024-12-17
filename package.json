@@ -116,7 +116,6 @@
     ]
   },
   "notes": {
-    "ignore npm-check": "-i inherits -i _process -i kindof -i lodash._root -i lodash._createwrapper -i lodash.wrap -i oolong -i json-stringify-safe -i egal are added by browserify",
     "legally": "version 3.5.3 -> 3.5.5 crashes"
   }
 }

@@ -18,6 +18,7 @@
 
 const eol = require('../lib/_private/eol')
 
+//noinspection JSPrimitiveTypeWrapperUsage
 const any = [
   undefined,
   null,

@@ -20,6 +20,7 @@ const randomString = require('just.randomstring')
 
 function randomName(/* Number */ n) {
   const nString = '$$' + n + '$$'
+  //noinspection JSValidateTypes
   return randomString() + nString
 }
 

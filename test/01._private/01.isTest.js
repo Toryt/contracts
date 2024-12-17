@@ -110,7 +110,7 @@ describe('_private/is', function () {
       const result = is.stack('abc')
       result.should.be.true()
     })
-    it('says yes to a multi-line string with eol.stack', function () {
+    it('says yes to a multi-line string with `eol.stack`', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const candidate = 'this is a' + eol.stack + 'multi-line' + eol.stack + 'string'
@@ -124,7 +124,7 @@ describe('_private/is', function () {
       const result = is.stack(candidate)
       result.should.be.true()
     })
-    it('says no to a multi-line string with a blank line with eol.stack', function () {
+    it('says no to a multi-line string with a blank line with `eol.stack`', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stack(
@@ -207,7 +207,7 @@ describe('_private/is', function () {
       })
       const specialized = {}
       Object.setPrototypeOf(specialized, subject)
-      specialized[propName].should.equal(propValue) // check inheritance - test code validity
+      specialized[propName].should.equal(propValue) // check inheritance — test code validity
       it(
         'reports false if the property is not an own property, and' +
           ' enumerable === ' +

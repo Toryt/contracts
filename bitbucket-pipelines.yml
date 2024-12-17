@@ -179,7 +179,7 @@ definitions:
                   - npm ci
                   - npm run wd:iphone_11
         - step:
-            name: Tag & Push to Github
+            name: Tag & Push to GitHub
             caches:
               - node
             script:

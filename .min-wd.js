@@ -36,8 +36,9 @@
          A simple 1-test demonstration is at tag `failure/firefox-browserstack-problem/Travis00666`, run Travis/00666.
 
          To work around this for the time being,
-         - we stick to High Sierra for Safari
-         - we do not test on Firefox, until the issue is fixed.
+
+         * we stick to High Sierra for Safari
+         * we do not test on Firefox, until the issue is fixed.
 */
 
 const travisBuild = process.env.TRAVIS_BUILD_NUMBER
