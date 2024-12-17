@@ -30,7 +30,6 @@ function expectInvariants(subject) {
 }
 
 function expectConstructorPost(executionResult, contractFunction, condition, self, args, exception) {
-  // noinspection JSUnresolvedVariable
   common.expectConstructorPost.apply(undefined, arguments)
   should(executionResult.exception).equal(exception)
 }
