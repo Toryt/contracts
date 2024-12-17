@@ -38,6 +38,7 @@ function generateMutableStuff() {
     // eslint-disable-next-line
     { subject: new Boolean(true), expected: 'boolean' },
     { subject: arguments, expected: 'arguments' },
+    // eslint-disable-next-line no-secrets/no-secrets
     { subject: [Symbol('abcdefghijklmnopqrstuvwxyz'), true, 4, '', 'abc', Math], expected: 'array' }
   ]
   result.forEach(r => {
@@ -57,6 +58,7 @@ const stuff = [
   { subject: 4, expected: 'number', isPrimitive: true },
   { subject: false, expected: 'boolean', isPrimitive: true },
   { subject: getGlobal(), expected: 'object', isPrimitive: false },
+  // eslint-disable-next-line no-secrets/no-secrets
   { subject: Symbol('abcdefghijklmnopqrstuvwxyz'), expected: 'symbol', isPrimitive: false }
 ].concat(generateMutableStuff())
 
