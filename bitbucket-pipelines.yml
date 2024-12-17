@@ -1,4 +1,4 @@
-#  Copyright 2016 - 2020 by Jan Dockx
+#  Copyright 2016 - 2024 by Jan Dockx
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-image: node:12
+image: node:22
 
 definitions:
   steps:
@@ -25,18 +25,24 @@ definitions:
           - git submodule update --init
           - scripts/common/npm/testCi.sh
   caches:
-    npm12: ~/.npm
-    npm14: ~/.npm
-    npm16: ~/.npm
+    npm20: ~/.npm
+    npm22: ~/.npm
+    npm23: ~/.npm
   branches:
     - branch: &fullTestAndTag
         - parallel:
             - step:
                 <<: *test
-                name: Latest Node 12
-                image: node:12
+                name: Latest Node 20
+                image: node:20
                 caches:
-                  - npm12
+                  - npm20
+            - step:
+                <<: *test
+                name: Latest Node 22
+                image: node:22
+                caches:
+                  - npm22
                 script:
                   - git submodule update --init
                   - scripts/common/npm/testCi.sh
@@ -45,136 +51,130 @@ definitions:
                   - bash <(curl -s https://codecov.io/bash)
             - step:
                 <<: *test
-                name: Latest Node 14
-                image: node:14
+                name: Latest Node 23
+                image: node:23
                 caches:
-                  - npm14
-            - step:
-                <<: *test
-                name: Latest Node 16
-                image: node:16
-                caches:
-                  - npm16
+                  - npm23
         - parallel:
             - step:
                 name: Chrome - OSX
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:osx-chrome
             - step:
                 name: Edge - OSX
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:osx-edge
             - step:
                 name: Firefox - OSX
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:osx-firefox
             - step:
                 name: Chrome - Windows
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:windows-chrome
             - step:
                 name: Edge - Windows
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:windows-edge
             - step:
                 name: Firefox - Windows
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:windows-firefox
         - parallel:
             - step:
                 name: Google Pixel 4XL
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:google_pixel_4xl
             - step:
                 name: Samsung Galaxy Note 4
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:samsung_galaxy_note4
             - step:
                 name: Samsung Galaxy S9
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:samsung_galaxy_s9
             - step:
                 name: Samsung Galaxy S20
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:samsung_galaxy_s20
             - step:
                 name: Samsung Galaxy Tab S6
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:samsung_galaxy_tab_s6
         - parallel:
             - step:
                 name: Safari - OSX
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:osx-safari
             - step:
                 name: iPad Pro
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:ipad_pro
             - step:
                 name: iPhone X
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:iphone_x
             - step:
                 name: iPhone 11
-                image: node:14
+                image: node:22
                 caches:
-                  - npm14
+                  - npm22
                 script:
                   - npm ci
                   - npm run wd:iphone_11
