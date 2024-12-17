@@ -1,12 +1,12 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Mocha" type="mocha-javascript-test-runner">
-    <node-interpreter>project</node-interpreter>
+  <configuration default="false" name="Mocha Node 23" type="mocha-javascript-test-runner">
+    <node-interpreter>$USER_HOME$/.nvm/versions/node/v23.1.0/bin/node</node-interpreter>
     <node-options />
     <mocha-package>$PROJECT_DIR$/node_modules/mocha</mocha-package>
     <working-directory>$PROJECT_DIR$</working-directory>
     <pass-parent-env>true</pass-parent-env>
     <ui>bdd</ui>
-    <extra-mocha-options>--watch</extra-mocha-options>
+    <extra-mocha-options />
     <test-kind>PATTERN</test-kind>
     <test-pattern>test/**/*Test.js</test-pattern>
     <method v="2" />
