@@ -23,7 +23,7 @@ const testUtil = require('./_util/testUtil')
 const contract = new Contract({ pre: [cases.intentionallyFailingFunction] })
 
 function isIntelliJOnNodeGT12(fixture) {
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   if (!fixture.test.intellij_test_node) {
     return false
   }
@@ -59,6 +59,7 @@ describe('mocha this', function () {
       } catch (err) {
         // logging the error produces the same problem, because console.log uses util.inspect too
         testUtil.log('' + err)
+        //noinspection JSUnresolvedReference
         const details = err.getDetails()
         testUtil.log(details)
         details.should.match(/𝕋⚖️ \[\[failed to represent the value]]/)

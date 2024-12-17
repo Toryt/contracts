@@ -33,7 +33,7 @@ function expectStackInvariants(subject) {
     .filter(l => !!l)
     .join(stackEOL)
   is.stack(restOfStack).should.be.true()
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   restOfStack.should.containEql(subject._rawStack)
 }
 
@@ -45,7 +45,7 @@ function expectInvariants(subject) {
   testUtil.expectOwnFrozenProperty(ContractError.prototype, 'message')
   subject.message.should.be.a.String()
   testUtil.expectOwnFrozenProperty(subject, '_rawStack')
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   is.stack(subject._rawStack).should.be.true()
   expectStackInvariants(subject)
 }
@@ -54,6 +54,7 @@ function expectConstructorPost(result, message, rawStack) {
   Object.isExtensible(result).should.be.true()
   result.name.should.equal(result.constructor.name)
   result.message.should.equal(message)
+  //noinspection JSUnresolvedReference
   result._rawStack.should.equal(rawStack)
 }
 

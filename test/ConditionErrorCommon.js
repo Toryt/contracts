@@ -82,9 +82,8 @@ function expectInvariants(subject) {
   subject.should.be.an.instanceof(ConditionError)
   common.expectInvariants(subject)
   testUtil.expectOwnFrozenProperty(subject, 'contractFunction')
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   AbstractContract.isAGeneralContractFunction(subject.contractFunction).should.be.true()
-  // noinspection JSUnresolvedVariable
   subject.condition.should.be.a.Function()
   testUtil.expectOwnFrozenProperty(subject, 'condition')
   testUtil.expectOwnFrozenProperty(subject, 'self')
@@ -92,9 +91,8 @@ function expectInvariants(subject) {
   testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'args', '_args')
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'message')
   testUtil.expectFrozenDerivedPropertyOnAPrototype(subject, 'stack')
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   subject.message.should.containEql(subject.contractFunction.name)
-  // noinspection JSUnresolvedVariable
   subject.message.should.containEql(report.conciseCondition('condition', subject.condition))
 }
 
@@ -102,9 +100,8 @@ function expectInvariants(subject) {
 function expectProperties(exception, Type, contractFunction, condition, self, args) {
   exception.should.be.an.Error()
   exception.should.be.instanceof(Type)
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   exception.contractFunction.should.equal(contractFunction)
-  // noinspection JSUnresolvedVariable
   exception.condition.should.equal(condition)
   should(exception.self).equal(self)
   exception.args.should.eql(Array.prototype.slice.call(args))
@@ -118,9 +115,8 @@ function expectConstructorPost(result, contractFunction, condition, self, args, 
 
 function expectDetailsPost(subject, result) {
   result.should.be.a.String()
-  // noinspection JSUnresolvedVariable
   result.should.containEql(report.conciseCondition('', subject.condition))
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   result.should.containEql(stackEOL + subject.contractFunction.contract.location)
   result.should.containEql(report.value(subject.self))
   Array.prototype.forEach.call(subject.args, arg => {
@@ -138,7 +134,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
     allSubjectGenerators.forEach(generator => {
       it('returns the details as expected for ' + generator.description, function () {
         const subject = generator.subject()
-        // noinspection JSUnresolvedFunction
+        //noinspection JSUnresolvedReference
         const result = subject.getDetails()
         testUtil.log(result)
         self.expectDetailsPost(subject, result)

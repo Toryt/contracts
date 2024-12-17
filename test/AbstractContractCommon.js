@@ -40,23 +40,27 @@ const someConditions = [
     ]
   }
 ]
+
+//noinspection JSCheckFunctionSignatures
 const preCases = [
   function () {
     return null
   }
 ].concat(someConditions)
+//noinspection JSCheckFunctionSignatures
 const postCases = [
   function () {
     return null
   }
 ].concat(someConditions)
+//noinspection JSCheckFunctionSignatures
 const exceptionCases = [
   function () {
     return null
   }
 ].concat(someConditions)
 
-// noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
+// noinspection JSPrimitiveTypeWrapperUsage
 const notAFunctionNorAContract = [
   undefined,
   null,
@@ -77,16 +81,19 @@ const notAFunctionNorAContract = [
   new String('lalala')
 ]
 
+//noinspection JSCheckFunctionSignatures
 const constructorPreCases = [
   function () {
     return undefined
   }
 ].concat(preCases)
+//noinspection JSCheckFunctionSignatures
 const constructorPostCases = [
   function () {
     return undefined
   }
 ].concat(postCases)
+//noinspection JSCheckFunctionSignatures
 const constructorExceptionCases = [
   function () {
     return undefined
@@ -110,20 +117,15 @@ function expectInvariants(/* AbstractContract */ subject) {
           either we relax the invariants, and move the "own" aspect to the postconditions of the constructor,
           or we slice the arrays in bless - the latter seems like not a good idea, since in this case we intend
           this to be semantically "the same contract" - what will happen here with extend? */
-  // noinspection JSUnresolvedVariable
   testUtil.expectToBeArrayOfFunctions(subject.pre)
   testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'post', '_post')
-  // noinspection JSUnresolvedVariable
   testUtil.expectToBeArrayOfFunctions(subject.post)
   testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'exception', '_exception')
-  // noinspection JSUnresolvedVariable
   testUtil.expectToBeArrayOfFunctions(subject.exception)
   testUtil.expectOwnFrozenProperty(subject, 'location')
-  // noinspection JSUnresolvedVariable
   const location = subject.location
   ;(location === AbstractContract.internalLocation || is.stackLocation(location)).should.be.true()
   testUtil.expectOwnFrozenProperty(subject, 'abstract')
-  // noinspection JSUnresolvedVariable
   const abstract = subject.abstract
   AbstractContract.isAGeneralContractFunction(abstract).should.be.true()
   abstract.location.should.equal(location)
@@ -149,11 +151,11 @@ function expectArrayPost(result, array, propName, privatePropName) {
       result[propName].should.be.empty()
     }
   } else {
-    result[privatePropName].should.not.equal(array) // it must be copy, don't share the array
+    result[privatePropName].should.not.equal(array) // it must be a copy, don't share the array
     result[privatePropName].should.eql(array)
     Object.isFrozen(result[privatePropName])
     result[propName].should.eql(array)
-    result[propName].should.not.equal(result[privatePropName]) // it must be copy, don't share the array
+    result[propName].should.not.equal(result[privatePropName]) // it must be a copy, don't share the array
   }
 }
 

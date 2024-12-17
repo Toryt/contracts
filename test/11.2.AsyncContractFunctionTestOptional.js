@@ -61,7 +61,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       function (n) {
         return n !== 1 || PromiseContract.outcome(arguments) === 1
       },
-      // don't refer to a specific implementation ("fibonacci") in the Contract!
+      // don't refer to a specific implementation (`fibonacci`) in the Contract!
       async function (n) {
         if (n < 2) {
           return true
@@ -104,7 +104,6 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
   const positiveMessage = 'n must be positive'
   const overflowMessage = 'no overflow'
 
-  // noinspection JSUnresolvedFunction, MagicNumberJS
   const defensiveIntegerSum = new PromiseContract({
     post: [
       (n, result) => Number.isInteger(result),
@@ -177,10 +176,8 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
   async function callAndExpectRejection(self, func, parameter, expectException) {
     try {
       if (!self) {
-        // noinspection JSUnusedAssignment
         await func(parameter)
       } else {
-        // noinspection JSUnusedAssignment
         await func.call(self, parameter)
       }
       true.should.be.false()
@@ -215,7 +212,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       // but then we have no report of the implementation that was called in the report. The top will point to the line
       // where the contract function was called, so we know it indirectly. For post- and exception condition, the line
       // to refer to would be inside the implementation. It would be the return statement, or the throw. This would be
-      // important, because an implementation might have multiple exit points, and this would report which exit point
+      // important, because an implementation might have multiple exit points, and this would report what exit point
       // failed the contract. But we cannot create a stacktrace to that. We only can use our 'contractFunction' wrapper
       // for the stack trace, and it makes no sense to point inside, or to that internal function. So the best we can
       // do is to point to where the contract function is called. The same applies to Meta errors (in conditions),
@@ -225,14 +222,15 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
         /* Because it is in the event loop sometimes; this is not our code; we have to show something, but for Promises,
            it is largely irrelevant.
          In order:
-         - chrome since v73 for Promise resolutions
-         - sync
-         - node 8
-         - headless chrome, chrome (x 4)
-         - Firefox
-         - Edge
-         - node 6
-         - node12: alternating ('[[internal]]' and '    at async Promise.all (index 1)' - in self.fibonacciWrong,
+
+         * chrome since v73 for Promise resolutions
+         * sync
+         * node 8
+         * headless chrome, chrome (x 4)
+         * Firefox
+         * Edge
+         * node 6
+         * node12: alternating ('[[internal]]' and '    at async Promise.all (index 1)' - in self.fibonacciWrong,
            in a setTimeout)
        */
         const expectReference =
@@ -247,7 +245,6 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, async function () {
       await callAndExpectRejection(self, func, parameter, exception => {
         exception.should.be.an.instanceof(PreconditionViolation)
-        // noinspection JSUnresolvedVariable
         exception.condition.should.equal(violatedCondition)
         if (!self) {
           should(exception.self).not.be.ok()
@@ -267,7 +264,6 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
     const param = 'a parameter'
     await callAndExpectRejection(self, functionWithAMetaError, param, exception => {
       exception.should.be.an.instanceof(ConditionMetaError)
-      // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
         should(exception.self).not.be.ok()
@@ -412,16 +408,15 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       fibonacci.contract.verifyPostconditions = false
     })
     it("doesn't interfere when the implementation is correct too", async function () {
-      // noinspection MagicNumberJS
       const oneHundred = 100
       // any exception will fail the test
 
       await defensiveIntegerSum(oneHundred)
     })
     it("doesn't interfere when the implementation is correct too, testing conditions", async function () {
-      // noinspection MagicNumberJS
+      //noinspection MagicNumberJS
       this.timeout(5000)
-      // noinspection MagicNumberJS
+
       const oneHundred = 100
       defensiveIntegerSum.contract.verifyPostconditions = true
       // any exception will fail the test
@@ -454,6 +449,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a defensive function, rejection', async function () {
+      //noinspection JSCheckFunctionSignatures
       await defensiveIntegerSum(defensiveSumFastExcParameter).should.be.rejectedWith(Error, { message: integerMessage })
     })
     it('works with a defensive function, rejection, testing conditions', async function () {
@@ -469,12 +465,14 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       }
     })
     it('works with a defensive method, rejection', async function () {
+      //noinspection JSCheckFunctionSignatures
       await self
         .defensiveIntegerSum(defensiveSumFastExcParameter)
         .should.be.rejectedWith(Error, { message: integerMessage })
     })
     it('works with a defensive method, rejection, testing conditions', async function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
+      //noinspection JSCheckFunctionSignatures
       await self
         .defensiveIntegerSum(defensiveSumFastExcParameter)
         .should.be.rejectedWith(Error, { message: integerMessage })
@@ -544,7 +542,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
     })
     describe('meta-error', function () {
       it('fails with a meta-error when a precondition is kaput', async function () {
-        // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+        // noinspection JSUnresolvedReference
         await failsOnMetaError(
           undefined,
           contractWithAFailingPre.implementation(() => resultWhenMetaError),
@@ -552,11 +550,10 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
         )
       })
       it('fails with a meta-error when a precondition is kaput when it is a method', async function () {
-        // noinspection JSUnresolvedFunction
         const self = {
           method: contractWithAFailingPre.implementation(() => resultWhenMetaError)
         }
-        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedReference
         await failsOnMetaError(self, self.method, contractWithAFailingPre.pre[0])
       })
       it('does not fail when a precondition is kaput when verify is false', async function () {
@@ -660,23 +657,21 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
         })
 
         it('fails with a meta-error when a postcondition is kaput', async function () {
-          // noinspection JSUnresolvedFunction
           const implementation = contractWithAFailingPost.implementation(async () => resultWhenMetaError)
           implementation.contract.verifyPostconditions = true
-          // noinspection JSUnresolvedVariable
+          // noinspection JSUnresolvedReference
           await failsOnMetaError(undefined, implementation, contractWithAFailingPost.post[0], [
             resultWhenMetaError,
             implementation
           ])
         })
         it('fails with a meta-error when a postcondition is kaput when it is a method', async function () {
-          // noinspection JSUnresolvedFunction
           const self = {
             method: contractWithAFailingPost.implementation(async () => resultWhenMetaError)
           }
           self.method.contract.verifyPostconditions = true
 
-          // noinspection JSUnresolvedVariable
+          // noinspection JSUnresolvedReference
           await failsOnMetaError(self, self.method, contractWithAFailingPost.post[0], [
             resultWhenMetaError,
             self.method.bind(self)
@@ -704,23 +699,21 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
         })
 
         it('fails with a meta-error when a postcondition is kaput', async function () {
-          // noinspection JSUnresolvedFunction
           const implementation = contractWithARejectingPost.implementation(async () => resultWhenMetaError)
           implementation.contract.verifyPostconditions = true
-          // noinspection JSUnresolvedVariable
+          // noinspection JSUnresolvedReference
           await failsOnMetaError(undefined, implementation, contractWithARejectingPost.post[0], [
             resultWhenMetaError,
             implementation
           ])
         })
         it('fails with a meta-error when a postcondition is kaput when it is a method', async function () {
-          // noinspection JSUnresolvedFunction
           const self = {
             method: contractWithARejectingPost.implementation(async () => resultWhenMetaError)
           }
           self.method.contract.verifyPostconditions = true
 
-          // noinspection JSUnresolvedVariable
+          // noinspection JSUnresolvedReference
           await failsOnMetaError(self, self.method, contractWithARejectingPost.post[0], [
             resultWhenMetaError,
             self.method.bind(self)
@@ -776,7 +769,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
           defensiveIntegerSumWrong.contract.verifyPostconditions = false
         }
       })
-      it('does not fail when a exception condition is violated when verify is false', async function () {
+      it('does not fail when an exception condition is violated when verify is false', async function () {
         defensiveIntegerSumWrong.contract.verify = false
         defensiveIntegerSumWrong.contract.verifyPostconditions = true
         try {
@@ -805,19 +798,17 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       })
 
       it('fails with a meta-error when an exception condition is kaput', async function () {
-        // noinspection JSUnresolvedFunction
         const implementation = contractWithAFailingExceptionCondition.implementation(async function reject() {
           throw anExceptedException
         })
         implementation.contract.verifyPostconditions = true
-        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedReference
         await failsOnMetaError(undefined, implementation, contractWithAFailingExceptionCondition.exception[0], [
           anExceptedException,
           implementation
         ])
       })
       it('fails with a meta-error when an exception condition is kaput when it is a method', async function () {
-        // noinspection JSUnresolvedFunction
         const self = {
           method: contractWithAFailingExceptionCondition.implementation(async () => {
             throw anExceptedException
@@ -825,7 +816,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
         }
         self.method.contract.verifyPostconditions = true
 
-        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedReference
         await failsOnMetaError(self, self.method, contractWithAFailingExceptionCondition.exception[0], [
           anExceptedException,
           self.method.bind(self)

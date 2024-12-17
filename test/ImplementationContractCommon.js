@@ -26,7 +26,6 @@ function expectInvariants(subject) {
   common.expectInvariants(subject)
   is.stackLocation(subject.location).should.be.true()
   // this strengthening implies the same for the location of subject.abstract, since the locations have to be the same
-  // noinspection JSUnresolvedFunction, JSUnresolvedVariable
   AbstractContract.isAContractFunction(subject.abstract)
   subject.implementation.should.be.a.Function()
 }
@@ -39,7 +38,6 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
   describe('#implementation', function () {
     function expectPost(contract, implFunction, location, result) {
       contract.isImplementedBy(result).should.be.true()
-      // noinspection JSUnresolvedFunction
       AbstractContract.isAContractFunction(result).should.be.true()
       Object.getPrototypeOf(result.contract).should.equal(contract)
       result.implementation.should.equal(implFunction)
@@ -47,7 +45,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
       self.expectInvariants(contract)
     }
 
-    it('returns an Contract function that is configured as expected', function () {
+    it('returns a Contract function that is configured as expected', function () {
       const subject = oneSubjectGenerator()
       const impl = function () {}
       const result = subject.implementation(impl)

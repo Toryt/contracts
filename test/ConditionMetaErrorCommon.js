@@ -41,7 +41,7 @@ function expectConstructorPost(result, contractFunction, condition, self, args, 
   should(result.error).equal(error)
 }
 
-// noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS,JSHint
+// noinspection JSPrimitiveTypeWrapperUsage
 const errorCases = [
   new Error('This is an error case'),
   undefined,

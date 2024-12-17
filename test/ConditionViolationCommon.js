@@ -65,12 +65,12 @@ function expectInvariants(subject) {
   testUtil.expectFrozenPropertyOnAPrototype(subject, 'verify')
   subject.verify.should.be.a.Function()
   testUtil.expectFrozenPropertyOnAPrototype(subject, 'verifyAll')
-  // noinspection JSUnresolvedVariable
+  //noinspection JSUnresolvedReference
   subject.verifyAll.should.be.a.Function()
 }
 
 function expectConstructorPost(result, contractFunction, condition, self, args) {
-  // noinspection JSUnresolvedVariable
+  // noinspection JSUnresolvedReference
   common.expectConstructorPost(result, contractFunction, condition, self, args, result._rawStack)
   common.expectProperties.call(undefined, result, ConditionViolation, contractFunction, condition, self, args)
   // not frozen yet
@@ -150,11 +150,13 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
           const args = argGenerator()
           it('works for ' + condition + ' - ' + self + ' - ' + args, function () {
             const subject = oneSubjectGenerator()
+            //noinspection JSCheckFunctionSignatures
             const contractFunction = common.createCandidateContractFunction()
             const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
             let outcome
             let metaError = false
             try {
+              //noinspection JSVoidFunctionReturnValueUsed,JSCheckFunctionSignatures
               outcome = condition.apply()
             } catch (ignore) {
               // ConditionMetaError
@@ -166,7 +168,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
               should(metaError).not.be.ok()
             } catch (exc) {
               if (metaError) {
-                // noinspection JSUnresolvedFunction
+                //noinspection JSUnresolvedReference
                 conditionMetaErrorCommon.expectProperties(
                   exc,
                   ConditionMetaError,
@@ -205,18 +207,21 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
           const args = argGenerator()
           it('works for ' + condition + ' - ' + self + ' - ' + args, function () {
             const subject = oneSubjectGenerator()
+            //noinspection JSCheckFunctionSignatures
             const contractFunction = common.createCandidateContractFunction()
             const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
 
             let outcome
             let metaError = false
             try {
+              //noinspection JSVoidFunctionReturnValueUsed, JSCheckFunctionSignatures
               outcome = condition.apply()
             } catch (ignore) {
               // ConditionMetaError
               metaError = true
             }
 
+            //noinspection JSUnresolvedReference
             return subject
               .verifyPromise(contractFunction, condition, self, doctoredArgs)
               .then(
@@ -272,12 +277,15 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
           const args = argGenerator()
           it('works for Promise condition ' + condition + ' - ' + self + ' - ' + args, function () {
             const subject = oneSubjectGenerator()
+            //noinspection JSCheckFunctionSignatures
             const contractFunction = common.createCandidateContractFunction()
             const doctoredArgs = that.doctorArgs(args, contractFunction.bind(self))
 
+            //noinspection JSCheckFunctionSignatures
             return condition
               .apply()
               .then(outcome => {
+                //noinspection JSUnresolvedReference
                 return subject.verifyPromise(contractFunction, condition, self, doctoredArgs).then(
                   () => {
                     outcome.should.be.ok() // otherwise, we get an exception
@@ -299,6 +307,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
                 )
               })
               .catch(() => {
+                //noinspection JSUnresolvedReference
                 return subject.verifyPromise(contractFunction, condition, self, doctoredArgs).then(
                   () => {
                     false.should.be.true() // should not happen
@@ -708,7 +717,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
 
             const expectedDetermined = determineExpected(0)
 
-            // noinspection JSUnresolvedFunction
+            //noinspection JSUnresolvedReference
             return expectedDetermined.then(() =>
               subject
                 .verifyAllPromise(contractFunction, conditions, self, doctoredArgs)
@@ -721,6 +730,7 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
                     conditions.length.should.be.greaterThanOrEqual(1) // otherwise, there can be no failure
                     failures.should.not.be.empty()
                     if (metaErrorCondition) {
+                      //noinspection JSUnresolvedReference
                       conditionMetaErrorCommon.expectProperties(
                         exc,
                         ConditionMetaError,
