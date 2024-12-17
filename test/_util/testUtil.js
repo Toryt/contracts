@@ -46,7 +46,6 @@ function expectOwnFrozenProperty(subject, propertyName) {
   propertyDescriptor.configurable.should.be.false()
   propertyDescriptor.writable.should.be.false()
   const failFunction = function () {
-    // noinspection MagicNumberJS
     subject[propertyName] = 42 + ' some outlandish other value'
   }
   failFunction.should.throw(TypeError)
@@ -98,7 +97,6 @@ function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propN
   subject[propName].should.be.an.Array()
   this.expectFrozenDerivedPropertyOnAPrototype(subject, propName)
   const failFunction = function () {
-    // noinspection MagicNumberJS
     subject[propName] = 42 + ' some outlandish other value'
   }
   failFunction.should.throw(TypeError)
@@ -137,7 +135,7 @@ function propertyIsWritable(object, propertyName) {
 }
 
 function anyCasesGenerators(discriminator) {
-  // noinspection JSPrimitiveTypeWrapperUsage,MagicNumberJS
+  // noinspection JSPrimitiveTypeWrapperUsage
   const generators = [
     () => new Error('This is a ' + discriminator + ' case'),
     () => undefined,
@@ -176,7 +174,7 @@ function anyCasesGenerators(discriminator) {
 }
 
 // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
-// noinspection OverlyComplexFunctionJS
+// noinspection OverlyComplexFunctionJS,FunctionTooLongJS
 function environment() {
   // eslint-disable-next-line no-new-func
   if (new Function('try {return this === global;}catch(e){return false;}')()) {

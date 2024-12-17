@@ -67,9 +67,7 @@ describe('AbstractContract', function () {
       should(prototype._pre).be.null()
       should(prototype._post).be.null()
       should(prototype._exception).be.null()
-      // noinspection JSUnresolvedVariable
       prototype.location.should.equal(AbstractContract.internalLocation)
-      // noinspection JSUnresolvedVariable
       should(prototype.abstract).be.null()
       prototype.isImplementedBy.should.be.a.Function()
     })

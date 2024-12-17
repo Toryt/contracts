@@ -63,7 +63,7 @@ describe('ContractFunction', function () {
         return n !== 1 || result === 1
       },
       function (n, result, fibonacci) {
-        // don't refer to a specific implementation ("fibonacci") in the Contract!
+        // don't refer to a specific implementation (`fibonacci`) in the Contract!
         return n < 2 || result === fibonacci(n - 1) + fibonacci(n - 2)
       }
     ],
@@ -110,7 +110,6 @@ describe('ContractFunction', function () {
     exception: Contract.mustNotHappen
   })
 
-  // noinspection JSUnresolvedFunction
   const factorial = factorialContract.implementation(function (n) {
     if (n <= 0) {
       return 1
@@ -119,7 +118,6 @@ describe('ContractFunction', function () {
     }
   })
 
-  // noinspection JSUnresolvedFunction
   const factorialIterative = factorialContract.implementation(function (n) {
     if (n === 8) {
       return -3 // wrong!
@@ -136,7 +134,6 @@ describe('ContractFunction', function () {
   const integerMessage = 'n must be integer'
   const positiveMessage = 'n must be positive'
 
-  // noinspection JSUnresolvedFunction
   const defensiveIntegerSum = new Contract({
     post: [
       function (n, result) {
@@ -249,7 +246,7 @@ describe('ContractFunction', function () {
       // but then we have no report of the implementation that was called in the report. The top will point to the line
       // where the contract function was called, so we know it indirectly. For post- and exception condition, the line
       // to refer to would be inside the implementation. It would be the return statement, or the throw. This would be
-      // important, because an implementation might have multiple exit points, and this would report which exit point
+      // important, because an implementation might have multiple exit points, and this would report what exit point
       // failed the contract. But we cannot create a stacktrace to that. We only can use our 'contractFunction' wrapper
       // for the stack trace, and it makes no sense to point inside, or to that internal function. So the best we can
       // do is to point to where the contract function is called. The same applies to Meta errors (in conditions),
@@ -272,7 +269,6 @@ describe('ContractFunction', function () {
     it('fails when a precondition is violated - ' + self + ' - ' + parameter, function () {
       callAndExpectException(self, func, parameter, exception => {
         exception.should.be.an.instanceof(PreconditionViolation)
-        // noinspection JSUnresolvedVariable
         exception.condition.should.equal(violatedCondition)
         if (!self) {
           should(exception.self).not.be.ok()
@@ -292,7 +288,6 @@ describe('ContractFunction', function () {
     const param = 'a parameter'
     callAndExpectException(self, functionWithAMetaError, param, exception => {
       exception.should.be.an.instanceof(ConditionMetaError)
-      // noinspection JSUnresolvedVariable
       exception.condition.should.equal(conditionWithAMetaError)
       if (!self) {
         should(exception.self).not.be.ok()
@@ -406,7 +401,6 @@ describe('ContractFunction', function () {
       const ignore = factorial(5)
     })
     it("doesn't interfere when the implementation is correct three", function () {
-      // noinspection MagicNumberJS
       const oneHundred = 100
       // any exception will fail the test
       // eslint-disable-next-line no-unused-vars
@@ -463,7 +457,7 @@ describe('ContractFunction', function () {
 
     // noinspection ParameterNamingConventionJS
     function expectConstructorToWork(PersonImplementation, doBind) {
-      // noinspection LocalVariableNamingConventionJS, JSUnresolvedFunction
+      // noinspection LocalVariableNamingConventionJS
       let ContractPerson = PersonConstructorContract.implementation(PersonImplementation)
       if (doBind) {
         ContractPerson = ContractPerson.bind(undefined)
@@ -542,7 +536,7 @@ describe('ContractFunction', function () {
     })
     describe('meta-error', function () {
       it('fails with a meta-error when a precondition is kaput', function () {
-        // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+        //noinspection JSUnresolvedReference
         failsOnMetaError(
           undefined,
           contractWithAFailingPre.implementation(function () {
@@ -552,14 +546,13 @@ describe('ContractFunction', function () {
         )
       })
       it('fails with a meta-error when a precondition is kaput when it is a method', function () {
-        // noinspection JSUnresolvedFunction
         const self = {
           method: contractWithAFailingPre.implementation(function () {
             return resultWhenMetaError
           })
         }
 
-        // noinspection JSUnresolvedVariable
+        //noinspection JSUnresolvedReference
         failsOnMetaError(self, self.method, contractWithAFailingPre.pre[0])
       })
       it('does not fail when a precondition is kaput when verify is false', function () {
@@ -638,19 +631,17 @@ describe('ContractFunction', function () {
         post: [cases.intentionallyFailingFunction]
       })
       it('fails with a meta-error when a postcondition is kaput', function () {
-        // noinspection JSUnresolvedFunction
         const implementation = contractWithAFailingPost.implementation(function () {
           return resultWhenMetaError
         })
         implementation.contract.verifyPostconditions = true
-        // noinspection JSUnresolvedVariable
+        //noinspection JSUnresolvedReference
         failsOnMetaError(undefined, implementation, contractWithAFailingPost.post[0], [
           resultWhenMetaError,
           implementation
         ])
       })
       it('fails with a meta-error when a postcondition is kaput when it is a method', function () {
-        // noinspection JSUnresolvedFunction
         const self = {
           method: contractWithAFailingPost.implementation(function () {
             return resultWhenMetaError
@@ -658,7 +649,7 @@ describe('ContractFunction', function () {
         }
         self.method.contract.verifyPostconditions = true
 
-        // noinspection JSUnresolvedVariable
+        //noinspection JSUnresolvedReference
         failsOnMetaError(self, self.method, contractWithAFailingPost.post[0], [
           resultWhenMetaError,
           self.method.bind(self)
@@ -706,7 +697,7 @@ describe('ContractFunction', function () {
         )
         self.fastDefensiveIntegerSumWrong.contract.verifyPostconditions = false
       })
-      it('does not fail when a exception condition is violated when verify is false', function () {
+      it('does not fail when an exception condition is violated when verify is false', function () {
         fastDefensiveIntegerSumWrong.contract.verify = false
         fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
         try {
@@ -737,19 +728,17 @@ describe('ContractFunction', function () {
       })
       const anExceptedException = 'This exception is expected.'
       it('fails with a meta-error when an exception condition is kaput', function () {
-        // noinspection JSUnresolvedFunction
         const implementation = contractWithAFailingExceptionCondition.implementation(function () {
           throw anExceptedException
         })
         implementation.contract.verifyPostconditions = true
-        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedReference
         failsOnMetaError(undefined, implementation, contractWithAFailingExceptionCondition.exception[0], [
           anExceptedException,
           implementation
         ])
       })
       it('fails with a meta-error when an exception condition is kaput when it is a method', function () {
-        // noinspection JSUnresolvedFunction
         const self = {
           method: contractWithAFailingExceptionCondition.implementation(function () {
             throw anExceptedException
@@ -757,13 +746,13 @@ describe('ContractFunction', function () {
         }
         self.method.contract.verifyPostconditions = true
 
-        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedReference
         failsOnMetaError(self, self.method, contractWithAFailingExceptionCondition.exception[0], [
           anExceptedException,
           self.method.bind(self)
         ])
       })
-      it('does not fail when a exception condition is kaput when verify is false', function () {
+      it('does not fail when an exception condition is kaput when verify is false', function () {
         contractWithAFailingExceptionCondition.verify = false
         contractWithAFailingExceptionCondition.verifyPostconditions = true
         try {
@@ -778,7 +767,7 @@ describe('ContractFunction', function () {
           err.should.equal(anExceptedException)
         }
       })
-      it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
+      it('does not fail when an exception condition is kaput when verifyPostcondition is false', function () {
         try {
           // eslint-disable-next-line no-unused-vars
           const ignore = contractWithAFailingExceptionCondition.implementation(function () {

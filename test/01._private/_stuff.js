@@ -20,7 +20,7 @@
 const getGlobal = new Function('return this;')
 
 function generateMutableStuff() {
-  // noinspection JSPrimitiveTypeWrapperUsage
+  // noinspection JSPrimitiveTypeWrapperUsage,SpellCheckingInspection
   const result = [
     { subject: { a: 4 }, expected: 'object' },
     { subject: [1, 2, 3], expected: 'array' },
@@ -47,7 +47,7 @@ function generateMutableStuff() {
   return result
 }
 
-// noinspection JSPrimitiveTypeWrapperUsage,SpellCheckingInspection
+//noinspection SpellCheckingInspection
 const stuff = [
   { subject: undefined, expected: 'undefined', isPrimitive: false },
   { subject: null, expected: 'null', isPrimitive: false },
@@ -62,7 +62,6 @@ const stuff = [
   { subject: Symbol('abcdefghijklmnopqrstuvwxyz'), expected: 'symbol', isPrimitive: false }
 ].concat(generateMutableStuff())
 
-// noinspection JSUndefinedPropertyAssignment
 stuff.generateMutableStuff = generateMutableStuff
 
 module.exports = stuff

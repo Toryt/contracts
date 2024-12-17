@@ -20,43 +20,40 @@ const testUtil = require('./_util/testUtil')
 const common = require('./PostconditionViolationCommon')
 const PostconditionViolation = require('../lib/PostconditionViolation')
 
-// noinspection JSUnresolvedVariable
+//noinspection JSUnresolvedReference
 const argsCases = common.argsCases.filter(a => Array.isArray(a))
 
 describe('PostconditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
-      // noinspection JSUnresolvedVariable
       PostconditionViolation.prototype.condition.should.be.a.Function()
-      // noinspection JSUnresolvedVariable
       PostconditionViolation.prototype.condition.should.not.throw()
     })
   })
 
   describe('#PostconditionViolation()', function () {
-    // noinspection JSUnresolvedVariable
+    // noinspection JSUnresolvedReference
     common.selfCaseGenerators.forEach(selfCaseGenerator => {
       argsCases.forEach(args => {
         common.resultCaseGenerators.forEach(resultCaseGenerator => {
           const self = selfCaseGenerator()
           const result = resultCaseGenerator()
           it('creates an instance with all toppings for ' + self + ' - ' + args + ' - ' + result, function () {
-            // noinspection JSUnresolvedFunction
+            // noinspection JSUnresolvedReference
             const contractFunction = common.createCandidateContractFunction()
             const doctoredArgs = args.slice()
             doctoredArgs.push(result)
             doctoredArgs.push(contractFunction.bind(self))
-            // noinspection JSUnresolvedVariable
+            // noinspection JSUnresolvedReference
             const creationResult = new PostconditionViolation(
               contractFunction,
               common.conditionCase,
               self,
               doctoredArgs
             )
-            // noinspection JSUnresolvedVariable
+            // noinspection JSUnresolvedReference
             common.expectConstructorPost(creationResult, contractFunction, common.conditionCase, self, args, result)
             common.expectInvariants(creationResult)
-            // noinspection JSUnresolvedVariable
             testUtil.log('result.stack:\n%s', creationResult.stack)
           })
         })
@@ -86,6 +83,7 @@ describe('PostconditionViolation', function () {
       const self = parameters[1]()
       return {
         subject: () => {
+          //noinspection JSUnresolvedReference
           const contractFunction = common.createCandidateContractFunction()
           const doctoredArgs = common.doctorArgs(parameters[2], contractFunction.bind(self), parameters[3]())
           return new PostconditionViolation(contractFunction, parameters[0], self, doctoredArgs)

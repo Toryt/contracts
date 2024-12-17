@@ -24,15 +24,14 @@ const ConditionMetaError = require('../lib/ConditionMetaError')
 describe('ConditionMetaError', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
-      // noinspection JSUnresolvedVariable
       ConditionMetaError.prototype.condition.should.be.a.Function()
-      // noinspection JSUnresolvedVariable
       ConditionMetaError.prototype.condition.should.not.throw()
     })
   })
 
   describe('#ConditionMetaError()', function () {
     common.errorCases.forEach(error => {
+      //noinspection JSUnresolvedReference
       it(
         'creates an instance with all toppings for ' + common.oneSelfCase + ' - ' + common.oneArgsCase + ' - ' + error,
         function () {
@@ -61,18 +60,17 @@ describe('ConditionMetaError', function () {
           common.expectInvariants(result)
           result.should.not.have.ownProperty('message')
           result.should.not.have.ownProperty('stack')
-          // noinspection JSUnresolvedVariable
           testUtil.log('result.stack:\n%s', result.stack)
         }
       )
     })
   })
 
-  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
+  // noinspection JSUnresolvedVariable
   common.generatePrototypeMethodsDescriptions(
     () => new ConditionMetaError(common.conditionCase, null, common.oneArgsCase, common.errorCases[0], stack.raw()),
     common.errorCases.map(errorCase => {
-      // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+      // noinspection JSUnresolvedVariable
       return {
         subject: () =>
           new ConditionMetaError(

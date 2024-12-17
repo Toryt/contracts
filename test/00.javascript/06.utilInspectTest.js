@@ -78,7 +78,6 @@ describe('util.inspect', function () {
       test(arg)
     })
     it('works for a nested array', function () {
-      // noinspection MagicNumberJS
       const arg = [3, 5, [6, [7, 8, 9], 10, [11], [12, [13, [14], 15], 16], 17], 18]
       test(arg)
     })
@@ -108,7 +107,6 @@ describe('util.inspect', function () {
       test(arg, true)
     })
     it('works for a nested array', function () {
-      // noinspection MagicNumberJS
       const arg = [3, 5, [6, [7, 8, 9], 10, [11], [12, [13, [14], 15], 16], 17], 18]
       arg.splice(2, 0, arg)
       test(arg, true)

@@ -28,15 +28,11 @@ describe('Contract', function () {
   describe('Contract', function () {
     it('has the expected properties', function () {
       Contract.should.have.ownProperty('prototype')
-      // noinspection JSUnresolvedVariable
       abstractContractCommon.expectInvariants(Contract.prototype)
-      // noinspection JSUnresolvedVariable
       Contract.prototype.implementation.should.be.a.Function()
       Contract.should.have.ownProperty('root')
-      // noinspection JSUnresolvedVariable
       Contract.root.should.equal(AbstractContract.root)
       Contract.should.have.ownProperty('isAContractFunction')
-      // noinspection JSUnresolvedVariable
       Contract.isAContractFunction.should.equal(AbstractContract.isAContractFunction)
       Contract.falseCondition.should.equal(AbstractContract.falseCondition)
       Contract.mustNotHappen.should.equal(AbstractContract.mustNotHappen)
@@ -47,11 +43,11 @@ describe('Contract', function () {
   })
 
   describe('#Contract()', function () {
-    // noinspection JSUnresolvedVariable
+    // noinspection JSUnresolvedReference
     common.constructorPreCases.forEach(pre => {
-      // noinspection JSUnresolvedVariable
+      // noinspection JSUnresolvedReference
       common.constructorPostCases.forEach(post => {
-        // noinspection JSUnresolvedVariable
+        // noinspection JSUnresolvedReference
         common.constructorExceptionCases.forEach(exception => {
           it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
             const preConditions = pre()
@@ -62,7 +58,7 @@ describe('Contract', function () {
               post: postConditions,
               exception: exceptionConditions
             })
-            // noinspection JSUnresolvedFunction
+            //noinspection JSUnresolvedReference
             common.expectConstructorPost(preConditions, postConditions, exceptionConditions, stack.location(), result)
           })
         })
@@ -70,9 +66,10 @@ describe('Contract', function () {
     })
   })
 
+  // noinspection JSUnresolvedReference
   common.generateConstructorMethodsDescriptions(Contract)
 
-  // noinspection JSUnresolvedVariable
+  // noinspection JSUnresolvedReference
   common.generatePrototypeMethodsDescriptions(
     () => new Contract({}),
     testUtil
@@ -89,7 +86,7 @@ describe('Contract', function () {
   )
 
   describe('@isAContractFunction specific', function () {
-    it('does not accept a PromiseContract', function () {
+    it('does reject a PromiseContract', function () {
       const contract = new PromiseContract({})
       const contractFunction = contract.implementation(() => {})
       const result = Contract.isAContractFunction(contractFunction)

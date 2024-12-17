@@ -101,7 +101,7 @@ describe('javascript/Function', function () {
     })
   })
   describe('#prototype', function () {
-    it('does not exist on the Function.prototype', function () {
+    it('does not exist on the `Function.prototype`', function () {
       Function.prototype.should.not.have.property('prototype')
     })
     ;[
@@ -122,7 +122,6 @@ describe('javascript/Function', function () {
         f.should.have.ownProperty('prototype')
         f.prototype.should.be.an.Object()
         f.prototype.should.be.an.instanceof(Object)
-        // noinspection JSPotentiallyInvalidConstructorUsage
         Object.getPrototypeOf(f.prototype).should.equal(Object.prototype)
         f.prototype.should.not.equal(Function.prototype)
         f.prototype.should.not.equal(Function.prototype.prototype)
@@ -187,7 +186,6 @@ describe('javascript/Function', function () {
     //  testUtil.log(JSON.stringify(Object.getOwnPropertyDescriptor(SimpleClass, "prototype")));
     //  const newObject = {name: "a new object"};
     //  try {
-    //    //noinspection JSPotentiallyInvalidConstructorUsage
     //    SimpleClass.prototype = newObject;
     //  }
     //  catch (err) {
@@ -289,7 +287,7 @@ describe('javascript/Function', function () {
 
         test(() => null)
       })
-      it('the name of an named function argument is fixed', function () {
+      it('the name of a named function argument is fixed', function () {
         function test(f) {
           f.name.should.equal('thisIsAFunction')
         }
@@ -304,7 +302,7 @@ describe('javascript/Function', function () {
       it('the name of an arrow function is the empty string', function () {
         ;(() => null).name.should.equal('')
       })
-      it('the name of an named function is fixed', function () {
+      it('the name of a named function is fixed', function () {
         ;(function thisIsAFunction() {}).name.should.equal('thisIsAFunction')
       })
     })

@@ -61,7 +61,7 @@ describe('_private/report', function () {
       property.setAndFreeze(ms.subject, 'name', alternativeName)
     })
 
-    // noinspection FunctionNamingConventionJS
+    //noinspection FunctionNamingConventionJS
     function generateMultiLineAnonymousFunction() {
       return function () {
         // trim: spaces at start

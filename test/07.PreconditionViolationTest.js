@@ -23,9 +23,7 @@ const PreconditionViolation = require('../lib/PreconditionViolation')
 describe('PreconditionViolation', function () {
   describe('#prototype', function () {
     it('has a condition', function () {
-      // noinspection JSUnresolvedVariable
       PreconditionViolation.prototype.condition.should.be.a.Function()
-      // noinspection JSUnresolvedVariable
       PreconditionViolation.prototype.condition.should.not.throw()
     })
   })
@@ -37,20 +35,21 @@ describe('PreconditionViolation', function () {
       common.argsCases.forEach(args => {
         const self = selfCaseGenerator()
         it('creates an instance with all toppings for ' + self + ' - ' + args, function () {
-          // noinspection JSUnresolvedFunction
+          //noinspection JSUnresolvedReference
           const contractFunction = common.createCandidateContractFunction()
-          // noinspection JSUnresolvedVariable
+          // noinspection JSUnresolvedReference
           const result = new PreconditionViolation(contractFunction, common.conditionCase, self, args)
-          // noinspection JSUnresolvedFunction, JSUnresolvedVariable
+          // noinspection JSUnresolvedReference
           common.expectConstructorPost(result, contractFunction, common.conditionCase, self, args)
           common.expectInvariants(result)
+          //noinspection JSUnresolvedReference
           testUtil.log('result.stack:\n%s', result.stack)
         })
       })
     })
   })
 
-  // noinspection JSUnresolvedVariable, JSUnresolvedFunction
+  // noinspection JSUnresolvedReference
   common.generatePrototypeMethodsDescriptions(
     () =>
       new PreconditionViolation(
@@ -61,7 +60,7 @@ describe('PreconditionViolation', function () {
       ),
     testUtil.x(common.conditionCases, common.selfCaseGenerators, common.argsCases).map(parameters => {
       const self = parameters[1]()
-      // noinspection JSUnresolvedFunction
+      // noinspection JSUnresolvedReference
       return {
         subject: () =>
           new PreconditionViolation(common.createCandidateContractFunction(), parameters[0], self, parameters[2]),

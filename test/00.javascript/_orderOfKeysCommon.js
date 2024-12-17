@@ -37,9 +37,7 @@ function prepareAnObject(/* Number */ startValue, /* Number */ nrOfProperties) {
 }
 
 function prepareAnObjectWithAProto() {
-  // noinspection MagicNumberJS
   const oProto1 = prepareAnObject(200, 10)
-  // noinspection MagicNumberJS
   const oProto2 = prepareAnObject(100, 10)
   Object.setPrototypeOf(oProto2, oProto1)
   const o = prepareAnObject(0, 10)
