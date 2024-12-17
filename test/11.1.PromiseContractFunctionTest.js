@@ -41,9 +41,9 @@ describe('PromiseContractFunction', function () {
   function fibonacciImpl(n) {
     return n <= 1
       ? Promise.resolve(n)
-      : Promise.all([fibonacci(n - 1), fibonacci(n - 2)]).then(function (result) {
-          return result[0] + result[1]
-        })
+      : /* prettier-ignore */ Promise.all([fibonacci(n - 1), fibonacci(n - 2)]).then(function (result) {
+        return result[0] + result[1]
+      })
   }
 
   const fibonacci = new PromiseContract({
