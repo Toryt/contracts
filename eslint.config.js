@@ -40,7 +40,15 @@ module.exports = neostandard({}).concat([
   },
   {
     name: 'mocha-globals',
-    files: ['test/{*,**/*}Test.js'],
+    files: [
+      'test/{*,**/*}Test.js',
+      'test/11.2.AsyncContractFunctionTestOptional.js',
+      'test/AbstractContractCommon.js',
+      'test/ConditionErrorCommon.js',
+      'test/ConditionMetaErrorCommon.js',
+      'test/ConditionViolationCommon.js',
+      'test/ImplementationContractCommon.js'
+    ],
     languageOptions: {
       globals: {
         ...mocha
