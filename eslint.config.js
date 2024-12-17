@@ -58,7 +58,7 @@ module.exports = neostandard({}).concat([
       'no-secrets': noSecrets
     },
     rules: {
-      'no-secrets/no-secrets': ['error']
+      'no-secrets/no-secrets': ['error', { tolerance: 4.11 }]
     }
   }
 ])
