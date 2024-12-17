@@ -16,7 +16,7 @@
 
 'use strict'
 
-const util = require('util')
+const util = require('node:util')
 const cases = require('../_cases')
 
 function test(thing, circular) {
@@ -24,7 +24,7 @@ function test(thing, circular) {
   console.log(result)
   result.should.be.a.String()
   if (circular) {
-    result.should.match(/\[Circular]/)
+    result.should.match(/\[Circular \*\d]/)
   }
   console.log()
 }
