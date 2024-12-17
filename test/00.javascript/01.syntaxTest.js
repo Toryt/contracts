@@ -24,15 +24,14 @@ const cases = require('../_cases')
 describe('javascript/syntax', function () {
   describe('#for-in', function () {
     /*
-     Does for ... iteration respect the order in which properties on an object are defined?
+     Does `for …` iteration respect the order in which properties on an object are defined?
      And in what order are the properties of the prototype handled?
 
      According to the spec, the order is undefined. However,
-     "All modern implementations of ECMAScript iterate through object properties in the order in which they were defined."
-     (http://ejohn.org/blog/javascript-in-chrome/, "for loop order".)
+     “All modern implementations of ECMAScript iterate through object properties in the order in which they were defined.”
+     (http://ejohn.org/blog/javascript-in-chrome/, “for loop order”.)
      */
     it('should return all properties in the order they were defined', function () {
-      // noinspection MagicNumberJS
       const nrOfProperties = 10000
       const o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties)
       let count = 0
@@ -53,7 +52,7 @@ describe('javascript/syntax', function () {
         count++
         const current = orderOfKeysCommon.nFromRandomName(key)
         current.should.equal(previous + 1)
-        // noinspection MagicNumberJS
+        //noinspection MagicNumberJS
         previous = current === 9 ? 99 : current === 109 ? 199 : current
       }
       // noinspection MagicNumberJS
@@ -101,7 +100,7 @@ describe('javascript/syntax', function () {
     it('can throw a truthy thing', function () {
       throwTest('a string to throw')
     })
-    it('can throw ""', function () {
+    it('can throw the empty string', function () {
       throwTest('')
     })
     it('can throw false', function () {
@@ -133,7 +132,7 @@ describe('javascript/syntax', function () {
       const name = 'This is a name'
       let thrown = false
       try {
-        // noinspection JSPrimitiveTypeWrapperUsage,JSUndefinedPropertyAssignment
+        //noinspection JSPrimitiveTypeWrapperUsage
         subject.name = name
       } catch (err) {
         thrown = true
@@ -154,7 +153,7 @@ describe('javascript/syntax', function () {
 
   describe('instanceof', function () {
     it('does not depend on the constructor property of a prototype', function () {
-      // noinspection FunctionNamingConventionJS
+      //noinspection FunctionNamingConventionJS
       function Base() {}
       Base.prototype.constructor = 'Second something else'
 

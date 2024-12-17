@@ -74,10 +74,8 @@ describe('javascript/Error', function () {
   describe('#columnNumber', function () {
     it('has ' + (isFF ? 'a' : 'no') + ' column number in ' + env, function () {
       const subject = new Error(message)
-      // noinspection JSUnresolvedVariable
       testUtil.log('columnNumber: %s', subject.columnNumber)
       okForFF(subject.columnNumber) // not supported in node
-      // noinspection JSUnresolvedVariable
     })
   })
   describe('#stack', function () {
@@ -90,7 +88,6 @@ describe('javascript/Error', function () {
         const subject = new Error(message)
         const stack = subject.stack
         testUtil.log('stack: %s', subject.stack)
-        // noinspection BadExpressionStatementJS,JSHint
         stack.should.be.ok() // not supported in old IE
         stack.should.be.a.String()
         if (isFFOrSafari) {
@@ -151,7 +148,7 @@ describe('javascript/Error', function () {
     it('has a stack, that reports where the error is created, and the entire stack, when immediately thrown', function () {
       function createAnErrorOne() {
         try {
-          // noinspection ExceptionCaughtLocallyJS
+          //noinspection ExceptionCaughtLocallyJS
           throw new Error(message)
         } catch (result) {
           return result
@@ -191,7 +188,6 @@ describe('javascript/Error', function () {
         return new Error(message)
       }
 
-      // noinspection FunctionNamingConventionJS
       function captureTheStackTrace1(err) {
         Error.captureStackTrace(err)
       }
@@ -202,12 +198,10 @@ describe('javascript/Error', function () {
         throw anError
       }
 
-      // noinspection FunctionNamingConventionJS
       function captureTheStackTrace2(err) {
         captureTheStackTrace1(err)
       }
 
-      // noinspection FunctionNamingConventionJS
       function captureTheStackTrace3(err) {
         captureTheStackTrace2(err)
       }
@@ -217,7 +211,7 @@ describe('javascript/Error', function () {
           throwAnError()
         } catch (err1) {
           captureTheStackTrace3(err1)
-          // noinspection ExceptionCaughtLocallyJS
+          //noinspection ExceptionCaughtLocallyJS
           throw err1
         }
       } catch (err2) {
