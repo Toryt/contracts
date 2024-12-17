@@ -32,7 +32,7 @@ describe('index', function () {
   it('exports expected properties', function () {
     index.ContractError.should.equal(ContractError)
     index.AbstractContract.should.equal(AbstractContract)
-    index.ContractError.should.equal(ConditionError)
+    index.ConditionError.should.equal(ConditionError)
     index.ConditionMetaError.should.equal(ConditionMetaError)
     index.ConditionViolation.should.equal(ConditionViolation)
     index.PreconditionViolation.should.equal(PreconditionViolation)
