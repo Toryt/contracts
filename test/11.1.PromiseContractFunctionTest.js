@@ -199,7 +199,6 @@ describe('PromiseContractFunction', function () {
   }
 
   function callAndExpectRejection(self, func, parameter, expectException, recursive) {
-    // eslint-disable-next-line no-unused-vars
     let promise
     if (!self) {
       // noinspection JSUnusedAssignment
@@ -455,13 +454,13 @@ describe('PromiseContractFunction', function () {
   describe('correct', function () {
     it("doesn't interfere when the implementation is correct", function () {
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return fibonacci(5)
     })
     it("doesn't interfere when the implementation is correct, testing conditions", function () {
       fibonacci.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return fibonacci(5).then(() => {
         fibonacci.contract.verifyPostconditions = false
       })
@@ -470,7 +469,7 @@ describe('PromiseContractFunction', function () {
       // noinspection MagicNumberJS
       const oneHundred = 100
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return defensiveIntegerSum(oneHundred)
     })
     it("doesn't interfere when the implementation is correct too, testing conditions", function () {
@@ -478,33 +477,33 @@ describe('PromiseContractFunction', function () {
       const oneHundred = 100
       defensiveIntegerSum.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return defensiveIntegerSum(oneHundred).then(() => {
         defensiveIntegerSum.contract.verifyPostconditions = false
       })
     })
     it('works with a method that is correct', function () {
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return self.fibonacci(5)
     })
     it('works with a method that is correct, testing conditions', function () {
       self.fibonacci.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return self.fibonacci(5).then(() => {
         self.fibonacci.contract.verifyPostconditions = false
       })
     })
     it('works with a method that is correct too', function () {
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return self.defensiveIntegerSum(5)
     })
     it('works with a method that is correct too, testing conditions', function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       return self.defensiveIntegerSum(5).then(() => {
         self.defensiveIntegerSum.contract.verifyPostconditions = false
       })
@@ -590,7 +589,7 @@ describe('PromiseContractFunction', function () {
       failsOnPreconditionViolation(self, self.fibonacci, -5, fibonacci.contract.pre[1])
       it('does not fail on a precondition violation when verify is false', function () {
         fibonacci.contract.verify = false
-        // eslint-disable-next-line
+
         return fibonacci(-5).then(() => {
           fibonacci.contract.verify = true
         })
@@ -710,7 +709,7 @@ describe('PromiseContractFunction', function () {
       it('does not fail when a simple postcondition is violated when verify is false', function () {
         fibonacciWrong.contract.verify = false
         fibonacciWrong.contract.verifyPostconditions = true
-        // eslint-disable-next-line
+
         return fibonacciWrong(wrongParameter).then(result => {
           fibonacciWrong.contract.verifyPostconditions = false
           fibonacciWrong.contract.verify = true
@@ -718,7 +717,6 @@ describe('PromiseContractFunction', function () {
         })
       })
       it('does not fail when a simple postcondition is violated when verifyPostcondition is false', function () {
-        // eslint-disable-next-line
         return fibonacciWrong(wrongParameter).then(result => {
           result.should.equal(wrongResult)
         })

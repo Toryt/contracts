@@ -401,13 +401,13 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
   describe('correct', function () {
     it("doesn't interfere when the implementation is correct", async function () {
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await fibonacci(5)
     })
     it("doesn't interfere when the implementation is correct, testing conditions", async function () {
       fibonacci.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await fibonacci(5)
       fibonacci.contract.verifyPostconditions = false
     })
@@ -415,7 +415,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       // noinspection MagicNumberJS
       const oneHundred = 100
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await defensiveIntegerSum(oneHundred)
     })
     it("doesn't interfere when the implementation is correct too, testing conditions", async function () {
@@ -425,31 +425,31 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       const oneHundred = 100
       defensiveIntegerSum.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await defensiveIntegerSum(oneHundred)
       defensiveIntegerSum.contract.verifyPostconditions = false
     })
     it('works with a method that is correct', async function () {
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await self.fibonacci(5)
     })
     it('works with a method that is correct, testing conditions', async function () {
       self.fibonacci.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await self.fibonacci(5)
       self.fibonacci.contract.verifyPostconditions = false
     })
     it('works with a method that is correct too', async function () {
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await self.defensiveIntegerSum(5)
     })
     it('works with a method that is correct too, testing conditions', async function () {
       self.defensiveIntegerSum.contract.verifyPostconditions = true
       // any exception will fail the test
-      // eslint-disable-next-line no-unused-vars
+
       await self.defensiveIntegerSum(5)
       self.defensiveIntegerSum.contract.verifyPostconditions = false
     })
@@ -537,7 +537,7 @@ describe('PromiseContractFunction - AsyncFunctions', function () {
       failsOnPreconditionViolation(self, self.fibonacci, -5, fibonacci.contract.pre[1])
       it('does not fail on a precondition violation when verify is false', async function () {
         fibonacci.contract.verify = false
-        // eslint-disable-next-line
+
         await fibonacci(-5)
         fibonacci.contract.verify = true
       })
