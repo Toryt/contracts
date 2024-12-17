@@ -9,7 +9,7 @@
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
     "lint": "eslint \"{test,lib}/**/*\"",
-    "test": "standard && nyc mocha 'test/**/*Test.js'",
+    "test": "npm run lint && nyc mocha 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "browserify": "browserify -s toryt.contracts.v --outfile contracts-v.js lib/index.js",
