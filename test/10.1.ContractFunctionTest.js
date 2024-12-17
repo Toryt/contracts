@@ -351,10 +351,10 @@ describe('ContractFunction', function () {
         return this.fibonacciWrong(n - 1) + this.fibonacciWrong(n - 2)
       }
     }),
-    factorial: factorial,
-    defensiveIntegerSum: defensiveIntegerSum,
-    fastDefensiveIntegerSum: fastDefensiveIntegerSum,
-    fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
+    factorial,
+    defensiveIntegerSum,
+    fastDefensiveIntegerSum,
+    fastDefensiveIntegerSumWrong
   }
 
   describe('#name', function () {
@@ -622,14 +622,13 @@ describe('ContractFunction', function () {
       it('does not fail when a simple postcondition is violated when verify is false', function () {
         fibonacciWrong.contract.verify = false
         fibonacciWrong.contract.verifyPostconditions = true
-        // eslint-disable-next-line
+
         const result = fibonacciWrong(wrongParameter)
         fibonacciWrong.contract.verifyPostconditions = false
         fibonacciWrong.contract.verify = true
         result.should.equal(wrongResult)
       })
       it('does not fail when a simple postcondition is violated when verifyPostcondition is false', function () {
-        // eslint-disable-next-line
         const result = fibonacciWrong(wrongParameter)
         result.should.equal(wrongResult)
       })

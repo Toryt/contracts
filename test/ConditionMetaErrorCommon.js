@@ -77,10 +77,10 @@ function expectDetailsPost(subject, result) {
 }
 
 const test = {
-  errorCases: errorCases,
-  expectInvariants: expectInvariants,
-  expectConstructorPost: expectConstructorPost,
-  expectDetailsPost: expectDetailsPost
+  errorCases,
+  expectInvariants,
+  expectConstructorPost,
+  expectDetailsPost
 }
 Object.setPrototypeOf(test, common)
 

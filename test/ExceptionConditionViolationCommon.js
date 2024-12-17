@@ -58,12 +58,12 @@ function doctorArgs(args, boundContractFunction, exception) {
 }
 
 const test = {
-  exceptionCaseGenerators: exceptionCaseGenerators,
-  expectInvariants: expectInvariants,
-  expectConstructorPost: expectConstructorPost,
-  expectProperties: expectProperties,
-  expectDetailsPost: expectDetailsPost,
-  doctorArgs: doctorArgs
+  exceptionCaseGenerators,
+  expectInvariants,
+  expectConstructorPost,
+  expectProperties,
+  expectDetailsPost,
+  doctorArgs
 }
 Object.setPrototypeOf(test, common)
 

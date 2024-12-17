@@ -412,9 +412,9 @@ describe('PromiseContractFunction', function () {
         }, 0)
       })
     }),
-    defensiveIntegerSum: defensiveIntegerSum,
-    fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong,
-    defensiveIntegerSumWrong: defensiveIntegerSumWrong
+    defensiveIntegerSum,
+    fastDefensiveIntegerSumWrong,
+    defensiveIntegerSumWrong
   }
 
   describe('#name', function () {

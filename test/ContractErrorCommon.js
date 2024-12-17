@@ -63,8 +63,8 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
 }
 
 module.exports = {
-  expectConstructorPost: expectConstructorPost,
-  expectStackInvariants: expectStackInvariants,
-  expectInvariants: expectInvariants,
-  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+  expectConstructorPost,
+  expectStackInvariants,
+  expectInvariants,
+  generatePrototypeMethodsDescriptions
 }

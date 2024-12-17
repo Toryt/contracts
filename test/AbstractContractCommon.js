@@ -336,19 +336,19 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
 }
 
 module.exports = {
-  preCases: preCases,
-  postCases: postCases,
-  exceptionCases: exceptionCases,
+  preCases,
+  postCases,
+  exceptionCases,
   thingsThatAreNotAFunctionNorAContract: notAFunctionNorAContract,
-  constructorPreCases: constructorPreCases,
-  constructorPostCases: constructorPostCases,
-  constructorExceptionCases: constructorExceptionCases,
-  location: location,
-  expectInvariants: expectInvariants,
-  expectArrayPost: expectArrayPost,
-  expectConstructorPost: expectConstructorPost,
-  createCandidateContractFunction: createCandidateContractFunction,
-  generateIAGCFTests: generateIAGCFTests,
-  generateConstructorMethodsDescriptions: generateConstructorMethodsDescriptions,
-  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+  constructorPreCases,
+  constructorPostCases,
+  constructorExceptionCases,
+  location,
+  expectInvariants,
+  expectArrayPost,
+  expectConstructorPost,
+  createCandidateContractFunction,
+  generateIAGCFTests,
+  generateConstructorMethodsDescriptions,
+  generatePrototypeMethodsDescriptions
 }

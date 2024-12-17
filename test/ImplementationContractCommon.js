@@ -77,8 +77,8 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
 }
 
 const test = {
-  expectInvariants: expectInvariants,
-  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions
+  expectInvariants,
+  generatePrototypeMethodsDescriptions
 }
 Object.setPrototypeOf(test, common)
 

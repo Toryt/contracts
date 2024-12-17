@@ -25,7 +25,7 @@ function expectInvariants(subject) {
 }
 
 const test = {
-  expectInvariants: expectInvariants
+  expectInvariants
 }
 Object.setPrototypeOf(test, common)
 

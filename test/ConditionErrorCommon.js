@@ -149,18 +149,18 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
 }
 
 const test = {
-  selfCaseGenerators: selfCaseGenerators,
-  argsCases: argsCases,
-  conditionCase: conditionCase,
-  conditionCases: conditionCases,
-  expectProperties: expectProperties,
-  expectConstructorPost: expectConstructorPost,
-  expectDetailsPost: expectDetailsPost,
-  expectInvariants: expectInvariants,
-  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
+  selfCaseGenerators,
+  argsCases,
+  conditionCase,
+  conditionCases,
+  expectProperties,
+  expectConstructorPost,
+  expectDetailsPost,
+  expectInvariants,
+  generatePrototypeMethodsDescriptions,
   createCandidateContractFunction: abstractContractCommon.createCandidateContractFunction,
-  oneSelfCase: oneSelfCase,
-  oneArgsCase: oneArgsCase
+  oneSelfCase,
+  oneArgsCase
 }
 Object.setPrototypeOf(test, common)
 

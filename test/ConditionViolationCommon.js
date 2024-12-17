@@ -768,13 +768,13 @@ function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGen
 }
 
 const test = {
-  selfVerifyCases: selfVerifyCases,
-  argsVerifyCases: argsVerifyCases,
-  generatePrototypeMethodsDescriptions: generatePrototypeMethodsDescriptions,
-  expectInvariants: expectInvariants,
+  selfVerifyCases,
+  argsVerifyCases,
+  generatePrototypeMethodsDescriptions,
+  expectInvariants,
   expectProperties: common.expectProperties,
-  expectConstructorPost: expectConstructorPost,
-  doctorArgs: doctorArgs
+  expectConstructorPost,
+  doctorArgs
 }
 Object.setPrototypeOf(test, common)
 

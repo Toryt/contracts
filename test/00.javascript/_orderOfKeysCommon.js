@@ -56,8 +56,8 @@ const objectLiteral = {
 }
 
 module.exports = {
-  prepareAnObject: prepareAnObject,
-  nFromRandomName: nFromRandomName,
-  prepareAnObjectWithAProto: prepareAnObjectWithAProto,
-  objectLiteral: objectLiteral
+  prepareAnObject,
+  nFromRandomName,
+  prepareAnObjectWithAProto,
+  objectLiteral
 }

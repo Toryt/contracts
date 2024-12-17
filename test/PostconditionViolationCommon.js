@@ -63,12 +63,12 @@ function doctorArgs(args, boundContractFunction, result) {
 }
 
 const test = {
-  resultCaseGenerators: resultCaseGenerators,
-  expectInvariants: expectInvariants,
-  expectConstructorPost: expectConstructorPost,
-  expectProperties: expectProperties,
-  expectDetailsPost: expectDetailsPost,
-  doctorArgs: doctorArgs
+  resultCaseGenerators,
+  expectInvariants,
+  expectConstructorPost,
+  expectProperties,
+  expectDetailsPost,
+  doctorArgs
 }
 Object.setPrototypeOf(test, common)
 

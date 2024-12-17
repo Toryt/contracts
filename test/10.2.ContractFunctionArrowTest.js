@@ -295,10 +295,10 @@ describe('ContractFunction-ArrowFunctions', function () {
     aProperty: 'a property value',
     // arrow functions that use this cannot be created
     // below methods are not true methods: they do not use this
-    factorial: factorial,
-    defensiveIntegerSum: defensiveIntegerSum,
-    fastDefensiveIntegerSum: fastDefensiveIntegerSum,
-    fastDefensiveIntegerSumWrong: fastDefensiveIntegerSumWrong
+    factorial,
+    defensiveIntegerSum,
+    fastDefensiveIntegerSum,
+    fastDefensiveIntegerSumWrong
   }
 
   describe('#name', function () {
