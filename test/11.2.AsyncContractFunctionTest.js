@@ -14,8 +14,6 @@
   limitations under the License.
  */
 
-/* eslint-env mocha */
-
 'use strict'
 
 /* Load AsyncContractFunction test only when async is supported (not on Node6) */

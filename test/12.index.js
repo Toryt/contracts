@@ -14,8 +14,6 @@
   limitations under the License.
  */
 
-/* eslint-env mocha */
-
 'use strict'
 
 const index = require('../lib/index')

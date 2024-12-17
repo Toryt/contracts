@@ -14,8 +14,6 @@
   limitations under the License.
  */
 
-/* eslint-env mocha */
-
 'use strict'
 
 const Contract = require('../lib/Contract')

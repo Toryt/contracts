@@ -14,8 +14,6 @@
   limitations under the License.
  */
 
-/* eslint-env mocha */
-
 'use strict'
 
 const property = require('../../lib/_private/property')
