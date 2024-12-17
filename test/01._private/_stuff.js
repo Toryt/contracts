@@ -16,7 +16,7 @@
 
 'use strict'
 
-// eslint-disable-next-line
+// eslint-disable-next-line no-new-func
 const getGlobal = new Function('return this;')
 
 function generateMutableStuff() {
@@ -29,13 +29,13 @@ function generateMutableStuff() {
     { subject: new ReferenceError(), expected: 'error' },
     { subject: new Date(), expected: 'date' },
     { subject: /a-z/, expected: 'regexp' },
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-new-wrappers
     { subject: new Number(4), expected: 'number' },
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-new-wrappers
     { subject: new String('abc'), expected: 'string' },
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-new-wrappers
     { subject: new String(''), expected: 'string' },
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-new-wrappers
     { subject: new Boolean(true), expected: 'boolean' },
     { subject: arguments, expected: 'arguments' },
     // eslint-disable-next-line no-secrets/no-secrets

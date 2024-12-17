@@ -923,7 +923,7 @@ describe('PromiseContractFunction', function () {
         contractWithAFailingFastExceptionCondition.verify = false
         contractWithAFailingFastExceptionCondition.verifyPostconditions = true
         try {
-          // eslint-disable-next-line
+          // eslint-disable-next-line no-unused-vars
           const ignore = contractWithAFailingFastExceptionCondition.implementation(() => {
             throw anExceptedException
           })()
@@ -938,7 +938,7 @@ describe('PromiseContractFunction', function () {
       })
       it('does not fail when a fast exception condition is kaput when verifyPostcondition is false', function () {
         try {
-          // eslint-disable-next-line
+          // eslint-disable-next-line no-unused-vars
           const ignore = contractWithAFailingFastExceptionCondition.implementation(() => {
             throw anExceptedException
           })()

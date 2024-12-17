@@ -36,11 +36,11 @@ const any = [
   new ReferenceError(),
   Math,
   JSON,
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-wrappers
   new Number(4),
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-wrappers
   new String('abc'),
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-wrappers
   new Boolean(false),
   Object,
   (function () {

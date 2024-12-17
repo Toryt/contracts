@@ -69,11 +69,11 @@ const notAFunctionNorAContract = [
   /lala/,
   {},
   new Date(),
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-wrappers
   new Number(42),
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-wrappers
   new Boolean(true),
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-wrappers
   new String('lalala')
 ]
 

@@ -108,11 +108,11 @@ describe('javascript/Object', function () {
       new ReferenceError(),
       Math,
       JSON,
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-new-wrappers
       new Number(4),
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-new-wrappers
       new String('abc'),
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-new-wrappers
       new Boolean(false)
     ].forEach(obj => {
       it('sets a property on ' + obj + ' if it is non-primitive, and fails to do so if it is primitive', function () {
@@ -158,11 +158,11 @@ describe('javascript/Object', function () {
       new ReferenceError(),
       Math,
       JSON,
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-new-wrappers
       new Number(4),
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-new-wrappers
       new String('abc'),
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-new-wrappers
       new Boolean(false)
     ].forEach(obj => {
       it(

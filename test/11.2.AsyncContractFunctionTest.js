@@ -20,7 +20,7 @@
 
 function supportsAsync() {
   try {
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-eval
     eval('async () => {}')
     return true
   } catch (e) {

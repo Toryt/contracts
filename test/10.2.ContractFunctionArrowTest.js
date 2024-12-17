@@ -378,7 +378,7 @@ describe('ContractFunction-ArrowFunctions', function () {
       failsOnPreconditionViolation(undefined, fibonacci, -5, fibonacci.contract.pre[1])
       it('does not fail on a precondition violation when verify is false', function () {
         fibonacci.contract.verify = false
-        // eslint-disable-next-line
+        // eslint-disable-next-line no-unused-vars
         const ignore = fibonacci(-5)
         fibonacci.contract.verify = true
       })
@@ -520,7 +520,7 @@ describe('ContractFunction-ArrowFunctions', function () {
         fastDefensiveIntegerSumWrong.contract.verify = false
         fastDefensiveIntegerSumWrong.contract.verifyPostconditions = true
         try {
-          // eslint-disable-next-line
+          // eslint-disable-next-line no-unused-vars
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
           true.should.be.false()
         } catch (err) {
@@ -532,7 +532,7 @@ describe('ContractFunction-ArrowFunctions', function () {
       })
       it('does not fail when a simple exception condition is violated when verifyPostcondition is false', function () {
         try {
-          // eslint-disable-next-line
+          // eslint-disable-next-line no-unused-vars
           const ignore = fastDefensiveIntegerSumWrong(wrongParameter)
           true.should.be.false()
         } catch (err) {
@@ -563,7 +563,7 @@ describe('ContractFunction-ArrowFunctions', function () {
         contractWithAFailingExceptionCondition.verify = false
         contractWithAFailingExceptionCondition.verifyPostconditions = true
         try {
-          // eslint-disable-next-line
+          // eslint-disable-next-line no-unused-vars
           const ignore = contractWithAFailingExceptionCondition.implementation(function () {
             throw anExceptedException
           })()
@@ -576,7 +576,7 @@ describe('ContractFunction-ArrowFunctions', function () {
       })
       it('does not fail when a exception condition is kaput when verifyPostcondition is false', function () {
         try {
-          // eslint-disable-next-line
+          // eslint-disable-next-line no-unused-vars
           const ignore = contractWithAFailingExceptionCondition.implementation(function () {
             throw anExceptedException
           })()

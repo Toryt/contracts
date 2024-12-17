@@ -154,11 +154,11 @@ function anyCasesGenerators(discriminator) {
       function () {
         return 'this simulates a ' + discriminator
       },
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-new-wrappers
     () => new Number(42),
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-new-wrappers
     () => new Boolean(false),
-    // eslint-disable-next-line
+    // eslint-disable-next-line no-new-wrappers
     () => new String(discriminator + ' string'),
     () => arguments,
     () => ({}),
@@ -178,7 +178,7 @@ function anyCasesGenerators(discriminator) {
 // http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
 // noinspection OverlyComplexFunctionJS
 function environment() {
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-func
   if (new Function('try {return this === global;}catch(e){return false;}')()) {
     console.log('Node (no User Agent)')
     return 'node'
@@ -188,8 +188,9 @@ function environment() {
   console.log(`User Agent: "${ua}"`)
   // noinspection JSUnresolvedVariable
   if (
-    // eslint-disable-next-line
-    (!!window.opr && !!opr.addons) ||
+    (!!window.opr &&
+      // eslint-disable-next-line no-undef
+      !!opr.addons) ||
     !!window.opera ||
     navigator.userAgent.indexOf(' OPR/') >= 0
   ) {
@@ -206,7 +207,7 @@ function environment() {
     (function (p) {
       return p.toString() === '[object SafariRemoteNotification]'
     })(
-      // eslint-disable-next-line
+      // eslint-disable-next-line no-undef
       !window['safari'] || safari.pushNotification
     )
   ) {
@@ -243,7 +244,7 @@ function environment() {
     }
     return 'blink'
   }
-  // eslint-disable-next-line
+  // eslint-disable-next-line no-new-func
   if (new Function('try {return this === window;}catch(e){ return false;}')()) {
     return 'browser'
   }
