@@ -56,5 +56,4 @@ jobs:
       node_js: '10'
       install: skip
       script:
-        - npm run legalReport
         - scripts/travisGithubTag.sh

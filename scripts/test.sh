@@ -33,5 +33,4 @@ echo 'sha:' `git rev-parse --verify HEAD`
 echo ${NODE_ENV}
 
 # validate
-npm run legalReport
 npm test

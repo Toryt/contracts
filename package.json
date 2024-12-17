@@ -10,7 +10,6 @@
     "status": "depcheck; ncu; npm audit || exit 0",
     "lint": "eslint \"{test,lib}/**/*\"",
     "test": "npm run lint && nyc mocha 'test/**/*Test.js'",
-    "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "browserify": "browserify -s toryt.contracts.v --outfile contracts-v.js lib/index.js",
     "browserifyTest": "browserify -r should --outfile browser/test/suite.js test/**/*Test.js",
@@ -74,15 +73,13 @@
     "eslint-plugin-no-secrets": "^2.1.1",
     "globals": "^15.13.0",
     "just.randomstring": "^0.1.1",
-    "legally": "^3.5.10",
     "mocha": "^11.0.1",
     "mochify": "^9.2.0",
     "neostandard": "^0.12.0",
     "npm-check-updates": "^17.1.11",
     "nyc": "^17.1.0",
     "prettier": "^3.4.2",
-    "should": "^13.2.3",
-    "tldrlegal": "^1.0.11"
+    "should": "^13.2.3"
   },
   "prettier": {
     "printWidth": 120,
@@ -114,6 +111,5 @@
     ]
   },
   "notes": {
-    "legally": "version 3.5.3 -> 3.5.5 crashes"
   }
 }
