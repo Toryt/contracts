@@ -35,10 +35,13 @@ describe('AbstractError', function () {
     })
   })
 
-  common.generatePrototypeMethodsDescriptions(() => new AbstractError(AbstractContract.root, stack.raw()), [
-    {
-      subject: () => new AbstractError(AbstractContract.root, stack.raw()),
-      description: 'AbstractContract.root'
-    }
-  ])
+  common.generatePrototypeMethodsDescriptions(
+    () => new AbstractError(AbstractContract.root, stack.raw()),
+    [
+      {
+        subject: () => new AbstractError(AbstractContract.root, stack.raw()),
+        description: 'AbstractContract.root'
+      }
+    ]
+  )
 })

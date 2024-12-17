@@ -3,8 +3,8 @@ const travisBuild = process.env.TRAVIS_BUILD_NUMBER
 const build = bitbucketBuild
   ? `bitbucket/${bitbucketBuild.padStart(5, '0')}`
   : travisBuild
-  ? `travis/${travisBuild.padStart(5, '0')}`
-  : `manual ${new Date().toISOString()}`
+    ? `travis/${travisBuild.padStart(5, '0')}`
+    : `manual ${new Date().toISOString()}`
 console.log(`build: ${build}`)
 
 let credentials

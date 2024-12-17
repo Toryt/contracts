@@ -48,10 +48,13 @@ describe('ContractError', function () {
     })
   })
 
-  common.generatePrototypeMethodsDescriptions(() => new ContractError(stack.raw()), [
-    {
-      subject: () => new ContractError(stack.raw()),
-      description: 'a contract error'
-    }
-  ])
+  common.generatePrototypeMethodsDescriptions(
+    () => new ContractError(stack.raw()),
+    [
+      {
+        subject: () => new ContractError(stack.raw()),
+        description: 'a contract error'
+      }
+    ]
+  )
 })
