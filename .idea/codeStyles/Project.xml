@@ -8,13 +8,6 @@
         <option name="SMART_TABS" value="true" />
       </value>
     </option>
-    <option name="HTML_KEEP_WHITESPACES" value="true" />
-    <option name="HTML_ATTRIBUTE_WRAP" value="4" />
-    <option name="HTML_KEEP_LINE_BREAKS_IN_TEXT" value="false" />
-    <option name="HTML_KEEP_BLANK_LINES" value="5" />
-    <option name="HTML_ALIGN_TEXT" value="true" />
-    <option name="HTML_SPACE_INSIDE_EMPTY_TAG" value="true" />
-    <option name="HTML_DO_NOT_INDENT_CHILDREN_OF" value="html" />
     <option name="FORMATTER_TAGS_ENABLED" value="true" />
     <option name="FORMATTER_TAGS_ACCEPT_REGEXP" value="true" />
     <option name="WRAP_COMMENTS" value="true" />
@@ -22,9 +15,6 @@
       <option name="HEX_COLOR_LOWER_CASE" value="true" />
       <option name="HEX_COLOR_LONG_FORMAT" value="true" />
     </CssCodeStyleSettings>
-    <HCL-Terraform>
-      <option name="PROPERTY_ALIGNMENT" value="2" />
-    </HCL-Terraform>
     <HTMLCodeStyleSettings>
       <option name="HTML_KEEP_WHITESPACES" value="true" />
       <option name="HTML_ATTRIBUTE_WRAP" value="4" />
@@ -41,7 +31,8 @@
       <option name="ALIGN_VAR_STATEMENTS" value="1" />
       <option name="USE_DOUBLE_QUOTES" value="false" />
       <option name="FORCE_QUOTE_STYlE" value="true" />
-      <option name="ENFORCE_TRAILING_COMMA" value="WhenMultiline" />
+      <option name="ENFORCE_TRAILING_COMMA" value="Remove" />
+      <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
       <option name="SPACES_WITHIN_IMPORTS" value="true" />
       <option name="USE_CHAINED_CALLS_GROUP_INDENTS" value="true" />
       <option name="CHAINED_CALL_DOT_ON_NEW_LINE" value="false" />
@@ -55,12 +46,19 @@
       <option name="JD_KEEP_EMPTY_EXCEPTION" value="false" />
       <option name="JD_KEEP_EMPTY_RETURN" value="false" />
     </JavaCodeStyleSettings>
+    <TypeScriptCodeStyleSettings version="0">
+      <option name="FORCE_SEMICOLON_STYLE" value="true" />
+      <option name="SPACE_BEFORE_FUNCTION_LEFT_PARENTH" value="false" />
+      <option name="FORCE_QUOTE_STYlE" value="true" />
+      <option name="ENFORCE_TRAILING_COMMA" value="Remove" />
+      <option name="SPACES_WITHIN_OBJECT_LITERAL_BRACES" value="true" />
+      <option name="SPACES_WITHIN_IMPORTS" value="true" />
+    </TypeScriptCodeStyleSettings>
     <XML>
       <option name="XML_KEEP_WHITESPACES" value="true" />
       <option name="XML_ATTRIBUTE_WRAP" value="4" />
       <option name="XML_SPACE_INSIDE_EMPTY_TAG" value="true" />
       <option name="XML_KEEP_WHITE_SPACES_INSIDE_CDATA" value="true" />
-      <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
     </XML>
     <codeStyleSettings language="CSS">
       <indentOptions>
@@ -83,6 +81,7 @@
       </indentOptions>
     </codeStyleSettings>
     <codeStyleSettings language="HTML">
+      <option name="SOFT_MARGINS" value="120" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
         <option name="CONTINUATION_INDENT_SIZE" value="2" />
@@ -103,12 +102,10 @@
       <option name="KEEP_BLANK_LINES_IN_CODE" value="1" />
       <option name="CATCH_ON_NEW_LINE" value="true" />
       <option name="FINALLY_ON_NEW_LINE" value="true" />
-      <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true" />
-      <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" value="true" />
+      <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+      <option name="ALIGN_MULTILINE_FOR" value="false" />
       <option name="ALIGN_MULTILINE_BINARY_OPERATION" value="true" />
-      <option name="ALIGN_MULTILINE_TERNARY_OPERATION" value="true" />
       <option name="ALIGN_MULTILINE_EXTENDS_LIST" value="true" />
-      <option name="ALIGN_MULTILINE_ARRAY_INITIALIZER_EXPRESSION" value="true" />
       <option name="SPACE_BEFORE_METHOD_PARENTHESES" value="true" />
       <option name="CALL_PARAMETERS_WRAP" value="1" />
       <option name="CALL_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
@@ -134,6 +131,15 @@
       <option name="DOWHILE_BRACE_FORCE" value="3" />
       <option name="WHILE_BRACE_FORCE" value="3" />
       <option name="FOR_BRACE_FORCE" value="3" />
+      <option name="SOFT_MARGINS" value="120" />
+      <indentOptions>
+        <option name="INDENT_SIZE" value="2" />
+        <option name="CONTINUATION_INDENT_SIZE" value="2" />
+        <option name="TAB_SIZE" value="2" />
+      </indentOptions>
+    </codeStyleSettings>
+    <codeStyleSettings language="TypeScript">
+      <option name="SOFT_MARGINS" value="120" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
         <option name="CONTINUATION_INDENT_SIZE" value="2" />
