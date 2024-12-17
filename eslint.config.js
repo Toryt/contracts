@@ -66,7 +66,22 @@ module.exports = neostandard({}).concat([
       'no-secrets': noSecrets
     },
     rules: {
-      'no-secrets/no-secrets': ['error', { tolerance: 4.11 }]
+      'no-secrets/no-secrets': [
+        'error',
+        {
+          tolerance: 4.11,
+          ignoreContent: [
+            // WebStorm inspections with a long name that are ignored
+            'JSPotentiallyInvalidConstructorUsage',
+            'IfStatementWithTooManyBranchesJS',
+            'ExceptionCaughtLocallyJS',
+            'JSPrimitiveTypeWrapperUsage',
+            'FunctionNamingConventionJS',
+            'JSVoidFunctionReturnValueUsed',
+            'OverlyComplexFunctionJS'
+          ]
+        }
+      ]
     }
   }
 ])
