@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "pretest": "npm-check -i npm-check; npm outdated || exit 0",
+    "status": "depcheck; ncu; npm audit || exit 0",
     "test": "standard && nyc mocha 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
@@ -65,15 +65,15 @@
   "engines": {
     "node": ">=v10.20.1"
   },
-  "dependencies": {},
   "devDependencies": {
     "browserify": "^17.0.0",
     "credits-cli": "^3.1.0",
+    "depcheck": "^1.4.7",
     "just.randomstring": "^0.1.1",
     "legally": "^3.5.10",
     "mocha": "^9.0.2",
     "mochify": "^7.1.1",
-    "npm-check": "^5.7.1",
+    "npm-check-updates": "^17.1.11",
     "nyc": "^15.1.0",
     "prettier-standard": "^16.4.1",
     "should": "^13.2.3",
