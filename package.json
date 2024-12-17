@@ -34,7 +34,6 @@
     "wd:windows-firefox": "mochify --wd --wd-file .min-wd-windows-firefox.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "format": "prettier -w .",
     "preversion": "npm run test",
-    "update_credits": "credits . --reporter markdown > CREDITS.md",
     "upgrade": "rm -Rf node_modules package-lock.json && npm install && npm test"
   },
   "repository": {
@@ -67,8 +66,7 @@
     "node": ">=v10.20.1"
   },
   "devDependencies": {
-    "browserify": "^17.0.0",
-    "credits-cli": "^3.1.0",
+    "browserify": "^17.0.1",
     "depcheck": "^1.4.7",
     "eslint": "^9.17.0",
     "eslint-plugin-depend": "^0.12.0",
@@ -77,14 +75,14 @@
     "globals": "^15.13.0",
     "just.randomstring": "^0.1.1",
     "legally": "^3.5.10",
-    "mocha": "^9.0.2",
-    "mochify": "^7.1.1",
+    "mocha": "^11.0.1",
+    "mochify": "^9.2.0",
     "neostandard": "^0.12.0",
     "npm-check-updates": "^17.1.11",
-    "nyc": "^15.1.0",
+    "nyc": "^17.1.0",
     "prettier": "^3.4.2",
     "should": "^13.2.3",
-    "tldrlegal": "^1.0.6"
+    "tldrlegal": "^1.0.11"
   },
   "prettier": {
     "printWidth": 120,
