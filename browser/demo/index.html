@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <!--
+  <head>
+    <!--
   Copyright 2018 - 2020 by Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,35 +16,46 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-  <meta charset="utf-8">
-  <title>Mocha Tests</title>
-  <script src="../../contracts-v.js"></script>
-  <script>
-    const Contract = toryt.contracts.v.Contract
-    const sumContract = new Contract({
-      pre: [
-        function (a) { return typeof a === 'number' },
-        function (a, b) { return typeof b === 'number' }
-      ],
-      post: [
-        function (a, b, result) {return typeof result === 'number' },
-        function (a, b, result) {return result - a - b === 0 }
-      ],
-      exception: [
-        function () { return false }
-      ]
-    })
-    const sum = sumContract.implementation(function sum (a, b) { return a + b })
-    const result = sum(3, 5)
-    console.log(result)
-    try {
-      sum(false)
-    } catch (err) {
-      console.error(err)
-      console.error(err.stack)
-    }
-  </script>
-</head>
-<body>
-</body>
+    <meta charset="utf-8" />
+    <title>Mocha Tests</title>
+    <script src="../../contracts-v.js"></script>
+    <script>
+      const Contract = toryt.contracts.v.Contract
+      const sumContract = new Contract({
+        pre: [
+          function (a) {
+            return typeof a === 'number'
+          },
+          function (a, b) {
+            return typeof b === 'number'
+          }
+        ],
+        post: [
+          function (a, b, result) {
+            return typeof result === 'number'
+          },
+          function (a, b, result) {
+            return result - a - b === 0
+          }
+        ],
+        exception: [
+          function () {
+            return false
+          }
+        ]
+      })
+      const sum = sumContract.implementation(function sum(a, b) {
+        return a + b
+      })
+      const result = sum(3, 5)
+      console.log(result)
+      try {
+        sum(false)
+      } catch (err) {
+        console.error(err)
+        console.error(err.stack)
+      }
+    </script>
+  </head>
+  <body></body>
 </html>

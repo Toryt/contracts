@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <!--
+  <head>
+    <!--
   Copyright 2017 - 2020 by Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +16,20 @@
   See the License for the specific language governing permissions and
   limitations under the License.
   -->
-  <meta charset="utf-8">
-  <title>Mocha Tests</title>
-  <link href="../../node_modules/mocha/mocha.css" rel="stylesheet">
-  <script src="../../node_modules/mocha/mocha.js"></script>
-  <script>mocha.setup('bdd')</script>
-  <script src="suite.js"></script>
-</head>
-<body>
-  <div id="mocha"></div>
-  <script>
-    mocha.checkLeaks();
-    mocha.run();
-  </script>
-</body>
+    <meta charset="utf-8" />
+    <title>Mocha Tests</title>
+    <link href="../../node_modules/mocha/mocha.css" rel="stylesheet" />
+    <script src="../../node_modules/mocha/mocha.js"></script>
+    <script>
+      mocha.setup('bdd')
+    </script>
+    <script src="suite.js"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script>
+      mocha.checkLeaks()
+      mocha.run()
+    </script>
+  </body>
 </html>
