@@ -20,7 +20,7 @@ definitions:
         name: Latest Node N
         image: IMAGE
         caches:
-          - npm
+          - npm22
         script:
           - git submodule update --init
           - scripts/common/npm/testCi.sh
