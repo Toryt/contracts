@@ -8,6 +8,7 @@
   },
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
+    "lint": "eslint \"{test,lib}/**/*\"",
     "test": "standard && nyc mocha 'test/**/*Test.js'",
     "legalReport": "legally -l -r && tldrlegal",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
@@ -31,7 +32,7 @@
     "wd:windows-chrome": "mochify --wd --wd-file .min-wd-windows-chrome.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:windows-edge": "mochify --wd --wd-file .min-wd-windows-edge.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:windows-firefox": "mochify --wd --wd-file .min-wd-windows-firefox.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "format": "prettier-standard \"**/*.{js,md,json}\"",
+    "format": "prettier -w .",
     "preversion": "npm run test",
     "update_credits": "credits . --reporter markdown > CREDITS.md",
     "upgrade": "rm -Rf node_modules package-lock.json && npm install && npm test"
@@ -69,21 +70,30 @@
     "browserify": "^17.0.0",
     "credits-cli": "^3.1.0",
     "depcheck": "^1.4.7",
+    "eslint": "^9.17.0",
+    "eslint-plugin-depend": "^0.12.0",
+    "eslint-plugin-json": "^4.0.1",
+    "eslint-plugin-no-secrets": "^2.1.1",
+    "globals": "^15.13.0",
     "just.randomstring": "^0.1.1",
     "legally": "^3.5.10",
     "mocha": "^9.0.2",
     "mochify": "^7.1.1",
+    "neostandard": "^0.12.0",
     "npm-check-updates": "^17.1.11",
     "nyc": "^15.1.0",
-    "prettier-standard": "^16.4.1",
+    "prettier": "^3.4.2",
     "should": "^13.2.3",
-    "standard": "^16.0.3",
     "tldrlegal": "^1.0.6"
   },
-  "standard": {
-    "ignore": [
-      "/scripts/common/"
-    ]
+  "prettier": {
+    "printWidth": 120,
+    "proseWrap": "always",
+    "endOfLine": "lf",
+    "arrowParens": "avoid",
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none"
   },
   "mocha": {
     "require": [

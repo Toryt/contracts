@@ -9,7 +9,6 @@ test
 How_to_publish.md
 contracts-*.js
 .editorconfig
-.eslintignore
 .nvmrc
 .prettierrc.yaml
 browserstack_credentials.json
