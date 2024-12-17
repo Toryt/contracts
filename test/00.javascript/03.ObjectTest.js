@@ -19,19 +19,49 @@
 const should = require('should')
 const orderOfKeysCommon = require('./_orderOfKeysCommon')
 
+function stuff() {
+  //noinspection JSPrimitiveTypeWrapperUsage
+  return [
+    undefined,
+    null,
+    4,
+    -1,
+    '',
+    'A string',
+    new Date(),
+    true,
+    false,
+    {},
+    /foo/,
+    function () {
+      return 'This simulates a self'
+    },
+    () => 'This simulates a self',
+    [],
+    new ReferenceError(),
+    Math,
+    JSON,
+    // eslint-disable-next-line no-new-wrappers
+    new Number(4),
+    // eslint-disable-next-line no-new-wrappers
+    new String('abc'),
+    // eslint-disable-next-line no-new-wrappers
+    new Boolean(false)
+  ]
+}
+
 describe('javascript/Object', function () {
   describe('#keys()', function () {
     /*
-     Does for ... iteration respect the order in which properties on an object are defined?
+     Does `for …` iteration respect the order in which properties on an object are defined?
      And in what order are the properties of the prototype handled?
 
      According to the spec, the order is undefined. However,
-     "All modern implementations of ECMAScript iterate through object properties in the order in which they were defined."
-     (http://ejohn.org/blog/javascript-in-chrome/, "for loop order".)
+     “All modern implementations of ECMAScript iterate through object properties in the order in which they were defined.”
+     (http://ejohn.org/blog/javascript-in-chrome/, “for loop order”.)
      */
 
     it('should return all properties in the order they were defined', function () {
-      // noinspection MagicNumberJS
       const nrOfProperties = 10000
       const o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties)
       const keys = Object.keys(o)
@@ -59,9 +89,7 @@ describe('javascript/Object', function () {
       }, -1)
     })
     it('should return all properties in the order they were defined in a JSON object', function () {
-      // noinspection NodeModulesDependencies
       const json = JSON.stringify(orderOfKeysCommon.objectLiteral)
-      // noinspection NodeModulesDependencies
       const keys = Object.keys(JSON.parse(json))
       keys.length.should.equal(3) // undefined and function not stringified
       const keyNumbers = keys.map(orderOfKeysCommon.nFromRandomName)
@@ -74,11 +102,9 @@ describe('javascript/Object', function () {
 
   describe('Object.defineProperty()', function () {
     const propName = 'aProperty'
-    // noinspection MagicNumberJS
     const value = 42
 
     function defineAProp(obj) {
-      // noinspection MagicNumberJS
       Object.defineProperty(obj, propName, {
         configurable: true,
         enumerable: true,
@@ -87,34 +113,7 @@ describe('javascript/Object', function () {
       })
     }
 
-    // noinspection JSPrimitiveTypeWrapperUsage
-    ;[
-      undefined,
-      null,
-      4,
-      -1,
-      '',
-      'A string',
-      new Date(),
-      true,
-      false,
-      {},
-      /foo/,
-      function () {
-        return 'This simulates a self'
-      },
-      () => 'This simulates a self',
-      [],
-      new ReferenceError(),
-      Math,
-      JSON,
-      // eslint-disable-next-line no-new-wrappers
-      new Number(4),
-      // eslint-disable-next-line no-new-wrappers
-      new String('abc'),
-      // eslint-disable-next-line no-new-wrappers
-      new Boolean(false)
-    ].forEach(obj => {
+    stuff().forEach(obj => {
       it('sets a property on ' + obj + ' if it is non-primitive, and fails to do so if it is primitive', function () {
         const type = typeof obj
         if (obj === null || type === 'undefined' || type === 'number' || type === 'boolean' || type === 'string') {
@@ -122,7 +121,7 @@ describe('javascript/Object', function () {
         } else {
           defineAProp(obj)
           if (obj instanceof Number || obj instanceof String || obj instanceof Boolean) {
-            // should unwraps wrapper types
+            // `should` unwraps wrapper types
             obj[propName].should.equal(value)
             Object.getOwnPropertyDescriptor(obj, propName).should.be.an.Object()
           } else {
@@ -137,34 +136,7 @@ describe('javascript/Object', function () {
   describe('Object.getOwnPropertyDescriptor()', function () {
     const propName = 'aProperty'
 
-    // noinspection JSPrimitiveTypeWrapperUsage
-    ;[
-      undefined,
-      null,
-      4,
-      -1,
-      '',
-      'A string',
-      new Date(),
-      true,
-      false,
-      {},
-      /foo/,
-      function () {
-        return 'This simulates a self'
-      },
-      () => 'This simulates a self',
-      [],
-      new ReferenceError(),
-      Math,
-      JSON,
-      // eslint-disable-next-line no-new-wrappers
-      new Number(4),
-      // eslint-disable-next-line no-new-wrappers
-      new String('abc'),
-      // eslint-disable-next-line no-new-wrappers
-      new Boolean(false)
-    ].forEach(obj => {
+    stuff().forEach(obj => {
       it(
         'gets a property from ' + obj + ' if it is not null or undefined, and fails to do so if it is primitive',
         function () {
