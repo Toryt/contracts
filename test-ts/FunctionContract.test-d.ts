@@ -37,82 +37,84 @@ expectType<FunctionContract<Signature>>(contractWithPost)
 expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(contractWithPost.post)
 
 // broader arguments
-const broaderArgumentsInPost = new FunctionContract<Signature>({ post: [
-    (args: [unknown, number], result: number):boolean => typeof args[0] === 'number' ,
-  ] })
+const broaderArgumentsInPost = new FunctionContract<Signature>({
+  post: [(args: [unknown, number], result: number): boolean => typeof args[0] === 'number']
+})
 expectType<FunctionContract<Signature>>(broaderArgumentsInPost)
 expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(broaderArgumentsInPost.post)
 
-const lessArgumentsInPost = new FunctionContract<Signature>({ post: [
-    (args: [number], result: number):boolean => true ,
-  ] })
+const lessArgumentsInPost = new FunctionContract<Signature>({
+  post: [(args: [number], result: number): boolean => true]
+})
 expectType<FunctionContract<Signature>>(lessArgumentsInPost)
 expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(lessArgumentsInPost.post)
 
 // broader return type
-const broaderReturnTypeInPost = new FunctionContract<Signature>({ post: [
-    (args: [number, number], result: unknown):boolean => typeof result === 'number' ,
-  ] })
+const broaderReturnTypeInPost = new FunctionContract<Signature>({
+  post: [(args: [number, number], result: unknown): boolean => typeof result === 'number']
+})
 expectType<FunctionContract<Signature>>(broaderReturnTypeInPost)
 expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(broaderReturnTypeInPost.post)
 
 // MUDO weaken boolean to any (falsy suffices)
 
+// Sadly valid
+const sadlyValidPostCondition = new FunctionContract<Signature>({
+  post: [(args: [number, number], result: number): any => 42]
+})
+expectType<FunctionContract<Signature>>(sadlyValidPostCondition)
+expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(sadlyValidPostCondition.post)
+
 // Not a condition
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, number], result: number): string => true)]
+    post: [(args: [number, number], result: number): string => true]
   })
 )
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, number], result: number): any => true)]
-})
+    post: [(args: [number, number], result: number): unknown => true]
+  })
 )
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, number], result: number): unknown => true)]
-})
-)
-expectError(
-  new FunctionContract<Signature>({
-    post: [(args: [number, number], result: number): never => true)]
-})
+    post: [(args: [number, number], result: number): never => true]
+  })
 )
 
 // wrong arguments
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [string, number], result: number):boolean => result.startsWith(args[0])]
+    post: [(args: [string, number], result: number): boolean => result.startsWith(args[0])]
   })
 )
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, never], result: number):boolean => result.startsWith(args[0])]
+    post: [(args: [number, never], result: number): boolean => result.startsWith(args[0])]
   })
 )
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, number, string], result: number):boolean => result.startsWith(args[0])]
+    post: [(args: [number, number, string], result: number): boolean => result.startsWith(args[0])]
   })
 )
 
 // wrong return type
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, number], result: string):boolean => result.startsWith(args[0])]
+    post: [(args: [number, number], result: string): boolean => result.startsWith(args[0])]
   })
 )
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, number], result: never):boolean => result.startsWith(args[0])]
+    post: [(args: [number, number], result: never): boolean => result.startsWith(args[0])]
   })
 )
 
 // Invalid argument for postconditions
 expectError(
   new FunctionContract<Signature>({
-    post: [(args: [number, number], result: string) => result === args[0]]
+    post: [(args: [number, number], result: string) => result === 'worf']
   })
 )
 
