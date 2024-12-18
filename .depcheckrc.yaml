@@ -1,3 +1,4 @@
 ignores:
   - depcheck
   - npm-check-updates
+  - typescript
