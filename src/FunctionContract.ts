@@ -14,6 +14,8 @@
   limitations under the License.
  */
 
+import { strictEqual } from 'node:assert'
+
 export interface ContractFunctionProperties<T extends (...args: never[]) => unknown> {
   contract: FunctionContract<T>
 }
@@ -30,11 +32,13 @@ export class FunctionContract<T extends (...args: never[]) => unknown> {
   /**
    * Accepts a function whose signature is a behavioral subtype of the contract's signature.
    *
-   * @param func - The function to validate.
+   * @param implFunction - The function to validate.
    * @returns The provided function.
    */
-  implementation(func: T): ContractFunction<T> {
-    const adornedFunc = func as ContractFunction<T>
+  implementation(implFunction: T): ContractFunction<T> {
+    strictEqual(typeof implFunction, 'function')
+
+    const adornedFunc = implFunction as ContractFunction<T>
     adornedFunc.contract = this
     return adornedFunc
   }

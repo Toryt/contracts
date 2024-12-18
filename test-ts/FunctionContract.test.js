@@ -32,18 +32,45 @@ describe('FunctionContract', function () {
     result(2, 3).should.equal(6)
   })
 
-  it('accepts a function not conforming to the generic signature in JavaScript', function () {
-    const contract = new FunctionContract()
+  describe('implementation', function () {
+    it('should accept a function conforming to the generic signature', function () {
+      const contract = new FunctionContract()
 
-    function wrongSignature(a, b, c) {
-      return a + b + c
-    }
+      function correctSignature(a, b) {
+        return a * b
+      }
 
-    const result = contract.implementation(wrongSignature)
-    result.should.have.property('contract')
-    result.contract.should.equal(contract)
+      const result = contract.implementation(correctSignature)
+      result.should.have.property('contract')
+      result.contract.should.equal(contract)
 
-    result.should.equal(wrongSignature)
-    result(2, 3, 1).should.equal(6)
+      result.should.equal(correctSignature)
+      result(2, 3).should.equal(6)
+    })
+
+    it('accepts a function not conforming to the generic signature in JavaScript', function () {
+      const contract = new FunctionContract()
+
+      function wrongSignature(a, b, c) {
+        return a + b + c
+      }
+
+      const result = contract.implementation(wrongSignature)
+      result.should.have.property('contract')
+      result.contract.should.equal(contract)
+
+      result.should.equal(wrongSignature)
+      result(2, 3, 1).should.equal(6)
+    })
+
+    describe('not a function', function () {
+      generateStuff().forEach(s => {
+        it(`should throw when \`implementation\` is called with ${inspect(s)}`, function () {
+          const contract = new FunctionContract()
+
+          contract.implementation.bind(undefined, s).should.throw()
+        })
+      })
+    })
   })
 })
