@@ -105,3 +105,4 @@ coverage
 contracts-*.js
 browser/test/suite.js
 browserstack_credentials.json
+dist
