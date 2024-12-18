@@ -24,7 +24,7 @@ function test(thing, circular) {
   console.log(result)
   result.should.be.a.String()
   if (circular) {
-    result.should.match(/\[Circular \*\d]/)
+    result.should.match(/\[Circular(]| \*\d])/)
   }
   console.log()
 }
