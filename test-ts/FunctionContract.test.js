@@ -83,31 +83,31 @@ describe('FunctionContract', function () {
   })
 
   describe('implementation', function () {
-    it('should accept a function conforming to the generic signature', function () {
-      const contract = new FunctionContract({})
+    beforeEach(function () {
+      this.subject = new FunctionContract({})
+    })
 
+    it('should accept a function conforming to the generic signature', function () {
       function correctSignature(a, b) {
         return a * b
       }
 
-      const result = contract.implementation(correctSignature)
+      const result = this.subject.implementation(correctSignature)
       result.should.have.property('contract')
-      result.contract.should.equal(contract)
+      result.contract.should.equal(this.subject)
 
       result.should.equal(correctSignature)
       result(2, 3).should.equal(6)
     })
 
     it('accepts a function not conforming to the generic signature in JavaScript', function () {
-      const contract = new FunctionContract({})
-
       function wrongSignature(a, b, c) {
         return a + b + c
       }
 
-      const result = contract.implementation(wrongSignature)
+      const result = this.subject.implementation(wrongSignature)
       result.should.have.property('contract')
-      result.contract.should.equal(contract)
+      result.contract.should.equal(this.subject)
 
       result.should.equal(wrongSignature)
       result(2, 3, 1).should.equal(6)
@@ -115,16 +115,13 @@ describe('FunctionContract', function () {
 
     describe('not a function', function () {
       it('should throw when `implementation` is called without arguments', function () {
-        const contract = new FunctionContract({})
-        contract.implementation.bind(undefined).should.throw()
+        this.subject.implementation.bind(undefined).should.throw()
       })
       generateStuff()
         .filter(({ expected }) => expected !== 'function')
         .forEach(({ subject, expected }) => {
           it(`should throw when \`implementation\` is called with ${expected} ${inspect(subject)}`, function () {
-            const contract = new FunctionContract({})
-
-            contract.implementation.bind(undefined, subject).should.throw()
+            this.subject.implementation.bind(undefined, subject).should.throw()
           })
         })
     })
