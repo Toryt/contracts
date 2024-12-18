@@ -69,6 +69,7 @@
     "nyc": "^17.1.0",
     "prettier": "^3.4.2",
     "should": "^13.2.3",
+    "tsd": "^0.31.2",
     "typescript": "^5.7.2"
   },
   "prettier": {
@@ -79,6 +80,9 @@
     "semi": false,
     "singleQuote": true,
     "trailingComma": "none"
+  },
+  "tsd": {
+    "directory": "test-ts"
   },
   "mocha": {
     "require": [

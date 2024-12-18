@@ -1,0 +1,6 @@
+*.test-d.d.ts
+*.test-d.d.ts.map
+*.test-d.js
+*.test-d.js.map
+
+

@@ -14,22 +14,4 @@
   limitations under the License.
  */
 
-// src/FunctionContract.ts
-
-/**
- * A class representing a function contract where the implementation
- * must conform to a specified signature.
- *
- * @template T - The generic signature type defining the contract.
- */
-export class FunctionContract<T extends (...args: never[]) => unknown> {
-  /**
-   * Accepts a function whose signature is a behavioral subtype of the contract's signature.
-   *
-   * @param func - The function to validate.
-   * @returns The provided function.
-   */
-  implementation(func: T): T {
-    return func
-  }
-}
+export { FunctionContract } from './FunctionContract'
