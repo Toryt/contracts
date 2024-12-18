@@ -78,7 +78,8 @@
     "npm-check-updates": "^17.1.11",
     "nyc": "^17.1.0",
     "prettier": "^3.4.2",
-    "should": "^13.2.3"
+    "should": "^13.2.3",
+    "typescript": "^5.7.2"
   },
   "prettier": {
     "printWidth": 120,
