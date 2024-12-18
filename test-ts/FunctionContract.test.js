@@ -114,11 +114,11 @@ describe('FunctionContract', function () {
     })
 
     describe('not a function', function () {
-      generateStuff().forEach(s => {
-        it(`should throw when \`implementation\` is called with ${inspect(s)}`, function () {
+      generateStuff().forEach(({ subject, expected }) => {
+        it(`should throw when \`implementation\` is called with ${expected} ${inspect(subject)}`, function () {
           const contract = new FunctionContract()
 
-          contract.implementation.bind(undefined, s).should.throw()
+          contract.implementation.bind(undefined, subject).should.throw()
         })
       })
     })
