@@ -16,7 +16,7 @@
 
 'use strict'
 
-const util = require('node:util')
+const util = require('util')
 const cases = require('../_cases')
 
 function test(thing, circular) {
