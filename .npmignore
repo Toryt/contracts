@@ -12,3 +12,8 @@ contracts-*.js
 .nvmrc
 .prettierrc.yaml
 browserstack_credentials.json
+.depcheckrc.yaml
+.gitmodules
+.prettierignore
+bitbucket-pipelines.yml
+eslint.config.js
