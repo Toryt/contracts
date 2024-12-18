@@ -27,7 +27,7 @@ const post: Array<(args: [number, number], result: number) => boolean> = [
 // Constructor
 
 // Default postconditions
-const contractDefault = new FunctionContract<Signature>()
+const contractDefault = new FunctionContract<Signature>({})
 expectType<FunctionContract<Signature>>(contractDefault)
 expectType<Array<(args: [number, number], result: number) => boolean>>(contractDefault.post)
 
@@ -118,7 +118,7 @@ expectError(
 
 // `implementation`
 
-const contract = new FunctionContract<Signature>()
+const contract = new FunctionContract<Signature>({})
 
 // Valid usage
 

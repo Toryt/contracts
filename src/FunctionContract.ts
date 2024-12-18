@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { strictEqual } from 'node:assert'
+import { ok, strictEqual } from 'node:assert'
 
 export interface ContractFunctionProperties<T extends (...args: never[]) => unknown> {
   contract: FunctionContract<T>
@@ -40,7 +40,14 @@ export interface FunctionContractKwargs<T extends (...args: never[]) => unknown>
 export class FunctionContract<T extends (...args: never[]) => unknown> {
   public readonly post: ReadonlyArray<Postcondition<T>>
 
-  constructor(kwargs: FunctionContractKwargs<T> = {}) {
+  constructor(kwargs: FunctionContractKwargs<T>) {
+    ok(kwargs, 'kwargs is mandatory')
+    strictEqual(typeof kwargs, 'object', 'kwargs must be an object')
+    ok(
+      !kwargs.post || (Array.isArray(kwargs.post) && kwargs.post.every(p => typeof p === 'function')),
+      'optional kwargs.post is an array'
+    )
+
     this.post = Object.freeze(kwargs.post ? kwargs.post.slice() : [])
   }
 

@@ -27,8 +27,8 @@ describe('FunctionContract', function () {
       contract.post.forEach(p => p.should.be.a.Function())
     }
 
-    it('should initialize with an empty postconditions array by default', function () {
-      const contract = new FunctionContract()
+    it('should initialize with an empty postconditions array by default when kwargs are given', function () {
+      const contract = new FunctionContract({})
       verifyPost(contract)
       contract.post.should.be.empty()
     })
@@ -84,7 +84,7 @@ describe('FunctionContract', function () {
 
   describe('implementation', function () {
     it('should accept a function conforming to the generic signature', function () {
-      const contract = new FunctionContract()
+      const contract = new FunctionContract({})
 
       function correctSignature(a, b) {
         return a * b
@@ -99,7 +99,7 @@ describe('FunctionContract', function () {
     })
 
     it('accepts a function not conforming to the generic signature in JavaScript', function () {
-      const contract = new FunctionContract()
+      const contract = new FunctionContract({})
 
       function wrongSignature(a, b, c) {
         return a + b + c
@@ -114,11 +114,15 @@ describe('FunctionContract', function () {
     })
 
     describe('not a function', function () {
+      it('should throw when `implementation` is called without arguments', function () {
+        const contract = new FunctionContract({})
+        contract.implementation.bind(undefined).should.throw()
+      })
       generateStuff()
         .filter(({ expected }) => expected !== 'function')
         .forEach(({ subject, expected }) => {
           it(`should throw when \`implementation\` is called with ${expected} ${inspect(subject)}`, function () {
-            const contract = new FunctionContract()
+            const contract = new FunctionContract({})
 
             contract.implementation.bind(undefined, subject).should.throw()
           })
