@@ -21,12 +21,10 @@ const cases = require('../_cases')
 
 function test(thing, circular) {
   const result = util.inspect(thing)
-  console.log(result)
   result.should.be.a.String()
   if (circular) {
     result.should.match(/\[Circular(]| \*\d])/)
   }
-  console.log()
 }
 
 describe('util.inspect', function () {
