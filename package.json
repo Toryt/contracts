@@ -1,38 +1,30 @@
 {
   "name": "@toryt/contracts",
-  "version": "6.0.0",
-  "description": "Design-by-Contract and Test-by-Contract for JavaScript",
-  "main": "lib/index.js",
+  "version": "7.0.0-ts.0",
+  "description": "Design-by-Contract and Test-by-Contract for JavaScript and TypeScript",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
   "directories": {
-    "test": "test"
+    "test": "test-ts"
   },
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
-    "lint": "eslint \"{test,lib}/**/*\"",
-    "test": "npm run lint && nyc mocha 'test/**/*Test.js'",
-    "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
-    "browserify": "browserify -s toryt.contracts.v --outfile contracts-v.js lib/index.js",
-    "browserifyTest": "browserify -r should --outfile browser/test/suite.js test/**/*Test.js",
-    "browserTest": "mochify --allow-chrome-as-root 'test/**/*Test.js'",
-    "watch": "mochify --watch --reporter min 'test/**/*Test.js'",
-    "wd": "mochify --wd --wd-file .min-wd.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:google_pixel_4xl": "mochify --wd --wd-file .min-wd-google_pixel_4xl.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:ipad_pro": "mochify --wd --wd-file .min-wd-ipad_pro.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:iphone_x": "mochify --wd --wd-file .min-wd-iphone_x.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:iphone_11": "mochify --wd --wd-file .min-wd-iphone_11.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:osx-chrome": "mochify --wd --wd-file .min-wd-osx-chrome.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:osx-edge": "mochify --wd --wd-file .min-wd-osx-edge.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:osx-firefox": "mochify --wd --wd-file .min-wd-osx-firefox.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:osx-safari": "mochify --wd --wd-file .min-wd-osx-safari.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:samsung_galaxy_s9": "mochify --wd --wd-file .min-wd-samsung_galaxy_s9.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:samsung_galaxy_s20": "mochify --wd --wd-file .min-wd-samsung_galaxy_s20.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:samsung_galaxy_tab_s6": "mochify --wd --wd-file .min-wd-samsung_galaxy_tab_s6.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:windows-chrome": "mochify --wd --wd-file .min-wd-windows-chrome.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:windows-edge": "mochify --wd --wd-file .min-wd-windows-edge.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:windows-firefox": "mochify --wd --wd-file .min-wd-windows-firefox.js --async-polling false --reporter dot 'test/**/*Test.js'",
+    "lint": "eslint \"{src,test-ts}/**/*\"",
+    "test": "npm run lint && nyc mocha 'test-ts/**/*.test.js'",
     "format": "prettier -w .",
-    "preversion": "npm run test",
-    "upgrade": "rm -Rf node_modules package-lock.json && npm install && npm test"
+    "preversion": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -61,10 +53,9 @@
     "url": "https://bitbucket.org/toryt/contracts/issues"
   },
   "engines": {
-    "node": ">=v10.20.1"
+    "node": ">=v22.10.0"
   },
   "devDependencies": {
-    "browserify": "^17.0.1",
     "depcheck": "^1.4.7",
     "eslint": "^9.17.0",
     "eslint-plugin-depend": "^0.12.0",
@@ -73,7 +64,6 @@
     "globals": "^15.13.0",
     "just.randomstring": "^0.1.1",
     "mocha": "^11.0.1",
-    "mochify": "^9.2.0",
     "neostandard": "^0.12.0",
     "npm-check-updates": "^17.1.11",
     "nyc": "^17.1.0",

@@ -22,6 +22,7 @@ const stylistic = neostandard.plugins['@stylistic']
 const depend = require('eslint-plugin-depend')
 const json = require('eslint-plugin-json')
 const noSecrets = require('eslint-plugin-no-secrets')
+const typescriptEslint = neostandard.plugins['typescript-eslint']
 
 module.exports = neostandard({}).concat([
   {
@@ -40,15 +41,7 @@ module.exports = neostandard({}).concat([
   },
   {
     name: 'mocha-globals',
-    files: [
-      'test/{*,**/*}Test.js',
-      'test/11.2.AsyncContractFunctionTestOptional.js',
-      'test/AbstractContractCommon.js',
-      'test/ConditionErrorCommon.js',
-      'test/ConditionMetaErrorCommon.js',
-      'test/ConditionViolationCommon.js',
-      'test/ImplementationContractCommon.js'
-    ],
+    files: ['test-js/{*,**/*}.test.js'],
     languageOptions: {
       globals: {
         ...mocha
@@ -69,19 +62,24 @@ module.exports = neostandard({}).concat([
       'no-secrets/no-secrets': [
         'error',
         {
-          tolerance: 4.11,
-          ignoreContent: [
-            // WebStorm inspections with a long name that are ignored
-            'JSPotentiallyInvalidConstructorUsage',
-            'IfStatementWithTooManyBranchesJS',
-            'ExceptionCaughtLocallyJS',
-            'JSPrimitiveTypeWrapperUsage',
-            'FunctionNamingConventionJS',
-            'JSVoidFunctionReturnValueUsed',
-            'OverlyComplexFunctionJS'
-          ]
+          tolerance: 4.11
         }
       ]
+    }
+  },
+  {
+    files: ['**/*.ts'],
+    plugins: { '@typescript-eslint': typescriptEslint },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/explicit-module-boundary-types': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/no-unnecessary-condition': 'warn', // TODO probably remove this: we often want this in this code
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/prefer-readonly': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/prefer-ts-expect-error': 'error',
+      '@typescript-eslint/no-misused-promises': 'error'
     }
   }
 ])
