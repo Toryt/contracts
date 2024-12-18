@@ -1,6 +1,6 @@
 {
-  "name": "@toryt/contracts-vi",
-  "version": "6.0.0-pre.0",
+  "name": "@toryt/contracts-v",
+  "version": "5.0.0",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript",
   "main": "lib/index.js",
   "directories": {

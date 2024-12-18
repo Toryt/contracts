@@ -136,14 +136,6 @@ to create a browser distribution.
       - `/require('@toryt\/contracts-iv')\.(.*)/require('@toryt/contracts-v').$1/`
       - `/require('@toryt\/contracts-iv')/require('@toryt/contracts-v').Contract/`
       - `/require('@toryt\/contracts-iv\/lib\/IV\/(.*)')/require('@toryt/contracts-v').$1/`
-- VI
-  - V/6.0.0
-    - upgrade dependencies
-      - There is a problem with BrowserStack and `mochify ≥ 8.0.0`, so we stick with `mochify 7.1.1`. See
-        [#238](https://github.com/mantoni/mochify.js/issues/238).
-    - stop support for Node 10, start support for Node 16
-    - changed package name from `@toryt/contracts-v` to `@toryt/contracts-vi`; you can use different major versions next
-      to each other
 
 ## Where to find
 
