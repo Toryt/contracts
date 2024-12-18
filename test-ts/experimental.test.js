@@ -26,4 +26,9 @@ describe('add', function () {
     const result = add(-2, -3)
     result.should.equal(-5)
   })
+
+  it('should handle 3 args', function () {
+    const result = add(-2, -3, 6)
+    result.should.equal(1)
+  })
 })
