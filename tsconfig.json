@@ -20,7 +20,7 @@
     "rootDir": "src",
     /* Disables automatic inclusion of type definitions from node_modules/@types. Ensures the library is pure JavaScript
        with no dependencies beyond standard language features. */
-    "types": [],
+    "types": ["node"],
     /* Side effect imports are flagged as errors unless explicitly marked as intended. */
     "noUncheckedSideEffectImports": true,
 
