@@ -136,6 +136,24 @@ to create a browser distribution.
       - `/require('@toryt\/contracts-iv')\.(.*)/require('@toryt/contracts-v').$1/`
       - `/require('@toryt\/contracts-iv')/require('@toryt/contracts-v').Contract/`
       - `/require('@toryt\/contracts-iv\/lib\/IV\/(.*)')/require('@toryt/contracts-v').$1/`
+- 6
+  - 6.0
+    - 6.0.0
+      - stop using the roman mark in the package name; the package name now will stay '@toryt/contracts'
+        - `npm` now supports aliasing
+        - to upgrade:
+          - `/require('@toryt\/contracts-iv')\.(.*)/require('@toryt/contracts').$1/`
+          - `/require('@toryt\/contracts-iv')/require('@toryt/contracts').Contract/`
+          - `/require('@toryt\/contracts-iv\/lib\/IV\/(.*)')/require('@toryt/contracts').$1/`
+      - there are no functional changes
+      - stop support for Node 10, 12 (breaking)
+      - code is now tested on Node 20, 22, and 23
+        - and on Node 14, 16, 18 (occasionally, locally only)
+      - no longer test on Galaxy Note 4 (no longer supported), and test on more modern iPad (2018 version fails a test)
+      - upgrade dependencies
+        - `mochify` seems no longer maintains, but continues to work; there are however dependencies with security
+          issues; `mochify` is only used as a `devDependency` however
+      - formatting
 
 ## Where to find
 
