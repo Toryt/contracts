@@ -14,14 +14,37 @@
   limitations under the License.
  */
 
-import { expectType, expectError } from 'tsd'
+import { expectType, expectError, expectAssignable, expectNotAssignable } from 'tsd'
 import { FunctionContract, type ContractFunction } from '../src'
+import type { Postcondition } from '../src/FunctionContract'
 
 type Signature = (a: number, b: number) => number
 
-const post: Array<(args: [number, number], result: number) => boolean> = [
-  (args, result) => result > args[0],
-  (args, result) => result === args[1]
+// Postcondition
+// Valid postconditions
+const validPost1: Postcondition<Signature> = (args: [number, number], result: number) => result > args[0]
+const validPost2: Postcondition<Signature> = (args: [number], result: number) => result > 0
+const validPost3: Postcondition<Signature> = (args: [], result: number) => result > 0
+const validPost4: Postcondition<Signature> = (args: [unknown, number], result: number) => result > 0
+
+// Validate types
+expectAssignable<Postcondition<Signature>>(validPost1)
+expectAssignable<Postcondition<Signature>>(validPost2)
+expectAssignable<Postcondition<Signature>>(validPost3)
+expectAssignable<Postcondition<Signature>>(validPost4)
+
+// Invalid postconditions
+expectNotAssignable<Postcondition<Signature>>((args: [string, number], result: number) => result > 0)
+expectNotAssignable<Postcondition<Signature>>((args: [number, never], result: number) => result > 0)
+expectNotAssignable<Postcondition<Signature>>((args: [number, number, string], result: number) => result > 0)
+expectNotAssignable<Postcondition<Signature>>((args: [number, number], result: string) => result === 'worf')
+
+// Invalid result return type
+expectNotAssignable<Postcondition<Signature>>((args: [number, number], result: number) => 42)
+
+const post: Array<Postcondition<Signature>> = [
+  (args: Array<number>, result: number): boolean => result > (args[0] ?? 0),
+  (args: Array<number>, result: number): boolean => result === args[1]
 ]
 
 // Constructor
@@ -29,32 +52,32 @@ const post: Array<(args: [number, number], result: number) => boolean> = [
 // Default postconditions
 const contractDefault = new FunctionContract<Signature>({})
 expectType<FunctionContract<Signature>>(contractDefault)
-expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(contractDefault.post)
+expectType<ReadonlyArray<Postcondition<Signature>>>(contractDefault.post)
 
 // With postconditions
 const contractWithPost = new FunctionContract<Signature>({ post })
 expectType<FunctionContract<Signature>>(contractWithPost)
-expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(contractWithPost.post)
+expectType<ReadonlyArray<Postcondition<Signature>>>(contractWithPost.post)
 
 // broader arguments
 const broaderArgumentsInPost = new FunctionContract<Signature>({
   post: [(args: [unknown, number], result: number): boolean => typeof args[0] === 'number']
 })
 expectType<FunctionContract<Signature>>(broaderArgumentsInPost)
-expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(broaderArgumentsInPost.post)
+expectType<ReadonlyArray<Postcondition<Signature>>>(broaderArgumentsInPost.post)
 
 const lessArgumentsInPost = new FunctionContract<Signature>({
   post: [(args: [number], result: number): boolean => true]
 })
 expectType<FunctionContract<Signature>>(lessArgumentsInPost)
-expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(lessArgumentsInPost.post)
+expectType<ReadonlyArray<Postcondition<Signature>>>(lessArgumentsInPost.post)
 
 // broader return type
 const broaderReturnTypeInPost = new FunctionContract<Signature>({
   post: [(args: [number, number], result: unknown): boolean => typeof result === 'number']
 })
 expectType<FunctionContract<Signature>>(broaderReturnTypeInPost)
-expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(broaderReturnTypeInPost.post)
+expectType<ReadonlyArray<Postcondition<Signature>>>(broaderReturnTypeInPost.post)
 
 // MUDO weaken boolean to any (falsy suffices)
 
@@ -63,7 +86,7 @@ const sadlyValidPostCondition = new FunctionContract<Signature>({
   post: [(args: [number, number], result: number): any => 42]
 })
 expectType<FunctionContract<Signature>>(sadlyValidPostCondition)
-expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(sadlyValidPostCondition.post)
+expectType<ReadonlyArray<Postcondition<Signature>>>(sadlyValidPostCondition.post)
 
 // Not a condition
 expectError(
