@@ -14,7 +14,9 @@
   limitations under the License.
  */
 
-// src/FunctionContract.ts
+export interface ContractFunctionProperties<T extends (...args: never[]) => unknown> {
+  contract: FunctionContract<T>
+}
 
 /**
  * A class representing a function contract where the implementation
@@ -29,7 +31,9 @@ export class FunctionContract<T extends (...args: never[]) => unknown> {
    * @param func - The function to validate.
    * @returns The provided function.
    */
-  implementation(func: T): T {
-    return func
+  implementation(func: T): T & ContractFunctionProperties<T> {
+    const adornedFunc = func as T & ContractFunctionProperties<T>
+    adornedFunc.contract = this
+    return adornedFunc
   }
 }

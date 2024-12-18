@@ -18,25 +18,32 @@ import { FunctionContract } from '../dist/FunctionContract.js'
 
 describe('FunctionContract', function () {
   it('should accept a function conforming to the generic signature', function () {
-    const contract = new FunctionContract((x, y) => x + y)
+    const contract = new FunctionContract()
 
     function correctSignature(a, b) {
       return a * b
     }
 
     const result = contract.implementation(correctSignature)
+    result.should.have.property('contract')
+    result.contract.should.equal(contract)
 
     result.should.equal(correctSignature)
     result(2, 3).should.equal(6)
   })
 
-  it('should reject a function not conforming to the generic signature', function () {
-    const contract = new FunctionContract((x, y) => x + y)
+  it('accepts a function not conforming to the generic signature in JavaScript', function () {
+    const contract = new FunctionContract()
 
     function wrongSignature(a, b, c) {
       return a + b + c
     }
 
-    contract.implementation(wrongSignature).bind(undefined).should.throw()
+    const result = contract.implementation(wrongSignature)
+    result.should.have.property('contract')
+    result.contract.should.equal(contract)
+
+    result.should.equal(wrongSignature)
+    result(2, 3, 1).should.equal(6)
   })
 })
