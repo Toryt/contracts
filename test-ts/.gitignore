@@ -3,4 +3,7 @@
 *.test-d.js
 *.test-d.js.map
 
-
+_stuff.d.ts
+_stuff.d.ts.map
+_stuff.js
+_stuff.js.map
