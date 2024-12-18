@@ -29,32 +29,32 @@ const post: Array<(args: [number, number], result: number) => boolean> = [
 // Default postconditions
 const contractDefault = new FunctionContract<Signature>({})
 expectType<FunctionContract<Signature>>(contractDefault)
-expectType<Array<(args: [number, number], result: number) => boolean>>(contractDefault.post)
+expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(contractDefault.post)
 
 // With postconditions
 const contractWithPost = new FunctionContract<Signature>({ post })
 expectType<FunctionContract<Signature>>(contractWithPost)
-expectType<Array<(args: [number, number], result: number) => boolean>>(contractWithPost.post)
+expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(contractWithPost.post)
 
 // broader arguments
 const broaderArgumentsInPost = new FunctionContract<Signature>({ post: [
     (args: [unknown, number], result: number):boolean => typeof args[0] === 'number' ,
   ] })
 expectType<FunctionContract<Signature>>(broaderArgumentsInPost)
-expectType<Array<(args: [number, number], result: number) => boolean>>(broaderArgumentsInPost.post)
+expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(broaderArgumentsInPost.post)
 
 const lessArgumentsInPost = new FunctionContract<Signature>({ post: [
     (args: [number], result: number):boolean => true ,
   ] })
 expectType<FunctionContract<Signature>>(lessArgumentsInPost)
-expectType<Array<(args: [number, number], result: number) => boolean>>(lessArgumentsInPost.post)
+expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(lessArgumentsInPost.post)
 
 // broader return type
 const broaderReturnTypeInPost = new FunctionContract<Signature>({ post: [
     (args: [number, number], result: unknown):boolean => typeof result === 'number' ,
   ] })
 expectType<FunctionContract<Signature>>(broaderReturnTypeInPost)
-expectType<Array<(args: [number, number], result: number) => boolean>>(broaderReturnTypeInPost.post)
+expectType<ReadonlyArray<(args: [number, number], result: number) => boolean>>(broaderReturnTypeInPost.post)
 
 // MUDO weaken boolean to any (falsy suffices)
 
