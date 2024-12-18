@@ -15,21 +15,71 @@
  */
 
 import { FunctionContract } from '../dist/FunctionContract.js'
+import { generateStuff } from './_stuff.js'
+import { inspect } from 'node:util'
 
 describe('FunctionContract', function () {
-  it('should accept a function conforming to the generic signature', function () {
-    const contract = new FunctionContract()
-
-    function correctSignature(a, b) {
-      return a * b
+  describe('construction', function () {
+    function verifyPost(contract) {
+      contract.should.have.property('post')
+      contract.post.should.be.an.Array()
+      Object.isFrozen(contract.post).should.be.true()
+      contract.post.forEach(p => p.should.be.a.Function())
     }
 
-    const result = contract.implementation(correctSignature)
-    result.should.have.property('contract')
-    result.contract.should.equal(contract)
+    it('should initialize with an empty postconditions array by default', function () {
+      const contract = new FunctionContract()
+      verifyPost(contract)
+      contract.post.should.be.empty()
+    })
 
-    result.should.equal(correctSignature)
-    result(2, 3).should.equal(6)
+    it('should allow initializing postconditions via constructor', function () {
+      const post = [
+        function (args, result) {
+          return result > args[0]
+        },
+        function (args, result) {
+          return result === args[1]
+        }
+      ]
+      const contract = new FunctionContract({ post })
+
+      verifyPost(contract)
+      contract.post.should.deepEqual(post)
+    })
+
+    it('should not allow modifications to the postconditions array', function () {
+      const post = [
+        function (args, result) {
+          return result > args[0]
+        }
+      ]
+      const contract = new FunctionContract({ post })
+
+      function append() {
+        contract.post.push(() => true)
+      }
+      append.should.throw()
+
+      function modify() {
+        contract.post[0] = () => false
+      }
+      modify.should.throw()
+    })
+
+    it('should not be affected by modifications to the original postconditions array', function () {
+      const post = [
+        function (args, result) {
+          return result > args[0]
+        }
+      ]
+      const contract = new FunctionContract({ post })
+
+      post.push(function (args, result) {
+        return result === args[1]
+      })
+      contract.post.should.have.length(1)
+    })
   })
 
   describe('implementation', function () {

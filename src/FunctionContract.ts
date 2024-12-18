@@ -22,6 +22,15 @@ export interface ContractFunctionProperties<T extends (...args: never[]) => unkn
 
 export type ContractFunction<T extends (...args: never[]) => unknown> = T & ContractFunctionProperties<T>
 
+export type Postcondition<T extends (...args: never[]) => unknown> = (
+  args: Parameters<T>,
+  result: ReturnType<T>
+) => boolean
+
+export interface FunctionContractKwargs<T extends (...args: never[]) => unknown> {
+  post?: Postcondition<T>[]
+}
+
 /**
  * A class representing a function contract where the implementation
  * must conform to a specified signature.
@@ -29,6 +38,12 @@ export type ContractFunction<T extends (...args: never[]) => unknown> = T & Cont
  * @template T - The generic signature type defining the contract.
  */
 export class FunctionContract<T extends (...args: never[]) => unknown> {
+  public readonly post: ReadonlyArray<Postcondition<T>>
+
+  constructor(kwargs: FunctionContractKwargs<T> = {}) {
+    this.post = Object.freeze(kwargs.post ? kwargs.post.slice() : [])
+  }
+
   /**
    * Accepts a function whose signature is a behavioral subtype of the contract's signature.
    *
