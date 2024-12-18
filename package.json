@@ -86,7 +86,8 @@
     ],
     "checkLeaks": true,
     "reporter": "dot",
-    "recursive": true
+    "recursive": true,
+    "extension": "test.js"
   },
   "nyc": {
     "check-coverage": true,

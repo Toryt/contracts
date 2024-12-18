@@ -16,15 +16,17 @@
 
 'use strict'
 
-const neostandard = require('neostandard')
-const { mocha } = require('globals')
-const stylistic = neostandard.plugins['@stylistic']
-const depend = require('eslint-plugin-depend')
-const json = require('eslint-plugin-json')
-const noSecrets = require('eslint-plugin-no-secrets')
-const typescriptEslint = neostandard.plugins['typescript-eslint']
+import neostandard from 'neostandard'
+import globals from 'globals'
+import depend from 'eslint-plugin-depend'
+import json from 'eslint-plugin-json'
+import noSecrets from 'eslint-plugin-no-secrets'
 
-module.exports = neostandard({}).concat([
+const { mocha } = globals
+const stylistic = neostandard.plugins['@stylistic']
+const typescriptEslint = neostandard.plugins['typescript-eslint'].plugin
+
+export default neostandard({ ts: true }).concat([
   {
     name: 'prettier-overrides',
     plugins: { '@stylistic': stylistic },
@@ -41,7 +43,7 @@ module.exports = neostandard({}).concat([
   },
   {
     name: 'mocha-globals',
-    files: ['test-js/{*,**/*}.test.js'],
+    files: ['test-ts/{*,**/*}.test.js'],
     languageOptions: {
       globals: {
         ...mocha
@@ -54,7 +56,7 @@ module.exports = neostandard({}).concat([
     ...json.configs['recommended']
   },
   {
-    files: ['**/*.js'],
+    files: ['**/*.js', '**/*.ts'],
     plugins: {
       'no-secrets': noSecrets
     },
@@ -70,6 +72,12 @@ module.exports = neostandard({}).concat([
   {
     files: ['**/*.ts'],
     plugins: { '@typescript-eslint': typescriptEslint },
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname
+      }
+    },
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'error',
