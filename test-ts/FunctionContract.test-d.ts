@@ -15,45 +15,42 @@
  */
 
 import { expectType, expectError } from 'tsd'
-import { FunctionContract } from '../src'
-import type { ContractFunctionProperties } from '../src/FunctionContract'
+import { FunctionContract, type ContractFunction } from '../src'
 
 type signature = (a: number, b: number) => number
 const contract = new FunctionContract<signature>()
 
-type AdornedSignature = signature & ContractFunctionProperties<signature>
-
 // Valid usage
 
 const exactSignature = contract.implementation((a: number, b: number): number => a * b)
-expectType<AdornedSignature>(exactSignature)
+expectType<ContractFunction<signature>>(exactSignature)
 expectType<FunctionContract<signature>>(exactSignature.contract)
 
 const lessArguments = contract.implementation((a: number): number => a)
-expectType<AdornedSignature>(lessArguments)
+expectType<ContractFunction<signature>>(lessArguments)
 expectType<FunctionContract<signature>>(lessArguments.contract)
 
 const noArguments = contract.implementation((): number => 0)
-expectType<AdornedSignature>(noArguments)
+expectType<ContractFunction<signature>>(noArguments)
 expectType<FunctionContract<signature>>(noArguments.contract)
 
 const supertypeArgument = contract.implementation((a: unknown, b: number): number => b)
-expectType<AdornedSignature>(supertypeArgument)
+expectType<ContractFunction<signature>>(supertypeArgument)
 expectType<FunctionContract<signature>>(supertypeArgument.contract)
 
 const anyArgument = contract.implementation((a: any, b: number): number => b)
-expectType<AdornedSignature>(anyArgument)
+expectType<ContractFunction<signature>>(anyArgument)
 expectType<FunctionContract<signature>>(anyArgument.contract)
 
 const subtypeReturn = contract.implementation((a: number, b: number): never => {
   throw new Error()
 })
-expectType<AdornedSignature>(subtypeReturn)
+expectType<ContractFunction<signature>>(subtypeReturn)
 expectType<FunctionContract<signature>>(subtypeReturn.contract)
 
 // Sad usage
 const anyReturn = contract.implementation((a: number, b: number): any => b)
-expectType<AdornedSignature>(contract.implementation(anyReturn))
+expectType<ContractFunction<signature>>(contract.implementation(anyReturn))
 expectType<FunctionContract<signature>>(anyReturn.contract)
 
 // Invalid usage

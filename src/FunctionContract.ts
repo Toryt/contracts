@@ -18,6 +18,8 @@ export interface ContractFunctionProperties<T extends (...args: never[]) => unkn
   contract: FunctionContract<T>
 }
 
+export type ContractFunction<T extends (...args: never[]) => unknown> = T & ContractFunctionProperties<T>
+
 /**
  * A class representing a function contract where the implementation
  * must conform to a specified signature.
@@ -31,8 +33,8 @@ export class FunctionContract<T extends (...args: never[]) => unknown> {
    * @param func - The function to validate.
    * @returns The provided function.
    */
-  implementation(func: T): T & ContractFunctionProperties<T> {
-    const adornedFunc = func as T & ContractFunctionProperties<T>
+  implementation(func: T): ContractFunction<T> {
+    const adornedFunc = func as ContractFunction<T>
     adornedFunc.contract = this
     return adornedFunc
   }

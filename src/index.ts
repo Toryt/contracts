@@ -15,3 +15,4 @@
  */
 
 export { FunctionContract } from './FunctionContract'
+export type { ContractFunctionProperties, ContractFunction } from './FunctionContract'
