@@ -27,58 +27,104 @@ describe('FunctionContract', function () {
       contract.post.forEach(p => p.should.be.a.Function())
     }
 
-    it('should initialize with an empty postconditions array by default when kwargs are given', function () {
-      const contract = new FunctionContract({})
-      verifyPost(contract)
-      contract.post.should.be.empty()
-    })
-
-    it('should allow initializing postconditions via constructor', function () {
-      const post = [
-        function (args, result) {
-          return result > args[0]
-        },
-        function (args, result) {
-          return result === args[1]
-        }
-      ]
-      const contract = new FunctionContract({ post })
-
-      verifyPost(contract)
-      contract.post.should.deepEqual(post)
-    })
-
-    it('should not allow modifications to the postconditions array', function () {
-      const post = [
-        function (args, result) {
-          return result > args[0]
-        }
-      ]
-      const contract = new FunctionContract({ post })
-
-      function append() {
-        contract.post.push(() => true)
-      }
-      append.should.throw()
-
-      function modify() {
-        contract.post[0] = () => false
-      }
-      modify.should.throw()
-    })
-
-    it('should not be affected by modifications to the original postconditions array', function () {
-      const post = [
-        function (args, result) {
-          return result > args[0]
-        }
-      ]
-      const contract = new FunctionContract({ post })
-
-      post.push(function (args, result) {
-        return result === args[1]
+    describe('nominal', function () {
+      it('should initialize with an empty postconditions array by default when kwargs are given', function () {
+        const contract = new FunctionContract({})
+        verifyPost(contract)
+        contract.post.should.be.empty()
       })
-      contract.post.should.have.length(1)
+
+      it('should allow initializing postconditions via constructor', function () {
+        const post = [
+          function (args, result) {
+            return result > args[0]
+          },
+          function (args, result) {
+            return result === args[1]
+          }
+        ]
+        const contract = new FunctionContract({ post })
+
+        verifyPost(contract)
+        contract.post.should.deepEqual(post)
+      })
+
+      it('should not allow modifications to the postconditions array', function () {
+        const post = [
+          function (args, result) {
+            return result > args[0]
+          }
+        ]
+        const contract = new FunctionContract({ post })
+
+        function append() {
+          contract.post.push(() => true)
+        }
+        append.should.throw()
+
+        function modify() {
+          contract.post[0] = () => false
+        }
+        modify.should.throw()
+      })
+
+      it('should not be affected by modifications to the original postconditions array', function () {
+        const post = [
+          function (args, result) {
+            return result > args[0]
+          }
+        ]
+        const contract = new FunctionContract({ post })
+
+        post.push(function (args, result) {
+          return result === args[1]
+        })
+        contract.post.should.have.length(1)
+      })
+    })
+
+    describe('preconditions', function () {
+      it('fails without kwargs', function () {
+        function createWithoutKwargs() {
+          return new FunctionContract()
+        }
+
+        createWithoutKwargs.should.throw()
+      })
+
+      function createWith(kwargs) {
+        return new FunctionContract(kwargs)
+      }
+
+      describe('kwargs is strange stuff', function () {
+        generateStuff()
+          .filter(({ subject }) => typeof subject !== 'object')
+          .forEach(({ subject, expected }) => {
+            it(`fails when kwargs are ${expected} ${inspect(subject)}`, function () {
+              createWith.bind(undefined, subject).should.throw()
+            })
+          })
+      })
+
+      describe('kwargs.post is strange stuff', function () {
+        generateStuff()
+          .filter(({ expected }) => expected !== 'undefined')
+          .forEach(({ subject, expected }) => {
+            it(`fails when kwargs.post is ${expected} ${inspect(subject)}`, function () {
+              createWith.bind(undefined, { post: subject }).should.throw()
+            })
+          })
+      })
+
+      describe('kwargs.post is array of strange stuff', function () {
+        generateStuff()
+          .filter(({ expected }) => expected !== 'function')
+          .forEach(({ subject, expected }) => {
+            it(`fails when kwargs.post has ${expected} ${inspect(subject)} as element`, function () {
+              createWith.bind(undefined, { post: [subject] }).should.throw()
+            })
+          })
+      })
     })
   })
 

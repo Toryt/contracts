@@ -44,7 +44,7 @@ export class FunctionContract<T extends (...args: never[]) => unknown> {
     ok(kwargs, 'kwargs is mandatory')
     strictEqual(typeof kwargs, 'object', 'kwargs must be an object')
     ok(
-      !kwargs.post || (Array.isArray(kwargs.post) && kwargs.post.every(p => typeof p === 'function')),
+      kwargs.post === undefined || (Array.isArray(kwargs.post) && kwargs.post.every(p => typeof p === 'function')),
       'optional kwargs.post is an array'
     )
 
