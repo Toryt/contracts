@@ -15,7 +15,8 @@
  */
 
 import { describe, it } from 'mocha'
-import { Level1BClass, type Level1BType } from './SomeTypes'
+import { Level1BClass, type Level1BType } from '../test-util/SomeTypes'
+import should from 'should'
 
 class ConcreteLevel1BClass extends Level1BClass {
   constructor(rootProperty: number, level1BProperty: boolean) {
@@ -25,6 +26,7 @@ class ConcreteLevel1BClass extends Level1BClass {
 
 describe('SomeTypes', function () {
   it('can write to a readonly property of a class via an interface', function () {
+    should(true).be.true()
     const instance = new ConcreteLevel1BClass(42, true)
     // TS2540: Cannot assign to level1BProperty because it is a read-only property.
     // instance.level1BProperty = false
