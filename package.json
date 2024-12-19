@@ -21,9 +21,12 @@
   },
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
-    "lint": "eslint \"{src,test2}/**/*\"",
+    "build:src": "tsc --project tsconfig.json",
     "build:test": "tsc --project test2/tsconfig.json",
-    "test": "npm run lint && nyc mocha 'test2/js/**/*.test.js'",
+    "build": "npm run build:src && npm run build:test",
+    "lint": "eslint \"{src,test2}/**/*\"",
+    "pretest": "npm run build",
+    "test": "npm run lint && tsd && nyc mocha 'test2/js/**/*.test.js'",
     "format": "prettier -w .",
     "preversion": "npm run test"
   },
