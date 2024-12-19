@@ -2,3 +2,5 @@ ignores:
   - depcheck
   - npm-check-updates
   - typescript
+  - ts-node
+  - '@src/*'
