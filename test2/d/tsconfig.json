@@ -1,4 +1,5 @@
 {
+  // this tsconfig is only relevant for WebStorm. During editing, it compiles. Nobody else needs compilation.
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "../..",
