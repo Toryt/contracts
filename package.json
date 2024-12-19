@@ -85,7 +85,7 @@
     "trailingComma": "none"
   },
   "tsd": {
-    "directory": "test-ts"
+    "directory": "test-d"
   },
   "mocha": {
     "require": [
