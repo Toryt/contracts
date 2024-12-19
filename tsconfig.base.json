@@ -1,0 +1,57 @@
+{
+  // rootDir, outDir, include are set in files that extend this file
+  "compilerOptions": {
+    /* Visit https://aka.ms/tsconfig to read more about this file */
+
+    /* Language and Environment */
+    "target": "ES2022",
+
+    /* Modules */
+    "module": "ES2022",
+     /* The 'bundler' module resolution strategy seems to be the most appropriate for library projects where all files
+        are TypeScript (*.ts) and module resolution is handled by Node or a bundler, where this does not conflict with
+        dependencies. It avoids legacy resolution quirks and simplifies handling of ESM features such as file extensions
+        and 'exports' fields in package.json. */
+    "moduleResolution": "bundler",
+    /* Ensures that relative import paths in compiled JavaScript have proper extensions (.js, .mjs, .cjs). This is
+       critical for compatibility with Node.js ESM in circumstances that seem extreme at this time, but might become
+       relevant as TS gets more and more direct support.
+       See: https://devblogs.microsoft.com/typescript/announcing-typescript-5-7-beta/?utm_source=chatgpt.com#path-rewriting-for-relative-paths */
+    "rewriteRelativeImportExtensions": true,
+    /* Disables automatic inclusion of type definitions from node_modules/@types. Ensures the library is pure JavaScript
+       with no dependencies beyond standard language features. */
+    "types": ["node"],
+    /* Side effect imports are flagged as errors unless explicitly marked as intended. */
+    "noUncheckedSideEffectImports": true,
+
+    /* JavaScript Support */
+
+    /* Emit */
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    /* "inlineSources": false; Sources are not inlined in the source maps. Sources are distributed as TS files with the
+                               package. */
+    "newLine": "lf",
+    "stripInternal": true,
+    "preserveConstEnums": true,
+
+    /* Interop Constraints */
+    "verbatimModuleSyntax": true,
+    "isolatedDeclarations": true,
+
+    /* Type Checking */
+    "strict": true,
+    "noUnusedLocals": true,
+    /* "noUnusedParameters": false; Implementations of signatures are allowed to use less arguments then given according
+                                    to behavioral subtyping. */
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+
+    /* Completeness */
+  }
+}
