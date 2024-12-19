@@ -1,9 +1,10 @@
-*.test-d.d.ts
-*.test-d.d.ts.map
-*.test-d.js
-*.test-d.js.map
+*.d.ts
+*.d.ts.map
+*.js.map
 
-_stuff.d.ts
-_stuff.d.ts.map
+*.test-d.js
+
 _stuff.js
-_stuff.js.map
+ASignature.js
+SomeTypes.js
+SomeTypes.test.js
