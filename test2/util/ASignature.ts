@@ -17,7 +17,7 @@
 // ASignature
 
 import { expectAssignable, expectNotAssignable } from 'tsd'
-import type { UnknownFunction } from '../../src/UnknownFunction'
+import type { UnknownFunction } from '@src/UnknownFunction'
 
 type ASignature = (a: number, b: number) => number
 

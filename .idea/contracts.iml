@@ -6,6 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/chaptgpt" />
       <excludeFolder url="file://$MODULE_DIR$/coverage" />
       <excludeFolder url="file://$MODULE_DIR$/test2/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/test2/dist-d" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
