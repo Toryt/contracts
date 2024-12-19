@@ -17,20 +17,26 @@
 import { ok, strictEqual } from 'node:assert'
 import type { StartingTuples } from './StartingTuples'
 
-export interface ContractFunctionProperties<T extends (...args: never[]) => unknown> {
+/**
+ * Represents the most general function type in TypeScript.
+ * All possible functions are subtypes of this type.
+ */
+export type UnknownFunction = (...args: never[]) => unknown
+
+export interface ContractFunctionProperties<T extends UnknownFunction> {
   contract: FunctionContract<T>
 }
 
-export type ContractFunction<T extends (...args: never[]) => unknown> = T & ContractFunctionProperties<T>
+export type ContractFunction<T extends UnknownFunction> = T & ContractFunctionProperties<T>
 
-export type Postcondition<T extends (...args: never[]) => unknown> =
+export type Postcondition<T extends UnknownFunction> =
   StartingTuples<Parameters<T>> extends infer U // infer the union of tuples
     ? U extends unknown[] // distribute over each tuple in the union
       ? (args: U, result: ReturnType<T>) => unknown // create a function type for each tuple
       : never // fallback for invalid tuples (not needed here)
     : never // fallback for invalid StartingTuples
 
-export interface FunctionContractKwargs<T extends (...args: never[]) => unknown> {
+export interface FunctionContractKwargs<T extends UnknownFunction> {
   post?: Postcondition<T>[]
 }
 
@@ -40,7 +46,7 @@ export interface FunctionContractKwargs<T extends (...args: never[]) => unknown>
  *
  * @template T - The generic signature type defining the contract.
  */
-export class FunctionContract<T extends (...args: never[]) => unknown> {
+export class FunctionContract<T extends UnknownFunction> {
   public readonly post: ReadonlyArray<Postcondition<T>>
 
   constructor(kwargs: FunctionContractKwargs<T>) {
