@@ -17,13 +17,13 @@
     }
   },
   "directories": {
-    "test": "test-ts"
+    "test": "test-js"
   },
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
     "lint": "eslint \"{src,test-ts}/**/*\"",
     "build:test": "tsc --project tsconfig.test.json",
-    "test": "npm run lint && nyc mocha 'test-ts/**/*.test.js'",
+    "test": "npm run lint && nyc mocha 'test-js/**/*.test.js'",
     "format": "prettier -w .",
     "preversion": "npm run test"
   },

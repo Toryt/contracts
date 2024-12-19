@@ -43,7 +43,7 @@ export default neostandard({ ts: true }).concat([
   },
   {
     name: 'mocha-globals',
-    files: ['test-ts/{*,**/*}.test.js'],
+    files: ['test-js/{*,**/*}.test.js'],
     languageOptions: {
       globals: {
         ...mocha
