@@ -164,6 +164,7 @@ expectType<ReadonlyArray<Postcondition<ASignature>>>(unknownPostResult.post)
 
 // Sadly valid
 const sadlyValidPostCondition = new FunctionContract<ASignature>({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   post: [(args: [number, number], result: number): any => 42]
 })
 expectType<FunctionContract<ASignature>>(sadlyValidPostCondition)
@@ -201,7 +202,7 @@ expectError(
 // Invalid argument for postconditions
 expectError(
   new FunctionContract<ASignature>({
-    post: [(args: [number, number], result: string) => result === 'worf']
+    post: [(args: [number, number], result: string): boolean => result === 'worf']
   })
 )
 
@@ -227,6 +228,7 @@ const supertypeArgument = contract.implementation((a: unknown, b: number): numbe
 expectType<ContractFunction<ASignature>>(supertypeArgument)
 expectType<FunctionContract<ASignature>>(supertypeArgument.contract)
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anyArgument = contract.implementation((a: any, b: number): number => b)
 expectType<ContractFunction<ASignature>>(anyArgument)
 expectType<FunctionContract<ASignature>>(anyArgument.contract)
@@ -238,6 +240,7 @@ expectType<ContractFunction<ASignature>>(subtypeReturn)
 expectType<FunctionContract<ASignature>>(subtypeReturn.contract)
 
 // Sad usage
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anyReturn = contract.implementation((a: number, b: number): any => b)
 expectType<ContractFunction<ASignature>>(contract.implementation(anyReturn))
 expectType<FunctionContract<ASignature>>(anyReturn.contract)

@@ -44,7 +44,7 @@ export function generateMutableStuff(): Array<StuffWrapper> {
   const base: Array<Omit<StuffWrapper, 'isPrimitive'>> = [
     { subject: { a: 4 }, expected: 'object' },
     { subject: [1, 2, 3], expected: 'array' },
-    { subject: function () {}, expected: 'function' },
+    { subject: function (): void {}, expected: 'function' },
     { subject: () => 0, expected: 'function' },
     { subject: new ReferenceError(), expected: 'error' },
     { subject: new Date(), expected: 'date' },

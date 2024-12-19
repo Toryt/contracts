@@ -19,7 +19,9 @@ import { Level1BClass, type Level1BType } from '../util/SomeTypes'
 import should from 'should'
 
 class ConcreteLevel1BClass extends Level1BClass {
-  constructor(rootProperty: number, level1BProperty: boolean) {
+  /* NOTE: Explicitly mark constructor as public to resolve eslint false–positive.
+           See https://github.com/typescript-eslint/typescript-eslint/issues/4772 */
+  public constructor(rootProperty: number, level1BProperty: boolean) {
     super(rootProperty, level1BProperty)
   }
 }

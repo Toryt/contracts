@@ -46,7 +46,9 @@ expectType<
 type EdgeCase1 = [never]
 expectType<[never] | []>([] as StartingTuples<EdgeCase1>)
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EdgeCase2 = [any, unknown]
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 expectType<[any, unknown] | [any] | []>([] as StartingTuples<EdgeCase2>)
 
 type EdgeCase3 = [undefined, null, void]

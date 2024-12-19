@@ -29,4 +29,5 @@
  * @template T - A tuple type to compute starting sub-tuples from.
  * @internal
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type StartingTuples<T extends unknown[]> = T extends [...infer Rest, infer _Last] ? T | StartingTuples<Rest> : []

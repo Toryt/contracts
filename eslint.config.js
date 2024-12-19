@@ -43,7 +43,7 @@ export default neostandard({ ts: true }).concat([
   },
   {
     name: 'mocha-globals',
-    files: ['test/js/{*,**/*}.test.js'],
+    files: ['test2/js/{*,**/*}.test.js'],
     languageOptions: {
       globals: {
         ...mocha
@@ -53,6 +53,7 @@ export default neostandard({ ts: true }).concat([
   depend.configs['flat/recommended'],
   {
     files: ['**/*.json'],
+    ignores: ['**/tsconfig.json'],
     ...json.configs['recommended']
   },
   {
@@ -64,7 +65,11 @@ export default neostandard({ ts: true }).concat([
       'no-secrets/no-secrets': [
         'error',
         {
-          tolerance: 4.11
+          tolerance: 4.11,
+          ignoreContent: [
+            // WebStorm inspections with a long name that are ignored
+            'JSPrimitiveTypeWrapperUsage'
+          ]
         }
       ]
     }
