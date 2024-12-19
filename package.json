@@ -21,9 +21,9 @@
   },
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
-    "lint": "eslint \"{src,test-ts}/**/*\"",
-    "build:test": "tsc --project tsconfig.test.json",
-    "test": "npm run lint && nyc mocha 'test-js/**/*.test.js'",
+    "lint": "eslint \"{src,test2}/**/*\"",
+    "build:test": "tsc --project test2/tsconfig.json",
+    "test": "npm run lint && nyc mocha 'test2/js/**/*.test.js'",
     "format": "prettier -w .",
     "preversion": "npm run test"
   },
@@ -86,7 +86,7 @@
     "trailingComma": "none"
   },
   "tsd": {
-    "directory": "test-d"
+    "directory": "test2/d"
   },
   "mocha": {
     "require": [

@@ -15,7 +15,7 @@
  */
 
 import { expectType } from 'tsd'
-import { type StartingTuples } from '../src/StartingTuples'
+import { type StartingTuples } from '../../src/StartingTuples'
 
 // Empty tuple
 expectType<[]>([] as StartingTuples<[]>)

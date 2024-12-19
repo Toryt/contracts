@@ -14,8 +14,8 @@
   limitations under the License.
  */
 
-import { FunctionContract } from '../dist/FunctionContract.js'
-import { generateStuff } from './_stuff.js'
+import { FunctionContract } from '../../dist/FunctionContract.js'
+import { generateStuff } from '../dist/util/_stuff.js'
 import { inspect } from 'node:util'
 
 describe('FunctionContract', function () {

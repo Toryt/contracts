@@ -14,21 +14,8 @@
   limitations under the License.
  */
 
-// ASignature
-
-type ASignature = (a: number, b: number) => number
-
-expectAssignable<ASignature>((a: number, b: number): number => a + b)
-expectAssignable<ASignature>((a: number): number => a)
-expectAssignable<ASignature>((): number => 0)
-expectAssignable<ASignature>((a: unknown, b: number): number => b)
-expectAssignable<ASignature>((a: number, b: unknown): number => a)
-expectAssignable<ASignature>((a: number, b: unknown): never => {
-  throw new Error()
-})
-
-expectNotAssignable<ASignature>((a: number, b: number): string => `${a + b}`)
-expectNotAssignable<ASignature>((a: number, b: number): unknown => 'booh!')
+import { expectAssignable } from 'tsd'
+import type { UnknownFunction } from '../../src/UnknownFunction'
 
 // UnknownFunction
 
