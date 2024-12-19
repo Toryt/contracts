@@ -5,8 +5,8 @@
       <excludeFolder url="file://$MODULE_DIR$/.nyc_output" />
       <excludeFolder url="file://$MODULE_DIR$/chaptgpt" />
       <excludeFolder url="file://$MODULE_DIR$/coverage" />
-      <excludeFolder url="file://$MODULE_DIR$/test2/dist" />
-      <excludeFolder url="file://$MODULE_DIR$/test2/dist-d" />
+      <excludeFolder url="file://$MODULE_DIR$/dist-d" />
+      <excludeFolder url="file://$MODULE_DIR$/dist-test" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
