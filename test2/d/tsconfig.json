@@ -6,10 +6,6 @@
     "declaration": false,
     "declarationMap": false,
     "isolatedDeclarations": false,
-    "baseUrl": ".",
-    "paths": {
-      "@src/*": ["../../dist/*"] // Ensure imports from `src` resolve to `dist`
-    }
   },
   "include": ["**/*"]
 }
