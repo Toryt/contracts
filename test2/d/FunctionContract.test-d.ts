@@ -47,30 +47,6 @@ expectAssignable<UnknownFunction>((a: number, b: unknown): never => {
 expectAssignable<UnknownFunction>((a: number, b: number): string => `${a + b}`)
 expectAssignable<UnknownFunction>((a: number, b: number): unknown => a | b)
 
-// NeverFunction
-
-const aNeverFunction: NeverFunction = function () {
-  throw new Error()
-}
-expectAssignable<UnknownFunction>(aNeverFunction)
-expectAssignable<ASignature>(aNeverFunction)
-
-expectAssignable<NeverFunction>(aNeverFunction)
-
-expectNotAssignable<NeverFunction>((a: number, b: number): number => a + b)
-expectNotAssignable<NeverFunction>((a: number): number => a)
-expectNotAssignable<NeverFunction>((): number => 0)
-expectNotAssignable<NeverFunction>((a: unknown, b: number): number => b)
-expectNotAssignable<NeverFunction>((a: number, b: unknown): number => a)
-expectNotAssignable<NeverFunction>((a: number, b: unknown): never => {
-  throw new Error()
-})
-expectNotAssignable<NeverFunction>((a: number, b: number): string => `${a + b}`)
-expectNotAssignable<NeverFunction>((a: number, b: number): unknown => a | b)
-expectNotAssignable<NeverFunction>((...args: never[]): unknown => {
-  return 'booh!'
-})
-
 // Postcondition
 // Valid postconditions
 const validPost1: Postcondition<ASignature> = (args: [number, number], result: number) => result > args[0]

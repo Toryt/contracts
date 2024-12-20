@@ -15,36 +15,6 @@
  */
 
 import { ok, strictEqual } from 'node:assert'
-
-/**
- * Represents the most restrictive function type in TypeScript.
- *
- * A `NeverFunction` is a function that:
- *
- * * Takes no arguments (no valid arguments are allowed).
- * * Returns `never` (indicating it never successfully returns a value).
- *
- * This is the “bottom type” for function types that are still functions, meaning it is the most specific function type,
- * and no other function type is assignable to it unless it matches exactly.
- *
- * However, the “true bottom type” in TypeScript is still `never`. Even a `NeverFunction` is not assignable to `never`,
- * as `NeverFunction` remains a function type.
- *
- * Example:
- * ```typescript
- * const aNeverFunction: NeverFunction = function() {
- *   throw new Error("This function never returns")
- * }
- *
- * // Valid assignment:
- * expectAssignable<NeverFunction>(aNeverFunction);
- *
- * // Invalid assignments:
- * expectNotAssignable<NeverFunction>((a: number): never => { throw new Error() })
- * expectNotAssignable<NeverFunction>(() => 42) // Does not return `never`
- * ```
- */
-export type NeverFunction = () => never
 import type { StartingTuples } from './StartingTuples.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 
