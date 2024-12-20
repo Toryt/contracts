@@ -1,0 +1,9 @@
+loader: ts-node/esm
+require:
+  - should
+checkLeaks: true,
+recursive: true,
+extension:
+  - test.ts
+spec:
+  - test2/ts/**/*.test.ts

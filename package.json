@@ -25,8 +25,10 @@
     "build:test": "tsc --project test2/tsconfig.json",
     "build": "npm run build:src && npm run build:test",
     "lint": "eslint \"{src,test2}/**/*\"",
+    "test:ts": "TS_NODE_PROJECT='./test2/tsconfig.json' mocha --config .mocharc-ts.yaml",
+    "test:js": "nyc mocha 'test2/js/**/*.test.js'",
     "pretest": "npm run build",
-    "test": "npm run lint && tsd && nyc mocha 'test2/js/**/*.test.js'",
+    "test": "npm run lint && tsd && npm run test:ts && npm run test:js",
     "format": "prettier -w .",
     "preversion": "npm run test"
   },

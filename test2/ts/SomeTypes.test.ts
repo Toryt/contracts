@@ -15,7 +15,7 @@
  */
 
 import { describe, it } from 'mocha'
-import { Level1BClass, type Level1BType } from '../util/SomeTypes'
+import { Level1BClass, type Level1BType } from '../util/SomeTypes.ts'
 import should from 'should'
 
 class ConcreteLevel1BClass extends Level1BClass {
