@@ -89,6 +89,9 @@
     "trailingComma": "none"
   },
   "tsd": {
+    "compilerOptions": {
+      "allowImportingTsExtensions": true
+    }
   },
   "mocha": {
     "require": [

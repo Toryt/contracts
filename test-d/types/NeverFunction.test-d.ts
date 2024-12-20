@@ -15,8 +15,8 @@
  */
 
 import { expectAssignable, expectNotAssignable } from 'tsd'
-import type { NeverFunction, UnknownFunction } from '../../src'
-import type { ASignature } from '../../test2/util/ASignature'
+import type { NeverFunction, UnknownFunction } from '../../src/index.ts'
+import type { ASignature } from '../../test2/util/ASignature.ts'
 
 const aNeverFunction: NeverFunction = function () {
   throw new Error()

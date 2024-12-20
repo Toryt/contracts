@@ -14,8 +14,8 @@
   limitations under the License.
  */
 
-export type * from './types/UnknownFunction'
-export type * from './types/NeverFunction'
-export type { ContractFunctionProperties, ContractFunction } from './FunctionContract'
+export type * from './types/UnknownFunction.ts'
+export type * from './types/NeverFunction.ts'
+export type { ContractFunctionProperties, ContractFunction } from './FunctionContract.ts'
 
 export { FunctionContract } from './FunctionContract.ts'

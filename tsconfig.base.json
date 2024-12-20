@@ -7,12 +7,7 @@
     "target": "ES2022",
 
     /* Modules */
-    "module": "ES2022",
-     /* The 'bundler' module resolution strategy seems to be the most appropriate for library projects where all files
-        are TypeScript (*.ts) and module resolution is handled by Node or a bundler, where this does not conflict with
-        dependencies. It avoids legacy resolution quirks and simplifies handling of ESM features such as file extensions
-        and 'exports' fields in package.json. */
-    "moduleResolution": "bundler",
+    "module": "node16",
     /* Ensures that relative import paths in compiled JavaScript have proper extensions (.js, .mjs, .cjs). This is
        critical for compatibility with Node.js ESM in circumstances that seem extreme at this time, but might become
        relevant as TS gets more and more direct support.
