@@ -15,7 +15,7 @@
  */
 
 import { ok, strictEqual } from 'node:assert'
-import type { StartingTuples } from './StartingTuples.ts'
+import type { StartingTuples } from './util/StartingTuples.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 
 export interface ContractFunctionProperties<T extends UnknownFunction> {
