@@ -1,9 +1,9 @@
 {
   // this tsconfig is only relevant for WebStorm. During editing, it compiles. Nobody else needs compilation.
-  "extends": "../../tsconfig.base.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "../..",
-    "outDir": "../../build-d",
+    "rootDir": "..",
+    "outDir": "../build-d",
     "declaration": false,
     "declarationMap": false,
     "isolatedDeclarations": false,
