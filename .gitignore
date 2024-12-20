@@ -106,4 +106,4 @@ contracts-*.js
 browser/test/suite.js
 browserstack_credentials.json
 chaptgpt
-dist*
+build*  
