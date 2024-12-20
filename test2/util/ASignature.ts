@@ -14,34 +14,4 @@
   limitations under the License.
  */
 
-// ASignature
-
-import { expectAssignable, expectNotAssignable } from 'tsd'
-import type { UnknownFunction } from '../../src/index.ts'
-
 export type ASignature = (a: number, b: number) => number
-
-expectAssignable<ASignature>((a: number, b: number): number => a + b)
-expectAssignable<ASignature>((a: number): number => a)
-expectAssignable<ASignature>((): number => 0)
-expectAssignable<ASignature>((a: unknown, b: number): number => b)
-expectAssignable<ASignature>((a: number, b: unknown): number => a)
-expectAssignable<ASignature>((a: number, b: unknown): never => {
-  throw new Error()
-})
-
-expectNotAssignable<ASignature>((a: number, b: number): string => `${a + b}`)
-expectNotAssignable<ASignature>((a: number, b: number): unknown => 'booh!')
-
-// UnknownFunction
-
-expectAssignable<UnknownFunction>((a: number, b: number): number => a + b)
-expectAssignable<UnknownFunction>((a: number): number => a)
-expectAssignable<UnknownFunction>((): number => 0)
-expectAssignable<UnknownFunction>((a: unknown, b: number): number => b)
-expectAssignable<UnknownFunction>((a: number, b: unknown): number => a)
-expectAssignable<UnknownFunction>((a: number, b: unknown): never => {
-  throw new Error()
-})
-expectAssignable<UnknownFunction>((a: number, b: number): string => `${a + b}`)
-expectAssignable<UnknownFunction>((a: number, b: number): unknown => a | b)

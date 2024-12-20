@@ -17,8 +17,6 @@
 import { expectAssignable } from 'tsd'
 import type { UnknownFunction } from '../../../src/index.ts'
 
-// UnknownFunction
-
 expectAssignable<UnknownFunction>((a: number, b: number): number => a + b)
 expectAssignable<UnknownFunction>((a: number): number => a)
 expectAssignable<UnknownFunction>((): number => 0)
