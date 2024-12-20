@@ -112,6 +112,7 @@
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
     <inspection_tool class="ES6ModulesDependencies" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="ES6PreferShortImport" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="EmptyCatchBlockJS" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
@@ -288,7 +289,6 @@
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="JSUnfilteredForInLoop" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="JSUnnecessarySemicolon" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="Application" level="ERROR" enabled="true" />
       <scope name="ppwcode" level="ERROR" enabled="true" />
