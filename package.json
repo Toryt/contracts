@@ -2,22 +2,22 @@
   "name": "@toryt/contracts",
   "version": "7.0.0-ts.0",
   "description": "Design-by-Contract and Test-by-Contract for JavaScript and TypeScript",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "main": "build/src/index.js",
+  "module": "build/src/index.js",
   "type": "module",
-  "types": "./dist/index.d.ts",
+  "types": "./build/src/index.d.ts",
   "files": [
-    "dist/**/*",
+    "build/src/**/*",
     "src/**/*"
   ],
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "import": "./build/src/index.js",
+      "require": "./build/src/index.js"
     }
   },
   "directories": {
-    "test": "test-js"
+    "test": "test2"
   },
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
