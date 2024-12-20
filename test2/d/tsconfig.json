@@ -3,7 +3,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": "../..",
-    "outDir": "../../dist-d",
+    "outDir": "../../build-d",
     "declaration": false,
     "declarationMap": false,
     "isolatedDeclarations": false,

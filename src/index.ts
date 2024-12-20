@@ -15,5 +15,7 @@
  */
 
 export type * from './types/UnknownFunction'
-export { FunctionContract } from './FunctionContract'
+export type * from './types/NeverFunction'
 export type { ContractFunctionProperties, ContractFunction } from './FunctionContract'
+
+export { FunctionContract } from './FunctionContract.ts'

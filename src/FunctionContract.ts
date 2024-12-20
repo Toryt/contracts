@@ -15,8 +15,6 @@
  */
 
 import { ok, strictEqual } from 'node:assert'
-import type { StartingTuples } from './StartingTuples'
-import type { UnknownFunction } from './types/UnknownFunction'
 
 /**
  * Represents the most restrictive function type in TypeScript.
@@ -47,6 +45,8 @@ import type { UnknownFunction } from './types/UnknownFunction'
  * ```
  */
 export type NeverFunction = () => never
+import type { StartingTuples } from './StartingTuples.ts'
+import type { UnknownFunction } from './types/UnknownFunction.ts'
 
 export interface ContractFunctionProperties<T extends UnknownFunction> {
   contract: FunctionContract<T>
