@@ -15,7 +15,7 @@
  */
 
 import { ok, strictEqual } from 'node:assert'
-import type { StartingTuples } from './util/StartingTuples.ts'
+import type { Postcondition } from './Postcondition.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 
 export interface ContractFunctionProperties<T extends UnknownFunction> {
@@ -23,13 +23,6 @@ export interface ContractFunctionProperties<T extends UnknownFunction> {
 }
 
 export type ContractFunction<T extends UnknownFunction> = T & ContractFunctionProperties<T>
-
-export type Postcondition<T extends UnknownFunction> =
-  StartingTuples<Parameters<T>> extends infer U // infer the union of tuples
-    ? U extends unknown[] // distribute over each tuple in the union
-      ? (args: U, result: ReturnType<T>) => unknown // create a function type for each tuple
-      : never // fallback for invalid tuples (not needed here)
-    : never // fallback for invalid StartingTuples
 
 export interface FunctionContractKwargs<T extends UnknownFunction> {
   post?: Postcondition<T>[]
