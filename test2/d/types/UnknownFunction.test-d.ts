@@ -15,7 +15,7 @@
  */
 
 import { expectAssignable } from 'tsd'
-import type { UnknownFunction } from '../../src/UnknownFunction'
+import type { UnknownFunction } from '../../../src'
 
 // UnknownFunction
 

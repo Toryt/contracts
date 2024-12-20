@@ -16,12 +16,7 @@
 
 import { ok, strictEqual } from 'node:assert'
 import type { StartingTuples } from './StartingTuples'
-
-/**
- * Represents the most general function type in TypeScript.
- * All possible functions are subtypes of this type.
- */
-export type UnknownFunction = (...args: never[]) => unknown
+import type { UnknownFunction } from './types/UnknownFunction'
 
 /**
  * Represents the most restrictive function type in TypeScript.

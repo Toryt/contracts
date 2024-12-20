@@ -14,5 +14,6 @@
   limitations under the License.
  */
 
+export type * from './types/UnknownFunction'
 export { FunctionContract } from './FunctionContract'
 export type { ContractFunctionProperties, ContractFunction } from './FunctionContract'
