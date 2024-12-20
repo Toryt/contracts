@@ -15,7 +15,7 @@
  */
 
 import { expectType } from 'tsd'
-import { type StartingTuples } from '../src/StartingTuples.ts'
+import { type StartingTuples } from '../../src/StartingTuples.ts'
 
 // Empty tuple
 expectType<[]>([] as StartingTuples<[]>)

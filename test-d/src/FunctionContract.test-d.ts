@@ -15,8 +15,8 @@
  */
 
 import { expectType, expectError, expectAssignable, expectNotAssignable } from 'tsd'
-import { FunctionContract, type ContractFunction, type UnknownFunction } from '../src/index.ts'
-import type { Postcondition } from '../src/FunctionContract.ts'
+import { FunctionContract, type ContractFunction, type UnknownFunction } from '../../src/index.ts'
+import type { Postcondition } from '../../src/FunctionContract.ts'
 
 // ASignature
 
