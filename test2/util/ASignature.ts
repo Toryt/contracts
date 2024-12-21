@@ -14,4 +14,6 @@
   limitations under the License.
  */
 
-export type ASignature = (a: number, b: number) => number
+import type { Level1BType, Level2Type } from './SomeTypes.ts'
+
+export type ASignature = (a: number, b: Level1BType) => Level2Type
