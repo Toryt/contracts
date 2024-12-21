@@ -15,19 +15,50 @@
  */
 
 /**
- * Utility type to generate all the disjunction of all sub-tuples of a given tuple `T`
- * that start `T`.
+ * Utility type to generate  the disjunction of all sub-tuples of a given tuple `T` that start `T`.
  *
- * For example:
+ * This includes handling optional elements, ensuring that their inclusion and omission
+ * are explicitly considered.
  *
+ * ### How It Works
+ * * **Base Case**: If `T` is an empty tuple (`[]`), the result is `[]`.
+ * * **Recursive Case**:
+ *   * Matches tuples with a definite last element (`[...start, last]`).
+ *   * Matches tuples with an optional last element (`[...start, last?]`).
+ *   * Includes the full tuple `T` and continues processing the starting sub-tuples (`start`).
+ * * **Fallback**: If `T` doesn’t match any of the patterns, resolves to `never`.
+ *
+ * @example
  * ```typescript
  * type Example = [number, string, boolean]
  * type Subsets = StartingTuples<Example>
  * // Result: [number, string, boolean] | [number, string] | [number] | []
  * ```
  *
- * @template T - A tuple type to compute starting sub-tuples from.
- * @internal
+ * @example
+ * ```typescript
+ * // All starting tuples of [number, string?]
+ * type Example1 = StartingTuples<[number, string?]>;
+ * // Expected: [number, string?] | [number] | []
+ * ```
+ *
+ * @example
+ * ```typescript * // All starting tuples of [number, string, boolean?]
+ * type Example2 = StartingTuples<[number, string, boolean?]>;
+ * // Expected: [number, string, boolean?] | [number, string] | [number] | []
+ * ```
+ *
+ * @example
+ * ```typescript * // All starting tuples of an empty tuple
+ * type Example4 = StartingTuples<[]>;
+ * // Expected: []
+ * ```
+ *
+ * @template T - The tuple to generate starting prefixes for.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type StartingTuples<T extends unknown[]> = T extends [...infer Rest, infer _Last] ? T | StartingTuples<Rest> : []
+export type StartingTuples<T extends unknown[]> = T extends []
+  ? []
+  : T extends [...start: infer Start, last: infer Last] | [...start: infer Start, last?: infer Last]
+    ? T | StartingTuples<Start>
+    : never

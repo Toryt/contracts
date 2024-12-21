@@ -75,3 +75,15 @@ expectType<
   | [1]
   | []
 >([] as StartingTuples<Large>)
+
+// Optional elements in the tuple
+type OptionalTuple = [number, string?]
+expectType<[number, string?] | [number] | []>([] as StartingTuples<OptionalTuple>)
+
+// Single optional element
+type SingleOptional = [number?]
+expectType<[number?] | []>([] as StartingTuples<SingleOptional>)
+
+// Multiple optional elements
+type MultipleOptional = [number, string?, boolean?]
+expectType<[number, string?, boolean?] | [number, string?] | [number] | []>([] as StartingTuples<MultipleOptional>)
