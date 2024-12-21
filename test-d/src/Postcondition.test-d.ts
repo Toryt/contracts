@@ -56,12 +56,12 @@ expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result
 
 // not a boolean outcome
 expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): unknown => 'mystery')
-expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type) => 0)
-expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type) => undefined)
-expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type) => null)
-expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type) => '')
-expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type) => 'a string')
-expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type) => {})
+expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): number => 0)
+expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): undefined => undefined)
+expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): null => null)
+expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): '' => '')
+expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): string => 'a string')
+expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): void => {})
 expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): never => {
   throw new Error()
 })
@@ -105,6 +105,12 @@ expectNotAssignable<Postcondition<ASignature>>(
 )
 
 // unrelated or covariant result
+expectNotAssignable<Postcondition<ASignature>>(
+  (args: [number, Level1AType], result: undefined): boolean => result === 'worf'
+)
+expectNotAssignable<Postcondition<ASignature>>(
+  (args: [number, Level1AType], result: null): boolean => result === 'worf'
+)
 expectNotAssignable<Postcondition<ASignature>>(
   (args: [number, Level1AType], result: string): boolean => result === 'worf'
 )
