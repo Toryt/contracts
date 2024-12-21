@@ -87,3 +87,21 @@ expectType<[number?] | []>([] as StartingTuples<SingleOptional>)
 // Multiple optional elements
 type MultipleOptional = [number, string?, boolean?]
 expectType<[number, string?, boolean?] | [number, string?] | [number] | []>([] as StartingTuples<MultipleOptional>)
+
+// Tuple with a variadic last element
+type VariadicLast = [number, ...string[]]
+expectType<[number, ...string[]] | [number] | []>([] as StartingTuples<VariadicLast>)
+
+// Multiple fixed elements followed by a variadic element
+type FixedAndVariadic = [boolean, number, ...string[]]
+expectType<[boolean, number, ...string[]] | [boolean, number] | [boolean] | []>([] as StartingTuples<FixedAndVariadic>)
+
+// Variadic element alone
+type OnlyVariadic = [...number[]]
+expectType<[...number[]] | []>([] as StartingTuples<OnlyVariadic>)
+
+// Mixed optional and variadic elements
+type MixedOptionalAndVariadic = [number, string?, ...boolean[]]
+expectType<[number, string?, ...boolean[]] | [number, string?] | [number] | []>(
+  [] as StartingTuples<MixedOptionalAndVariadic>
+)
