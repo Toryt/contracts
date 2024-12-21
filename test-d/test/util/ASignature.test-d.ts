@@ -89,9 +89,14 @@ expectNotAssignable<ASignature>(
 expectNotAssignable<ASignature>(
   (a: never, b: Level1BType): Level2Type => new Level2Class(0, b.rootProperty > 0, level1AInstance)
 )
+expectNotAssignable<ASignature>(
+  (a: undefined, b: Level1BType): Level2Type => new Level2Class(0, b.rootProperty > 0, level1AInstance)
+)
 expectNotAssignable<ASignature>((a: number, b: number): Level2Type => new Level2Class(a, b > 0, level1AInstance))
 expectNotAssignable<ASignature>((a: number, b: Level1AClass): Level2Type => new Level2Class(a, a > 0, b))
 expectNotAssignable<ASignature>((a: number, b: never): Level2Type => new Level2Class(a, a > 0, level1AInstance))
+expectNotAssignable<ASignature>((a: number, b: undefined): Level2Type => new Level2Class(a, a > 0, level1AInstance))
+expectNotAssignable<ASignature>((a: number, b: null): Level2Type => new Level2Class(a, a > 0, level1AInstance))
 
 // unrelated or contravariant result
 expectNotAssignable<ASignature>((a: number, b: Level1BType): boolean => a > 0 && b.level1BProperty)
