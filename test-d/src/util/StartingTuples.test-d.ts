@@ -42,6 +42,12 @@ expectType<
   | []
 >([] as StartingTuples<Complex>)
 
+// Tuple with disjunction
+type WithDisjunction = [string, boolean, number | undefined]
+expectType<[string, boolean, number | undefined] | [string, boolean] | [string] | []>(
+  [] as StartingTuples<WithDisjunction>
+)
+
 // Edge cases
 type EdgeCase1 = [never]
 expectType<[never] | []>([] as StartingTuples<EdgeCase1>)
