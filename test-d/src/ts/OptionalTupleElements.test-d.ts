@@ -18,7 +18,10 @@ import { expectAssignable, expectNotAssignable } from 'tsd'
 
 expectAssignable<[string, number]>(['a string', 0])
 
-// NOTE: `number?` is _not_ equivalent to `number | undefined`
+/* NOTE: `number?` is _not_ equivalent to `number | undefined`
+         * Optional tuple elements (`number?`) allow omission.
+         * Union with undefined (`number | undefined`) allows explicit `undefined` but requires the element to be
+           present. */
 
 type OptionalLastElement = [string, number?]
 expectAssignable<OptionalLastElement>(['a string', 0])
