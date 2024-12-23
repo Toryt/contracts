@@ -59,6 +59,8 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type StartingTuples<T extends unknown[]> = T extends []
   ? []
-  : T extends [...start: infer Start, last: infer Last] | [...start: infer Start, last?: infer Last]
+  : T extends
+        | [...start: infer Start, last: unknown] //required single
+        | [...start: infer Start, last?: unknown] // optional single
     ? T | StartingTuples<Start>
     : never
