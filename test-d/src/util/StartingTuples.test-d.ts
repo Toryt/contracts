@@ -249,3 +249,4 @@ expectType<OptionalInTheMiddle>([] as unknown as WithMiddle)
 // printType(undefined as unknown as TypesA<[number, boolean?]>)
 // printType(undefined as unknown as TypesA<[number, boolean[]]>)
 // printType(undefined as unknown as TypesA<[number, ...boolean[]]>)
+type TypePerArgument<Self, Args extends unknown[]> = Flatten<
