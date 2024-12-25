@@ -14,8 +14,9 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectError, expectType, printType } from 'tsd'
+import { expectNotType, expectType, printType } from 'tsd'
 import { type StartingTuples } from '../../../src/util/StartingTuples.ts'
+import type { Level1AType } from '../../../test2/util/SomeTypes.ts'
 
 // Empty tuple
 /* TODO rm when no longer needed
@@ -117,46 +118,50 @@ type SingleOptional = [number?]
 printType(undefined as unknown as AccumulatingStartingTuples<SingleOptional>)
 */
 // expectType<[[number?], []]>(undefined as unknown as AccumulatingStartingTuples<SingleOptional>)
-printType([] as StartingTuples<SingleOptional>)
+printType([] as unknown as StartingTuples<SingleOptional>)
 expectType<[number?] | []>([] as StartingTuples<SingleOptional>)
 
 // Optional elements in the tuple
 type OptionalTuple = [number, string?]
-printType([] as StartingTuples<OptionalTuple>)
+printType([] as unknown as StartingTuples<OptionalTuple>)
 expectType<[number, string?] | [number] | []>([] as StartingTuples<OptionalTuple>)
 
 // Multiple optional elements
 type MultipleOptional = [number, string?, boolean?]
-printType([] as StartingTuples<MultipleOptional>)
+printType([] as unknown as StartingTuples<MultipleOptional>)
 expectType<[number, string?, boolean?] | [number, string?] | [number] | []>([] as StartingTuples<MultipleOptional>)
 
 // “Optional“ element in the middle
-expectError(undefined as unknown as [number, string?, boolean]) // A required element cannot follow an optional element.
+// expectError(undefined as unknown as [number, string?, boolean]) // A required element cannot follow an optional element.
 type OptionalInTheMiddle = [number, string | undefined, boolean]
-printType([] as StartingTuples<OptionalInTheMiddle>)
+printType([] as unknown as StartingTuples<OptionalInTheMiddle>)
 expectType<[number, string | undefined, boolean] | [number, string | undefined] | [number] | []>(
   [] as StartingTuples<OptionalInTheMiddle>
 )
 
 type TupleWithOptionalMiddle<Rest extends unknown[]> = [number, ...Rest, boolean]
 type WithMiddle = TupleWithOptionalMiddle<[string?]> // [number, string | undefined, boolean]
-printType([] as StartingTuples<WithMiddle>)
+printType([] as unknown as StartingTuples<WithMiddle>)
 expectType<[number, string | undefined, boolean] | [number, string | undefined] | [number] | []>(
   [] as StartingTuples<WithMiddle>
 )
 expectType<WithMiddle>([] as unknown as OptionalInTheMiddle)
 expectType<OptionalInTheMiddle>([] as unknown as WithMiddle)
 
-//
-// // Variadic element alone
-// type OnlyVariadic = [...number[]]
-// printType([] as StartingTuples<OnlyVariadic>)
-// // expectType<[...number[]] | []>([] as StartingTuples<OnlyVariadic>)
-//
-// // Tuple with a variadic last element
-// type VariadicLast = [number, ...string[]]
-// printType([] as StartingTuples<VariadicLast>)
-// // expectType<[number, ...string[]] | [number] | []>([] as StartingTuples<VariadicLast>)
+// Variadic element alone
+type OnlyVariadic = [...number[]]
+printType([] as OnlyVariadic)
+printType([] as [...number[]])
+expectType<number[]>([] as unknown as OnlyVariadic)
+// printType([] as unknown as StartingTuples<OnlyVariadic>)
+// expectType<[...number[]] | []>([] as unknown as StartingTuples<OnlyVariadic>)
+
+// Tuple with a variadic last element
+type VariadicLast = [number, ...string[]]
+printType([] as unknown as VariadicLast)
+printType([] as unknown as [number, ...string[]])
+// printType([] as unknown as StartingTuples<VariadicLast>)
+// expectType<[number, ...string[]] | [number] | []>([] as StartingTuples<VariadicLast>)
 // //
 // // // Multiple fixed elements followed by a variadic element
 // // type FixedAndVariadic = [boolean, number, ...string[]]
@@ -249,4 +254,187 @@ expectType<OptionalInTheMiddle>([] as unknown as WithMiddle)
 // printType(undefined as unknown as TypesA<[number, boolean?]>)
 // printType(undefined as unknown as TypesA<[number, boolean[]]>)
 // printType(undefined as unknown as TypesA<[number, ...boolean[]]>)
+
+type Flatten<T> = { [K in keyof T]: T[K] }
+
 type TypePerArgument<Self, Args extends unknown[]> = Flatten<
+  { self: Self } & { [Index in keyof Args as Index extends `${number}` ? Index : never]: Args[Index] }
+>
+
+printType(undefined as unknown as TypePerArgument<Level1AType, []>)
+expectType<{ self: Level1AType }>(undefined as unknown as TypePerArgument<Level1AType, []>)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [number]>)
+expectType<{ self: Level1AType; 0: number }>(undefined as unknown as TypePerArgument<Level1AType, [number]>)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean]>)
+expectType<{ self: Level1AType; 0: number; 1: boolean }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, boolean]>
+)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string?]>)
+expectType<{ self: Level1AType; 0: number; 1: boolean; 2?: string }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string?]>
+)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string[]]>)
+expectType<{ self: Level1AType; 0: number; 1: boolean; 2: string[] }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string[]]>
+)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, string[]?]>)
+expectType<{ self: Level1AType; 0: number; 1?: boolean; 2?: string[] }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, string[]?]>
+)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
+expectNotType<{ self: Level1AType; 0: number; 1?: boolean; 2?: string[] }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, ...string[]]>
+)
+// once we hit a variadic, evaluation stops
+expectType<{ self: Level1AType; 0: number; 1?: boolean }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, ...string[]]>
+)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>)
+expectNotType<{ self: Level1AType; 0: number; 1?: boolean[]; 2: string[] }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>
+)
+expectNotType<{ self: Level1AType; 0: number; 1?: boolean[] }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>
+)
+// once we hit a variadic, evaluation stops
+expectType<{ self: Level1AType; 0: number }>(
+  undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>
+)
+
+printType(undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>)
+expectNotType<{ self: Level1AType; 0?: number[]; 1: boolean; 2: string[] }>(
+  undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>
+)
+expectNotType<{ self: Level1AType; 0?: number[]; 1: boolean }>(
+  undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>
+)
+expectNotType<{ self: Level1AType; 0?: number[] }>(
+  undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>
+)
+// once we hit a variadic, evaluation stops
+expectType<{ self: Level1AType }>(undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>)
+
+interface TypeValue<Type, Optional extends boolean, Variadic extends boolean> {
+  value: Type
+  optional: Optional
+  variadic: Variadic
+}
+
+type ValueTypePerArgument<Self, Args extends unknown[]> = Flatten<
+  {
+    self: Self
+  } & {
+    [Index in keyof Args as Index extends `${number}` ? Index : never]: TypeValue<
+      Args[Index],
+      undefined extends Args[Index] ? true : false, // optional or union with undefined (we can't see the difference) BUT
+      // TODO this does not work: once we hit a variadic, evaluation stops
+      Args extends [...infer _, ...infer Variadic] ? (Index extends keyof Variadic ? true : false) : false
+    >
+  }
+>
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, []>)
+expectType<{ self: Level1AType }>(undefined as unknown as ValueTypePerArgument<Level1AType, []>)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number]>)
+expectType<{ self: Level1AType; 0: { value: number; optional: false; variadic: false } }>(
+  undefined as unknown as ValueTypePerArgument<Level1AType, [number]>
+)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean]>)
+expectType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1: { value: boolean; optional: false; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean]>)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string | undefined]>)
+expectType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1: { value: boolean; optional: false; variadic: false }
+  2: { value: string | undefined; optional: true; variadic: false } // note that optional is true!!!
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string | undefined]>)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string?]>)
+expectType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1: { value: boolean; optional: false; variadic: false }
+  // we can see the difference! `2` must be optional! It's in the index???
+  2?: { value: string | undefined; optional: true; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string?]>)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string[]]>)
+expectType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1: { value: boolean; optional: false; variadic: false }
+  2: { value: string[]; optional: false; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string[]]>)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, string[]?]>)
+expectType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1?: { value: boolean | undefined; optional: true; variadic: false }
+  2?: { value: string[] | undefined; optional: true; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, string[]?]>)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
+expectNotType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1?: { value: boolean | undefined; optional: true; variadic: false }
+  2?: { value: string; optional: false; variadic: true }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
+// once we hit a variadic, evaluation stops
+expectType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1?: { value: boolean | undefined; optional: true; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, ...boolean[], string]>)
+expectNotType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1?: { value: boolean[]; optional: false; variadic: true }
+  2: { value: string[]; optional: false; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, ...boolean[], string]>)
+expectNotType<{
+  self: Level1AType
+  0: { value: number; optional: false; variadic: false }
+  1?: { value: boolean[]; optional: false; variadic: true }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, ...boolean[], string]>)
+// once we hit a variadic, evaluation stops
+expectType<{ self: Level1AType; 0: { value: number; optional: false; variadic: false } }>(
+  undefined as unknown as ValueTypePerArgument<Level1AType, [number, ...boolean[], string]>
+)
+
+printType(undefined as unknown as ValueTypePerArgument<Level1AType, [...number[], boolean, string]>)
+expectNotType<{
+  self: Level1AType
+  0?: { value: number; optional: false; variadic: true }
+  1: { value: boolean; optional: false; variadic: false }
+  2: { value: string[]; optional: false; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [...number[], boolean, string]>)
+expectNotType<{
+  self: Level1AType
+  0?: { value: number; optional: false; variadic: true }
+  1: { value: boolean; optional: false; variadic: false }
+}>(undefined as unknown as ValueTypePerArgument<Level1AType, [...number[], boolean, string]>)
+expectNotType<{ self: Level1AType; 0?: { value: number; optional: false; variadic: true } }>(
+  undefined as unknown as ValueTypePerArgument<Level1AType, [...number[], boolean, string]>
+)
+// once we hit a variadic, evaluation stops
+expectType<{ self: Level1AType }>(
+  undefined as unknown as ValueTypePerArgument<Level1AType, [...number[], boolean, string]>
+)
