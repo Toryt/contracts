@@ -136,6 +136,23 @@ function multipleFinalVariadicArguments(
 }
 multipleFinalVariadicArguments(0, '')
 
+/* The same applies to tuples: */
+// @ts-expect-error
+type NoMultipleVariadicsInTuple = [a: number, b: string, ...c: boolean[], ...d: number[], ...e: string[]]
+
+/* Even when we introduce separator types: */
+// @ts-expect-error
+type SeparatedMultipleVariadicsInTuple = [
+  a: number,
+  b: string,
+  ...c: boolean[],
+  c1: string,
+  // @ts-expect-error
+  ...d: number[],
+  d1: boolean,
+  ...e: string[]
+]
+
 /* Non-final optional argument
    --------------------------- */
 
@@ -216,6 +233,23 @@ function undefinedNonFinalInTuple(): unknown {
   return pobrit
 }
 undefinedNonFinalInTuple()
+
+/* Non-final variadic argument, revisited
+   -------------------------------------- */
+
+/* With tuple shenanigans, we can create a signature with a variadic in the middle: */
+
+type PseudoVariadicNonFinal = [a: number, ...b: string[], c: boolean]
+function pseudoVariadicBeforeRequiredRevisited(...args: PseudoVariadicNonFinal): unknown {
+  return undefined
+}
+pseudoVariadicBeforeRequiredRevisited(0, true)
+pseudoVariadicBeforeRequiredRevisited(0, '', true)
+pseudoVariadicBeforeRequiredRevisited(0, 'one', 'two', true)
+expectError(pseudoVariadicBeforeRequiredRevisited(0, 'one', 'two', 'three'))
+expectType<[a: number, ...b: string[], c: boolean]>(
+  [] as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>
+)
 
 /* TODO:
    - multiple variadics is nok
