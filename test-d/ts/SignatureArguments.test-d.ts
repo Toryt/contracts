@@ -69,6 +69,42 @@ expectNotAssignable<[a: number, b: string, c?: boolean]>(
 expectAssignable<Parameters<FinalOptionalArgument>>([] as unknown as [a: number, b: string, c?: boolean])
 expectAssignable<[a: number, b: string, c?: boolean | undefined]>([] as unknown as [a: number, b: string, c?: boolean])
 
+/* Multiple final optional arguments
+   --------------------------------- */
+
+type MultipleFinalOptionalArguments = (a: number, b: string, c?: boolean, d?: number, e?: string) => unknown
+const multipleFinalOptionalArguments: MultipleFinalOptionalArguments = (
+  a: number,
+  b: string,
+  c?: boolean,
+  d?: number,
+  e?: string
+) => {
+  return undefined
+}
+multipleFinalOptionalArguments(0, '')
+multipleFinalOptionalArguments(0, '', true)
+multipleFinalOptionalArguments(0, '', undefined)
+multipleFinalOptionalArguments(0, '', true, 1)
+multipleFinalOptionalArguments(0, '', undefined, 1)
+multipleFinalOptionalArguments(0, '', undefined, undefined)
+multipleFinalOptionalArguments(0, '', true, 1, 'last')
+multipleFinalOptionalArguments(0, '', undefined, 1, 'last')
+multipleFinalOptionalArguments(0, '', undefined, undefined, 'last')
+multipleFinalOptionalArguments(0, '', undefined, undefined, undefined)
+const viaATuple: Parameters<MultipleFinalOptionalArguments> = [0, '', true, 1, 'last']
+multipleFinalOptionalArguments(...viaATuple)
+expectError(multipleFinalOptionalArguments(0, '', true, 1, 'last', 34))
+expectError(multipleFinalOptionalArguments(0, '', undefined, 1, 'last', 'past last'))
+expectError(multipleFinalOptionalArguments(0, '', undefined, undefined, 'last', true))
+expectError(multipleFinalOptionalArguments(0, '', undefined, undefined, undefined, 'one more'))
+expectError(multipleFinalOptionalArguments(0, '', undefined, undefined, undefined, undefined))
+const notEvenViaATuple: [...Parameters<MultipleFinalOptionalArguments>, unknown] = [0, '', true, 1, 'last', 34]
+expectError(multipleFinalOptionalArguments(...notEvenViaATuple))
+expectType<[a: number, b: string, c?: boolean | undefined, d?: number | undefined, e?: string | undefined]>(
+  [] as unknown as Parameters<MultipleFinalOptionalArguments>
+)
+
 /* Variadic last argument
    ---------------------- */
 
@@ -82,6 +118,23 @@ expectType<[a: number, b: string, ...c: boolean[]]>([] as unknown as Parameters<
 // function optionalVariadic(a: number, b?: string, ...c?: boolean[]): unknown {
 //   return undefined
 // }
+
+/* Multiple final variadic arguments
+   --------------------------------- */
+
+/* Multiple final variadic arguments are not possible, and even do not pass `tsd` `expectError` */
+
+function multipleFinalVariadicArguments(
+  a: number,
+  b: string,
+  // @ts-expect-error
+  ...c: boolean[],
+  ...d: number[],
+  ...e: string[]
+): unknown {
+  return undefined
+}
+multipleFinalVariadicArguments(0, '')
 
 /* Non-final optional argument
    --------------------------- */
@@ -165,8 +218,7 @@ function undefinedNonFinalInTuple(): unknown {
 undefinedNonFinalInTuple()
 
 /* TODO:
-   - multiple optionals is ok (?)
-   - multiple variadics is ok
+   - multiple variadics is nok
    - optional before variadic is ok
    - optional after variadic is nok
    - but we can get around that with shenanigans */
