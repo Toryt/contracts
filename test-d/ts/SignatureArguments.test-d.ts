@@ -19,9 +19,17 @@ import { expectError, expectType, expectAssignable, expectNotAssignable } from '
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or variadic (`...`), in that
    order. */
 
-expectType<[]>([] as unknown as Parameters<() => unknown>)
-expectType<[a: number]>([] as unknown as Parameters<(a: number) => unknown>)
-expectType<[a: number, b: string]>([] as unknown as Parameters<(a: number, b: string) => unknown>)
+type NoArguments = () => unknown
+expectType<[]>([] as unknown as Parameters<NoArguments>)
+expectType<0>(([] as unknown as Parameters<NoArguments>).length)
+
+type OneArgument = (a: number) => unknown
+expectType<[a: number]>([] as unknown as Parameters<OneArgument>)
+expectType<1>(([] as unknown as Parameters<OneArgument>).length)
+
+type TwoArguments = (a: number, b: string) => unknown
+expectType<[a: number, b: string]>([] as unknown as Parameters<TwoArguments>)
+expectType<2>(([] as unknown as Parameters<TwoArguments>).length)
 
 /* Optional last argument
    ---------------------- */
@@ -30,6 +38,9 @@ type FinalOptionalArgument = (a: number, b: string, c?: boolean) => unknown
 const finalOptionalArgument: FinalOptionalArgument = (a: number, b: string, c?: boolean) => {
   return undefined
 }
+
+expectType<2 | 3>(([] as unknown as Parameters<FinalOptionalArgument>).length)
+expectType<2 | 3>(([] as unknown as Parameters<typeof finalOptionalArgument>).length)
 
 /* Note that it is necessary for the type of the optional argument to include `undefined`: */
 expectType<[a: number, b: string, c?: boolean | undefined]>([] as unknown as Parameters<FinalOptionalArgument>)
@@ -82,6 +93,10 @@ const multipleFinalOptionalArguments: MultipleFinalOptionalArguments = (
 ) => {
   return undefined
 }
+
+expectType<2 | 3 | 4 | 5>(([] as unknown as Parameters<MultipleFinalOptionalArguments>).length)
+expectType<2 | 3 | 4 | 5>(([] as unknown as Parameters<typeof multipleFinalOptionalArguments>).length)
+
 multipleFinalOptionalArguments(0, '')
 multipleFinalOptionalArguments(0, '', true)
 multipleFinalOptionalArguments(0, '', undefined)
@@ -109,6 +124,8 @@ expectType<[a: number, b: string, c?: boolean | undefined, d?: number | undefine
    ---------------------- */
 
 type FinalVariadicArgument = (a: number, b: string, ...c: boolean[]) => unknown
+
+expectType<number>(([] as unknown as Parameters<FinalVariadicArgument>).length)
 
 /* There is no weirdness here: */
 expectType<[a: number, b: string, ...c: boolean[]]>([] as unknown as Parameters<FinalVariadicArgument>)
@@ -162,6 +179,7 @@ type SeparatedMultipleVariadicsInTuple = [
 function optionalBeforeRequired(a: number, b?: string, c: boolean): unknown {
   return undefined
 }
+
 function optionalBeforeRequiredInTuple(): unknown {
   // @ts-expect-error
   const obrit: [a: number, b?: string, c: boolean] = [0, '', true]
@@ -179,7 +197,7 @@ function variadicBeforeRequired(a: number, ...b: string[], c: boolean): unknown 
   return undefined
 }
 /* But we _can_ have variadic elements before required elements in a tuple: */
-function variadicBeforeRequiredInTuple(): unknown {
+function variadicBeforeRequiredInTuple(): [a: number, ...b: string[], c: boolean] {
   let vbrit: [a: number, ...b: string[], c: boolean] = [0, '', true]
   vbrit = [0, true]
   vbrit = [0, '', true]
@@ -187,6 +205,8 @@ function variadicBeforeRequiredInTuple(): unknown {
   return vbrit
 }
 variadicBeforeRequiredInTuple()
+
+expectType<number>(([] as unknown as ReturnType<typeof variadicBeforeRequiredInTuple>).length)
 
 /* Non-final optional argument, revisited
    -------------------------------------- */
@@ -198,6 +218,10 @@ type PseudoOptionalNonFinal = [a: number, ...b: PseudoOptionalString, c: boolean
 function pseudoOptionalBeforeRequiredRevisited(...args: PseudoOptionalNonFinal): unknown {
   return undefined
 }
+
+expectType<3>(([] as unknown as PseudoOptionalNonFinal).length)
+expectType<3>(([] as unknown as Parameters<typeof pseudoOptionalBeforeRequiredRevisited>).length)
+
 expectError(pseudoOptionalBeforeRequiredRevisited(0, true))
 pseudoOptionalBeforeRequiredRevisited(0, undefined, true)
 pseudoOptionalBeforeRequiredRevisited(0, '', true)
@@ -219,6 +243,9 @@ pseudoOptionalBeforeRequiredInTupleRevisited()
 function undefinedNonFinal(a: number, b: string | undefined, c: boolean): unknown {
   return undefined
 }
+
+expectType<3>(([] as unknown as Parameters<typeof undefinedNonFinal>).length)
+
 expectError(undefinedNonFinal(0, true))
 undefinedNonFinal(0, undefined, true)
 undefinedNonFinal(0, '', true)
@@ -243,6 +270,9 @@ type PseudoVariadicNonFinal = [a: number, ...b: string[], c: boolean]
 function pseudoVariadicBeforeRequiredRevisited(...args: PseudoVariadicNonFinal): unknown {
   return undefined
 }
+
+expectType<number>(([] as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>).length)
+
 pseudoVariadicBeforeRequiredRevisited(0, true)
 pseudoVariadicBeforeRequiredRevisited(0, '', true)
 pseudoVariadicBeforeRequiredRevisited(0, 'one', 'two', true)
@@ -263,11 +293,13 @@ type MultipleVariadicsBase2 = [boolean, string]
 expectType<[number, string, boolean, string]>([] as unknown as [...MultipleVariadicsBase1, ...MultipleVariadicsBase2])
 
 type MultipleVariadicsVariadic1 = [number, ...string[]]
+expectType<number>(([] as unknown as MultipleVariadicsVariadic1).length)
 expectType<[number, ...string[], boolean, string]>(
   [] as unknown as [...MultipleVariadicsVariadic1, ...MultipleVariadicsBase2]
 )
 
 type MultipleVariadicsVariadic2 = [boolean, ...string[]]
+expectType<number>(([] as unknown as MultipleVariadicsVariadic2).length)
 expectType<[number, string, boolean, ...string[]]>(
   [] as unknown as [...MultipleVariadicsBase1, ...MultipleVariadicsVariadic2]
 )
