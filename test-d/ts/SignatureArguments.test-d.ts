@@ -15,29 +15,42 @@
  */
 
 import { expectError, expectType, expectAssignable, expectNotAssignable } from 'tsd'
+import {
+  finalOptionalArgument,
+  type FinalOptionalArgument,
+  type FinalVariadicArgument,
+  multipleFinalOptionalArguments,
+  type MultipleFinalOptionalArguments,
+  type MultipleVariadics0,
+  type MultipleVariadics1,
+  type MultipleVariadics2,
+  type MultipleVariadicsVariadic1,
+  type MultipleVariadicsVariadic2,
+  type NoArguments,
+  type OneArgument,
+  type OneRestInTheMiddleTuple,
+  pseudoOptionalBeforeRequiredRevisited,
+  type PseudoOptionalNonFinal,
+  pseudoVariadicBeforeRequiredRevisited,
+  type TwoArguments,
+  type UndefinedNonFinal,
+  undefinedNonFinal
+} from './PossibleSignatures.ts'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or variadic (`...`), in that
    order. */
 
-type NoArguments = () => unknown
 expectType<[]>([] as unknown as Parameters<NoArguments>)
 expectType<0>(([] as unknown as Parameters<NoArguments>).length)
 
-type OneArgument = (a: number) => unknown
 expectType<[a: number]>([] as unknown as Parameters<OneArgument>)
 expectType<1>(([] as unknown as Parameters<OneArgument>).length)
 
-type TwoArguments = (a: number, b: string) => unknown
 expectType<[a: number, b: string]>([] as unknown as Parameters<TwoArguments>)
 expectType<2>(([] as unknown as Parameters<TwoArguments>).length)
 
 /* Optional last argument
    ---------------------- */
-
-type FinalOptionalArgument = (a: number, b: string, c?: boolean) => unknown
-const finalOptionalArgument: FinalOptionalArgument = (a: number, b: string, c?: boolean) => {
-  return undefined
-}
 
 expectType<2 | 3>(([] as unknown as Parameters<FinalOptionalArgument>).length)
 expectType<2 | 3>(([] as unknown as Parameters<typeof finalOptionalArgument>).length)
@@ -83,17 +96,6 @@ expectAssignable<[a: number, b: string, c?: boolean | undefined]>([] as unknown 
 /* Multiple final optional arguments
    --------------------------------- */
 
-type MultipleFinalOptionalArguments = (a: number, b: string, c?: boolean, d?: number, e?: string) => unknown
-const multipleFinalOptionalArguments: MultipleFinalOptionalArguments = (
-  a: number,
-  b: string,
-  c?: boolean,
-  d?: number,
-  e?: string
-) => {
-  return undefined
-}
-
 expectType<2 | 3 | 4 | 5>(([] as unknown as Parameters<MultipleFinalOptionalArguments>).length)
 expectType<2 | 3 | 4 | 5>(([] as unknown as Parameters<typeof multipleFinalOptionalArguments>).length)
 
@@ -122,8 +124,6 @@ expectType<[a: number, b: string, c?: boolean | undefined, d?: number | undefine
 
 /* Variadic last argument
    ---------------------- */
-
-type FinalVariadicArgument = (a: number, b: string, ...c: boolean[]) => unknown
 
 expectType<number>(([] as unknown as Parameters<FinalVariadicArgument>).length)
 
@@ -197,8 +197,8 @@ function variadicBeforeRequired(a: number, ...b: string[], c: boolean): unknown 
   return undefined
 }
 /* But we _can_ have variadic elements before required elements in a tuple: */
-function variadicBeforeRequiredInTuple(): [a: number, ...b: string[], c: boolean] {
-  let vbrit: [a: number, ...b: string[], c: boolean] = [0, '', true]
+function variadicBeforeRequiredInTuple(): OneRestInTheMiddleTuple {
+  let vbrit: OneRestInTheMiddleTuple = [0, '', true]
   vbrit = [0, true]
   vbrit = [0, '', true]
   vbrit = [0, 'one', 'two', true]
@@ -207,17 +207,13 @@ function variadicBeforeRequiredInTuple(): [a: number, ...b: string[], c: boolean
 variadicBeforeRequiredInTuple()
 
 expectType<number>(([] as unknown as ReturnType<typeof variadicBeforeRequiredInTuple>).length)
+expectType<number>(([] as unknown as OneRestInTheMiddleTuple).length)
 
 /* Non-final optional argument, revisited
    -------------------------------------- */
 
 /* But that means that, through variadic shenanigans, we can have, or at least emulate, non-final optional elements.
    But they are not truly optional: we need to fill the position with `undefined`: */
-type PseudoOptionalString = [b?: string]
-type PseudoOptionalNonFinal = [a: number, ...b: PseudoOptionalString, c: boolean]
-function pseudoOptionalBeforeRequiredRevisited(...args: PseudoOptionalNonFinal): unknown {
-  return undefined
-}
 
 expectType<3>(([] as unknown as PseudoOptionalNonFinal).length)
 expectType<3>(([] as unknown as Parameters<typeof pseudoOptionalBeforeRequiredRevisited>).length)
@@ -240,10 +236,6 @@ function pseudoOptionalBeforeRequiredInTupleRevisited(): unknown {
 pseudoOptionalBeforeRequiredInTupleRevisited()
 
 /* Of course, we can get the same effect much simpler by marking the middle element as possibly `undefined`: */
-function undefinedNonFinal(a: number, b: string | undefined, c: boolean): unknown {
-  return undefined
-}
-
 expectType<3>(([] as unknown as Parameters<typeof undefinedNonFinal>).length)
 
 expectError(undefinedNonFinal(0, true))
@@ -253,7 +245,7 @@ expectError(undefinedNonFinal(0, 'one', 'two', true))
 expectType<[a: number, b: string | undefined, c: boolean]>([] as unknown as Parameters<typeof undefinedNonFinal>)
 
 function undefinedNonFinalInTuple(): unknown {
-  let pobrit: [a: number, b: string | undefined, c: boolean]
+  let pobrit: UndefinedNonFinal
   pobrit = [0, undefined, true]
   pobrit = [0, '', true]
   expectError((pobrit = [0, 'one', 'two', true]))
@@ -265,11 +257,6 @@ undefinedNonFinalInTuple()
    -------------------------------------- */
 
 /* With tuple shenanigans, we can create a signature with a variadic in the middle: */
-
-type PseudoVariadicNonFinal = [a: number, ...b: string[], c: boolean]
-function pseudoVariadicBeforeRequiredRevisited(...args: PseudoVariadicNonFinal): unknown {
-  return undefined
-}
 
 expectType<number>(([] as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>).length)
 
@@ -288,21 +275,14 @@ expectType<[a: number, ...b: string[], c: boolean]>(
 
 /* We can combine multiple variadics in a tuple type: */
 
-type MultipleVariadicsBase1 = [number, string]
-type MultipleVariadicsBase2 = [boolean, string]
-expectType<[number, string, boolean, string]>([] as unknown as [...MultipleVariadicsBase1, ...MultipleVariadicsBase2])
+expectType<4>(([] as unknown as MultipleVariadics0).length)
+expectType<[number, string, boolean, string]>([] as unknown as MultipleVariadics0)
 
-type MultipleVariadicsVariadic1 = [number, ...string[]]
-expectType<number>(([] as unknown as MultipleVariadicsVariadic1).length)
-expectType<[number, ...string[], boolean, string]>(
-  [] as unknown as [...MultipleVariadicsVariadic1, ...MultipleVariadicsBase2]
-)
+expectType<number>(([] as unknown as MultipleVariadics1).length)
+expectType<[number, ...string[], boolean, string]>([] as unknown as MultipleVariadics1)
 
-type MultipleVariadicsVariadic2 = [boolean, ...string[]]
-expectType<number>(([] as unknown as MultipleVariadicsVariadic2).length)
-expectType<[number, string, boolean, ...string[]]>(
-  [] as unknown as [...MultipleVariadicsBase1, ...MultipleVariadicsVariadic2]
-)
+expectType<number>(([] as unknown as MultipleVariadics2).length)
+expectType<[number, string, ...boolean[], string]>([] as unknown as MultipleVariadics2)
 
 /* But not if the different variadic elements together contain more than 1 rest element. Note that the error message is
    confusing (“A rest element cannot follow another rest element.”). */
