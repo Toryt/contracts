@@ -251,8 +251,33 @@ expectType<[a: number, ...b: string[], c: boolean]>(
   [] as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>
 )
 
+/* Multiple variadic arguments, revisited
+   -------------------------------------- */
+
+/* There seems to be no way to get a signature, or a tuple type, with multiple variadic arguments or elements. */
+
+/* We can combine multiple variadics in a tuple type: */
+
+type MultipleVariadicsBase1 = [number, string]
+type MultipleVariadicsBase2 = [boolean, string]
+expectType<[number, string, boolean, string]>([] as unknown as [...MultipleVariadicsBase1, ...MultipleVariadicsBase2])
+
+type MultipleVariadicsVariadic1 = [number, ...string[]]
+expectType<[number, ...string[], boolean, string]>(
+  [] as unknown as [...MultipleVariadicsVariadic1, ...MultipleVariadicsBase2]
+)
+
+type MultipleVariadicsVariadic2 = [boolean, ...string[]]
+expectType<[number, string, boolean, ...string[]]>(
+  [] as unknown as [...MultipleVariadicsBase1, ...MultipleVariadicsVariadic2]
+)
+
+/* But not if the different variadic elements together contain more than 1 rest element. Note that the error message is
+   confusing (“A rest element cannot follow another rest element.”). */
+// @ts-expect-error
+type MultipleVariadics1VariadicB = [...MultipleVariadicsVariadic1, ...MultipleVariadicsVariadic2]
+
 /* TODO:
-   - multiple variadics is nok
    - optional before variadic is ok
    - optional after variadic is nok
    - but we can get around that with shenanigans */
