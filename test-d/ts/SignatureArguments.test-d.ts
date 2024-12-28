@@ -20,6 +20,7 @@ import {
   multipleFinalOptionalArguments,
   pseudoOptionalBeforeRequiredRevisited,
   pseudoRestBeforeRequiredRevisited,
+  pseudoRestBeforeRequiredInbetweenArraysRevisited,
   undefinedNonFinal,
   type FinalOptionalArgument,
   type FinalRestArgument,
@@ -36,8 +37,7 @@ import {
   type TwoArguments,
   type UndefinedNonFinal,
   type FinalRestArgumentAfterArray,
-  type OneRestInTheMiddleTupleInArrays,
-  pseudoRestBeforeRequiredInbetweenArraysRevisited
+  type OneRestInTheMiddleTupleInArrays
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]

@@ -50,6 +50,9 @@ export type PseudoRestNonFinal = [a: number, ...b: string[], c: boolean]
 export function pseudoRestBeforeRequiredRevisited(...args: PseudoRestNonFinal): unknown {
   return undefined
 }
+export function pseudoRestBeforeRequiredInbetweenArraysRevisited(...args: OneRestInTheMiddleTupleInArrays): unknown {
+  return undefined
+}
 
 type MultipleVariadicsBase1 = [number, string]
 type MultipleVariadicsBase2 = [boolean, string]
