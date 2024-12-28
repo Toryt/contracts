@@ -17,9 +17,12 @@
 import { expectError, expectType, expectAssignable, expectNotAssignable, expectNotType } from 'tsd'
 import {
   finalOptionalArgument,
+  multipleFinalOptionalArguments,
+  pseudoOptionalBeforeRequiredRevisited,
+  pseudoRestBeforeRequiredRevisited,
+  undefinedNonFinal,
   type FinalOptionalArgument,
   type FinalRestArgument,
-  multipleFinalOptionalArguments,
   type MultipleFinalOptionalArguments,
   type NoRestViaMultipleVariadics,
   type OneRestViaMultipleVariadics1,
@@ -29,12 +32,9 @@ import {
   type NoArguments,
   type OneArgument,
   type OneRestInTheMiddleTuple,
-  pseudoOptionalBeforeRequiredRevisited,
   type PseudoOptionalNonFinal,
-  pseudoRestBeforeRequiredRevisited,
   type TwoArguments,
-  type UndefinedNonFinal,
-  undefinedNonFinal
+  type UndefinedNonFinal
 } from './PossibleSignatures.ts'
 
 type LastTupleElement<T extends unknown[]> = T extends []
