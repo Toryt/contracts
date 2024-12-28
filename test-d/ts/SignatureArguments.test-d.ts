@@ -45,9 +45,16 @@ expectType<0>(([] as unknown as Parameters<NoArguments>).length)
 
 expectType<[a: number]>([] as unknown as Parameters<OneArgument>)
 expectType<1>(([] as unknown as Parameters<OneArgument>).length)
+expectType<number>(undefined as unknown as Parameters<OneArgument>[0])
+// @ts-expect-error
+type NoElementAtIndex1A = Parameters<OneArgument>[1]
 
 expectType<[a: number, b: string]>([] as unknown as Parameters<TwoArguments>)
 expectType<2>(([] as unknown as Parameters<TwoArguments>).length)
+expectType<number>(undefined as unknown as Parameters<TwoArguments>[0])
+expectType<string>(undefined as unknown as Parameters<TwoArguments>[1])
+// @ts-expect-error
+type NoElementAtIndex2 = Parameters<TwoArguments>[2]
 
 /* Optional last argument
    ---------------------- */
@@ -93,6 +100,12 @@ expectNotAssignable<[a: number, b: string, c?: boolean]>(
 expectAssignable<Parameters<FinalOptionalArgument>>([] as unknown as [a: number, b: string, c?: boolean])
 expectAssignable<[a: number, b: string, c?: boolean | undefined]>([] as unknown as [a: number, b: string, c?: boolean])
 
+expectType<number>(undefined as unknown as Parameters<FinalOptionalArgument>[0])
+expectType<string>(undefined as unknown as Parameters<FinalOptionalArgument>[1])
+expectType<boolean | undefined>(undefined as unknown as Parameters<FinalOptionalArgument>[2])
+// @ts-expect-error
+type NoElementAtIndex3 = Parameters<FinalOptionalArgument>[3]
+
 /* Multiple final optional arguments
    --------------------------------- */
 
@@ -122,6 +135,14 @@ expectType<[a: number, b: string, c?: boolean | undefined, d?: number | undefine
   [] as unknown as Parameters<MultipleFinalOptionalArguments>
 )
 
+expectType<number>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[0])
+expectType<string>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[1])
+expectType<boolean | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[2])
+expectType<number | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[3])
+expectType<string | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[4])
+// @ts-expect-error
+type NoElementAtIndex3 = Parameters<MultipleFinalOptionalArguments>[5]
+
 /* Variadic last argument
    ---------------------- */
 
@@ -135,6 +156,15 @@ expectType<[a: number, b: string, ...c: boolean[]]>([] as unknown as Parameters<
 // function optionalVariadic(a: number, b?: string, ...c?: boolean[]): unknown {
 //   return undefined
 // }
+
+expectType<number>(undefined as unknown as Parameters<FinalVariadicArgument>[0])
+expectType<string>(undefined as unknown as Parameters<FinalVariadicArgument>[1])
+// Note that `undefined` is not in the type!
+expectType<boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[2])
+expectType<boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[3])
+expectType<boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[999999])
+// Note that `undefined` is not in the union!
+expectType<number | string | boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[number])
 
 /* Multiple final variadic arguments
    --------------------------------- */
@@ -209,6 +239,16 @@ variadicBeforeRequiredInTuple()
 expectType<number>(([] as unknown as ReturnType<typeof variadicBeforeRequiredInTuple>).length)
 expectType<number>(([] as unknown as OneRestInTheMiddleTuple).length)
 
+expectType<number>(undefined as unknown as OneRestInTheMiddleTuple[0])
+expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[1])
+expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[2])
+expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[3])
+expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[999999])
+
+// we can extract the last (non-rest) element’s type, but not with an index:
+type LastExample<T extends unknown[]> = T extends [...unknown[], infer Last] ? Last : never
+expectType<boolean>(undefined as unknown as LastExample<OneRestInTheMiddleTuple>)
+
 /* Non-final optional argument, revisited
    -------------------------------------- */
 
@@ -225,6 +265,12 @@ expectError(pseudoOptionalBeforeRequiredRevisited(0, 'one', 'two', true))
 expectType<[a: number, b: string | undefined, c: boolean]>(
   [] as unknown as Parameters<typeof pseudoOptionalBeforeRequiredRevisited>
 )
+
+expectType<number>(undefined as unknown as Parameters<typeof pseudoOptionalBeforeRequiredRevisited>[0])
+expectType<string | undefined>(undefined as unknown as Parameters<typeof pseudoOptionalBeforeRequiredRevisited>[1])
+expectType<boolean>(undefined as unknown as Parameters<typeof pseudoOptionalBeforeRequiredRevisited>[2])
+// @ts-expect-error
+type NoElementAtIndex3b = Parameters<typeof pseudoOptionalBeforeRequiredRevisited>[3]
 
 function pseudoOptionalBeforeRequiredInTupleRevisited(): unknown {
   let pobrit: PseudoOptionalNonFinal
@@ -267,6 +313,13 @@ expectError(pseudoVariadicBeforeRequiredRevisited(0, 'one', 'two', 'three'))
 expectType<[a: number, ...b: string[], c: boolean]>(
   [] as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>
 )
+
+expectType<number>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[0])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[1])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[2])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[3])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[999999])
+expectType<boolean>(undefined as unknown as LastExample<Parameters<typeof pseudoVariadicBeforeRequiredRevisited>>)
 
 /* Multiple variadic arguments, revisited
    -------------------------------------- */
