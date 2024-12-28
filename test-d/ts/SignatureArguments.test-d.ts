@@ -38,12 +38,16 @@ import {
 } from './PossibleSignatures.ts'
 
 type LastTupleElement<T extends unknown[]> = T extends []
-  ? never
-  : T extends [...start: unknown[], last: infer Last] //required single
-    ? [Last, 'required']
-    : T extends [...start: infer _, last?: infer Last] // optional single
-      ? [Last, 'optional']
-      : never
+  ? 'empty tuple'
+  : T extends [...start: unknown[], last: infer Last1] // required single
+    ? [Last1, 'required']
+    : T extends [...start: infer _, last?: infer Last2] // optional single or rest
+      ? number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
+        ? T extends [...start: infer _, ...last: Last2[]] // last is a rest element
+          ? [Last2[], 'rest'] // rest
+          : [Last2, 'optional2'] // optional single
+        : [Last2, 'optional'] // optional single
+      : 'not empty, not required, not optional or rest'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
@@ -52,7 +56,7 @@ expectType<[]>([] as unknown as Parameters<NoArguments>)
 expectType<0>(([] as unknown as Parameters<NoArguments>).length)
 // @ts-expect-error
 type NoElementAtIndex0 = NoArguments<OneArgument>[0]
-expectType<never>(undefined as unknown as LastTupleElement<Parameters<NoArguments>>)
+expectType<'empty tuple'>(undefined as unknown as LastTupleElement<Parameters<NoArguments>>)
 
 expectType<[a: number]>([] as unknown as Parameters<OneArgument>)
 expectType<1>(([] as unknown as Parameters<OneArgument>).length)
@@ -192,15 +196,7 @@ expectType<boolean>(undefined as unknown as Parameters<FinalRestArgument>[999999
 expectType<number | string | boolean>(undefined as unknown as Parameters<FinalRestArgument>[number])
 
 // we cannot get the type of the last argument:
-// MUDO should be 'rest'
-expectType<[unknown, 'optional']>(undefined as unknown as LastTupleElement<Parameters<FinalRestArgument>>)
-expectNotType<[boolean, 'optional']>(
-  undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArguments>>
-)
-expectNotType<[boolean[], 'optional']>(
-  undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArguments>>
-)
-expectNotType<[boolean, 'rest']>(undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArguments>>)
+expectType<[unknown[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<FinalRestArgument>>)
 expectNotType<[boolean[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArguments>>)
 
 /* Multiple final rest arguments
