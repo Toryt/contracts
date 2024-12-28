@@ -36,7 +36,8 @@ import {
   type TwoArguments,
   type UndefinedNonFinal,
   type FinalRestArgumentAfterArray,
-  type OneRestInTheMiddleTupleInArrays
+  type OneRestInTheMiddleTupleInArrays,
+  pseudoRestBeforeRequiredInbetweenArraysRevisited
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -446,6 +447,35 @@ expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoRes
 expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>[999999])
 expectType<[boolean, 'required']>(
   undefined as unknown as LastTupleElement<Parameters<typeof pseudoRestBeforeRequiredRevisited>>
+)
+
+/* Inbetween arrays: */
+
+expectType<number>(([] as unknown as Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>).length)
+
+pseudoRestBeforeRequiredInbetweenArraysRevisited([0], [true])
+pseudoRestBeforeRequiredInbetweenArraysRevisited([0], '', [true])
+pseudoRestBeforeRequiredInbetweenArraysRevisited([0], 'one', 'two', [true])
+expectError(pseudoRestBeforeRequiredInbetweenArraysRevisited([0], 'one', 'two', 'three'))
+expectType<[a: number[], ...b: string[], c: boolean[]]>(
+  [] as unknown as Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>
+)
+
+expectType<number[]>(undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>[0])
+expectType<string | boolean[]>(
+  undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>[1]
+)
+expectType<string | boolean[]>(
+  undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>[2]
+)
+expectType<string | boolean[]>(
+  undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>[3]
+)
+expectType<string | boolean[]>(
+  undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>[999999]
+)
+expectType<[boolean[], 'required']>(
+  undefined as unknown as LastTupleElement<Parameters<typeof pseudoRestBeforeRequiredInbetweenArraysRevisited>>
 )
 
 /* Multiple rest arguments, revisited
