@@ -37,21 +37,21 @@ import {
   type UndefinedNonFinal
 } from './PossibleSignatures.ts'
 
-type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
+// type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
 
-type ZoomIn0<T extends unknown[], N extends number = 0> = T extends []
-  ? 'empty'
-  : T extends [first: infer First, ...tail: infer Tail]
-    ? [i: N, type: 'required', first: First, tail1: Tail, tailLength: Tail['length'], tail: ZoomIn0<Tail, Succ<N>>] // required single
-    : T extends [first?: infer First, ...tail: infer Tail]
-      ? number extends Tail['length']
-        ? // MUDO this works, but maybe not when the last element is a required array?
-          [i: N, type: 'rest', first: Tail, tail1: [], tailLength: 0, tail: 'empty']
-        : [i: N, type: 'optional', first: First, tail1: Tail, tailLength: Tail['length'], tail: ZoomIn0<Tail, Succ<N>>]
-      : 'done'
-// : T extends [first?: unknown, ...tail: infer Tail] // optional single or rest
-//   ? ZoomIn<Tail, Succ<N>>
-//   : [T, 'rest', N]
+// type ZoomIn0<T extends unknown[], N extends number = 0> = T extends []
+//   ? 'empty'
+//   : T extends [first: infer First, ...tail: infer Tail]
+//     ? [i: N, type: 'required', first: First, tail1: Tail, tailLength: Tail['length'], tail: ZoomIn0<Tail, Succ<N>>] // required single
+//     : T extends [first?: infer First, ...tail: infer Tail]
+//       ? number extends Tail['length']
+//         ? // MUDO this works, but maybe not when the last element is a required array?
+//           [i: N, type: 'rest', first: Tail, tail1: [], tailLength: 0, tail: 'empty']
+//         : [i: N, type: 'optional', first: First, tail1: Tail, tailLength: Tail['length'], tail: ZoomIn0<Tail, Succ<N>>]
+//       : 'done'
+// // : T extends [first?: unknown, ...tail: infer Tail] // optional single or rest
+// //   ? ZoomIn<Tail, Succ<N>>
+// //   : [T, 'rest', N]
 
 type ZoomIn<T extends unknown[]> = T extends []
   ? 'no final rest element'
