@@ -35,7 +35,8 @@ import {
   type PseudoOptionalNonFinal,
   type TwoArguments,
   type UndefinedNonFinal,
-  type FinalRestArgumentAfterArray
+  type FinalRestArgumentAfterArray,
+  type OneRestInTheMiddleTupleInArrays
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -345,6 +346,30 @@ expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[999
 
 // we can extract the last (non-rest) element’s type, but not with an index:
 expectType<[boolean, 'required']>(undefined as unknown as LastTupleElement<OneRestInTheMiddleTuple>)
+
+/* Inbetween arrays: */
+
+/* But we _can_ have rest elements before required elements in a tuple: */
+function restBeforeRequiredInbewteenArraysInTuple(): OneRestInTheMiddleTupleInArrays {
+  let vbrit: OneRestInTheMiddleTupleInArrays = [[0], '', [true]]
+  vbrit = [[0], [true]]
+  vbrit = [[0], '', [true]]
+  vbrit = [[0], 'one', 'two', [true]]
+  return vbrit
+}
+restBeforeRequiredInbewteenArraysInTuple()
+
+expectType<number>(([] as unknown as ReturnType<typeof restBeforeRequiredInbewteenArraysInTuple>).length)
+expectType<number>(([] as unknown as OneRestInTheMiddleTupleInArrays).length)
+
+expectType<number[]>(undefined as unknown as OneRestInTheMiddleTupleInArrays[0])
+expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleTupleInArrays[1])
+expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleTupleInArrays[2])
+expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleTupleInArrays[3])
+expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleTupleInArrays[999999])
+
+// we can extract the last (non-rest) element’s type, but not with an index:
+expectType<[boolean[], 'required']>(undefined as unknown as LastTupleElement<OneRestInTheMiddleTupleInArrays>)
 
 /* Non-final optional argument, revisited
    -------------------------------------- */
