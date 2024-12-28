@@ -34,7 +34,8 @@ import {
   type OneRestInTheMiddleTuple,
   type PseudoOptionalNonFinal,
   type TwoArguments,
-  type UndefinedNonFinal
+  type UndefinedNonFinal,
+  type FinalRestArgumentAfterArray
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -98,9 +99,9 @@ type NoElementAtIndex1 = Parameters<OneArgument>[1]
 expectType<[number, 'required']>(undefined as unknown as LastTupleElement<Parameters<OneArgument>>)
 expectType<'no final rest element'>(undefined as unknown as ZoomIn<Parameters<OneArgument>>)
 
-expectType<[a: number, b: string]>([] as unknown as Parameters<TwoArguments>)
+expectType<[a: number[], b: string]>([] as unknown as Parameters<TwoArguments>)
 expectType<2>(([] as unknown as Parameters<TwoArguments>).length)
-expectType<number>(undefined as unknown as Parameters<TwoArguments>[0])
+expectType<number[]>(undefined as unknown as Parameters<TwoArguments>[0])
 expectType<string>(undefined as unknown as Parameters<TwoArguments>[1])
 // @ts-expect-error
 type NoElementAtIndex2 = Parameters<TwoArguments>[2]
@@ -114,7 +115,7 @@ expectType<2 | 3>(([] as unknown as Parameters<FinalOptionalArgument>).length)
 expectType<2 | 3>(([] as unknown as Parameters<typeof finalOptionalArgument>).length)
 
 /* Note that it is necessary for the type of the optional argument to include `undefined`: */
-expectType<[a: number, b: string, c?: boolean | undefined]>([] as unknown as Parameters<FinalOptionalArgument>)
+expectType<[a: number[], b: string, c?: boolean | undefined]>([] as unknown as Parameters<FinalOptionalArgument>)
 /* Without `| undefined`, both `expectType` and `expectNotType` fail
    * `expectType` fails  because `boolean | undefined` is not assignable to `boolean`, which is sensible: the last
       element of the tuple might be optional, but if it is there, it must be `boolean` and cannot be `undefined`.
@@ -122,14 +123,14 @@ expectType<[a: number, b: string, c?: boolean | undefined]>([] as unknown as Par
       recognize it is not given in the implementation). From the callers standpoint, we can also _call_ the function
       with `undefined` as the last actual argument when its optional. */
 // expectType<[a:number, b:string, c?:boolean]>([] as unknown as Parameters<FinalOptionalArgument>)
-finalOptionalArgument(0, '', undefined) // works fine.
+finalOptionalArgument([0], '', undefined) // works fine.
 /*    That is not ok for a tuple though (`undefined` is not assignable to type `boolean`): */
-expectError(function (): [a: number, b: string, c?: boolean] {
-  const tupleWithLastElementOptional: [a: number, b: string, c?: boolean] = [0, '', undefined]
+expectError(function (): [a: number[], b: string, c?: boolean] {
+  const tupleWithLastElementOptional: [a: number[], b: string, c?: boolean] = [[0], '', undefined]
   return tupleWithLastElementOptional
 })
-function allowUndefinedInOptionalTupleElement(): [a: number, b: string, c?: boolean | undefined] {
-  const tupleWithLastElementOptional: [a: number, b: string, c?: boolean | undefined] = [0, '', undefined]
+function allowUndefinedInOptionalTupleElement(): [a: number[], b: string, c?: boolean | undefined] {
+  const tupleWithLastElementOptional: [a: number[], b: string, c?: boolean | undefined] = [[0], '', undefined]
   return tupleWithLastElementOptional
 }
 allowUndefinedInOptionalTupleElement()
@@ -144,14 +145,16 @@ allowUndefinedInOptionalTupleElement()
 /* So, it is to be expected that the parameters of the signature (or the similar bare tuple) are not assignable to the
    tuple where the last element does not allow `undefined`, but that such a tuple is assignable to the parameters of
    such a signature (or the similar bare tuple). They clearly are not identical. Where is that coming from? */
-expectNotAssignable<[a: number, b: string, c?: boolean]>([] as unknown as Parameters<FinalOptionalArgument>)
-expectNotAssignable<[a: number, b: string, c?: boolean]>(
-  [] as unknown as [a: number, b: string, c?: boolean | undefined]
+expectNotAssignable<[a: number[], b: string, c?: boolean]>([] as unknown as Parameters<FinalOptionalArgument>)
+expectNotAssignable<[a: number[], b: string, c?: boolean]>(
+  [] as unknown as [a: number[], b: string, c?: boolean | undefined]
 )
-expectAssignable<Parameters<FinalOptionalArgument>>([] as unknown as [a: number, b: string, c?: boolean])
-expectAssignable<[a: number, b: string, c?: boolean | undefined]>([] as unknown as [a: number, b: string, c?: boolean])
+expectAssignable<Parameters<FinalOptionalArgument>>([] as unknown as [a: number[], b: string, c?: boolean])
+expectAssignable<[a: number[], b: string, c?: boolean | undefined]>(
+  [] as unknown as [a: number[], b: string, c?: boolean]
+)
 
-expectType<number>(undefined as unknown as Parameters<FinalOptionalArgument>[0])
+expectType<number[]>(undefined as unknown as Parameters<FinalOptionalArgument>[0])
 expectType<string>(undefined as unknown as Parameters<FinalOptionalArgument>[1])
 expectType<boolean | undefined>(undefined as unknown as Parameters<FinalOptionalArgument>[2])
 // @ts-expect-error
@@ -170,31 +173,31 @@ expectType<'no final rest element'>(undefined as unknown as ZoomIn<Parameters<Fi
 expectType<2 | 3 | 4 | 5>(([] as unknown as Parameters<MultipleFinalOptionalArguments>).length)
 expectType<2 | 3 | 4 | 5>(([] as unknown as Parameters<typeof multipleFinalOptionalArguments>).length)
 
-multipleFinalOptionalArguments(0, '')
-multipleFinalOptionalArguments(0, '', true)
-multipleFinalOptionalArguments(0, '', undefined)
-multipleFinalOptionalArguments(0, '', true, 1)
-multipleFinalOptionalArguments(0, '', undefined, 1)
-multipleFinalOptionalArguments(0, '', undefined, undefined)
-multipleFinalOptionalArguments(0, '', true, 1, 'last')
-multipleFinalOptionalArguments(0, '', undefined, 1, 'last')
-multipleFinalOptionalArguments(0, '', undefined, undefined, 'last')
-multipleFinalOptionalArguments(0, '', undefined, undefined, undefined)
-const viaATuple: Parameters<MultipleFinalOptionalArguments> = [0, '', true, 1, 'last']
+multipleFinalOptionalArguments(0, [''])
+multipleFinalOptionalArguments(0, [''], true)
+multipleFinalOptionalArguments(0, [''], undefined)
+multipleFinalOptionalArguments(0, [''], true, 1)
+multipleFinalOptionalArguments(0, [''], undefined, 1)
+multipleFinalOptionalArguments(0, [''], undefined, undefined)
+multipleFinalOptionalArguments(0, [''], true, 1, 'last')
+multipleFinalOptionalArguments(0, [''], undefined, 1, 'last')
+multipleFinalOptionalArguments(0, [''], undefined, undefined, 'last')
+multipleFinalOptionalArguments(0, [''], undefined, undefined, undefined)
+const viaATuple: Parameters<MultipleFinalOptionalArguments> = [0, [''], true, 1, 'last']
 multipleFinalOptionalArguments(...viaATuple)
-expectError(multipleFinalOptionalArguments(0, '', true, 1, 'last', 34))
-expectError(multipleFinalOptionalArguments(0, '', undefined, 1, 'last', 'past last'))
-expectError(multipleFinalOptionalArguments(0, '', undefined, undefined, 'last', true))
-expectError(multipleFinalOptionalArguments(0, '', undefined, undefined, undefined, 'one more'))
-expectError(multipleFinalOptionalArguments(0, '', undefined, undefined, undefined, undefined))
-const notEvenViaATuple: [...Parameters<MultipleFinalOptionalArguments>, unknown] = [0, '', true, 1, 'last', 34]
+expectError(multipleFinalOptionalArguments(0, [''], true, 1, 'last', 34))
+expectError(multipleFinalOptionalArguments(0, [''], undefined, 1, 'last', 'past last'))
+expectError(multipleFinalOptionalArguments(0, [''], undefined, undefined, 'last', true))
+expectError(multipleFinalOptionalArguments(0, [''], undefined, undefined, undefined, 'one more'))
+expectError(multipleFinalOptionalArguments(0, [''], undefined, undefined, undefined, undefined))
+const notEvenViaATuple: [...Parameters<MultipleFinalOptionalArguments>, unknown] = [0, [''], true, 1, 'last', 34]
 expectError(multipleFinalOptionalArguments(...notEvenViaATuple))
-expectType<[a: number, b: string, c?: boolean | undefined, d?: number | undefined, e?: string | undefined]>(
+expectType<[a: number, b: string[], c?: boolean | undefined, d?: number | undefined, e?: string | undefined]>(
   [] as unknown as Parameters<MultipleFinalOptionalArguments>
 )
 
 expectType<number>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[0])
-expectType<string>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[1])
+expectType<string[]>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[1])
 expectType<boolean | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[2])
 expectType<number | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[3])
 expectType<string | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArguments>[4])
@@ -222,18 +225,44 @@ expectType<[a: number, b: string, ...c: boolean[]]>([] as unknown as Parameters<
 //   return undefined
 // }
 
-expectType<number>(undefined as unknown as Parameters<FinalRestArgument>[0])
-expectType<string>(undefined as unknown as Parameters<FinalRestArgument>[1])
+expectType<number>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[0])
+expectType<string[]>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[1])
 // Note that `undefined` is not in the type!
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgument>[2])
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgument>[3])
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgument>[999999])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[2])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[3])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[999999])
 // Note that `undefined` is not in the union!
-expectType<number | string | boolean>(undefined as unknown as Parameters<FinalRestArgument>[number])
+expectType<number | string[] | boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[number])
 
-// we cannot get the type of the last argument:
-expectType<[boolean[], 'rest']>(undefined as unknown as ZoomIn<Parameters<FinalRestArgument>>)
-expectType<[boolean[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<FinalRestArgument>>)
+// we can get the type of the last argument:
+expectType<[boolean[], 'rest']>(undefined as unknown as ZoomIn<Parameters<FinalRestArgumentAfterArray>>)
+expectType<[boolean[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<FinalRestArgumentAfterArray>>)
+
+/* After an array: */
+
+expectType<number>(([] as unknown as Parameters<FinalRestArgumentAfterArray>).length)
+
+/* There is no weirdness here: */
+expectType<[a: number, b: string[], ...c: boolean[]]>([] as unknown as Parameters<FinalRestArgumentAfterArray>)
+
+/* An optional rest argument is rejected. It makes no sense. When there are no actual arguments for the
+   rest part, the array is just empty. Actually, Prettier even corrects this. */
+// function optionalRest(a: number, b?: string, ...c?: boolean[]): unknown {
+//   return undefined
+// }
+
+expectType<number>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[0])
+expectType<string[]>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[1])
+// Note that `undefined` is not in the type!
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[2])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[3])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[999999])
+// Note that `undefined` is not in the union!
+expectType<number | string[] | boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArray>[number])
+
+// we can get the type of the last argument:
+expectType<[boolean[], 'rest']>(undefined as unknown as ZoomIn<Parameters<FinalRestArgumentAfterArray>>)
+expectType<[boolean[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<FinalRestArgumentAfterArray>>)
 
 /* Multiple final rest arguments
    --------------------------------- */
