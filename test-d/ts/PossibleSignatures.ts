@@ -30,7 +30,7 @@ export function multipleFinalOptionalArguments(a: number, b: string, c?: boolean
   return undefined
 }
 
-export type FinalVariadicArgument = (a: number, b: string, ...c: boolean[]) => unknown
+export type FinalRestArgument = (a: number, b: string, ...c: boolean[]) => unknown
 
 export type OneRestInTheMiddleTuple = [a: number, ...b: string[], c: boolean]
 
@@ -44,15 +44,15 @@ export function undefinedNonFinal(a: number, b: string | undefined, c: boolean):
   return undefined
 }
 
-export type PseudoVariadicNonFinal = [a: number, ...b: string[], c: boolean]
-export function pseudoVariadicBeforeRequiredRevisited(...args: PseudoVariadicNonFinal): unknown {
+export type PseudoRestNonFinal = [a: number, ...b: string[], c: boolean]
+export function pseudoRestBeforeRequiredRevisited(...args: PseudoRestNonFinal): unknown {
   return undefined
 }
 
 type MultipleVariadicsBase1 = [number, string]
 type MultipleVariadicsBase2 = [boolean, string]
-export type MultipleVariadics0 = [...MultipleVariadicsBase1, ...MultipleVariadicsBase2]
-export type MultipleVariadicsVariadic1 = [number, ...string[]]
-export type MultipleVariadics1 = [...MultipleVariadicsVariadic1, ...MultipleVariadicsBase2]
-export type MultipleVariadicsVariadic2 = [...boolean[], string]
-export type MultipleVariadics2 = [...MultipleVariadicsBase1, ...MultipleVariadicsVariadic2]
+export type NoRestViaMultipleVariadics = [...MultipleVariadicsBase1, ...MultipleVariadicsBase2]
+export type OneRest1 = [number, ...string[]]
+export type OneRestViaMultipleVariadics1 = [...OneRest1, ...MultipleVariadicsBase2]
+export type OneRest2 = [...boolean[], string]
+export type OneRestViaMultipleVariadics2 = [...MultipleVariadicsBase1, ...OneRest2]

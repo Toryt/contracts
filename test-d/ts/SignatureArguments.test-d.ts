@@ -18,20 +18,20 @@ import { expectError, expectType, expectAssignable, expectNotAssignable, expectN
 import {
   finalOptionalArgument,
   type FinalOptionalArgument,
-  type FinalVariadicArgument,
+  type FinalRestArgument,
   multipleFinalOptionalArguments,
   type MultipleFinalOptionalArguments,
-  type MultipleVariadics0,
-  type MultipleVariadics1,
-  type MultipleVariadics2,
-  type MultipleVariadicsVariadic1,
-  type MultipleVariadicsVariadic2,
+  type NoRestViaMultipleVariadics,
+  type OneRestViaMultipleVariadics1,
+  type OneRestViaMultipleVariadics2,
+  type OneRest1,
+  type OneRest2,
   type NoArguments,
   type OneArgument,
   type OneRestInTheMiddleTuple,
   pseudoOptionalBeforeRequiredRevisited,
   type PseudoOptionalNonFinal,
-  pseudoVariadicBeforeRequiredRevisited,
+  pseudoRestBeforeRequiredRevisited,
   type TwoArguments,
   type UndefinedNonFinal,
   undefinedNonFinal
@@ -45,7 +45,7 @@ type LastTupleElement<T extends unknown[]> = T extends []
     ? Last
     : never
 
-/* The arguments of literal signatures of functions can be required, optional (`?`) , or variadic (`...`), in that
+/* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
 
 expectType<[]>([] as unknown as Parameters<NoArguments>)
@@ -162,39 +162,39 @@ expectNotType<boolean | number | string>(
   undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArguments>>
 )
 
-/* Variadic last argument
+/* Rest last argument
    ---------------------- */
 
-expectType<number>(([] as unknown as Parameters<FinalVariadicArgument>).length)
+expectType<number>(([] as unknown as Parameters<FinalRestArgument>).length)
 
 /* There is no weirdness here: */
-expectType<[a: number, b: string, ...c: boolean[]]>([] as unknown as Parameters<FinalVariadicArgument>)
+expectType<[a: number, b: string, ...c: boolean[]]>([] as unknown as Parameters<FinalRestArgument>)
 
-/* An optional variadic argument is rejected. It makes no sense. When there are no actual arguments for the
-   variadic part, the array is just empty. Actually, Prettier even corrects this. */
-// function optionalVariadic(a: number, b?: string, ...c?: boolean[]): unknown {
+/* An optional rest argument is rejected. It makes no sense. When there are no actual arguments for the
+   rest part, the array is just empty. Actually, Prettier even corrects this. */
+// function optionalRest(a: number, b?: string, ...c?: boolean[]): unknown {
 //   return undefined
 // }
 
-expectType<number>(undefined as unknown as Parameters<FinalVariadicArgument>[0])
-expectType<string>(undefined as unknown as Parameters<FinalVariadicArgument>[1])
+expectType<number>(undefined as unknown as Parameters<FinalRestArgument>[0])
+expectType<string>(undefined as unknown as Parameters<FinalRestArgument>[1])
 // Note that `undefined` is not in the type!
-expectType<boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[2])
-expectType<boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[3])
-expectType<boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[999999])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgument>[2])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgument>[3])
+expectType<boolean>(undefined as unknown as Parameters<FinalRestArgument>[999999])
 // Note that `undefined` is not in the union!
-expectType<number | string | boolean>(undefined as unknown as Parameters<FinalVariadicArgument>[number])
+expectType<number | string | boolean>(undefined as unknown as Parameters<FinalRestArgument>[number])
 
 // we cannot get the type of the last argument:
-expectType<unknown>(undefined as unknown as LastTupleElement<Parameters<FinalVariadicArgument>>)
+expectType<unknown>(undefined as unknown as LastTupleElement<Parameters<FinalRestArgument>>)
 expectNotType<boolean>(undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArguments>>)
 
-/* Multiple final variadic arguments
+/* Multiple final rest arguments
    --------------------------------- */
 
-/* Multiple final variadic arguments are not possible, and even do not pass `tsd` `expectError` */
+/* Multiple final rest arguments are not possible, and even do not pass `tsd` `expectError` */
 
-function multipleFinalVariadicArguments(
+function multipleFinalRestArguments(
   a: number,
   b: string,
   // @ts-expect-error
@@ -204,15 +204,15 @@ function multipleFinalVariadicArguments(
 ): unknown {
   return undefined
 }
-multipleFinalVariadicArguments(0, '')
+multipleFinalRestArguments(0, '')
 
 /* The same applies to tuples: */
 // @ts-expect-error
-type NoMultipleVariadicsInTuple = [a: number, b: string, ...c: boolean[], ...d: number[], ...e: string[]]
+type NoMultipleRestsInTuple = [a: number, b: string, ...c: boolean[], ...d: number[], ...e: string[]]
 
 /* Even when we introduce separator types: */
 // @ts-expect-error
-type SeparatedMultipleVariadicsInTuple = [
+type SeparatedMultipleRestsInTuple = [
   a: number,
   b: string,
   ...c: boolean[],
@@ -240,26 +240,26 @@ function optionalBeforeRequiredInTuple(): unknown {
 }
 optionalBeforeRequiredInTuple()
 
-/* Non-final variadic argument
+/* Non-final rest argument
    --------------------------- */
 
-/* There can be no required arguments after a variadic argument in a signature either. Even `expectError` of `tsd`
+/* There can be no required arguments after a rest argument in a signature either. Even `expectError` of `tsd`
    rejects this. We need `@ts-expect-error` to show this. */
 // @ts-expect-error
-function variadicBeforeRequired(a: number, ...b: string[], c: boolean): unknown {
+function restBeforeRequired(a: number, ...b: string[], c: boolean): unknown {
   return undefined
 }
-/* But we _can_ have variadic elements before required elements in a tuple: */
-function variadicBeforeRequiredInTuple(): OneRestInTheMiddleTuple {
+/* But we _can_ have rest elements before required elements in a tuple: */
+function restBeforeRequiredInTuple(): OneRestInTheMiddleTuple {
   let vbrit: OneRestInTheMiddleTuple = [0, '', true]
   vbrit = [0, true]
   vbrit = [0, '', true]
   vbrit = [0, 'one', 'two', true]
   return vbrit
 }
-variadicBeforeRequiredInTuple()
+restBeforeRequiredInTuple()
 
-expectType<number>(([] as unknown as ReturnType<typeof variadicBeforeRequiredInTuple>).length)
+expectType<number>(([] as unknown as ReturnType<typeof restBeforeRequiredInTuple>).length)
 expectType<number>(([] as unknown as OneRestInTheMiddleTuple).length)
 
 expectType<number>(undefined as unknown as OneRestInTheMiddleTuple[0])
@@ -322,50 +322,50 @@ function undefinedNonFinalInTuple(): unknown {
 }
 undefinedNonFinalInTuple()
 
-/* Non-final variadic argument, revisited
+/* Non-final rest argument, revisited
    -------------------------------------- */
 
-/* With tuple shenanigans, we can create a signature with a variadic in the middle: */
+/* With tuple shenanigans, we can create a signature with a rest argument in the middle: */
 
-expectType<number>(([] as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>).length)
+expectType<number>(([] as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>).length)
 
-pseudoVariadicBeforeRequiredRevisited(0, true)
-pseudoVariadicBeforeRequiredRevisited(0, '', true)
-pseudoVariadicBeforeRequiredRevisited(0, 'one', 'two', true)
-expectError(pseudoVariadicBeforeRequiredRevisited(0, 'one', 'two', 'three'))
+pseudoRestBeforeRequiredRevisited(0, true)
+pseudoRestBeforeRequiredRevisited(0, '', true)
+pseudoRestBeforeRequiredRevisited(0, 'one', 'two', true)
+expectError(pseudoRestBeforeRequiredRevisited(0, 'one', 'two', 'three'))
 expectType<[a: number, ...b: string[], c: boolean]>(
-  [] as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>
+  [] as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>
 )
 
-expectType<number>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[0])
-expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[1])
-expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[2])
-expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[3])
-expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoVariadicBeforeRequiredRevisited>[999999])
-expectType<boolean>(undefined as unknown as LastTupleElement<Parameters<typeof pseudoVariadicBeforeRequiredRevisited>>)
+expectType<number>(undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>[0])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>[1])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>[2])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>[3])
+expectType<string | boolean>(undefined as unknown as Parameters<typeof pseudoRestBeforeRequiredRevisited>[999999])
+expectType<boolean>(undefined as unknown as LastTupleElement<Parameters<typeof pseudoRestBeforeRequiredRevisited>>)
 
-/* Multiple variadic arguments, revisited
+/* Multiple rest arguments, revisited
    -------------------------------------- */
 
-/* There seems to be no way to get a signature, or a tuple type, with multiple variadic arguments or elements. */
+/* There seems to be no way to get a signature, or a tuple type, with multiple rest arguments or elements. */
 
 /* We can combine multiple variadics in a tuple type: */
 
-expectType<4>(([] as unknown as MultipleVariadics0).length)
-expectType<[number, string, boolean, string]>([] as unknown as MultipleVariadics0)
+expectType<4>(([] as unknown as NoRestViaMultipleVariadics).length)
+expectType<[number, string, boolean, string]>([] as unknown as NoRestViaMultipleVariadics)
 
-expectType<number>(([] as unknown as MultipleVariadics1).length)
-expectType<[number, ...string[], boolean, string]>([] as unknown as MultipleVariadics1)
+expectType<number>(([] as unknown as OneRestViaMultipleVariadics1).length)
+expectType<[number, ...string[], boolean, string]>([] as unknown as OneRestViaMultipleVariadics1)
 
-expectType<number>(([] as unknown as MultipleVariadics2).length)
-expectType<[number, string, ...boolean[], string]>([] as unknown as MultipleVariadics2)
+expectType<number>(([] as unknown as OneRestViaMultipleVariadics2).length)
+expectType<[number, string, ...boolean[], string]>([] as unknown as OneRestViaMultipleVariadics2)
 
-/* But not if the different variadic elements together contain more than 1 rest element. Note that the error message is
+/* But not if the different rest elements together contain more than 1 rest element. Note that the error message is
    confusing (“A rest element cannot follow another rest element.”). */
 // @ts-expect-error
-type MultipleVariadics1VariadicB = [...MultipleVariadicsVariadic1, ...MultipleVariadicsVariadic2]
+type MultipleRestsViaMultipleVariadics = [...OneRest1, ...OneRest2]
 
 /* TODO:
-   - optional before variadic is ok
-   - optional after variadic is nok
+   - optional before rest is ok
+   - optional after rest is nok
    - but we can get around that with shenanigans */
