@@ -14,43 +14,55 @@
   limitations under the License.
  */
 
-export type NoArguments = () => unknown
+export type NoArgumentsSignature = () => unknown
 
-export type OneArgument = (a: number) => unknown
+export type OneArgumentSignature = (a: number) => unknown
 
-export type TwoArguments = (a: number[], b: string) => unknown
+export type TwoArgumentsSignature = (a: number[], b: string) => unknown
 
-export type FinalOptionalArgument = (a: number[], b: string, c?: boolean) => unknown
+export type FinalOptionalArgumentSignature = (a: number[], b: string, c?: boolean) => unknown
 export function finalOptionalArgument(a: number[], b: string, c?: boolean): unknown {
   return undefined
 }
 
-export type MultipleFinalOptionalArguments = (a: number, b: string[], c?: boolean, d?: number, e?: string) => unknown
+export type MultipleFinalOptionalArgumentsSignature = (
+  a: number,
+  b: string[],
+  c?: boolean,
+  d?: number,
+  e?: string
+) => unknown
 export function multipleFinalOptionalArguments(a: number, b: string[], c?: boolean, d?: number, e?: string): unknown {
   return undefined
 }
 
-export type FinalRestArgument = (a: number, b: string, ...c: boolean[]) => unknown
-export type FinalRestArgumentAfterArray = (a: number, b: string[], ...c: boolean[]) => unknown
+export type FinalRestArgumentSignature = (a: number, b: string, ...c: boolean[]) => unknown
+export type FinalRestArgumentAfterArraySignature = (a: number, b: string[], ...c: boolean[]) => unknown
 
 export type OneRestInTheMiddleTuple = [a: number, ...b: string[], c: boolean]
-export type OneRestInTheMiddleTupleInArrays = [a: number[], ...b: string[], c: boolean[]]
+export type OneRestInTheMiddleInArraysTuple = [a: number[], ...b: string[], c: boolean[]]
 
 type PseudoOptionalString = [b?: string]
-export type PseudoOptionalNonFinal = [a: number, ...b: PseudoOptionalString, c: boolean]
-export function pseudoOptionalBeforeRequiredRevisited(...args: PseudoOptionalNonFinal): unknown {
+export type PseudoOptionalNonFinalTuple = [a: number, ...b: PseudoOptionalString, c: boolean]
+export type PseudoOptionalNonFinalSignature = (...args: PseudoOptionalNonFinalTuple) => unknown
+export function pseudoOptionalNonFinal(...args: PseudoOptionalNonFinalTuple): unknown {
   return undefined
 }
-export type UndefinedNonFinal = [a: number, b: string | undefined, c: boolean]
+
+export type UndefinedNonFinalTuple = [a: number, b: string | undefined, c: boolean]
+export type UndefinedNonFinalSignature = (a: number, b: string | undefined, c: boolean) => unknown
 export function undefinedNonFinal(a: number, b: string | undefined, c: boolean): unknown {
   return undefined
 }
 
-export type PseudoRestNonFinal = [a: number, ...b: string[], c: boolean]
-export function pseudoRestBeforeRequiredRevisited(...args: PseudoRestNonFinal): unknown {
+export type PseudoRestNonFinalTuple = [a: number, ...b: string[], c: boolean]
+export type PseudoRestNonFinalSignature = (...args: PseudoRestNonFinalTuple) => unknown
+export function pseudoRestNonFinal(...args: PseudoRestNonFinalTuple): unknown {
   return undefined
 }
-export function pseudoRestBeforeRequiredInbetweenArraysRevisited(...args: OneRestInTheMiddleTupleInArrays): unknown {
+
+export type OneRestInTheMiddleInArraysSignature = (...args: OneRestInTheMiddleInArraysTuple) => unknown
+export function oneRestInTheMiddleInArrays(...args: OneRestInTheMiddleInArraysTuple): unknown {
   return undefined
 }
 
