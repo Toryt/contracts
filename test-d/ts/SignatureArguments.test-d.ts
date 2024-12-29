@@ -67,13 +67,15 @@ import {
 // //   : [T, 'rest', N]
 
 type FinalRestElement<T extends unknown[]> = number extends T['length']
-  ? T extends [first: infer First, ...tail: infer Tail]
-    ? FinalRestElement<Tail> // required single first element, continue
-    : T extends [first?: infer First, ...tail: infer Tail]
-      ? /*  optional or rest first element */ number extends Tail['length']
-        ? [Tail, 'rest'] //
-        : FinalRestElement<Tail>
-      : 'done'
+  ? T extends [first: infer First, ...tail: infer Tail1]
+    ? FinalRestElement<Tail1> // required single first element, continue
+    : T extends [first?: infer First, ...tail: infer Tail2]
+      ? /*  optional or rest first element */ number extends Tail2['length']
+        ? /* MUDO: To be frank: no idea why this works. When the rest element is the last element, this should always be
+                   true. But, when the first element is optional, this is false. Why? */
+          [Tail2, 'rest'] //
+        : FinalRestElement<Tail2>
+      : [T, 'rest']
   : 'error: tuple does not contain a rest element'
 
 type LastTupleElement<T extends unknown[]> = T extends []
@@ -619,13 +621,9 @@ expectType<string | boolean | undefined>(undefined as unknown as Parameters<Opti
 expectType<[a: number[], ...b: (string | boolean | undefined)[]]>(
   [] as unknown as Parameters<OptionalAfterRestSignature>
 )
-// MUDO LastTupleElement fails
-expectType<'done'>(undefined as unknown as LastTupleElement<Parameters<OptionalAfterRestSignature>>)
-expectNotType<[(string | boolean | undefined)[], 'rest']>(
+expectType<[(string | boolean | undefined)[], 'rest']>(
   undefined as unknown as LastTupleElement<Parameters<OptionalAfterRestSignature>>
 )
-// MUDO FinalRestElement fails
-expectType<'done'>(undefined as unknown as FinalRestElement<Parameters<OptionalAfterRestSignature>>)
-expectNotType<[(string | boolean | undefined)[], 'rest']>(
+expectType<[(string | boolean | undefined)[], 'rest']>(
   undefined as unknown as FinalRestElement<Parameters<OptionalAfterRestSignature>>
 )
