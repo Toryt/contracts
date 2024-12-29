@@ -684,7 +684,7 @@ doubleOptionalAfterRest([0], 'one', 'two')
 doubleOptionalAfterRest([0], 'one')
 doubleOptionalAfterRest([0])
 // but! also!
-doubleOptionalAfterRest([0], false, 'one', true, 'two', true)
+doubleOptionalAfterRest([0], false, 1, 'one', true, 'two', true)
 
 expectType<number[]>(undefined as unknown as Parameters<DoubleOptionalAfterRestSignature>[0])
 expectType<string | boolean | number | undefined>(
@@ -710,3 +710,6 @@ expectType<[(string | boolean | number | undefined)[], 'rest']>(
 expectType<[(string | boolean | number | undefined)[], 'rest']>(
   undefined as unknown as FinalRestElement<Parameters<DoubleOptionalAfterRestSignature>>
 )
+
+/* Although optionals after a rest are possible, they fully behave as a disjunctive rest argument. There is no
+   difference, and we can never encounter them when matching types. */
