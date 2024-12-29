@@ -83,3 +83,11 @@ export type UndefinedBeforeRestSignature = (a: number[], b: boolean | undefined,
 export function undefinedBeforeRest(a: number[], b: boolean | undefined, ...c: string[]): unknown {
   return undefined
 }
+
+type OptionalAfterRestBase1Tuple = [a: number[], ...b: string[]]
+type OptionalAfterRestBase2Tuple = [c?: boolean]
+type OptionalAfterRestTuple = [...OptionalAfterRestBase1Tuple, ...OptionalAfterRestBase2Tuple]
+export type OptionalAfterRestSignature = (...args: OptionalAfterRestTuple) => unknown
+export function optionalAfterRest(...args: OptionalAfterRestTuple): unknown {
+  return undefined
+}

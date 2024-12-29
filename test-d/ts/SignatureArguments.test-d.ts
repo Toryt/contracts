@@ -45,7 +45,9 @@ import {
   type OptionalBeforeRestSignature,
   optionalBeforeRest,
   type UndefinedBeforeRestSignature,
-  undefinedBeforeRest
+  undefinedBeforeRest,
+  type OptionalAfterRestSignature,
+  optionalAfterRest
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -568,6 +570,51 @@ expectType<[a: number[], b: boolean | undefined, ...c: string[]]>(
 expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<UndefinedBeforeRestSignature>>)
 expectType<[string[], 'rest']>(undefined as unknown as ZoomIn<Parameters<UndefinedBeforeRestSignature>>)
 
-/* TODO:
-   - optional after rest is nok
-   - but we can get around that with shenanigans */
+/* Optional after rest
+   -------------------- */
+
+/* An optional after a rest argument is impossible directly: */
+
+// @ts-expect-error
+type OptionalAfterRestSignatureFail = (a: number[], ...b: string[], c?: boolean) => unknown
+// @ts-expect-error
+function optionalAfterRestFail(a: number[], ...b: string[], c?: boolean): unknown {
+  return undefined
+}
+
+/* Optional after rest, revisited
+   ------------------------------ */
+
+/* Yet it is possible through complicated variadic shenanigans, but you do not get what you would expect: */
+
+expectType<number>(([] as unknown as Parameters<OptionalAfterRestSignature>).length)
+
+optionalAfterRest([0], 'one', 'two', true)
+optionalAfterRest([0], 'one', true)
+optionalAfterRest([0], true)
+optionalAfterRest([0], 'one', 'two')
+optionalAfterRest([0], 'one')
+optionalAfterRest([0])
+// but! also!
+optionalAfterRest([0], false, 'one', true, 'two', true)
+
+expectType<number[]>(undefined as unknown as Parameters<OptionalAfterRestSignature>[0])
+expectType<string | boolean | undefined>(undefined as unknown as Parameters<OptionalAfterRestSignature>[1])
+expectType<string | boolean | undefined>(undefined as unknown as Parameters<OptionalAfterRestSignature>[2])
+expectType<string | boolean | undefined>(undefined as unknown as Parameters<OptionalAfterRestSignature>[3])
+expectType<string | boolean | undefined>(undefined as unknown as Parameters<OptionalAfterRestSignature>[999999])
+
+// Note that the 2 last arguments are collapsed:
+expectType<[a: number[], ...b: (string | boolean | undefined)[]]>(
+  [] as unknown as Parameters<OptionalAfterRestSignature>
+)
+// MUDO LastTupleElement fails
+expectType<'done'>(undefined as unknown as LastTupleElement<Parameters<OptionalAfterRestSignature>>)
+expectNotType<[(string | boolean | undefined)[], 'rest']>(
+  undefined as unknown as LastTupleElement<Parameters<OptionalAfterRestSignature>>
+)
+// MUDO ZoomIn fails
+expectType<'done'>(undefined as unknown as ZoomIn<Parameters<OptionalAfterRestSignature>>)
+expectNotType<[(string | boolean | undefined)[], 'rest']>(
+  undefined as unknown as ZoomIn<Parameters<OptionalAfterRestSignature>>
+)
