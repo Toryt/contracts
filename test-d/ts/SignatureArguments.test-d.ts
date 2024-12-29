@@ -72,13 +72,9 @@ type ZoomIn<T extends unknown[]> = T extends []
     ? ZoomIn<Tail> // required single
     : T extends [first?: infer First, ...tail: infer Tail]
       ? number extends Tail['length']
-        ? // MUDO this works, but maybe not when the last element is a required array?
-          [Tail, 'rest']
+        ? [Tail, 'rest']
         : ZoomIn<Tail>
       : 'done'
-// : T extends [first?: unknown, ...tail: infer Tail] // optional single or rest
-//   ? ZoomIn<Tail, Succ<N>>
-//   : [T, 'rest', N]
 
 type LastTupleElement<T extends unknown[]> = T extends []
   ? 'empty tuple'
@@ -87,10 +83,7 @@ type LastTupleElement<T extends unknown[]> = T extends []
     : T extends [...start: infer _, last?: infer Last2] // optional single or rest
       ? number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
         ? ZoomIn<T>
-        : // ? T extends [...start: infer _, ...last: Last2[]] // last is a rest element
-          //   ? [Last2[], 'rest'] // rest
-          //   : [Last2, 'optional2'] // optional single
-          [Last2, 'optional'] // optional single
+        : [Last2, 'optional'] // optional single
       : 'not empty, not required, not optional or rest'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
