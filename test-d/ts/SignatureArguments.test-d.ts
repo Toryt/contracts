@@ -63,28 +63,30 @@ import {
 //         : [i: N, type: 'optional', first: First, tail1: Tail, tailLength: Tail['length'], tail: ZoomIn0<Tail, Succ<N>>]
 //       : 'done'
 // // : T extends [first?: unknown, ...tail: infer Tail] // optional single or rest
-// //   ? ZoomIn<Tail, Succ<N>>
+// //   ? FinalRestElement<Tail, Succ<N>>
 // //   : [T, 'rest', N]
 
-type ZoomIn<T extends unknown[]> = T extends []
+type FinalRestElement<T extends unknown[]> = T extends []
   ? 'no final rest element'
   : T extends [first: infer First, ...tail: infer Tail]
-    ? ZoomIn<Tail> // required single
+    ? FinalRestElement<Tail> // required single
     : T extends [first?: infer First, ...tail: infer Tail]
       ? number extends Tail['length']
         ? [Tail, 'rest']
-        : ZoomIn<Tail>
+        : FinalRestElement<Tail>
       : 'done'
 
 type LastTupleElement<T extends unknown[]> = T extends []
   ? 'empty tuple'
   : T extends [...start: unknown[], last: infer Last1] // required single
     ? [Last1, 'required']
-    : T extends [...start: infer _, last?: infer Last2] // optional single or rest
-      ? number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
-        ? ZoomIn<T>
-        : [Last2, 'optional'] // optional single
-      : 'not empty, not required, not optional or rest'
+    : /* The last element is not required. It is either optional or rest.
+         Since rest elements can not be followed by optional or other rest elements, if there is a rest element in `T`,
+         it is the last one. */ number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
+      ? FinalRestElement<T>
+      : T extends [...start: infer _, last?: infer Last2]
+        ? [Last2, 'optional'] // optional single
+        : 'not empty, not required, not optional or rest'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
@@ -94,7 +96,7 @@ expectType<0>(([] as unknown as Parameters<NoArgumentsSignature>).length)
 // @ts-expect-error
 type NoElementAtIndex0 = NoArgumentsSignature<OneArgumentSignature>[0]
 expectType<'empty tuple'>(undefined as unknown as LastTupleElement<Parameters<NoArgumentsSignature>>)
-expectType<'no final rest element'>(undefined as unknown as ZoomIn<Parameters<NoArgumentsSignature>>)
+expectType<'no final rest element'>(undefined as unknown as FinalRestElement<Parameters<NoArgumentsSignature>>)
 
 expectType<[a: number]>([] as unknown as Parameters<OneArgumentSignature>)
 expectType<1>(([] as unknown as Parameters<OneArgumentSignature>).length)
@@ -102,7 +104,7 @@ expectType<number>(undefined as unknown as Parameters<OneArgumentSignature>[0])
 // @ts-expect-error
 type NoElementAtIndex1 = Parameters<OneArgumentSignature>[1]
 expectType<[number, 'required']>(undefined as unknown as LastTupleElement<Parameters<OneArgumentSignature>>)
-expectType<'no final rest element'>(undefined as unknown as ZoomIn<Parameters<OneArgumentSignature>>)
+expectType<'no final rest element'>(undefined as unknown as FinalRestElement<Parameters<OneArgumentSignature>>)
 
 expectType<[a: number[], b: string]>([] as unknown as Parameters<TwoArgumentsSignature>)
 expectType<2>(([] as unknown as Parameters<TwoArgumentsSignature>).length)
@@ -111,7 +113,7 @@ expectType<string>(undefined as unknown as Parameters<TwoArgumentsSignature>[1])
 // @ts-expect-error
 type NoElementAtIndex2 = Parameters<TwoArgumentsSignature>[2]
 expectType<[string, 'required']>(undefined as unknown as LastTupleElement<Parameters<TwoArgumentsSignature>>)
-expectType<'no final rest element'>(undefined as unknown as ZoomIn<Parameters<TwoArgumentsSignature>>)
+expectType<'no final rest element'>(undefined as unknown as FinalRestElement<Parameters<TwoArgumentsSignature>>)
 
 /* Optional last argument
    ---------------------- */
@@ -172,7 +174,9 @@ expectType<[boolean | undefined, 'optional']>(
 expectNotType<[string | boolean, 'optional']>(
   undefined as unknown as LastTupleElement<Parameters<FinalOptionalArgumentSignature>>
 )
-expectType<'no final rest element'>(undefined as unknown as ZoomIn<Parameters<FinalOptionalArgumentSignature>>)
+expectType<'no final rest element'>(
+  undefined as unknown as FinalRestElement<Parameters<FinalOptionalArgumentSignature>>
+)
 
 /* Multiple final optional arguments
    --------------------------------- */
@@ -223,7 +227,9 @@ expectType<[string | undefined, 'optional']>(
 expectNotType<[boolean | number | string, 'optional']>(
   undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArgumentsSignature>>
 )
-expectType<'no final rest element'>(undefined as unknown as ZoomIn<Parameters<MultipleFinalOptionalArgumentsSignature>>)
+expectType<'no final rest element'>(
+  undefined as unknown as FinalRestElement<Parameters<MultipleFinalOptionalArgumentsSignature>>
+)
 
 /* Rest last argument
    ---------------------- */
@@ -251,7 +257,9 @@ expectType<number | string[] | boolean>(
 )
 
 // we can get the type of the last argument:
-expectType<[boolean[], 'rest']>(undefined as unknown as ZoomIn<Parameters<FinalRestArgumentAfterArraySignature>>)
+expectType<[boolean[], 'rest']>(
+  undefined as unknown as FinalRestElement<Parameters<FinalRestArgumentAfterArraySignature>>
+)
 expectType<[boolean[], 'rest']>(
   undefined as unknown as LastTupleElement<Parameters<FinalRestArgumentAfterArraySignature>>
 )
@@ -281,7 +289,9 @@ expectType<number | string[] | boolean>(
 )
 
 // we can get the type of the last argument:
-expectType<[boolean[], 'rest']>(undefined as unknown as ZoomIn<Parameters<FinalRestArgumentAfterArraySignature>>)
+expectType<[boolean[], 'rest']>(
+  undefined as unknown as FinalRestElement<Parameters<FinalRestArgumentAfterArraySignature>>
+)
 expectType<[boolean[], 'rest']>(
   undefined as unknown as LastTupleElement<Parameters<FinalRestArgumentAfterArraySignature>>
 )
@@ -534,7 +544,7 @@ expectType<[a: number[], b?: boolean | undefined, ...c: string[]]>(
   [] as unknown as Parameters<OptionalBeforeRestSignature>
 )
 expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<OptionalBeforeRestSignature>>)
-expectType<[string[], 'rest']>(undefined as unknown as ZoomIn<Parameters<OptionalBeforeRestSignature>>)
+expectType<[string[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<OptionalBeforeRestSignature>>)
 
 /* By marking the middle element as possibly `undefined` we get close to the same result, but not entirely: */
 
@@ -561,7 +571,7 @@ expectType<[a: number[], b: boolean | undefined, ...c: string[]]>(
   [] as unknown as Parameters<UndefinedBeforeRestSignature>
 )
 expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<UndefinedBeforeRestSignature>>)
-expectType<[string[], 'rest']>(undefined as unknown as ZoomIn<Parameters<UndefinedBeforeRestSignature>>)
+expectType<[string[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<UndefinedBeforeRestSignature>>)
 
 /* Optional after rest
    -------------------- */
@@ -606,8 +616,8 @@ expectType<'done'>(undefined as unknown as LastTupleElement<Parameters<OptionalA
 expectNotType<[(string | boolean | undefined)[], 'rest']>(
   undefined as unknown as LastTupleElement<Parameters<OptionalAfterRestSignature>>
 )
-// MUDO ZoomIn fails
-expectType<'done'>(undefined as unknown as ZoomIn<Parameters<OptionalAfterRestSignature>>)
+// MUDO FinalRestElement fails
+expectType<'done'>(undefined as unknown as FinalRestElement<Parameters<OptionalAfterRestSignature>>)
 expectNotType<[(string | boolean | undefined)[], 'rest']>(
-  undefined as unknown as ZoomIn<Parameters<OptionalAfterRestSignature>>
+  undefined as unknown as FinalRestElement<Parameters<OptionalAfterRestSignature>>
 )
