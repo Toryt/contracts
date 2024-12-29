@@ -47,7 +47,9 @@ import {
   type OneRestInTheMiddleInArraysSignature,
   type OptionalBeforeRestSignature,
   type UndefinedBeforeRestSignature,
-  type OptionalAfterRestSignature
+  type OptionalAfterRestSignature,
+  type DoubleOptionalBeforeRestSignature,
+  doubleOptionalBeforeRest
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -578,6 +580,49 @@ expectType<[a: number[], b: boolean | undefined, ...c: string[]]>(
 )
 expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<UndefinedBeforeRestSignature>>)
 expectType<[string[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<UndefinedBeforeRestSignature>>)
+
+/* Multiple optionals also work. */
+
+expectType<number>(([] as unknown as Parameters<DoubleOptionalBeforeRestSignature>).length)
+
+doubleOptionalBeforeRest([0], ['array'], true, 'one', 'two')
+doubleOptionalBeforeRest([0], ['array'], true, 'one')
+doubleOptionalBeforeRest([0], ['array'], true)
+doubleOptionalBeforeRest([0], ['array'])
+doubleOptionalBeforeRest([0], ['array'], undefined, 'one', 'two')
+doubleOptionalBeforeRest([0], ['array'], undefined, 'one')
+doubleOptionalBeforeRest([0], ['array'], undefined)
+doubleOptionalBeforeRest([0], undefined, true, 'one', 'two')
+doubleOptionalBeforeRest([0], undefined, true, 'one')
+doubleOptionalBeforeRest([0], undefined, true)
+doubleOptionalBeforeRest([0], undefined)
+doubleOptionalBeforeRest([0], undefined, undefined, 'one', 'two')
+doubleOptionalBeforeRest([0], undefined, undefined, 'one')
+doubleOptionalBeforeRest([0], undefined, undefined)
+expectError(doubleOptionalBeforeRest([0], 'one')) // not truly optional!
+doubleOptionalBeforeRest([0])
+
+expectType<number[]>(undefined as unknown as Parameters<DoubleOptionalBeforeRestSignature>[0])
+// Note this!
+expectType<string[] | undefined>(undefined as unknown as Parameters<DoubleOptionalBeforeRestSignature>[1])
+expectNotType<string[] | boolean | undefined | string>(
+  undefined as unknown as Parameters<DoubleOptionalBeforeRestSignature>[1]
+)
+expectType<boolean | undefined>(undefined as unknown as Parameters<DoubleOptionalBeforeRestSignature>[2])
+expectNotType<boolean | undefined | string>(undefined as unknown as Parameters<DoubleOptionalBeforeRestSignature>[1])
+expectType<string>(undefined as unknown as Parameters<DoubleOptionalBeforeRestSignature>[3])
+expectType<string>(undefined as unknown as Parameters<DoubleOptionalBeforeRestSignature>[999999])
+
+expectType<[a: number[], b?: string[] | undefined, c?: boolean | undefined, ...d: string[]]>(
+  [] as unknown as Parameters<DoubleOptionalBeforeRestSignature>
+)
+// MUDO ERRORs in FinalRestElement
+expectNotType<[string[], 'rest']>(
+  undefined as unknown as LastTupleElement<Parameters<DoubleOptionalBeforeRestSignature>>
+)
+expectNotType<[string[], 'rest']>(
+  undefined as unknown as FinalRestElement<Parameters<DoubleOptionalBeforeRestSignature>>
+)
 
 /* Optional after rest
    -------------------- */
