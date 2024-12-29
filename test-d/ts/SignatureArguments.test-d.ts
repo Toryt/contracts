@@ -51,7 +51,9 @@ import {
   type DoubleOptionalBeforeRestSignature,
   doubleOptionalBeforeRest,
   type DoubleOptionalAfterRestSignature,
-  doubleOptionalAfterRest
+  doubleOptionalAfterRest,
+  type SingleOptionalArgumentSignature,
+  singleOptionalArgument
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -187,6 +189,27 @@ expectNotType<[string | boolean, 'optional']>(
 )
 expectType<'error: tuple does not contain a rest element'>(
   undefined as unknown as FinalRestElement<Parameters<FinalOptionalArgumentSignature>>
+)
+
+/* Single optional argument
+   ------------------------ */
+
+expectType<0 | 1>(([] as unknown as Parameters<SingleOptionalArgumentSignature>).length)
+expectType<0 | 1>(([] as unknown as Parameters<typeof singleOptionalArgument>).length)
+
+singleOptionalArgument(true)
+singleOptionalArgument()
+expectError(singleOptionalArgument(true, 0))
+
+expectType<[a?: boolean | undefined]>([] as unknown as Parameters<SingleOptionalArgumentSignature>)
+
+expectType<boolean | undefined>(undefined as unknown as Parameters<SingleOptionalArgumentSignature>[0])
+
+expectType<'error: tuple does not contain a rest element'>(
+  undefined as unknown as FinalRestElement<Parameters<SingleOptionalArgumentSignature>>
+)
+expectType<[boolean | undefined, 'optional']>(
+  undefined as unknown as LastTupleElement<Parameters<SingleOptionalArgumentSignature>>
 )
 
 /* Multiple final optional arguments

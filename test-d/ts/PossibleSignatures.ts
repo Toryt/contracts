@@ -25,6 +25,11 @@ export function finalOptionalArgument(a: number[], b: string, c?: boolean): unkn
   return undefined
 }
 
+export type SingleOptionalArgumentSignature = (a?: boolean) => unknown
+export function singleOptionalArgument(a?: boolean): unknown {
+  return undefined
+}
+
 export type MultipleFinalOptionalArgumentsSignature = (
   a: number,
   b: string[],
