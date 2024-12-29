@@ -69,10 +69,11 @@ import {
 // //   : [T, 'rest', N]
 
 type FinalRestElement<T extends unknown[]> = number extends T['length']
-  ? T extends [first: infer First, ...tail: infer Tail1]
+  ? T extends [first: unknown, ...tail: infer Tail1]
     ? FinalRestElement<Tail1> // required single first element, continue
-    : T extends [first?: infer First, ...tail: infer Tail2]
-      ? [Tail2, 'rest']
+    : T extends [first?: unknown, ...tail: infer Tail2]
+      ? // MUDO error: first is optional, but there is no continuation here, for when Tail contains still other optional OR REQUIRED elements
+        [Tail2, 'rest']
       : [T, 'rest']
   : 'error: tuple does not contain a rest element'
 
