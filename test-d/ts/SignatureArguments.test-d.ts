@@ -70,11 +70,7 @@ type FinalRestElement<T extends unknown[]> = number extends T['length']
   ? T extends [first: infer First, ...tail: infer Tail1]
     ? FinalRestElement<Tail1> // required single first element, continue
     : T extends [first?: infer First, ...tail: infer Tail2]
-      ? /*  optional or rest first element */ number extends Tail2['length']
-        ? /* MUDO: To be frank: no idea why this works. When the rest element is the last element, this should always be
-                   true. But, when the first element is optional, this is false. Why? */
-          [Tail2, 'rest'] //
-        : FinalRestElement<Tail2>
+      ? [Tail2, 'rest']
       : [T, 'rest']
   : 'error: tuple does not contain a rest element'
 
