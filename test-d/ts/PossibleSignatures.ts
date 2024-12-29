@@ -73,3 +73,13 @@ export type OneRest1 = [number, ...string[]]
 export type OneRestViaMultipleVariadics1 = [...OneRest1, ...MultipleVariadicsBase2]
 export type OneRest2 = [...boolean[], string]
 export type OneRestViaMultipleVariadics2 = [...MultipleVariadicsBase1, ...OneRest2]
+
+export type OptionalBeforeRestSignature = (a: number[], b?: boolean, ...c: string[]) => unknown
+export function optionalBeforeRest(a: number[], b?: boolean, ...c: string[]): unknown {
+  return undefined
+}
+
+export type UndefinedBeforeRestSignature = (a: number[], b: boolean | undefined, ...c: string[]) => unknown
+export function undefinedBeforeRest(a: number[], b: boolean | undefined, ...c: string[]): unknown {
+  return undefined
+}

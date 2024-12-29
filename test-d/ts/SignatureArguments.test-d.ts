@@ -41,7 +41,11 @@ import {
   type PseudoOptionalNonFinalSignature,
   type UndefinedNonFinalSignature,
   type PseudoRestNonFinalSignature,
-  type OneRestInTheMiddleInArraysSignature
+  type OneRestInTheMiddleInArraysSignature,
+  type OptionalBeforeRestSignature,
+  optionalBeforeRest,
+  type UndefinedBeforeRestSignature,
+  undefinedBeforeRest
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -507,7 +511,63 @@ expectType<[number, string, ...boolean[], string]>([] as unknown as OneRestViaMu
 // @ts-expect-error
 type MultipleRestsViaMultipleVariadics = [...OneRest1, ...OneRest2]
 
+/* Optional before rest
+   -------------------- */
+
+/* An optional before a rest argument can be specified in a signature directly. */
+
+expectType<number>(([] as unknown as Parameters<OptionalBeforeRestSignature>).length)
+
+optionalBeforeRest([0], true, 'one', 'two')
+optionalBeforeRest([0], true, 'one')
+optionalBeforeRest([0], true)
+optionalBeforeRest([0], undefined, 'one', 'two')
+optionalBeforeRest([0], undefined, 'one')
+optionalBeforeRest([0], undefined)
+expectError(optionalBeforeRest([0], 'one')) // not truly optional!
+optionalBeforeRest([0])
+
+expectType<number[]>(undefined as unknown as Parameters<OptionalBeforeRestSignature>[0])
+// Note this!
+expectType<boolean | undefined>(undefined as unknown as Parameters<OptionalBeforeRestSignature>[1])
+expectNotType<boolean | undefined | string>(undefined as unknown as Parameters<OptionalBeforeRestSignature>[1])
+expectType<string>(undefined as unknown as Parameters<OptionalBeforeRestSignature>[2])
+expectType<string>(undefined as unknown as Parameters<OptionalBeforeRestSignature>[3])
+expectType<string>(undefined as unknown as Parameters<OptionalBeforeRestSignature>[999999])
+
+expectType<[a: number[], b?: boolean | undefined, ...c: string[]]>(
+  [] as unknown as Parameters<OptionalBeforeRestSignature>
+)
+expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<OptionalBeforeRestSignature>>)
+expectType<[string[], 'rest']>(undefined as unknown as ZoomIn<Parameters<OptionalBeforeRestSignature>>)
+
+/* By marking the middle element as possibly `undefined` we get close to the same result, but not entirely: */
+
+expectType<number>(([] as unknown as Parameters<UndefinedBeforeRestSignature>).length)
+
+undefinedBeforeRest([0], true, 'one', 'two')
+undefinedBeforeRest([0], true, 'one')
+undefinedBeforeRest([0], true)
+undefinedBeforeRest([0], undefined, 'one', 'two')
+undefinedBeforeRest([0], undefined, 'one')
+undefinedBeforeRest([0], undefined)
+expectError(undefinedBeforeRest([0], 'one')) // not truly optional!
+expectError(undefinedBeforeRest([0])) // this is different
+
+expectType<number[]>(undefined as unknown as Parameters<UndefinedBeforeRestSignature>[0])
+// Note this!
+expectType<boolean | undefined>(undefined as unknown as Parameters<UndefinedBeforeRestSignature>[1])
+expectNotType<boolean | undefined | string>(undefined as unknown as Parameters<UndefinedBeforeRestSignature>[1])
+expectType<string>(undefined as unknown as Parameters<UndefinedBeforeRestSignature>[2])
+expectType<string>(undefined as unknown as Parameters<UndefinedBeforeRestSignature>[3])
+expectType<string>(undefined as unknown as Parameters<UndefinedBeforeRestSignature>[999999])
+
+expectType<[a: number[], b: boolean | undefined, ...c: string[]]>(
+  [] as unknown as Parameters<UndefinedBeforeRestSignature>
+)
+expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<UndefinedBeforeRestSignature>>)
+expectType<[string[], 'rest']>(undefined as unknown as ZoomIn<Parameters<UndefinedBeforeRestSignature>>)
+
 /* TODO:
-   - optional before rest is ok
    - optional after rest is nok
    - but we can get around that with shenanigans */
