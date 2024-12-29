@@ -49,7 +49,9 @@ import {
   type UndefinedBeforeRestSignature,
   type OptionalAfterRestSignature,
   type DoubleOptionalBeforeRestSignature,
-  doubleOptionalBeforeRest
+  doubleOptionalBeforeRest,
+  type DoubleOptionalAfterRestSignature,
+  doubleOptionalAfterRest
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -668,4 +670,43 @@ expectType<[(string | boolean | undefined)[], 'rest']>(
 )
 expectType<[(string | boolean | undefined)[], 'rest']>(
   undefined as unknown as FinalRestElement<Parameters<OptionalAfterRestSignature>>
+)
+
+/* Multiple optionals after rest: */
+
+expectType<number>(([] as unknown as Parameters<DoubleOptionalAfterRestSignature>).length)
+
+doubleOptionalAfterRest([0], 'one', 'two', true, 1)
+doubleOptionalAfterRest([0], 'one', 'two', true)
+doubleOptionalAfterRest([0], 'one', true)
+doubleOptionalAfterRest([0], true)
+doubleOptionalAfterRest([0], 'one', 'two')
+doubleOptionalAfterRest([0], 'one')
+doubleOptionalAfterRest([0])
+// but! also!
+doubleOptionalAfterRest([0], false, 'one', true, 'two', true)
+
+expectType<number[]>(undefined as unknown as Parameters<DoubleOptionalAfterRestSignature>[0])
+expectType<string | boolean | number | undefined>(
+  undefined as unknown as Parameters<DoubleOptionalAfterRestSignature>[1]
+)
+expectType<string | boolean | number | undefined>(
+  undefined as unknown as Parameters<DoubleOptionalAfterRestSignature>[2]
+)
+expectType<string | boolean | number | undefined>(
+  undefined as unknown as Parameters<DoubleOptionalAfterRestSignature>[3]
+)
+expectType<string | boolean | number | undefined>(
+  undefined as unknown as Parameters<DoubleOptionalAfterRestSignature>[999999]
+)
+
+// Note that the 3 last arguments are collapsed:
+expectType<[a: number[], ...b: (string | boolean | number | undefined)[]]>(
+  [] as unknown as Parameters<DoubleOptionalAfterRestSignature>
+)
+expectType<[(string | boolean | number | undefined)[], 'rest']>(
+  undefined as unknown as LastTupleElement<Parameters<DoubleOptionalAfterRestSignature>>
+)
+expectType<[(string | boolean | number | undefined)[], 'rest']>(
+  undefined as unknown as FinalRestElement<Parameters<DoubleOptionalAfterRestSignature>>
 )

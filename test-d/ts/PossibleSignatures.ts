@@ -79,6 +79,11 @@ export function optionalBeforeRest(a: number[], b?: boolean, ...c: string[]): un
   return undefined
 }
 
+export type DoubleOptionalBeforeRestSignature = (a: number[], b?: string[], c?: boolean, ...d: string[]) => unknown
+export function doubleOptionalBeforeRest(a: number[], b?: string[], c?: boolean, ...d: string[]): unknown {
+  return undefined
+}
+
 export type UndefinedBeforeRestSignature = (a: number[], b: boolean | undefined, ...c: string[]) => unknown
 export function undefinedBeforeRest(a: number[], b: boolean | undefined, ...c: string[]): unknown {
   return undefined
@@ -89,5 +94,12 @@ type OptionalAfterRestBase2Tuple = [c?: boolean]
 type OptionalAfterRestTuple = [...OptionalAfterRestBase1Tuple, ...OptionalAfterRestBase2Tuple]
 export type OptionalAfterRestSignature = (...args: OptionalAfterRestTuple) => unknown
 export function optionalAfterRest(...args: OptionalAfterRestTuple): unknown {
+  return undefined
+}
+
+type DoubleOptionalAfterRestBaseTuple = [c?: boolean, d?: number]
+type DoubleOptionalAfterRestTuple = [...OptionalAfterRestBase1Tuple, ...DoubleOptionalAfterRestBaseTuple]
+export type DoubleOptionalAfterRestSignature = (...args: DoubleOptionalAfterRestTuple) => unknown
+export function doubleOptionalAfterRest(...args: DoubleOptionalAfterRestTuple): unknown {
   return undefined
 }
