@@ -67,7 +67,7 @@ import {
 // //   : [T, 'rest', N]
 
 type FinalRestElement<T extends unknown[]> = T extends []
-  ? 'no final rest element'
+  ? 'error: there is no final rest element'
   : T extends [first: infer First, ...tail: infer Tail]
     ? FinalRestElement<Tail> // required single
     : T extends [first?: infer First, ...tail: infer Tail]
@@ -77,7 +77,7 @@ type FinalRestElement<T extends unknown[]> = T extends []
       : 'done'
 
 type LastTupleElement<T extends unknown[]> = T extends []
-  ? 'empty tuple'
+  ? 'error: there is no last tuple element in an empty tuple'
   : T extends [...start: unknown[], last: infer Last1] // required single
     ? [Last1, 'required']
     : /* The last element is not required. It is either optional or rest.
@@ -86,7 +86,7 @@ type LastTupleElement<T extends unknown[]> = T extends []
       ? FinalRestElement<T>
       : T extends [...start: infer _, last?: infer Last2]
         ? [Last2, 'optional'] // optional single
-        : 'not empty, not required, not optional or rest'
+        : 'impossible: not empty, not required, not optional or rest'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
@@ -95,8 +95,12 @@ expectType<[]>([] as unknown as Parameters<NoArgumentsSignature>)
 expectType<0>(([] as unknown as Parameters<NoArgumentsSignature>).length)
 // @ts-expect-error
 type NoElementAtIndex0 = NoArgumentsSignature<OneArgumentSignature>[0]
-expectType<'empty tuple'>(undefined as unknown as LastTupleElement<Parameters<NoArgumentsSignature>>)
-expectType<'no final rest element'>(undefined as unknown as FinalRestElement<Parameters<NoArgumentsSignature>>)
+expectType<'error: there is no last tuple element in an empty tuple'>(
+  undefined as unknown as LastTupleElement<Parameters<NoArgumentsSignature>>
+)
+expectType<'error: there is no final rest element'>(
+  undefined as unknown as FinalRestElement<Parameters<NoArgumentsSignature>>
+)
 
 expectType<[a: number]>([] as unknown as Parameters<OneArgumentSignature>)
 expectType<1>(([] as unknown as Parameters<OneArgumentSignature>).length)
@@ -104,7 +108,9 @@ expectType<number>(undefined as unknown as Parameters<OneArgumentSignature>[0])
 // @ts-expect-error
 type NoElementAtIndex1 = Parameters<OneArgumentSignature>[1]
 expectType<[number, 'required']>(undefined as unknown as LastTupleElement<Parameters<OneArgumentSignature>>)
-expectType<'no final rest element'>(undefined as unknown as FinalRestElement<Parameters<OneArgumentSignature>>)
+expectType<'error: there is no final rest element'>(
+  undefined as unknown as FinalRestElement<Parameters<OneArgumentSignature>>
+)
 
 expectType<[a: number[], b: string]>([] as unknown as Parameters<TwoArgumentsSignature>)
 expectType<2>(([] as unknown as Parameters<TwoArgumentsSignature>).length)
@@ -113,7 +119,9 @@ expectType<string>(undefined as unknown as Parameters<TwoArgumentsSignature>[1])
 // @ts-expect-error
 type NoElementAtIndex2 = Parameters<TwoArgumentsSignature>[2]
 expectType<[string, 'required']>(undefined as unknown as LastTupleElement<Parameters<TwoArgumentsSignature>>)
-expectType<'no final rest element'>(undefined as unknown as FinalRestElement<Parameters<TwoArgumentsSignature>>)
+expectType<'error: there is no final rest element'>(
+  undefined as unknown as FinalRestElement<Parameters<TwoArgumentsSignature>>
+)
 
 /* Optional last argument
    ---------------------- */
@@ -174,7 +182,7 @@ expectType<[boolean | undefined, 'optional']>(
 expectNotType<[string | boolean, 'optional']>(
   undefined as unknown as LastTupleElement<Parameters<FinalOptionalArgumentSignature>>
 )
-expectType<'no final rest element'>(
+expectType<'error: there is no final rest element'>(
   undefined as unknown as FinalRestElement<Parameters<FinalOptionalArgumentSignature>>
 )
 
@@ -227,7 +235,7 @@ expectType<[string | undefined, 'optional']>(
 expectNotType<[boolean | number | string, 'optional']>(
   undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArgumentsSignature>>
 )
-expectType<'no final rest element'>(
+expectType<'error: there is no final rest element'>(
   undefined as unknown as FinalRestElement<Parameters<MultipleFinalOptionalArgumentsSignature>>
 )
 
