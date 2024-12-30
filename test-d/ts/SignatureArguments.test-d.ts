@@ -138,19 +138,16 @@ type DeconstructedTuple<T extends unknown[]> = T extends [
  *               If `T` is a tuple with a final rest element, the elements before it can be required or optional, but
  *               required elements cannot follow optional elements.
  */
-type FinalRestElement<
-  T extends unknown[],
-  P extends ['from required' | 'from optional', unknown?][] = []
-> = number extends T['length']
+type FinalRestElement<T extends unknown[]> = number extends T['length']
   ? T extends [first: infer First1, ...tail: infer Tail1]
-    ? FinalRestElement<Tail1, [...P, ['from required', First1]]> // required single first element, continue
+    ? FinalRestElement<Tail1> // required single first element, continue
     : T extends [first?: infer First, ...tail: infer Tail2]
       ? T extends [first?: First, ...tail: First[]]
         ? /* If `T === [First?, ...First[]]`, this reduces to `T === [First?, ...First[]] === [...First[]] === First[]`.
            This still matches `[first?: infer First, ...tail: infer Tail2]`. `T` is the rest element type.
            The only way `first` can be a separate optional element is if `Tail2 !== First[]`. */
-          [P, T, 'rest 2']
-        : FinalRestElement<Tail2, [...P, ['from optional', First?]]>
+          [T, 'rest']
+        : FinalRestElement<Tail2>
       : [T, 'rest'] // `T` is unbounded array // MUDO comming from removing required prior elements THIS IS CORRECT
   : 'error: tuple does not contain a rest element and is not an unbounded array'
 
@@ -556,7 +553,7 @@ expectType<string | number>(undefined as unknown as Parameters<SingleRestSignatu
 expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[1])
 expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[999999])
 
-expectType<[string | number, 'rest']>(undefined as unknown as LastTupleElement<Parameters<SingleRestSignature>>)
+expectType<[(string | number)[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<SingleRestSignature>>)
 expectType<[RestTupleElement<string | number>]>([] as unknown as DeconstructedTuple<Parameters<SingleRestSignature>>)
 
 /* Non-final optional argument, revisited
