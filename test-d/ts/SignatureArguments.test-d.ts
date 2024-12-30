@@ -80,17 +80,17 @@ import {
  */
 type FinalRestElement<
   T extends unknown[],
-  P extends [unknown, 'from required' | 'from optional'][] = []
+  P extends ['from required' | 'from optional', unknown?][] = []
 > = number extends T['length']
   ? T extends [first: infer First1, ...tail: infer Tail1]
-    ? FinalRestElement<Tail1, [...P, [First1, 'from required']]> // required single first element, continue
+    ? FinalRestElement<Tail1, [...P, ['from required', First1]]> // required single first element, continue
     : T extends [first?: infer First, ...tail: infer Tail2]
       ? T extends [first?: First, ...tail: First[]]
         ? /* If `T === [First?, ...First[]]`, this reduces to `T === [First?, ...First[]] === [...First[]] === First[]`.
            This still matches `[first?: infer First, ...tail: infer Tail2]`. `T` is the rest element type.
            The only way `first` can be a separate optional element is if `Tail2 !== First[]`. */
-          [T, P, 'rest after optional']
-        : FinalRestElement<Tail2, [...P, [First, 'from optional']]>
+          [P, T, 'rest 2']
+        : FinalRestElement<Tail2, [...P, ['from optional', First?]]>
       : [T, 'rest'] // `T` is unbounded array // MUDO comming from removing required prior elements THIS IS CORRECT
   : 'error: tuple does not contain a rest element and is not an unbounded array'
 
