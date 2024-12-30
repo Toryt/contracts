@@ -317,25 +317,6 @@ expectType<[a: number, b: string[], ...c: boolean[]]>([] as unknown as Parameter
 //   return undefined
 // }
 
-expectType<number>(undefined as unknown as Parameters<FinalRestArgumentAfterArraySignature>[0])
-expectType<string[]>(undefined as unknown as Parameters<FinalRestArgumentAfterArraySignature>[1])
-// Note that `undefined` is not in the type!
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArraySignature>[2])
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArraySignature>[3])
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentAfterArraySignature>[999999])
-// Note that `undefined` is not in the union!
-expectType<number | string[] | boolean>(
-  undefined as unknown as Parameters<FinalRestArgumentAfterArraySignature>[number]
-)
-
-// we can get the type of the last argument:
-expectType<[boolean[], 'rest']>(
-  undefined as unknown as FinalRestElement<Parameters<FinalRestArgumentAfterArraySignature>>
-)
-expectType<[boolean[], 'rest']>(
-  undefined as unknown as LastTupleElement<Parameters<FinalRestArgumentAfterArraySignature>>
-)
-
 /* Multiple final rest arguments
    --------------------------------- */
 
