@@ -72,6 +72,12 @@ import {
 // //   ? FinalRestElement<Tail, Succ<N>>
 // //   : [T, 'rest', N]
 
+/**
+ * Precondition: `T` is a tuple with a final rest element, or `T` is an array that is not a tuple (representing the
+ *               final rest element of a larger tuple outside the scope of this call, because `[...R[]] === R[]`).
+ *               If `T` is a tuple with a final rest element, the elements before it can be required or optional, but
+ *               required elements cannot follow optional elements.
+ */
 type FinalRestElement<T extends unknown[]> = number extends T['length']
   ? T extends [first: unknown, ...tail: infer Tail1]
     ? FinalRestElement<Tail1> // required single first element, continue
