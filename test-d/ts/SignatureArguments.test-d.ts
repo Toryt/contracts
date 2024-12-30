@@ -53,7 +53,8 @@ import {
   type DoubleOptionalAfterRestSignature,
   doubleOptionalAfterRest,
   type SingleOptionalArgumentSignature,
-  singleOptionalArgument
+  singleOptionalArgument,
+  type SingleRestSignature
 } from './PossibleSignatures.ts'
 
 // type Succ<N extends number> = [1, 2, 3, 4, 5, 6, 7, 8, 9][N]
@@ -544,6 +545,19 @@ expectType<[boolean[], 'required']>(undefined as unknown as LastTupleElement<One
 expectType<[RequiredTupleElement<number[]>, RestTupleElement<string>, RequiredTupleElement<boolean[]>]>(
   [] as unknown as DeconstructedTuple<OneRestInTheMiddleInArraysTuple>
 )
+
+/* Single rest argument
+   --------------------------- */
+
+expectType<number>(([] as unknown as Parameters<SingleRestSignature>).length)
+expectType<(string | number)[]>([] as unknown as Parameters<SingleRestSignature>)
+
+expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[0])
+expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[1])
+expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[999999])
+
+expectType<[string | number, 'rest']>(undefined as unknown as LastTupleElement<Parameters<SingleRestSignature>>)
+expectType<[RestTupleElement<string | number>]>([] as unknown as DeconstructedTuple<Parameters<SingleRestSignature>>)
 
 /* Non-final optional argument, revisited
    -------------------------------------- */
