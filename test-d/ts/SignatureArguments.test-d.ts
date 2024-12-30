@@ -78,13 +78,20 @@ import {
  *               If `T` is a tuple with a final rest element, the elements before it can be required or optional, but
  *               required elements cannot follow optional elements.
  */
-type FinalRestElement<T extends unknown[]> = number extends T['length']
-  ? T extends [first: unknown, ...tail: infer Tail1]
-    ? FinalRestElement<Tail1> // required single first element, continue
-    : T extends [first?: unknown, ...tail: infer Tail2]
-      ? // MUDO error: first is optional, but there is no continuation here, for when Tail contains still other optional OR REQUIRED elements
-        [Tail2, 'rest']
-      : [T, 'rest']
+type FinalRestElement<
+  T extends unknown[],
+  P extends [unknown, 'from required' | 'from optional'][] = []
+> = number extends T['length']
+  ? T extends [first: infer First1, ...tail: infer Tail1]
+    ? FinalRestElement<Tail1, [...P, [First1, 'from required']]> // required single first element, continue
+    : T extends [first?: infer First, ...tail: infer Tail2]
+      ? T extends [first?: First, ...tail: First[]]
+        ? /* If `T === [First?, ...First[]]`, this reduces to `T === [First?, ...First[]] === [...First[]] === First[]`.
+           This still matches `[first?: infer First, ...tail: infer Tail2]`. `T` is the rest element type.
+           The only way `first` can be a separate optional element is if `Tail2 !== First[]`. */
+          [T, P, 'rest after optional']
+        : FinalRestElement<Tail2, [...P, [First, 'from optional']]>
+      : [T, 'rest'] // `T` is unbounded array // MUDO comming from removing required prior elements THIS IS CORRECT
   : 'error: tuple does not contain a rest element and is not an unbounded array'
 
 type LastTupleElement<T extends unknown[]> = T extends []
@@ -95,9 +102,38 @@ type LastTupleElement<T extends unknown[]> = T extends []
          Since rest elements can not be followed by optional or other rest elements, if there is a rest element in `T`,
          it is the last one. */ number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
       ? FinalRestElement<T>
-      : T extends [...start: infer _, last?: infer Last2]
+      : T extends [...start: infer _, last?: infer Last2] // NOTE explicitly add when returned ? in a tuple!
         ? [Last2, 'optional'] // optional single
         : 'impossible: not empty, not required, not optional or rest'
+
+type RequiredMatches<T extends unknown[]> = T extends [first: infer First, ...tail: infer Tail2] ? [First] : false
+type OptionalMatches1<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2] ? [First] : false
+type OptionalMatches2<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2] ? [First?] : false
+type OptionalMatches<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2]
+  ? T extends [first: infer FirstRequired, ...tail: infer Tail2]
+    ? [FirstRequired]
+    : [First?]
+  : false
+
+expectType<[number]>(true as unknown as RequiredMatches<[number, ...string[]]>)
+expectType<[number]>(true as unknown as OptionalMatches1<[number, ...string[]]>)
+expectType<[number?]>(true as unknown as OptionalMatches2<[number, ...string[]]>)
+expectType<[number]>(true as unknown as OptionalMatches<[number, ...string[]]>)
+
+expectType<[number[]]>(true as unknown as RequiredMatches<[number[], ...string[]]>)
+expectType<[number[]]>(true as unknown as OptionalMatches1<[number[], ...string[]]>)
+expectType<[number[]?]>(true as unknown as OptionalMatches2<[number[], ...string[]]>)
+expectType<[number[]]>(true as unknown as OptionalMatches<[number[], ...string[]]>)
+
+expectType<false>(true as unknown as RequiredMatches<[number?, ...string[]]>)
+expectType<[number]>(true as unknown as OptionalMatches1<[number?, ...string[]]>)
+expectType<[number?]>(true as unknown as OptionalMatches2<[number?, ...string[]]>)
+expectType<[number?]>(true as unknown as OptionalMatches<[number?, ...string[]]>)
+
+expectType<false>(true as unknown as RequiredMatches<[number[]?, ...string[]]>)
+expectType<[number[]]>(true as unknown as OptionalMatches1<[number[]?, ...string[]]>)
+expectType<[number[]?]>(true as unknown as OptionalMatches2<[number[]?, ...string[]]>)
+expectType<[number[]?]>(true as unknown as OptionalMatches<[number[]?, ...string[]]>)
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
@@ -630,12 +666,8 @@ expectType<[a: number[], b?: string[] | undefined, c?: boolean | undefined, ...d
   [] as unknown as Parameters<DoubleOptionalBeforeRestSignature>
 )
 // MUDO ERRORs in FinalRestElement
-expectNotType<[string[], 'rest']>(
-  undefined as unknown as LastTupleElement<Parameters<DoubleOptionalBeforeRestSignature>>
-)
-expectNotType<[string[], 'rest']>(
-  undefined as unknown as FinalRestElement<Parameters<DoubleOptionalBeforeRestSignature>>
-)
+expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<DoubleOptionalBeforeRestSignature>>)
+expectType<[string[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<DoubleOptionalBeforeRestSignature>>)
 
 /* Optional after rest
    -------------------- */
