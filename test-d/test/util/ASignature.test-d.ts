@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -110,16 +110,15 @@ expectNotAssignable<ASignature>((a: number, b: Level1BType): unknown => 'unknown
 
 // nominal
 expectAssignable<ASignatureWithOptionalArgs>(
-  (a: number, b: string, c?: Level1BType, d?: number): Level2Type =>
-    new Level2Class(a, !!c && c.rootProperty > 0, level1AInstance)
+  (a: number, b?: Level1BType, c?: number): Level2Type => new Level2Class(a, !!b && b.rootProperty > 0, level1AInstance)
 )
 
 // less arguments
 expectAssignable<ASignatureWithOptionalArgs>(
-  (a: number, b: string, c?: Level1BType): Level2Type => new Level2Class(a, !!c && c.rootProperty > 0, level1AInstance)
+  (a: number, b?: Level1BType): Level2Type => new Level2Class(a, !!b && b.rootProperty > 0, level1AInstance)
 )
 expectAssignable<ASignatureWithOptionalArgs>(
-  (a: number, b: string): Level2Type => new Level2Class(a, !!b && a > 0, level1AInstance)
+  (a: number, b: Level1BType | undefined): Level2Type => new Level2Class(a, !!b && b.rootProperty > 0, level1AInstance)
 )
 expectAssignable<ASignatureWithOptionalArgs>((a: number): Level2Type => new Level2Class(a, a > 0, level1AInstance))
 expectAssignable<ASignatureWithOptionalArgs>((): Level2Type => new Level2Class(0, false, level1AInstance))

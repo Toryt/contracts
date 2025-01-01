@@ -17,4 +17,4 @@
 import type { Level1BType, Level2Type } from './SomeTypes.ts'
 
 export type ASignature = (a: number, b: Level1BType) => Level2Type
-export type ASignatureWithOptionalArgs = (a: number, b: string, c?: Level1BType, d?: number) => Level2Type
+export type ASignatureWithOptionalArgs = (a: number, b?: Level1BType, c?: number) => Level2Type
