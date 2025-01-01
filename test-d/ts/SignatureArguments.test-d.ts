@@ -88,35 +88,6 @@ type LastTupleElement<T extends unknown[]> = T extends []
         ? [Last2, 'optional'] // optional single
         : 'impossible: not empty, not required, not optional or rest'
 
-type RequiredMatches<T extends unknown[]> = T extends [first: infer First, ...tail: infer Tail2] ? [First] : false
-type OptionalMatches1<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2] ? [First] : false
-type OptionalMatches2<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2] ? [First?] : false
-type OptionalMatches<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2]
-  ? T extends [first: infer FirstRequired, ...tail: infer Tail2]
-    ? [FirstRequired]
-    : [First?]
-  : false
-
-expectType<[number]>(true as unknown as RequiredMatches<[number, ...string[]]>)
-expectType<[number]>(true as unknown as OptionalMatches1<[number, ...string[]]>)
-expectType<[number?]>(true as unknown as OptionalMatches2<[number, ...string[]]>)
-expectType<[number]>(true as unknown as OptionalMatches<[number, ...string[]]>)
-
-expectType<[number[]]>(true as unknown as RequiredMatches<[number[], ...string[]]>)
-expectType<[number[]]>(true as unknown as OptionalMatches1<[number[], ...string[]]>)
-expectType<[number[]?]>(true as unknown as OptionalMatches2<[number[], ...string[]]>)
-expectType<[number[]]>(true as unknown as OptionalMatches<[number[], ...string[]]>)
-
-expectType<false>(true as unknown as RequiredMatches<[number?, ...string[]]>)
-expectType<[number]>(true as unknown as OptionalMatches1<[number?, ...string[]]>)
-expectType<[number?]>(true as unknown as OptionalMatches2<[number?, ...string[]]>)
-expectType<[number?]>(true as unknown as OptionalMatches<[number?, ...string[]]>)
-
-expectType<false>(true as unknown as RequiredMatches<[number[]?, ...string[]]>)
-expectType<[number[]]>(true as unknown as OptionalMatches1<[number[]?, ...string[]]>)
-expectType<[number[]?]>(true as unknown as OptionalMatches2<[number[]?, ...string[]]>)
-expectType<[number[]?]>(true as unknown as OptionalMatches<[number[]?, ...string[]]>)
-
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
 
