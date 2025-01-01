@@ -47,12 +47,19 @@ function unknownFunction(): unknown {
   return undefined
 }
 
-function contravariantArguments<T extends UnknownFunction>() {
-  return [] as unknown as ContravariantArgumentTuple<Parameters<T>>
+function contravariantArguments<Signature extends UnknownFunction>() {
+  return [] as unknown as ContravariantArgumentTuple<Parameters<Signature>>
 }
 
-function contravariantArgumentsSignature<T extends UnknownFunction>() {
-  return unknownFunction as unknown as (...args: ContravariantArgumentTuple<Parameters<T>>) => ReturnType<T>
+type Distribute<Signature extends UnknownFunction> =
+  ContravariantArgumentTuple<Parameters<Signature>> extends infer CATE
+    ? CATE extends unknown[]
+      ? (...args: CATE) => ReturnType<Signature>
+      : never
+    : never
+
+function contravariantArgumentsSignature<Signature extends UnknownFunction>() {
+  return unknownFunction as unknown as Distribute<Signature>
 }
 
 expectType<[]>(contravariantArguments<NoArgumentsSignature>())
@@ -67,23 +74,19 @@ expectAssignable<TwoArgumentsSignature>(contravariantArgumentsSignature<TwoArgum
 expectType<[] | [number[]] | [number[], string] | [number[], string, boolean?]>(
   contravariantArguments<FinalOptionalArgumentSignature>()
 )
-// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
-expectNotAssignable<(a: number[], b: string, c?: boolean) => unknown>(
+expectAssignable<(a: number[], b: string, c?: boolean) => unknown>(
   contravariantArgumentsSignature<FinalOptionalArgumentSignature>()
 )
 
 expectType<[] | [boolean?]>(contravariantArguments<SingleOptionalArgumentSignature>())
-// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
-expectNotAssignable<SingleOptionalArgumentSignature>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
-// MUDO because … euh …?
-expectNotAssignable<(a?: boolean) => unknown>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
-expectNotAssignable<(a?: boolean | undefined) => unknown>(
+expectAssignable<SingleOptionalArgumentSignature>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
+expectAssignable<(a?: boolean) => unknown>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
+expectAssignable<(a?: boolean | undefined) => unknown>(
   contravariantArgumentsSignature<SingleOptionalArgumentSignature>()
 )
-expectNotAssignable<(a: boolean | undefined) => unknown>(
+expectAssignable<(a: boolean | undefined) => unknown>(
   contravariantArgumentsSignature<SingleOptionalArgumentSignature>()
 )
-// MUDO ok, understandable
 expectAssignable<(a: boolean) => unknown>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
 
 expectType<
@@ -144,8 +147,7 @@ expectAssignable<OneRestInTheMiddleInArraysSignature>(
 expectType<[] | [number[]] | [number[], boolean?] | [number[], boolean?, ...string[]]>(
   contravariantArguments<OptionalBeforeRestSignature>()
 )
-// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
-expectNotAssignable<OptionalBeforeRestSignature>(contravariantArgumentsSignature<OptionalBeforeRestSignature>())
+expectAssignable<OptionalBeforeRestSignature>(contravariantArgumentsSignature<OptionalBeforeRestSignature>())
 
 expectType<[] | [number[]] | [number[], boolean | undefined] | [number[], boolean | undefined, ...string[]]>(
   contravariantArguments<UndefinedBeforeRestSignature>()
@@ -159,8 +161,7 @@ expectType<
   | [number[], string[]?, boolean?]
   | [number[], string[]?, boolean?, ...string[]]
 >(contravariantArguments<DoubleOptionalBeforeRestSignature>())
-// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
-expectNotAssignable<DoubleOptionalBeforeRestSignature>(
+expectAssignable<DoubleOptionalBeforeRestSignature>(
   contravariantArgumentsSignature<DoubleOptionalBeforeRestSignature>()
 )
 
@@ -182,8 +183,7 @@ expectAssignable<ASignature>(contravariantArgumentsSignature<ASignature>())
 expectType<[] | [number] | [number, Level1BType?] | [number, Level1BType?, number?]>(
   contravariantArguments<ASignatureWithOptionalArgs>()
 )
-// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
-expectNotAssignable<ASignatureWithOptionalArgs>(contravariantArgumentsSignature<ASignatureWithOptionalArgs>())
+expectAssignable<ASignatureWithOptionalArgs>(contravariantArgumentsSignature<ASignatureWithOptionalArgs>())
 
 // Complex tuples with objects and arrays
 type Complex = [{ a: number }, string, number[], boolean, null]
