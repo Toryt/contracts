@@ -47,6 +47,8 @@ export type FinalRestArgumentAfterArraySignature = (a: number, b: string[], ...c
 export type OneRestInTheMiddleTuple = [a: number, ...b: string[], c: boolean]
 export type OneRestInTheMiddleInArraysTuple = [a: number[], ...b: string[], c: boolean[]]
 
+export type SingleRestSignature = (...args: (string | number)[]) => unknown
+
 type PseudoOptionalString = [b?: string]
 export type PseudoOptionalNonFinalTuple = [a: number, ...b: PseudoOptionalString, c: boolean]
 export type PseudoOptionalNonFinalSignature = (...args: PseudoOptionalNonFinalTuple) => unknown
