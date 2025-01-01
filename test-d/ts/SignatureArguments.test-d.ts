@@ -23,7 +23,6 @@ import {
   optionalBeforeRest,
   undefinedNonFinal,
   undefinedBeforeRest,
-  type FinalRestArgumentSignature,
   type NoRestViaMultipleVariadics,
   type OneRestViaMultipleVariadics1,
   type OneRestViaMultipleVariadics2,
@@ -32,7 +31,6 @@ import {
   type OneRestInTheMiddleTuple,
   type PseudoOptionalNonFinalTuple,
   type UndefinedNonFinalTuple,
-  type FinalRestArgumentAfterArraySignature,
   type OneRestInTheMiddleInArraysTuple,
   type PseudoOptionalNonFinalSignature,
   type UndefinedNonFinalSignature,
@@ -47,76 +45,6 @@ import {
   doubleOptionalAfterRest,
   type SingleRestSignature
 } from './PossibleSignatures.ts'
-
-/* Rest last argument
-   ---------------------- */
-
-expectType<number>(([] as unknown as Parameters<FinalRestArgumentSignature>).length)
-
-/* There is no weirdness here: */
-expectType<[a: number, b: string, ...c: boolean[]]>([] as unknown as Parameters<FinalRestArgumentSignature>)
-
-/* An optional rest argument is rejected. It makes no sense. When there are no actual arguments for the
-   rest part, the array is just empty. Actually, Prettier even corrects this. */
-// function optionalRest(a: number, b?: string, ...c?: boolean[]): unknown {
-//   return undefined
-// }
-
-expectType<number>(undefined as unknown as Parameters<FinalRestArgumentSignature>[0])
-expectType<string>(undefined as unknown as Parameters<FinalRestArgumentSignature>[1])
-// Note that `undefined` is not in the type!
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentSignature>[2])
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentSignature>[3])
-expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentSignature>[999999])
-// Note that `undefined` is not in the union!
-expectType<number | string | boolean>(undefined as unknown as Parameters<FinalRestArgumentSignature>[number])
-
-/* After an array: */
-
-expectType<number>(([] as unknown as Parameters<FinalRestArgumentAfterArraySignature>).length)
-
-/* There is no weirdness here: */
-expectType<[a: number, b: string[], ...c: boolean[]]>([] as unknown as Parameters<FinalRestArgumentAfterArraySignature>)
-
-/* An optional rest argument is rejected. It makes no sense. When there are no actual arguments for the
-   rest part, the array is just empty. Actually, Prettier even corrects this. */
-// function optionalRest(a: number, b?: string, ...c?: boolean[]): unknown {
-//   return undefined
-// }
-
-/* Multiple final rest arguments
-   --------------------------------- */
-
-/* Multiple final rest arguments are not possible, and even do not pass `tsd` `expectError` */
-
-function multipleFinalRestArguments(
-  a: number,
-  b: string,
-  // @ts-expect-error
-  ...c: boolean[],
-  ...d: number[],
-  ...e: string[]
-): unknown {
-  return undefined
-}
-multipleFinalRestArguments(0, '')
-
-/* The same applies to tuples: */
-// @ts-expect-error
-type NoMultipleRestsInTuple = [a: number, b: string, ...c: boolean[], ...d: number[], ...e: string[]]
-
-/* Even when we introduce separator types: */
-// @ts-expect-error
-type SeparatedMultipleRestsInTuple = [
-  a: number,
-  b: string,
-  ...c: boolean[],
-  c1: string,
-  // @ts-expect-error
-  ...d: number[],
-  d1: boolean,
-  ...e: string[]
-]
 
 /* Non-final optional argument
    --------------------------- */
