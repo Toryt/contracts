@@ -57,37 +57,6 @@ import {
   type SingleRestSignature
 } from './PossibleSignatures.ts'
 
-/**
- * Precondition: `T` is a tuple with a final rest element, or `T` is an array that is not a tuple (representing the
- *               final rest element of a larger tuple outside the scope of this call, because `[...R[]] === R[]`).
- *               If `T` is a tuple with a final rest element, the elements before it can be required or optional, but
- *               required elements cannot follow optional elements.
- */
-type FinalRestElement<T extends unknown[]> = number extends T['length']
-  ? T extends [first: infer First1, ...tail: infer Tail1]
-    ? FinalRestElement<Tail1> // required single first element, continue
-    : T extends [first?: infer First, ...tail: infer Tail2]
-      ? T extends [first?: First, ...tail: First[]]
-        ? /* If `T === [First?, ...First[]]`, this reduces to `T === [First?, ...First[]] === [...First[]] === First[]`.
-           This still matches `[first?: infer First, ...tail: infer Tail2]`. `T` is the rest element type.
-           The only way `first` can be a separate optional element is if `Tail2 !== First[]`. */
-          [T, 'rest']
-        : FinalRestElement<Tail2>
-      : [T, 'rest'] // `T` is unbounded array // MUDO comming from removing required prior elements THIS IS CORRECT
-  : 'error: tuple does not contain a rest element and is not an unbounded array'
-
-type LastTupleElement<T extends unknown[]> = T extends []
-  ? 'error: there is no last tuple element in an empty tuple'
-  : T extends [...start: unknown[], last: infer Last1] // required single
-    ? [Last1, 'required']
-    : /* The last element is not required. It is either optional or rest.
-         Since rest elements can not be followed by optional or other rest elements, if there is a rest element in `T`,
-         it is the last one. */ number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
-      ? FinalRestElement<T>
-      : T extends [...start: infer _, last?: infer Last2] // NOTE explicitly add when returned ? in a tuple!
-        ? [Last2, 'optional'] // optional single
-        : 'impossible: not empty, not required, not optional or rest'
-
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
 
@@ -95,22 +64,12 @@ expectType<[]>([] as unknown as Parameters<NoArgumentsSignature>)
 expectType<0>(([] as unknown as Parameters<NoArgumentsSignature>).length)
 // @ts-expect-error
 type NoElementAtIndex0 = NoArgumentsSignature<OneArgumentSignature>[0]
-expectType<'error: there is no last tuple element in an empty tuple'>(
-  undefined as unknown as LastTupleElement<Parameters<NoArgumentsSignature>>
-)
-expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
-  undefined as unknown as FinalRestElement<Parameters<NoArgumentsSignature>>
-)
 
 expectType<[a: number]>([] as unknown as Parameters<OneArgumentSignature>)
 expectType<1>(([] as unknown as Parameters<OneArgumentSignature>).length)
 expectType<number>(undefined as unknown as Parameters<OneArgumentSignature>[0])
 // @ts-expect-error
 type NoElementAtIndex1 = Parameters<OneArgumentSignature>[1]
-expectType<[number, 'required']>(undefined as unknown as LastTupleElement<Parameters<OneArgumentSignature>>)
-expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
-  undefined as unknown as FinalRestElement<Parameters<OneArgumentSignature>>
-)
 
 expectType<[a: number[], b: string]>([] as unknown as Parameters<TwoArgumentsSignature>)
 expectType<2>(([] as unknown as Parameters<TwoArgumentsSignature>).length)
@@ -118,10 +77,6 @@ expectType<number[]>(undefined as unknown as Parameters<TwoArgumentsSignature>[0
 expectType<string>(undefined as unknown as Parameters<TwoArgumentsSignature>[1])
 // @ts-expect-error
 type NoElementAtIndex2 = Parameters<TwoArgumentsSignature>[2]
-expectType<[string, 'required']>(undefined as unknown as LastTupleElement<Parameters<TwoArgumentsSignature>>)
-expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
-  undefined as unknown as FinalRestElement<Parameters<TwoArgumentsSignature>>
-)
 
 /* Optional last argument
    ---------------------- */
@@ -176,15 +131,6 @@ expectType<string>(undefined as unknown as Parameters<FinalOptionalArgumentSigna
 expectType<boolean | undefined>(undefined as unknown as Parameters<FinalOptionalArgumentSignature>[2])
 // @ts-expect-error
 type NoElementAtIndex3a = Parameters<FinalOptionalArgumentSignature>[3]
-expectType<[boolean | undefined, 'optional']>(
-  undefined as unknown as LastTupleElement<Parameters<FinalOptionalArgumentSignature>>
-)
-expectNotType<[string | boolean, 'optional']>(
-  undefined as unknown as LastTupleElement<Parameters<FinalOptionalArgumentSignature>>
-)
-expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
-  undefined as unknown as FinalRestElement<Parameters<FinalOptionalArgumentSignature>>
-)
 
 /* Single optional argument
    ------------------------ */
@@ -200,13 +146,6 @@ expectError(singleOptionalArgument(true, 0))
 expectType<[a?: boolean | undefined]>([] as unknown as Parameters<SingleOptionalArgumentSignature>)
 
 expectType<boolean | undefined>(undefined as unknown as Parameters<SingleOptionalArgumentSignature>[0])
-
-expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
-  undefined as unknown as FinalRestElement<Parameters<SingleOptionalArgumentSignature>>
-)
-expectType<[boolean | undefined, 'optional']>(
-  undefined as unknown as LastTupleElement<Parameters<SingleOptionalArgumentSignature>>
-)
 
 /* Multiple final optional arguments
    --------------------------------- */
@@ -251,15 +190,6 @@ expectType<number | undefined>(undefined as unknown as Parameters<MultipleFinalO
 expectType<string | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArgumentsSignature>[4])
 // @ts-expect-error
 type NoElementAtIndex3 = Parameters<MultipleFinalOptionalArgumentsSignature>[5]
-expectType<[string | undefined, 'optional']>(
-  undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArgumentsSignature>>
-)
-expectNotType<[boolean | number | string, 'optional']>(
-  undefined as unknown as LastTupleElement<Parameters<MultipleFinalOptionalArgumentsSignature>>
-)
-expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
-  undefined as unknown as FinalRestElement<Parameters<MultipleFinalOptionalArgumentsSignature>>
-)
 
 /* Rest last argument
    ---------------------- */
@@ -283,10 +213,6 @@ expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentSignatur
 expectType<boolean>(undefined as unknown as Parameters<FinalRestArgumentSignature>[999999])
 // Note that `undefined` is not in the union!
 expectType<number | string | boolean>(undefined as unknown as Parameters<FinalRestArgumentSignature>[number])
-
-// we can get the type of the last argument:
-expectType<[boolean[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<FinalRestArgumentSignature>>)
-expectType<[boolean[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<FinalRestArgumentSignature>>)
 
 /* After an array: */
 
@@ -380,9 +306,6 @@ expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[2])
 expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[3])
 expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[999999])
 
-// we can extract the last (non-rest) element’s type, but not with an index:
-expectType<[boolean, 'required']>(undefined as unknown as LastTupleElement<OneRestInTheMiddleTuple>)
-
 /* Inbetween arrays: */
 
 /* But we _can_ have rest elements before required elements in a tuple: */
@@ -404,9 +327,6 @@ expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArray
 expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[3])
 expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[999999])
 
-// we can extract the last (non-rest) element’s type, but not with an index:
-expectType<[boolean[], 'required']>(undefined as unknown as LastTupleElement<OneRestInTheMiddleInArraysTuple>)
-
 /* Single rest argument
    --------------------------- */
 
@@ -416,8 +336,6 @@ expectType<(string | number)[]>([] as unknown as Parameters<SingleRestSignature>
 expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[0])
 expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[1])
 expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[999999])
-
-expectType<[(string | number)[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<SingleRestSignature>>)
 
 /* Non-final optional argument, revisited
    -------------------------------------- */
@@ -439,7 +357,6 @@ expectType<string | undefined>(undefined as unknown as Parameters<PseudoOptional
 expectType<boolean>(undefined as unknown as Parameters<PseudoOptionalNonFinalSignature>[2])
 // @ts-expect-error
 type NoElementAtIndex3b = Parameters<PseudoOptionalNonFinalSignature>[3]
-expectType<[boolean, 'required']>(undefined as unknown as LastTupleElement<Parameters<PseudoOptionalNonFinalSignature>>)
 
 function pseudoOptionalBeforeRequiredInTupleRevisited(): unknown {
   let pobrit: PseudoOptionalNonFinalTuple
@@ -488,7 +405,6 @@ expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFin
 expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[2])
 expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[3])
 expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[999999])
-expectType<[boolean, 'required']>(undefined as unknown as LastTupleElement<Parameters<PseudoRestNonFinalSignature>>)
 
 /* Inbetween arrays: */
 
@@ -508,9 +424,6 @@ expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMi
 expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[2])
 expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[3])
 expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[999999])
-expectType<[boolean[], 'required']>(
-  undefined as unknown as LastTupleElement<Parameters<OneRestInTheMiddleInArraysSignature>>
-)
 
 /* Multiple rest arguments, revisited
    -------------------------------------- */
@@ -560,8 +473,6 @@ expectType<string>(undefined as unknown as Parameters<OptionalBeforeRestSignatur
 expectType<[a: number[], b?: boolean | undefined, ...c: string[]]>(
   [] as unknown as Parameters<OptionalBeforeRestSignature>
 )
-expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<OptionalBeforeRestSignature>>)
-expectType<[string[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<OptionalBeforeRestSignature>>)
 
 /* By marking the middle element as possibly `undefined` we get close to the same result, but not entirely: */
 
@@ -587,8 +498,6 @@ expectType<string>(undefined as unknown as Parameters<UndefinedBeforeRestSignatu
 expectType<[a: number[], b: boolean | undefined, ...c: string[]]>(
   [] as unknown as Parameters<UndefinedBeforeRestSignature>
 )
-expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<UndefinedBeforeRestSignature>>)
-expectType<[string[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<UndefinedBeforeRestSignature>>)
 
 /* Multiple optionals also work. */
 
@@ -625,9 +534,6 @@ expectType<string>(undefined as unknown as Parameters<DoubleOptionalBeforeRestSi
 expectType<[a: number[], b?: string[] | undefined, c?: boolean | undefined, ...d: string[]]>(
   [] as unknown as Parameters<DoubleOptionalBeforeRestSignature>
 )
-// MUDO ERRORs in FinalRestElement
-expectType<[string[], 'rest']>(undefined as unknown as LastTupleElement<Parameters<DoubleOptionalBeforeRestSignature>>)
-expectType<[string[], 'rest']>(undefined as unknown as FinalRestElement<Parameters<DoubleOptionalBeforeRestSignature>>)
 
 /* Optional after rest
    -------------------- */
@@ -667,12 +573,6 @@ expectType<string | boolean | undefined>(undefined as unknown as Parameters<Opti
 expectType<[a: number[], ...b: (string | boolean | undefined)[]]>(
   [] as unknown as Parameters<OptionalAfterRestSignature>
 )
-expectType<[(string | boolean | undefined)[], 'rest']>(
-  undefined as unknown as LastTupleElement<Parameters<OptionalAfterRestSignature>>
-)
-expectType<[(string | boolean | undefined)[], 'rest']>(
-  undefined as unknown as FinalRestElement<Parameters<OptionalAfterRestSignature>>
-)
 
 /* Multiple optionals after rest: */
 
@@ -705,12 +605,6 @@ expectType<string | boolean | number | undefined>(
 // Note that the 3 last arguments are collapsed:
 expectType<[a: number[], ...b: (string | boolean | number | undefined)[]]>(
   [] as unknown as Parameters<DoubleOptionalAfterRestSignature>
-)
-expectType<[(string | boolean | number | undefined)[], 'rest']>(
-  undefined as unknown as LastTupleElement<Parameters<DoubleOptionalAfterRestSignature>>
-)
-expectType<[(string | boolean | number | undefined)[], 'rest']>(
-  undefined as unknown as FinalRestElement<Parameters<DoubleOptionalAfterRestSignature>>
 )
 
 /* Although optionals after a rest are possible, they fully behave as a disjunctive rest argument. There is no
