@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,45 +15,101 @@
  */
 
 import { expectNotType, expectType, printType } from 'tsd'
-import { type StartingTuples } from '../../../src/util/StartingTuples.ts'
+import type { UnknownFunction } from '../../../src'
+import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
 import type { Level1AType } from '../../../test2/util/SomeTypes.ts'
+import type { ConstructedTuple } from '../../ts/ConstructedTuple'
+import type { DeconstructedTuple } from '../../ts/DeconstructedTuple'
+import type {
+  DoubleOptionalAfterRestSignature,
+  DoubleOptionalBeforeRestSignature,
+  FinalOptionalArgumentSignature,
+  FinalRestArgumentAfterArraySignature,
+  FinalRestArgumentSignature,
+  MultipleFinalOptionalArgumentsSignature,
+  NoArgumentsSignature,
+  OneArgumentSignature,
+  OneRestInTheMiddleInArraysSignature,
+  OneRestInTheMiddleInArraysTuple,
+  OneRestInTheMiddleTuple,
+  OptionalAfterRestSignature,
+  OptionalBeforeRestSignature,
+  PseudoOptionalNonFinalSignature,
+  PseudoRestNonFinalSignature,
+  SingleOptionalArgumentSignature,
+  SingleRestSignature,
+  TwoArgumentsSignature,
+  UndefinedBeforeRestSignature,
+  UndefinedNonFinalSignature
+} from '../../ts/PossibleSignatures.ts'
+
+function contravariantArgumentsTuple<T extends UnknownFunction>() {
+  return unknownFunction as unknown as (...args: ConstructedTuple<DeconstructedTuple<Parameters<T>>>) => ReturnType<T>
+}
+
+expectType<NoArgumentsSignature>(contravariantArgumentsTuple<NoArgumentsSignature>())
+expectType<OneArgumentSignature>(contravariantArgumentsTuple<OneArgumentSignature>())
+expectNotType<NoArgumentsSignature>(contravariantArgumentsTuple<OneArgumentSignature>())
+expectNotType<OneArgumentSignature>(contravariantArgumentsTuple<NoArgumentsSignature>())
+expectType<TwoArgumentsSignature>(contravariantArgumentsTuple<TwoArgumentsSignature>())
+expectNotType<OneArgumentSignature>(contravariantArgumentsTuple<TwoArgumentsSignature>())
+expectType<FinalOptionalArgumentSignature>(contravariantArgumentsTuple<FinalOptionalArgumentSignature>())
+expectType<FinalOptionalArgumentSignature>(contravariantArgumentsTuple<FinalOptionalArgumentSignature>())
+expectType<SingleOptionalArgumentSignature>(contravariantArgumentsTuple<SingleOptionalArgumentSignature>())
+expectType<MultipleFinalOptionalArgumentsSignature>(
+  contravariantArgumentsTuple<MultipleFinalOptionalArgumentsSignature>()
+)
+expectType<FinalRestArgumentSignature>(contravariantArgumentsTuple<FinalRestArgumentSignature>())
+expectType<FinalRestArgumentAfterArraySignature>(contravariantArgumentsTuple<FinalRestArgumentAfterArraySignature>())
+expectType<OneRestInTheMiddleTuple>(reconstructedTuple<OneRestInTheMiddleTuple>())
+expectType<OneRestInTheMiddleInArraysTuple>(reconstructedTuple<OneRestInTheMiddleInArraysTuple>())
+expectType<SingleRestSignature>(contravariantArgumentsTuple<SingleRestSignature>())
+expectType<PseudoOptionalNonFinalSignature>(contravariantArgumentsTuple<PseudoOptionalNonFinalSignature>())
+expectType<UndefinedNonFinalSignature>(contravariantArgumentsTuple<UndefinedNonFinalSignature>())
+expectType<PseudoRestNonFinalSignature>(contravariantArgumentsTuple<PseudoRestNonFinalSignature>())
+expectType<OneRestInTheMiddleInArraysSignature>(contravariantArgumentsTuple<OneRestInTheMiddleInArraysSignature>())
+expectType<OptionalBeforeRestSignature>(contravariantArgumentsTuple<OptionalBeforeRestSignature>())
+expectType<UndefinedBeforeRestSignature>(contravariantArgumentsTuple<UndefinedBeforeRestSignature>())
+expectType<DoubleOptionalBeforeRestSignature>(contravariantArgumentsTuple<DoubleOptionalBeforeRestSignature>())
+expectType<OptionalAfterRestSignature>(contravariantArgumentsTuple<OptionalAfterRestSignature>())
+expectType<DoubleOptionalAfterRestSignature>(contravariantArgumentsTuple<DoubleOptionalAfterRestSignature>())
 
 // Empty tuple
 /* TODO rm when no longer needed
 printType(undefined as unknown as AccumulatingStartingTuples<[]>)
-printType([] as StartingTuples<[]>)
+printType([] as ContravariantArgumentTuple<[]>)
 */
 // expectType<[[]]>(undefined as unknown as AccumulatingStartingTuples<[]>)
-expectType<[]>([] as StartingTuples<[]>)
+expectType<[]>([] as ContravariantArgumentTuple<[]>)
 
 // Single-element tuple
 type Single = [number]
 /* TODO rm when no longer needed
 printType(undefined as unknown as AccumulatingStartingTuples<Single>)
-printType([] as StartingTuples<Single>)
+printType([] as ContravariantArgumentTuple<Single>)
 */
 // expectType<[[number], []]>(undefined as unknown as AccumulatingStartingTuples<Single>)
-expectType<[number] | []>([] as StartingTuples<Single>)
+expectType<[number] | []>([] as ContravariantArgumentTuple<Single>)
 
 // Two-element tuple
 type Pair = [string, number]
 /* TODO rm when no longer needed
 printType(undefined as unknown as AccumulatingStartingTuples<Pair>)
-printType([] as StartingTuples<Pair>)
+printType([] as ContravariantArgumentTuple<Pair>)
 */
 // expectType<[[string, number], [string], []]>(undefined as unknown as AccumulatingStartingTuples<Pair>)
-expectType<[string, number] | [string] | []>([] as StartingTuples<Pair>)
+expectType<[string, number] | [string] | []>([] as ContravariantArgumentTuple<Pair>)
 
 // Three-element tuple
 type Triple = [boolean, string, number]
 /* TODO rm when no longer needed
 printType(undefined as unknown as AccumulatingStartingTuples<Triple>)
-printType([] as StartingTuples<Triple>)
+printType([] as ContravariantArgumentTuple<Triple>)
 */
 // expectType<[[boolean, string, number], [boolean, string], [boolean], []]>(
 //   undefined as unknown as AccumulatingStartingTuples<Triple>
 // )
-expectType<[boolean, string, number] | [boolean, string] | [boolean] | []>([] as StartingTuples<Triple>)
+expectType<[boolean, string, number] | [boolean, string] | [boolean] | []>([] as ContravariantArgumentTuple<Triple>)
 
 // Complex tuples with objects and arrays
 type Complex = [{ a: number }, string, number[], boolean, null]
@@ -64,7 +120,7 @@ expectType<
   | [{ a: number }, string]
   | [{ a: number }]
   | []
->([] as StartingTuples<Complex>)
+>([] as ContravariantArgumentTuple<Complex>)
 
 // Complex tuples with objects and array at the end
 type ComplexWithEndingArray = [{ a: number }, string, number[], boolean, null, string[]]
@@ -76,25 +132,25 @@ expectType<
   | [{ a: number }, string]
   | [{ a: number }]
   | []
->([] as StartingTuples<ComplexWithEndingArray>)
+>([] as ContravariantArgumentTuple<ComplexWithEndingArray>)
 
 // Tuple with disjunction
 type WithDisjunction = [string, boolean, number | undefined]
 expectType<[string, boolean, number | undefined] | [string, boolean] | [string] | []>(
-  [] as StartingTuples<WithDisjunction>
+  [] as ContravariantArgumentTuple<WithDisjunction>
 )
 
 // Edge cases
 type EdgeCase1 = [never]
-expectType<[never] | []>([] as StartingTuples<EdgeCase1>)
+expectType<[never] | []>([] as ContravariantArgumentTuple<EdgeCase1>)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EdgeCase2 = [any, unknown]
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-expectType<[any, unknown] | [any] | []>([] as StartingTuples<EdgeCase2>)
+expectType<[any, unknown] | [any] | []>([] as ContravariantArgumentTuple<EdgeCase2>)
 
 type EdgeCase3 = [undefined, null, void]
-expectType<[undefined, null, void] | [undefined, null] | [undefined] | []>([] as StartingTuples<EdgeCase3>)
+expectType<[undefined, null, void] | [undefined, null] | [undefined] | []>([] as ContravariantArgumentTuple<EdgeCase3>)
 
 // Very large tuple (to validate performance and correctness)
 type Large = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -110,7 +166,7 @@ expectType<
   | [1, 2]
   | [1]
   | []
->([] as StartingTuples<Large>)
+>([] as ContravariantArgumentTuple<Large>)
 
 // Single optional element
 type SingleOptional = [number?]
@@ -118,32 +174,34 @@ type SingleOptional = [number?]
 printType(undefined as unknown as AccumulatingStartingTuples<SingleOptional>)
 */
 // expectType<[[number?], []]>(undefined as unknown as AccumulatingStartingTuples<SingleOptional>)
-printType([] as unknown as StartingTuples<SingleOptional>)
-expectType<[number?] | []>([] as StartingTuples<SingleOptional>)
+printType([] as unknown as ContravariantArgumentTuple<SingleOptional>)
+expectType<[number?] | []>([] as ContravariantArgumentTuple<SingleOptional>)
 
 // Optional elements in the tuple
 type OptionalTuple = [number, string?]
-printType([] as unknown as StartingTuples<OptionalTuple>)
-expectType<[number, string?] | [number] | []>([] as StartingTuples<OptionalTuple>)
+printType([] as unknown as ContravariantArgumentTuple<OptionalTuple>)
+expectType<[number, string?] | [number] | []>([] as ContravariantArgumentTuple<OptionalTuple>)
 
 // Multiple optional elements
 type MultipleOptional = [number, string?, boolean?]
-printType([] as unknown as StartingTuples<MultipleOptional>)
-expectType<[number, string?, boolean?] | [number, string?] | [number] | []>([] as StartingTuples<MultipleOptional>)
+printType([] as unknown as ContravariantArgumentTuple<MultipleOptional>)
+expectType<[number, string?, boolean?] | [number, string?] | [number] | []>(
+  [] as ContravariantArgumentTuple<MultipleOptional>
+)
 
 // “Optional“ element in the middle
 // expectError(undefined as unknown as [number, string?, boolean]) // A required element cannot follow an optional element.
 type OptionalInTheMiddle = [number, string | undefined, boolean]
-printType([] as unknown as StartingTuples<OptionalInTheMiddle>)
+printType([] as unknown as ContravariantArgumentTuple<OptionalInTheMiddle>)
 expectType<[number, string | undefined, boolean] | [number, string | undefined] | [number] | []>(
-  [] as StartingTuples<OptionalInTheMiddle>
+  [] as ContravariantArgumentTuple<OptionalInTheMiddle>
 )
 
 type TupleWithOptionalMiddle<Rest extends unknown[]> = [number, ...Rest, boolean]
 type WithMiddle = TupleWithOptionalMiddle<[string?]> // [number, string | undefined, boolean]
-printType([] as unknown as StartingTuples<WithMiddle>)
+printType([] as unknown as ContravariantArgumentTuple<WithMiddle>)
 expectType<[number, string | undefined, boolean] | [number, string | undefined] | [number] | []>(
-  [] as StartingTuples<WithMiddle>
+  [] as ContravariantArgumentTuple<WithMiddle>
 )
 expectType<WithMiddle>([] as unknown as OptionalInTheMiddle)
 expectType<OptionalInTheMiddle>([] as unknown as WithMiddle)
@@ -153,24 +211,24 @@ type OnlyVariadic = [...number[]]
 printType([] as OnlyVariadic)
 printType([] as [...number[]])
 expectType<number[]>([] as unknown as OnlyVariadic)
-// printType([] as unknown as StartingTuples<OnlyVariadic>)
-// expectType<[...number[]] | []>([] as unknown as StartingTuples<OnlyVariadic>)
+// printType([] as unknown as ContravariantArgumentTuple<OnlyVariadic>)
+// expectType<[...number[]] | []>([] as unknown as ContravariantArgumentTuple<OnlyVariadic>)
 
 // Tuple with a variadic last element
 type VariadicLast = [number, ...string[]]
 printType([] as unknown as VariadicLast)
 printType([] as unknown as [number, ...string[]])
-// printType([] as unknown as StartingTuples<VariadicLast>)
-// expectType<[number, ...string[]] | [number] | []>([] as StartingTuples<VariadicLast>)
+// printType([] as unknown as ContravariantArgumentTuple<VariadicLast>)
+// expectType<[number, ...string[]] | [number] | []>([] as ContravariantArgumentTuple<VariadicLast>)
 // //
 // // // Multiple fixed elements followed by a variadic element
 // // type FixedAndVariadic = [boolean, number, ...string[]]
-// // expectType<[boolean, number, ...string[]] | [boolean, number] | [boolean] | []>([] as StartingTuples<FixedAndVariadic>)
+// // expectType<[boolean, number, ...string[]] | [boolean, number] | [boolean] | []>([] as ContravariantArgumentTuple<FixedAndVariadic>)
 // //
 // // // Mixed optional and variadic elements
 // // type MixedOptionalAndVariadic = [number, string?, ...boolean[]]
 // // expectType<[number, string?, ...boolean[]] | [number, string?] | [number] | []>(
-// //   [] as StartingTuples<MixedOptionalAndVariadic>
+// //   [] as ContravariantArgumentTuple<MixedOptionalAndVariadic>
 // // )
 //
 // printType((a: number, ...b: string[]) => true)
