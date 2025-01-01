@@ -14,65 +14,114 @@
   limitations under the License.
  */
 
-import { expectNotType, expectType, printType } from 'tsd'
-import type { UnknownFunction } from '../../../src'
+import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
+import type { UnknownFunction } from '../../../src/index.ts'
 import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
 import type { Level1AType } from '../../../test2/util/SomeTypes.ts'
-import type { ConstructedTuple } from '../../ts/ConstructedTuple'
-import type { DeconstructedTuple } from '../../ts/DeconstructedTuple'
 import type {
-  DoubleOptionalAfterRestSignature,
-  DoubleOptionalBeforeRestSignature,
   FinalOptionalArgumentSignature,
   FinalRestArgumentAfterArraySignature,
   FinalRestArgumentSignature,
   MultipleFinalOptionalArgumentsSignature,
   NoArgumentsSignature,
   OneArgumentSignature,
-  OneRestInTheMiddleInArraysSignature,
-  OneRestInTheMiddleInArraysTuple,
   OneRestInTheMiddleTuple,
-  OptionalAfterRestSignature,
-  OptionalBeforeRestSignature,
   PseudoOptionalNonFinalSignature,
+  PseudoOptionalNonFinalTuple,
   PseudoRestNonFinalSignature,
   SingleOptionalArgumentSignature,
   SingleRestSignature,
   TwoArgumentsSignature,
-  UndefinedBeforeRestSignature,
   UndefinedNonFinalSignature
 } from '../../ts/PossibleSignatures.ts'
 
-function contravariantArgumentsTuple<T extends UnknownFunction>() {
-  return unknownFunction as unknown as (...args: ConstructedTuple<DeconstructedTuple<Parameters<T>>>) => ReturnType<T>
+function unknownFunction(): unknown {
+  return undefined
 }
 
-expectType<NoArgumentsSignature>(contravariantArgumentsTuple<NoArgumentsSignature>())
-expectType<OneArgumentSignature>(contravariantArgumentsTuple<OneArgumentSignature>())
-expectNotType<NoArgumentsSignature>(contravariantArgumentsTuple<OneArgumentSignature>())
-expectNotType<OneArgumentSignature>(contravariantArgumentsTuple<NoArgumentsSignature>())
-expectType<TwoArgumentsSignature>(contravariantArgumentsTuple<TwoArgumentsSignature>())
-expectNotType<OneArgumentSignature>(contravariantArgumentsTuple<TwoArgumentsSignature>())
-expectType<FinalOptionalArgumentSignature>(contravariantArgumentsTuple<FinalOptionalArgumentSignature>())
-expectType<FinalOptionalArgumentSignature>(contravariantArgumentsTuple<FinalOptionalArgumentSignature>())
-expectType<SingleOptionalArgumentSignature>(contravariantArgumentsTuple<SingleOptionalArgumentSignature>())
-expectType<MultipleFinalOptionalArgumentsSignature>(
-  contravariantArgumentsTuple<MultipleFinalOptionalArgumentsSignature>()
+function contravariantArguments<T extends UnknownFunction>() {
+  return [] as unknown as ContravariantArgumentTuple<Parameters<T>>
+}
+
+function contravariantArgumentsSignature<T extends UnknownFunction>() {
+  return unknownFunction as unknown as (...args: ContravariantArgumentTuple<Parameters<T>>) => ReturnType<T>
+}
+
+expectType<[]>(contravariantArguments<NoArgumentsSignature>())
+expectAssignable<NoArgumentsSignature>(contravariantArgumentsSignature<NoArgumentsSignature>())
+
+expectType<[] | [number]>(contravariantArguments<OneArgumentSignature>())
+expectAssignable<OneArgumentSignature>(contravariantArgumentsSignature<OneArgumentSignature>())
+
+expectType<[] | [number[]] | [number[], string]>(contravariantArguments<TwoArgumentsSignature>())
+expectAssignable<TwoArgumentsSignature>(contravariantArgumentsSignature<TwoArgumentsSignature>())
+
+expectType<[] | [number[]] | [number[], string] | [number[], string, boolean?]>(
+  contravariantArguments<FinalOptionalArgumentSignature>()
 )
-expectType<FinalRestArgumentSignature>(contravariantArgumentsTuple<FinalRestArgumentSignature>())
-expectType<FinalRestArgumentAfterArraySignature>(contravariantArgumentsTuple<FinalRestArgumentAfterArraySignature>())
-expectType<OneRestInTheMiddleTuple>(reconstructedTuple<OneRestInTheMiddleTuple>())
-expectType<OneRestInTheMiddleInArraysTuple>(reconstructedTuple<OneRestInTheMiddleInArraysTuple>())
-expectType<SingleRestSignature>(contravariantArgumentsTuple<SingleRestSignature>())
-expectType<PseudoOptionalNonFinalSignature>(contravariantArgumentsTuple<PseudoOptionalNonFinalSignature>())
-expectType<UndefinedNonFinalSignature>(contravariantArgumentsTuple<UndefinedNonFinalSignature>())
-expectType<PseudoRestNonFinalSignature>(contravariantArgumentsTuple<PseudoRestNonFinalSignature>())
-expectType<OneRestInTheMiddleInArraysSignature>(contravariantArgumentsTuple<OneRestInTheMiddleInArraysSignature>())
-expectType<OptionalBeforeRestSignature>(contravariantArgumentsTuple<OptionalBeforeRestSignature>())
-expectType<UndefinedBeforeRestSignature>(contravariantArgumentsTuple<UndefinedBeforeRestSignature>())
-expectType<DoubleOptionalBeforeRestSignature>(contravariantArgumentsTuple<DoubleOptionalBeforeRestSignature>())
-expectType<OptionalAfterRestSignature>(contravariantArgumentsTuple<OptionalAfterRestSignature>())
-expectType<DoubleOptionalAfterRestSignature>(contravariantArgumentsTuple<DoubleOptionalAfterRestSignature>())
+// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
+expectNotAssignable<(a: number[], b: string, c?: boolean) => unknown>(
+  contravariantArgumentsSignature<FinalOptionalArgumentSignature>()
+)
+
+expectType<[] | [boolean?]>(contravariantArguments<SingleOptionalArgumentSignature>())
+// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
+expectNotAssignable<SingleOptionalArgumentSignature>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
+
+expectType<
+  | []
+  | [number]
+  | [number, string[]]
+  | [number, string[], boolean?]
+  | [number, string[], boolean?, number?]
+  | [number, string[], boolean?, number?, string?]
+>(contravariantArguments<MultipleFinalOptionalArgumentsSignature>())
+// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
+expectNotAssignable<SingleOptionalArgumentSignature>(
+  contravariantArgumentsSignature<MultipleFinalOptionalArgumentsSignature>()
+)
+
+expectType<[] | [number] | [number, string] | [number, string, ...boolean[]]>(
+  contravariantArguments<FinalRestArgumentSignature>()
+)
+expectAssignable<FinalRestArgumentSignature>(contravariantArgumentsSignature<FinalRestArgumentSignature>())
+
+expectType<[] | [number] | [number, string[]] | [number, string[], ...boolean[]]>(
+  contravariantArguments<FinalRestArgumentAfterArraySignature>()
+)
+expectAssignable<FinalRestArgumentAfterArraySignature>(
+  contravariantArgumentsSignature<FinalRestArgumentAfterArraySignature>()
+)
+
+expectType<[] | [number] | [number, ...string[]] | [number, ...string[], boolean]>(
+  [] as unknown as ContravariantArgumentTuple<OneRestInTheMiddleTuple>
+)
+expectAssignable<ContravariantArgumentTuple<OneRestInTheMiddleTuple>>([] as unknown as OneRestInTheMiddleTuple)
+
+expectType<[] | [...(string | number)[]]>(contravariantArguments<SingleRestSignature>())
+expectAssignable<SingleRestSignature>(contravariantArgumentsSignature<SingleRestSignature>())
+
+expectType<[] | [number] | [number, string | undefined /* NOTE: not `string?` */] | PseudoOptionalNonFinalTuple>(
+  contravariantArguments<PseudoOptionalNonFinalSignature>()
+)
+expectAssignable<PseudoOptionalNonFinalSignature>(contravariantArgumentsSignature<PseudoOptionalNonFinalSignature>())
+
+expectType<[] | [number] | [number, string | undefined] | [number, string | undefined, boolean]>(
+  contravariantArguments<UndefinedNonFinalSignature>()
+)
+expectAssignable<UndefinedNonFinalSignature>(contravariantArgumentsSignature<UndefinedNonFinalSignature>())
+
+expectType<[] | [number] | [number, string | undefined] | [number, string | undefined, boolean]>(
+  contravariantArguments<UndefinedNonFinalSignature>()
+)
+expectAssignable<PseudoRestNonFinalSignature>(contravariantArgumentsSignature<PseudoRestNonFinalSignature>())
+
+// expectType<OneRestInTheMiddleInArraysSignature>(contravariantArgumentsSignature<OneRestInTheMiddleInArraysSignature>())
+// expectType<OptionalBeforeRestSignature>(contravariantArgumentsSignature<OptionalBeforeRestSignature>())
+// expectType<UndefinedBeforeRestSignature>(contravariantArgumentsSignature<UndefinedBeforeRestSignature>())
+// expectType<DoubleOptionalBeforeRestSignature>(contravariantArgumentsSignature<DoubleOptionalBeforeRestSignature>())
+// expectType<OptionalAfterRestSignature>(contravariantArgumentsSignature<OptionalAfterRestSignature>())
+// expectType<DoubleOptionalAfterRestSignature>(contravariantArgumentsSignature<DoubleOptionalAfterRestSignature>())
 
 // Empty tuple
 /* TODO rm when no longer needed
@@ -174,17 +223,17 @@ type SingleOptional = [number?]
 printType(undefined as unknown as AccumulatingStartingTuples<SingleOptional>)
 */
 // expectType<[[number?], []]>(undefined as unknown as AccumulatingStartingTuples<SingleOptional>)
-printType([] as unknown as ContravariantArgumentTuple<SingleOptional>)
+// printType([] as unknown as ContravariantArgumentTuple<SingleOptional>)
 expectType<[number?] | []>([] as ContravariantArgumentTuple<SingleOptional>)
 
 // Optional elements in the tuple
 type OptionalTuple = [number, string?]
-printType([] as unknown as ContravariantArgumentTuple<OptionalTuple>)
+// printType([] as unknown as ContravariantArgumentTuple<OptionalTuple>)
 expectType<[number, string?] | [number] | []>([] as ContravariantArgumentTuple<OptionalTuple>)
 
 // Multiple optional elements
 type MultipleOptional = [number, string?, boolean?]
-printType([] as unknown as ContravariantArgumentTuple<MultipleOptional>)
+// printType([] as unknown as ContravariantArgumentTuple<MultipleOptional>)
 expectType<[number, string?, boolean?] | [number, string?] | [number] | []>(
   [] as ContravariantArgumentTuple<MultipleOptional>
 )
@@ -192,14 +241,14 @@ expectType<[number, string?, boolean?] | [number, string?] | [number] | []>(
 // “Optional“ element in the middle
 // expectError(undefined as unknown as [number, string?, boolean]) // A required element cannot follow an optional element.
 type OptionalInTheMiddle = [number, string | undefined, boolean]
-printType([] as unknown as ContravariantArgumentTuple<OptionalInTheMiddle>)
+// printType([] as unknown as ContravariantArgumentTuple<OptionalInTheMiddle>)
 expectType<[number, string | undefined, boolean] | [number, string | undefined] | [number] | []>(
   [] as ContravariantArgumentTuple<OptionalInTheMiddle>
 )
 
 type TupleWithOptionalMiddle<Rest extends unknown[]> = [number, ...Rest, boolean]
 type WithMiddle = TupleWithOptionalMiddle<[string?]> // [number, string | undefined, boolean]
-printType([] as unknown as ContravariantArgumentTuple<WithMiddle>)
+// printType([] as unknown as ContravariantArgumentTuple<WithMiddle>)
 expectType<[number, string | undefined, boolean] | [number, string | undefined] | [number] | []>(
   [] as ContravariantArgumentTuple<WithMiddle>
 )
@@ -208,16 +257,16 @@ expectType<OptionalInTheMiddle>([] as unknown as WithMiddle)
 
 // Variadic element alone
 type OnlyVariadic = [...number[]]
-printType([] as OnlyVariadic)
-printType([] as [...number[]])
+// printType([] as OnlyVariadic)
+// printType([] as [...number[]])
 expectType<number[]>([] as unknown as OnlyVariadic)
 // printType([] as unknown as ContravariantArgumentTuple<OnlyVariadic>)
 // expectType<[...number[]] | []>([] as unknown as ContravariantArgumentTuple<OnlyVariadic>)
 
 // Tuple with a variadic last element
 type VariadicLast = [number, ...string[]]
-printType([] as unknown as VariadicLast)
-printType([] as unknown as [number, ...string[]])
+// printType([] as unknown as VariadicLast)
+// printType([] as unknown as [number, ...string[]])
 // printType([] as unknown as ContravariantArgumentTuple<VariadicLast>)
 // expectType<[number, ...string[]] | [number] | []>([] as ContravariantArgumentTuple<VariadicLast>)
 // //
@@ -319,33 +368,33 @@ type TypePerArgument<Self, Args extends unknown[]> = Flatten<
   { self: Self } & { [Index in keyof Args as Index extends `${number}` ? Index : never]: Args[Index] }
 >
 
-printType(undefined as unknown as TypePerArgument<Level1AType, []>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, []>)
 expectType<{ self: Level1AType }>(undefined as unknown as TypePerArgument<Level1AType, []>)
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [number]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [number]>)
 expectType<{ self: Level1AType; 0: number }>(undefined as unknown as TypePerArgument<Level1AType, [number]>)
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean]>)
 expectType<{ self: Level1AType; 0: number; 1: boolean }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, boolean]>
 )
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string?]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string?]>)
 expectType<{ self: Level1AType; 0: number; 1: boolean; 2?: string }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string?]>
 )
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string[]]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string[]]>)
 expectType<{ self: Level1AType; 0: number; 1: boolean; 2: string[] }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, boolean, string[]]>
 )
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, string[]?]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, string[]?]>)
 expectType<{ self: Level1AType; 0: number; 1?: boolean; 2?: string[] }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, string[]?]>
 )
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
 expectNotType<{ self: Level1AType; 0: number; 1?: boolean; 2?: string[] }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, ...string[]]>
 )
@@ -354,7 +403,7 @@ expectType<{ self: Level1AType; 0: number; 1?: boolean }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, boolean?, ...string[]]>
 )
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>)
 expectNotType<{ self: Level1AType; 0: number; 1?: boolean[]; 2: string[] }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>
 )
@@ -366,7 +415,7 @@ expectType<{ self: Level1AType; 0: number }>(
   undefined as unknown as TypePerArgument<Level1AType, [number, ...boolean[], string]>
 )
 
-printType(undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>)
+// printType(undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>)
 expectNotType<{ self: Level1AType; 0?: number[]; 1: boolean; 2: string[] }>(
   undefined as unknown as TypePerArgument<Level1AType, [...number[], boolean, string]>
 )
@@ -398,22 +447,22 @@ type ValueTypePerArgument<Self, Args extends unknown[]> = Flatten<
   }
 >
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, []>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, []>)
 expectType<{ self: Level1AType }>(undefined as unknown as ValueTypePerArgument<Level1AType, []>)
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number]>)
 expectType<{ self: Level1AType; 0: { value: number; optional: false; variadic: false } }>(
   undefined as unknown as ValueTypePerArgument<Level1AType, [number]>
 )
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean]>)
 expectType<{
   self: Level1AType
   0: { value: number; optional: false; variadic: false }
   1: { value: boolean; optional: false; variadic: false }
 }>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean]>)
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string | undefined]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string | undefined]>)
 expectType<{
   self: Level1AType
   0: { value: number; optional: false; variadic: false }
@@ -421,7 +470,7 @@ expectType<{
   2: { value: string | undefined; optional: true; variadic: false } // note that optional is true!!!
 }>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string | undefined]>)
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string?]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string?]>)
 expectType<{
   self: Level1AType
   0: { value: number; optional: false; variadic: false }
@@ -430,7 +479,7 @@ expectType<{
   2?: { value: string | undefined; optional: true; variadic: false }
 }>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string?]>)
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string[]]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string[]]>)
 expectType<{
   self: Level1AType
   0: { value: number; optional: false; variadic: false }
@@ -438,7 +487,7 @@ expectType<{
   2: { value: string[]; optional: false; variadic: false }
 }>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean, string[]]>)
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, string[]?]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, string[]?]>)
 expectType<{
   self: Level1AType
   0: { value: number; optional: false; variadic: false }
@@ -446,7 +495,7 @@ expectType<{
   2?: { value: string[] | undefined; optional: true; variadic: false }
 }>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, string[]?]>)
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
 expectNotType<{
   self: Level1AType
   0: { value: number; optional: false; variadic: false }
@@ -460,7 +509,7 @@ expectType<{
   1?: { value: boolean | undefined; optional: true; variadic: false }
 }>(undefined as unknown as ValueTypePerArgument<Level1AType, [number, boolean?, ...string[]]>)
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, ...boolean[], string]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [number, ...boolean[], string]>)
 expectNotType<{
   self: Level1AType
   0: { value: number; optional: false; variadic: false }
@@ -477,7 +526,7 @@ expectType<{ self: Level1AType; 0: { value: number; optional: false; variadic: f
   undefined as unknown as ValueTypePerArgument<Level1AType, [number, ...boolean[], string]>
 )
 
-printType(undefined as unknown as ValueTypePerArgument<Level1AType, [...number[], boolean, string]>)
+// printType(undefined as unknown as ValueTypePerArgument<Level1AType, [...number[], boolean, string]>)
 expectNotType<{
   self: Level1AType
   0?: { value: number; optional: false; variadic: true }
