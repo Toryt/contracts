@@ -17,8 +17,10 @@
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
-import type { Level1AType } from '../../../test2/util/SomeTypes.ts'
+import type { Level1AType, Level1BType } from '../../../test2/util/SomeTypes.ts'
 import type {
+  ASignature,
+  ASignatureWithOptionalArgs,
   DoubleOptionalAfterRestSignature,
   DoubleOptionalBeforeRestSignature,
   FinalOptionalArgumentSignature,
@@ -173,6 +175,15 @@ expectType<[] | [number[]] | [number[], ...(string | boolean | number | undefine
   contravariantArguments<DoubleOptionalAfterRestSignature>()
 )
 expectAssignable<DoubleOptionalAfterRestSignature>(contravariantArgumentsSignature<DoubleOptionalAfterRestSignature>())
+
+expectType<[] | [number] | [number, Level1BType]>(contravariantArguments<ASignature>())
+expectAssignable<ASignature>(contravariantArgumentsSignature<ASignature>())
+
+expectType<[] | [number] | [number, Level1BType?] | [number, Level1BType?, number?]>(
+  contravariantArguments<ASignatureWithOptionalArgs>()
+)
+// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
+expectNotAssignable<ASignatureWithOptionalArgs>(contravariantArgumentsSignature<ASignatureWithOptionalArgs>())
 
 // Complex tuples with objects and arrays
 type Complex = [{ a: number }, string, number[], boolean, null]

@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  */
+
+import type { Level1BType, Level2Type } from '../../test2/util/SomeTypes.ts'
 
 export type NoArgumentsSignature = () => unknown
 
@@ -110,3 +112,6 @@ export type DoubleOptionalAfterRestSignature = (...args: DoubleOptionalAfterRest
 export function doubleOptionalAfterRest(...args: DoubleOptionalAfterRestTuple): unknown {
   return undefined
 }
+
+export type ASignature = (a: number, b: Level1BType) => Level2Type
+export type ASignatureWithOptionalArgs = (a: number, b?: Level1BType, c?: number) => Level2Type
