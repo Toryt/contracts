@@ -19,19 +19,25 @@ import type { UnknownFunction } from '../../../src/index.ts'
 import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
 import type { Level1AType } from '../../../test2/util/SomeTypes.ts'
 import type {
+  DoubleOptionalAfterRestSignature,
+  DoubleOptionalBeforeRestSignature,
   FinalOptionalArgumentSignature,
   FinalRestArgumentAfterArraySignature,
   FinalRestArgumentSignature,
   MultipleFinalOptionalArgumentsSignature,
   NoArgumentsSignature,
   OneArgumentSignature,
+  OneRestInTheMiddleInArraysSignature,
   OneRestInTheMiddleTuple,
+  OptionalAfterRestSignature,
+  OptionalBeforeRestSignature,
   PseudoOptionalNonFinalSignature,
   PseudoOptionalNonFinalTuple,
   PseudoRestNonFinalSignature,
   SingleOptionalArgumentSignature,
   SingleRestSignature,
   TwoArgumentsSignature,
+  UndefinedBeforeRestSignature,
   UndefinedNonFinalSignature
 } from '../../ts/PossibleSignatures.ts'
 
@@ -121,17 +127,52 @@ expectType<[] | [number] | [number, string | undefined] | [number, string | unde
 )
 expectAssignable<UndefinedNonFinalSignature>(contravariantArgumentsSignature<UndefinedNonFinalSignature>())
 
-expectType<[] | [number] | [number, string | undefined] | [number, string | undefined, boolean]>(
-  contravariantArguments<UndefinedNonFinalSignature>()
+expectType<[] | [number] | [number, ...string[]] | [number, ...string[], boolean]>(
+  contravariantArguments<PseudoRestNonFinalSignature>()
 )
 expectAssignable<PseudoRestNonFinalSignature>(contravariantArgumentsSignature<PseudoRestNonFinalSignature>())
 
-// expectType<OneRestInTheMiddleInArraysSignature>(contravariantArgumentsSignature<OneRestInTheMiddleInArraysSignature>())
-// expectType<OptionalBeforeRestSignature>(contravariantArgumentsSignature<OptionalBeforeRestSignature>())
-// expectType<UndefinedBeforeRestSignature>(contravariantArgumentsSignature<UndefinedBeforeRestSignature>())
-// expectType<DoubleOptionalBeforeRestSignature>(contravariantArgumentsSignature<DoubleOptionalBeforeRestSignature>())
-// expectType<OptionalAfterRestSignature>(contravariantArgumentsSignature<OptionalAfterRestSignature>())
-// expectType<DoubleOptionalAfterRestSignature>(contravariantArgumentsSignature<DoubleOptionalAfterRestSignature>())
+expectType<[] | [number[]] | [number[], ...string[]] | [number[], ...string[], boolean[]]>(
+  contravariantArguments<OneRestInTheMiddleInArraysSignature>()
+)
+expectAssignable<OneRestInTheMiddleInArraysSignature>(
+  contravariantArgumentsSignature<OneRestInTheMiddleInArraysSignature>()
+)
+
+expectType<[] | [number[]] | [number[], boolean?] | [number[], boolean?, ...string[]]>(
+  contravariantArguments<OptionalBeforeRestSignature>()
+)
+// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
+expectNotAssignable<OptionalBeforeRestSignature>(contravariantArgumentsSignature<OptionalBeforeRestSignature>())
+
+expectType<[] | [number[]] | [number[], boolean | undefined] | [number[], boolean | undefined, ...string[]]>(
+  contravariantArguments<UndefinedBeforeRestSignature>()
+)
+expectAssignable<UndefinedBeforeRestSignature>(contravariantArgumentsSignature<UndefinedBeforeRestSignature>())
+
+expectType<
+  | []
+  | [number[]]
+  | [number[], string[]?]
+  | [number[], string[]?, boolean?]
+  | [number[], string[]?, boolean?, ...string[]]
+>(contravariantArguments<DoubleOptionalBeforeRestSignature>())
+// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
+expectNotAssignable<DoubleOptionalBeforeRestSignature>(
+  contravariantArgumentsSignature<DoubleOptionalBeforeRestSignature>()
+)
+
+// NOTE: changed signature
+expectType<[] | [number[]] | [number[], ...(string | boolean | undefined)[]]>(
+  contravariantArguments<OptionalAfterRestSignature>()
+)
+expectAssignable<OptionalAfterRestSignature>(contravariantArgumentsSignature<OptionalAfterRestSignature>())
+
+// NOTE: changed signature
+expectType<[] | [number[]] | [number[], ...(string | boolean | number | undefined)[]]>(
+  contravariantArguments<DoubleOptionalAfterRestSignature>()
+)
+expectAssignable<DoubleOptionalAfterRestSignature>(contravariantArgumentsSignature<DoubleOptionalAfterRestSignature>())
 
 // Empty tuple
 /* TODO rm when no longer needed
