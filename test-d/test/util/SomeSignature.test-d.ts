@@ -15,7 +15,7 @@
  */
 
 import { expectAssignable, expectNotAssignable } from 'tsd'
-import type { ASignature, ASignatureWithOptionalArgs } from '../../../test2/util/ASignature.ts'
+import type { ASignature, ASignatureWithOptionalArgs } from '../../../test2/util/SomeSignatures.ts'
 import {
   type Level1AType,
   type Level1BType,
