@@ -21,18 +21,19 @@ import type {
   TupleElement
 } from './DeconstructedTuple.ts'
 
-export type ConstructedTuple<Deconstructed extends TupleElement<unknown>[]> = Deconstructed extends []
-  ? []
-  : Deconstructed extends [first: RequiredTupleElement<infer Required>, ...last: infer TailAfterRequired]
-    ? TailAfterRequired extends TupleElement<unknown>[]
-      ? [Required, ...ConstructedTuple<TailAfterRequired>]
-      : 'error: `TailAfterRequired` is not a `TupleElement<unknown>[]`'
-    : Deconstructed extends [first: OptionalTupleElement<infer Optional | undefined>, ...last: infer TailAfterOptional]
-      ? TailAfterOptional extends TupleElement<unknown>[] // Explicitly constrain
-        ? [Optional?, ...ConstructedTuple<TailAfterOptional>]
-        : 'error: `TailAfterOptional` is not a `TupleElement<unknown>[]`'
-      : Deconstructed extends [first: RestTupleElement<infer Rest>, ...last: infer TailAfterRest]
-        ? TailAfterRest extends TupleElement<unknown>[] // Explicitly constrain
-          ? [...Rest[], ...ConstructedTuple<TailAfterRest>]
-          : 'error: `TailAfterRest` is not a `TupleElement<unknown>[]`'
-        : []
+export type ConstructedTuple<Deconstructed extends TupleElement<unknown>[]> = Deconstructed extends [
+  first: RequiredTupleElement<infer Required>,
+  ...last: infer TailAfterRequired
+]
+  ? TailAfterRequired extends TupleElement<unknown>[]
+    ? [Required, ...ConstructedTuple<TailAfterRequired>]
+    : 'error: `TailAfterRequired` is not a `TupleElement<unknown>[]`'
+  : Deconstructed extends [first: OptionalTupleElement<infer Optional | undefined>, ...last: infer TailAfterOptional]
+    ? TailAfterOptional extends TupleElement<unknown>[] // Explicitly constrain
+      ? [Optional?, ...ConstructedTuple<TailAfterOptional>]
+      : 'error: `TailAfterOptional` is not a `TupleElement<unknown>[]`'
+    : Deconstructed extends [first: RestTupleElement<infer Rest>, ...last: infer TailAfterRest]
+      ? TailAfterRest extends TupleElement<unknown>[] // Explicitly constrain
+        ? [...Rest[], ...ConstructedTuple<TailAfterRest>]
+        : 'error: `TailAfterRest` is not a `TupleElement<unknown>[]`'
+      : []
