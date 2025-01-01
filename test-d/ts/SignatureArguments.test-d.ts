@@ -16,18 +16,9 @@
 
 import { expectError, expectType, expectNotType } from 'tsd'
 import {
-  pseudoRestNonFinal,
-  oneRestInTheMiddleInArrays,
   optionalAfterRest,
   optionalBeforeRest,
   undefinedBeforeRest,
-  type NoRestViaMultipleVariadics,
-  type OneRestViaMultipleVariadics1,
-  type OneRestViaMultipleVariadics2,
-  type OneRest1,
-  type OneRest2,
-  type PseudoRestNonFinalSignature,
-  type OneRestInTheMiddleInArraysSignature,
   type OptionalBeforeRestSignature,
   type UndefinedBeforeRestSignature,
   type OptionalAfterRestSignature,
@@ -36,66 +27,6 @@ import {
   type DoubleOptionalAfterRestSignature,
   doubleOptionalAfterRest
 } from './PossibleSignatures.ts'
-
-/* Non-final rest argument, revisited
-   -------------------------------------- */
-
-/* With tuple shenanigans, we can create a signature with a rest argument in the middle: */
-
-expectType<number>(([] as unknown as Parameters<PseudoRestNonFinalSignature>).length)
-expectType<number>(([] as unknown as Parameters<typeof pseudoRestNonFinal>).length)
-
-pseudoRestNonFinal(0, true)
-pseudoRestNonFinal(0, '', true)
-pseudoRestNonFinal(0, 'one', 'two', true)
-expectError(pseudoRestNonFinal(0, 'one', 'two', 'three'))
-expectType<[a: number, ...b: string[], c: boolean]>([] as unknown as Parameters<PseudoRestNonFinalSignature>)
-
-expectType<number>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[0])
-expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[1])
-expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[2])
-expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[3])
-expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[999999])
-
-/* Inbetween arrays: */
-
-expectType<number>(([] as unknown as Parameters<OneRestInTheMiddleInArraysSignature>).length)
-expectType<number>(([] as unknown as Parameters<typeof oneRestInTheMiddleInArrays>).length)
-
-oneRestInTheMiddleInArrays([0], [true])
-oneRestInTheMiddleInArrays([0], '', [true])
-oneRestInTheMiddleInArrays([0], 'one', 'two', [true])
-expectError(oneRestInTheMiddleInArrays([0], 'one', 'two', 'three'))
-expectType<[a: number[], ...b: string[], c: boolean[]]>(
-  [] as unknown as Parameters<OneRestInTheMiddleInArraysSignature>
-)
-
-expectType<number[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[0])
-expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[1])
-expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[2])
-expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[3])
-expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[999999])
-
-/* Multiple rest arguments, revisited
-   -------------------------------------- */
-
-/* There seems to be no way to get a signature, or a tuple type, with multiple rest arguments or elements. */
-
-/* We can combine multiple variadics in a tuple type: */
-
-expectType<4>(([] as unknown as NoRestViaMultipleVariadics).length)
-expectType<[number, string, boolean, string]>([] as unknown as NoRestViaMultipleVariadics)
-
-expectType<number>(([] as unknown as OneRestViaMultipleVariadics1).length)
-expectType<[number, ...string[], boolean, string]>([] as unknown as OneRestViaMultipleVariadics1)
-
-expectType<number>(([] as unknown as OneRestViaMultipleVariadics2).length)
-expectType<[number, string, ...boolean[], string]>([] as unknown as OneRestViaMultipleVariadics2)
-
-/* But not if the different rest elements together contain more than 1 rest element. Note that the error message is
-   confusing (“A rest element cannot follow another rest element.”). */
-// @ts-expect-error
-type MultipleRestsViaMultipleVariadics = [...OneRest1, ...OneRest2]
 
 /* Optional before rest
    -------------------- */

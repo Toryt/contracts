@@ -14,8 +14,15 @@
   limitations under the License.
  */
 
-import { expectType } from 'tsd'
-import { type OneRestInTheMiddleTuple, type OneRestInTheMiddleInArraysTuple } from '../PossibleSignatures.ts'
+import { expectError, expectType } from 'tsd'
+import {
+  type OneRestInTheMiddleTuple,
+  type OneRestInTheMiddleInArraysTuple,
+  type PseudoRestNonFinalSignature,
+  pseudoRestNonFinal,
+  type OneRestInTheMiddleInArraysSignature,
+  oneRestInTheMiddleInArrays
+} from '../PossibleSignatures.ts'
 
 /* Non-final rest argument
    --------------------------- */
@@ -65,3 +72,42 @@ expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArray
 expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[2])
 expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[3])
 expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[999999])
+
+/* Non-final rest argument, revisited
+   -------------------------------------- */
+
+/* With tuple shenanigans, we can create a signature with a rest argument in the middle: */
+
+expectType<number>(([] as unknown as Parameters<PseudoRestNonFinalSignature>).length)
+expectType<number>(([] as unknown as Parameters<typeof pseudoRestNonFinal>).length)
+
+pseudoRestNonFinal(0, true)
+pseudoRestNonFinal(0, '', true)
+pseudoRestNonFinal(0, 'one', 'two', true)
+expectError(pseudoRestNonFinal(0, 'one', 'two', 'three'))
+expectType<[a: number, ...b: string[], c: boolean]>([] as unknown as Parameters<PseudoRestNonFinalSignature>)
+
+expectType<number>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[0])
+expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[1])
+expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[2])
+expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[3])
+expectType<string | boolean>(undefined as unknown as Parameters<PseudoRestNonFinalSignature>[999999])
+
+/* Inbetween arrays: */
+
+expectType<number>(([] as unknown as Parameters<OneRestInTheMiddleInArraysSignature>).length)
+expectType<number>(([] as unknown as Parameters<typeof oneRestInTheMiddleInArrays>).length)
+
+oneRestInTheMiddleInArrays([0], [true])
+oneRestInTheMiddleInArrays([0], '', [true])
+oneRestInTheMiddleInArrays([0], 'one', 'two', [true])
+expectError(oneRestInTheMiddleInArrays([0], 'one', 'two', 'three'))
+expectType<[a: number[], ...b: string[], c: boolean[]]>(
+  [] as unknown as Parameters<OneRestInTheMiddleInArraysSignature>
+)
+
+expectType<number[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[0])
+expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[1])
+expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[2])
+expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[3])
+expectType<string | boolean[]>(undefined as unknown as Parameters<OneRestInTheMiddleInArraysSignature>[999999])
