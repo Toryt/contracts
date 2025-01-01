@@ -15,7 +15,11 @@
  */
 
 import { expectType } from 'tsd'
-import { type FinalRestArgumentSignature, type FinalRestArgumentAfterArraySignature } from '../PossibleSignatures.ts'
+import {
+  type FinalRestArgumentSignature,
+  type FinalRestArgumentAfterArraySignature,
+  type SingleRestSignature
+} from '../PossibleSignatures.ts'
 
 expectType<number>(([] as unknown as Parameters<FinalRestArgumentSignature>).length)
 
@@ -83,3 +87,13 @@ type SeparatedMultipleRestsInTuple = [
   d1: boolean,
   ...e: string[]
 ]
+
+/* Single rest argument
+   --------------------------- */
+
+expectType<number>(([] as unknown as Parameters<SingleRestSignature>).length)
+expectType<(string | number)[]>([] as unknown as Parameters<SingleRestSignature>)
+
+expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[0])
+expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[1])
+expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[999999])

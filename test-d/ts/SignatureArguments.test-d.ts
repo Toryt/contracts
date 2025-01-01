@@ -16,24 +16,16 @@
 
 import { expectError, expectType, expectNotType } from 'tsd'
 import {
-  pseudoOptionalNonFinal,
   pseudoRestNonFinal,
   oneRestInTheMiddleInArrays,
   optionalAfterRest,
   optionalBeforeRest,
-  undefinedNonFinal,
   undefinedBeforeRest,
   type NoRestViaMultipleVariadics,
   type OneRestViaMultipleVariadics1,
   type OneRestViaMultipleVariadics2,
   type OneRest1,
   type OneRest2,
-  type OneRestInTheMiddleTuple,
-  type PseudoOptionalNonFinalTuple,
-  type UndefinedNonFinalTuple,
-  type OneRestInTheMiddleInArraysTuple,
-  type PseudoOptionalNonFinalSignature,
-  type UndefinedNonFinalSignature,
   type PseudoRestNonFinalSignature,
   type OneRestInTheMiddleInArraysSignature,
   type OptionalBeforeRestSignature,
@@ -42,134 +34,8 @@ import {
   type DoubleOptionalBeforeRestSignature,
   doubleOptionalBeforeRest,
   type DoubleOptionalAfterRestSignature,
-  doubleOptionalAfterRest,
-  type SingleRestSignature
+  doubleOptionalAfterRest
 } from './PossibleSignatures.ts'
-
-/* Non-final optional argument
-   --------------------------- */
-
-/* There can be no required arguments after an optional argument in a signature, or a tuple. Even `expectError` of
-   `tsd` rejects this. We need `@ts-expect-error` to show this. */
-// @ts-expect-error
-function optionalBeforeRequired(a: number, b?: string, c: boolean): unknown {
-  return undefined
-}
-
-function optionalBeforeRequiredInTuple(): unknown {
-  // @ts-expect-error
-  const obrit: [a: number, b?: string, c: boolean] = [0, '', true]
-  return obrit
-}
-optionalBeforeRequiredInTuple()
-
-/* Non-final rest argument
-   --------------------------- */
-
-/* There can be no required arguments after a rest argument in a signature either. Even `expectError` of `tsd`
-   rejects this. We need `@ts-expect-error` to show this. */
-// @ts-expect-error
-function restBeforeRequired(a: number, ...b: string[], c: boolean): unknown {
-  return undefined
-}
-/* But we _can_ have rest elements before required elements in a tuple: */
-function restBeforeRequiredInTuple(): OneRestInTheMiddleTuple {
-  let vbrit: OneRestInTheMiddleTuple = [0, '', true]
-  vbrit = [0, true]
-  vbrit = [0, '', true]
-  vbrit = [0, 'one', 'two', true]
-  return vbrit
-}
-restBeforeRequiredInTuple()
-
-expectType<number>(([] as unknown as ReturnType<typeof restBeforeRequiredInTuple>).length)
-expectType<number>(([] as unknown as OneRestInTheMiddleTuple).length)
-
-expectType<number>(undefined as unknown as OneRestInTheMiddleTuple[0])
-expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[1])
-expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[2])
-expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[3])
-expectType<string | boolean>(undefined as unknown as OneRestInTheMiddleTuple[999999])
-
-/* Inbetween arrays: */
-
-/* But we _can_ have rest elements before required elements in a tuple: */
-function restBeforeRequiredInbewteenArraysInTuple(): OneRestInTheMiddleInArraysTuple {
-  let vbrit: OneRestInTheMiddleInArraysTuple = [[0], '', [true]]
-  vbrit = [[0], [true]]
-  vbrit = [[0], '', [true]]
-  vbrit = [[0], 'one', 'two', [true]]
-  return vbrit
-}
-restBeforeRequiredInbewteenArraysInTuple()
-
-expectType<number>(([] as unknown as ReturnType<typeof restBeforeRequiredInbewteenArraysInTuple>).length)
-expectType<number>(([] as unknown as OneRestInTheMiddleInArraysTuple).length)
-
-expectType<number[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[0])
-expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[1])
-expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[2])
-expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[3])
-expectType<string | boolean[]>(undefined as unknown as OneRestInTheMiddleInArraysTuple[999999])
-
-/* Single rest argument
-   --------------------------- */
-
-expectType<number>(([] as unknown as Parameters<SingleRestSignature>).length)
-expectType<(string | number)[]>([] as unknown as Parameters<SingleRestSignature>)
-
-expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[0])
-expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[1])
-expectType<string | number>(undefined as unknown as Parameters<SingleRestSignature>[999999])
-
-/* Non-final optional argument, revisited
-   -------------------------------------- */
-
-/* But that means that, through variadic shenanigans, we can have, or at least emulate, non-final optional elements.
-   But they are not truly optional: we need to fill the position with `undefined`: */
-
-expectType<3>(([] as unknown as PseudoOptionalNonFinalTuple).length)
-expectType<3>(([] as unknown as Parameters<typeof pseudoOptionalNonFinal>).length)
-
-expectError(pseudoOptionalNonFinal(0, true))
-pseudoOptionalNonFinal(0, undefined, true)
-pseudoOptionalNonFinal(0, '', true)
-expectError(pseudoOptionalNonFinal(0, 'one', 'two', true))
-expectType<[a: number, b: string | undefined, c: boolean]>([] as unknown as Parameters<PseudoOptionalNonFinalSignature>)
-
-expectType<number>(undefined as unknown as Parameters<PseudoOptionalNonFinalSignature>[0])
-expectType<string | undefined>(undefined as unknown as Parameters<PseudoOptionalNonFinalSignature>[1])
-expectType<boolean>(undefined as unknown as Parameters<PseudoOptionalNonFinalSignature>[2])
-// @ts-expect-error
-type NoElementAtIndex3b = Parameters<PseudoOptionalNonFinalSignature>[3]
-
-function pseudoOptionalBeforeRequiredInTupleRevisited(): unknown {
-  let pobrit: PseudoOptionalNonFinalTuple
-  pobrit = [0, undefined, true]
-  pobrit = [0, '', true]
-  expectError((pobrit = [0, 'one', 'two', true]))
-  return pobrit
-}
-pseudoOptionalBeforeRequiredInTupleRevisited()
-
-/* Of course, we can get the same effect much simpler by marking the middle element as possibly `undefined`: */
-expectType<3>(([] as unknown as Parameters<typeof undefinedNonFinal>).length)
-expectType<3>(([] as unknown as Parameters<UndefinedNonFinalSignature>).length)
-
-expectError(undefinedNonFinal(0, true))
-undefinedNonFinal(0, undefined, true)
-undefinedNonFinal(0, '', true)
-expectError(undefinedNonFinal(0, 'one', 'two', true))
-expectType<[a: number, b: string | undefined, c: boolean]>([] as unknown as Parameters<UndefinedNonFinalSignature>)
-
-function undefinedNonFinalInTuple(): unknown {
-  let pobrit: UndefinedNonFinalTuple
-  pobrit = [0, undefined, true]
-  pobrit = [0, '', true]
-  expectError((pobrit = [0, 'one', 'two', true]))
-  return pobrit
-}
-undefinedNonFinalInTuple()
 
 /* Non-final rest argument, revisited
    -------------------------------------- */
