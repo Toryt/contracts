@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,13 +16,52 @@
 
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { NeverFunction, UnknownFunction } from '../../../src/index.ts'
-import type { ASignature } from '../../../test2/util/ASignature.ts'
+import type {
+  ASignature,
+  ASignatureWithOptionalArgs,
+  DoubleOptionalAfterRestSignature,
+  DoubleOptionalBeforeRestSignature,
+  FinalOptionalArgumentSignature,
+  FinalRestArgumentSignature,
+  MultipleFinalOptionalArgumentsSignature,
+  NoArgumentsSignature,
+  OneArgumentSignature,
+  OneRestInTheMiddleInArraysSignature,
+  OptionalAfterRestSignature,
+  OptionalBeforeRestSignature,
+  PseudoOptionalNonFinalSignature,
+  PseudoRestNonFinalSignature,
+  SingleOptionalArgumentSignature,
+  SingleRestSignature,
+  TwoArgumentsSignature,
+  UndefinedBeforeRestSignature,
+  UndefinedNonFinalSignature
+} from '../../../test2/util/SomeSignatures.ts'
 
 const aNeverFunction: NeverFunction = function () {
   throw new Error()
 }
 expectAssignable<UnknownFunction>(aNeverFunction)
+
+expectAssignable<NoArgumentsSignature>(aNeverFunction)
+expectAssignable<OneArgumentSignature>(aNeverFunction)
+expectAssignable<TwoArgumentsSignature>(aNeverFunction)
+expectAssignable<FinalOptionalArgumentSignature>(aNeverFunction)
+expectAssignable<SingleOptionalArgumentSignature>(aNeverFunction)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(aNeverFunction)
+expectAssignable<FinalRestArgumentSignature>(aNeverFunction)
+expectAssignable<SingleRestSignature>(aNeverFunction)
+expectAssignable<PseudoOptionalNonFinalSignature>(aNeverFunction)
+expectAssignable<UndefinedNonFinalSignature>(aNeverFunction)
+expectAssignable<PseudoRestNonFinalSignature>(aNeverFunction)
+expectAssignable<OneRestInTheMiddleInArraysSignature>(aNeverFunction)
+expectAssignable<OptionalBeforeRestSignature>(aNeverFunction)
+expectAssignable<DoubleOptionalBeforeRestSignature>(aNeverFunction)
+expectAssignable<UndefinedBeforeRestSignature>(aNeverFunction)
+expectAssignable<OptionalAfterRestSignature>(aNeverFunction)
+expectAssignable<DoubleOptionalAfterRestSignature>(aNeverFunction)
 expectAssignable<ASignature>(aNeverFunction)
+expectAssignable<ASignatureWithOptionalArgs>(aNeverFunction)
 
 expectAssignable<NeverFunction>(aNeverFunction)
 
