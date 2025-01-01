@@ -264,7 +264,7 @@ expectType<number[]>([] as unknown as OnlyVariadic)
 // expectType<[...number[]] | []>([] as unknown as ContravariantArgumentTuple<OnlyVariadic>)
 
 // Tuple with a variadic last element
-type VariadicLast = [number, ...string[]]
+// type VariadicLast = [number, ...string[]]
 // printType([] as unknown as VariadicLast)
 // printType([] as unknown as [number, ...string[]])
 // printType([] as unknown as ContravariantArgumentTuple<VariadicLast>)
