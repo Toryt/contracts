@@ -67,6 +67,16 @@ expectNotAssignable<(a: number[], b: string, c?: boolean) => unknown>(
 expectType<[] | [boolean?]>(contravariantArguments<SingleOptionalArgumentSignature>())
 // MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
 expectNotAssignable<SingleOptionalArgumentSignature>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
+// MUDO because … euh …?
+expectNotAssignable<(a?: boolean) => unknown>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
+expectNotAssignable<(a?: boolean | undefined) => unknown>(
+  contravariantArgumentsSignature<SingleOptionalArgumentSignature>()
+)
+expectNotAssignable<(a: boolean | undefined) => unknown>(
+  contravariantArgumentsSignature<SingleOptionalArgumentSignature>()
+)
+// MUDO ok, understandable
+expectAssignable<(a: boolean) => unknown>(contravariantArgumentsSignature<SingleOptionalArgumentSignature>())
 
 expectType<
   | []
