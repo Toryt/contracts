@@ -35,7 +35,7 @@ import {
   type DoubleOptionalAfterRestSignature,
   type SingleOptionalArgumentSignature,
   type SingleRestSignature
-} from './PossibleSignatures.ts'
+} from '../../test2/util/SomeSignatures.ts'
 
 expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
   undefined as unknown as FinalRestElement<Parameters<NoArgumentsSignature>>

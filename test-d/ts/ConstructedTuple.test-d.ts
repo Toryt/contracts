@@ -39,7 +39,7 @@ import {
   type TwoArgumentsSignature,
   type UndefinedBeforeRestSignature,
   type UndefinedNonFinalSignature
-} from './PossibleSignatures.ts'
+} from '../../test2/util/SomeSignatures.ts'
 
 function unknownFunction(): unknown {
   return undefined

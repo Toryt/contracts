@@ -22,7 +22,7 @@ import {
   pseudoRestNonFinal,
   type OneRestInTheMiddleInArraysSignature,
   oneRestInTheMiddleInArrays
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 /* Non-final rest argument
    --------------------------- */

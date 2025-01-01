@@ -22,7 +22,7 @@ import {
   type MultipleFinalOptionalArgumentsSignature,
   type SingleOptionalArgumentSignature,
   singleOptionalArgument
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 expectType<2 | 3>(([] as unknown as Parameters<FinalOptionalArgumentSignature>).length)
 expectType<2 | 3>(([] as unknown as Parameters<typeof finalOptionalArgument>).length)

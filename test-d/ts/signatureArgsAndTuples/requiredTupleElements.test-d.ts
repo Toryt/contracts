@@ -19,7 +19,7 @@ import {
   type NoArgumentsSignature,
   type OneArgumentSignature,
   type TwoArgumentsSignature
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */

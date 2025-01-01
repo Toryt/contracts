@@ -20,7 +20,7 @@ import {
   type OptionalAfterRestSignature,
   type DoubleOptionalAfterRestSignature,
   doubleOptionalAfterRest
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 /* Optional after rest
    -------------------- */

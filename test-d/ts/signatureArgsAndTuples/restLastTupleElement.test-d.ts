@@ -19,7 +19,7 @@ import {
   type FinalRestArgumentSignature,
   type FinalRestArgumentAfterArraySignature,
   type SingleRestSignature
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 expectType<number>(([] as unknown as Parameters<FinalRestArgumentSignature>).length)
 

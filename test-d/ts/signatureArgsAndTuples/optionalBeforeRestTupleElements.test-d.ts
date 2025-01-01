@@ -22,7 +22,7 @@ import {
   type UndefinedBeforeRestSignature,
   type DoubleOptionalBeforeRestSignature,
   doubleOptionalBeforeRest
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 /* Optional before rest
    -------------------- */

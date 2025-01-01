@@ -22,7 +22,7 @@ import {
   undefinedNonFinal,
   type UndefinedNonFinalSignature,
   type UndefinedNonFinalTuple
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 /* Non-final optional argument
    --------------------------- */

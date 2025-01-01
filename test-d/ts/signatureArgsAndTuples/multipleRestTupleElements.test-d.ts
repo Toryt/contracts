@@ -21,7 +21,7 @@ import {
   type OneRestViaMultipleVariadics2,
   type OneRest1,
   type OneRest2
-} from '../PossibleSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 /* There seems to be no way to get a signature, or a tuple type, with multiple rest arguments or elements. */
 

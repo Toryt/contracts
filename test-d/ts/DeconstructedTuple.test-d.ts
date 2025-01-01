@@ -42,7 +42,7 @@ import {
   type DoubleOptionalAfterRestSignature,
   type SingleOptionalArgumentSignature,
   type SingleRestSignature
-} from './PossibleSignatures.ts'
+} from '../../test2/util/SomeSignatures.ts'
 
 expectType<[]>([] as unknown as DeconstructedTuple<Parameters<NoArgumentsSignature>>)
 expectType<[RequiredTupleElement<number>]>([] as unknown as DeconstructedTuple<Parameters<OneArgumentSignature>>)
