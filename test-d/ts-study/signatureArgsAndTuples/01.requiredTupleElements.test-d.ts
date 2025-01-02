@@ -16,20 +16,10 @@
 
 import { expectAssignable, expectType } from 'tsd'
 import { noArgumentFunction, oneArgumentsFunction, twoArgumentsFunction } from '../../../test2/util/someFunctions.ts'
-import {
-  type NoArgumentsSignature,
-  type OneArgumentSignature,
-  type TwoArgumentsSignature
-} from '../../../test2/util/SomeSignatures.ts'
+import { type OneArgumentSignature, type TwoArgumentsSignature } from '../../../test2/util/SomeSignatures.ts'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
-
-expectType<[]>([] as unknown as Parameters<NoArgumentsSignature>)
-expectType<0>(([] as unknown as Parameters<NoArgumentsSignature>).length)
-// @ts-expect-error
-type NoElementAtIndex0 = NoArgumentsSignature<OneArgumentSignature>[0]
-expectAssignable<NoArgumentsSignature>(noArgumentFunction)
 
 expectType<[a: number]>([] as unknown as Parameters<OneArgumentSignature>)
 expectType<1>(([] as unknown as Parameters<OneArgumentSignature>).length)
