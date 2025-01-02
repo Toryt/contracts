@@ -14,7 +14,8 @@
   limitations under the License.
  */
 
-import { expectType } from 'tsd'
+import { expectAssignable, expectType } from 'tsd'
+import { noArgumentFunction, oneArgumentsFunction, twoArgumentsFunction } from '../../../test2/util/someFunctions.ts'
 import {
   type NoArgumentsSignature,
   type OneArgumentSignature,
@@ -28,12 +29,15 @@ expectType<[]>([] as unknown as Parameters<NoArgumentsSignature>)
 expectType<0>(([] as unknown as Parameters<NoArgumentsSignature>).length)
 // @ts-expect-error
 type NoElementAtIndex0 = NoArgumentsSignature<OneArgumentSignature>[0]
+expectAssignable<NoArgumentsSignature>(noArgumentFunction)
 
 expectType<[a: number]>([] as unknown as Parameters<OneArgumentSignature>)
 expectType<1>(([] as unknown as Parameters<OneArgumentSignature>).length)
 expectType<number>(undefined as unknown as Parameters<OneArgumentSignature>[0])
 // @ts-expect-error
 type NoElementAtIndex1 = Parameters<OneArgumentSignature>[1]
+expectAssignable<OneArgumentSignature>(oneArgumentsFunction)
+expectAssignable<OneArgumentSignature>(noArgumentFunction)
 
 expectType<[a: number[], b: string]>([] as unknown as Parameters<TwoArgumentsSignature>)
 expectType<2>(([] as unknown as Parameters<TwoArgumentsSignature>).length)
@@ -41,3 +45,6 @@ expectType<number[]>(undefined as unknown as Parameters<TwoArgumentsSignature>[0
 expectType<string>(undefined as unknown as Parameters<TwoArgumentsSignature>[1])
 // @ts-expect-error
 type NoElementAtIndex2 = Parameters<TwoArgumentsSignature>[2]
+expectAssignable<TwoArgumentsSignature>(twoArgumentsFunction)
+expectAssignable<TwoArgumentsSignature>((a: number[]): unknown => undefined)
+expectAssignable<TwoArgumentsSignature>(noArgumentFunction)
