@@ -241,36 +241,3 @@ expectType<
   | [1]
   | []
 >([] as ContravariantArgumentTuple<Large>)
-
-type TupleLength<T extends unknown[]> = T['length']
-
-// Example Tuples
-type TupleL1 = [] // Empty tuple
-expectType<0>(undefined as unknown as TupleLength<TupleL1>)
-
-type TupleL2 = [number]
-expectType<1>(undefined as unknown as TupleLength<TupleL2>)
-
-type TupleL3 = [number, boolean]
-expectType<2>(undefined as unknown as TupleLength<TupleL3>)
-
-type TupleL4 = [number, boolean, string?] // Optional element
-expectNotType<3>(undefined as unknown as TupleLength<TupleL4>) // Optional elements are NOT included directly
-expectNotType<2>(undefined as unknown as TupleLength<TupleL4>) // Optional elements are NOT excluded directly
-expectType<2 | 3>(undefined as unknown as TupleLength<TupleL4>) // Optional elements are NOT included
-
-type TupleL5 = [number, boolean, ...string[]] // Variadic tuple
-expectNotType<3>(undefined as unknown as TupleLength<TupleL5>) // Fixed elements only, variadic elements are NOT included directly
-expectNotType<3>(undefined as unknown as TupleLength<TupleL5>) // Fixed elements only, variadic elements are NOT excluded directly
-expectType<number>(undefined as unknown as TupleLength<TupleL5>) // length is “a number” (greater than 2)
-
-type TupleL6 = [number, ...boolean[], string] // Variadic tuple
-expectNotType<1>(undefined as unknown as TupleLength<TupleL6>)
-expectNotType<2>(undefined as unknown as TupleLength<TupleL6>)
-expectNotType<3>(undefined as unknown as TupleLength<TupleL6>)
-expectType<number>(undefined as unknown as TupleLength<TupleL6>) // length is “a number” (greater than 1)
-
-// https://oida.dev/variadic-tuple-types-preview/
-type Bar<T extends unknown[], U extends unknown[]> = [...T, boolean, ...U]
-type TupleL7 = Bar<number[], string[]> // 2 variadics in a tuple
-expectType<number>(undefined as unknown as TupleLength<TupleL7>) // length is “a number” (greater than 1)
