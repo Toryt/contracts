@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
+import { expectAssignable, expectNotAssignable, expectType } from 'tsd'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
 import type { Level1BType } from '../../../test2/util/SomeTypes.ts'
