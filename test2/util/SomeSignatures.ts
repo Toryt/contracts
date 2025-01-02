@@ -17,10 +17,19 @@
 import type { Level1BType, Level2Type } from '../../test2/util/SomeTypes.ts'
 
 export type NoArgumentsSignature = () => unknown
+export function noArgumentFunction(): unknown {
+  return undefined
+}
 
 export type OneArgumentSignature = (a: number) => unknown
+export function oneArgumentsFunction(a: number): unknown {
+  return undefined
+}
 
 export type TwoArgumentsSignature = (a: number[], b: string) => unknown
+export function twoArgumentsFunction(a: number[], b: string): unknown {
+  return undefined
+}
 
 export type FinalOptionalArgumentSignature = (a: number[], b: string, c?: boolean) => unknown
 export function finalOptionalArgument(a: number[], b: string, c?: boolean): unknown {
@@ -69,6 +78,8 @@ export type PseudoRestNonFinalSignature = (...args: PseudoRestNonFinalTuple) => 
 export function pseudoRestNonFinal(...args: PseudoRestNonFinalTuple): unknown {
   return undefined
 }
+pseudoRestNonFinal(0, true)
+pseudoRestNonFinal(0, 'string', true)
 
 export type OneRestInTheMiddleInArraysSignature = (...args: OneRestInTheMiddleInArraysTuple) => unknown
 export function oneRestInTheMiddleInArrays(...args: OneRestInTheMiddleInArraysTuple): unknown {

@@ -15,8 +15,7 @@
  */
 
 import { expectAssignable, expectType } from 'tsd'
-import { noArgumentFunction } from '../../../test2/util/someFunctions.ts'
-import { type NoArgumentsSignature } from '../../../test2/util/SomeSignatures.ts'
+import { type NoArgumentsSignature, noArgumentFunction } from '../../../test2/util/SomeSignatures.ts'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
    order. */
