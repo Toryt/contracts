@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectNotAssignable, expectType } from 'tsd'
+import { expectAssignable, expectType } from 'tsd'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
 import type { Level1BType } from '../../../test2/util/SomeTypes.ts'
@@ -97,8 +97,7 @@ expectType<
   | [number, string[], boolean?, number?]
   | [number, string[], boolean?, number?, string?]
 >(contravariantArguments<MultipleFinalOptionalArgumentsSignature>())
-// MUDO because ContravariantArgumentTuple says `x?: T | undefined` for optional argument
-expectNotAssignable<SingleOptionalArgumentSignature>(
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
   contravariantArgumentsSignature<MultipleFinalOptionalArgumentsSignature>()
 )
 
