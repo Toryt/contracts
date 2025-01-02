@@ -15,7 +15,7 @@
  */
 
 import { expectType, expectNotType } from 'tsd'
-import type { FinalRestElement, LastTupleElement } from './LastTupleElement.ts'
+import type { FinalRestElement, LastTupleElement } from '../../../test2/util/LastTupleElement.ts'
 import {
   type FinalOptionalArgumentSignature,
   type FinalRestArgumentSignature,
@@ -35,7 +35,7 @@ import {
   type DoubleOptionalAfterRestSignature,
   type SingleOptionalArgumentSignature,
   type SingleRestSignature
-} from '../../test2/util/SomeSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 expectType<'error: tuple does not contain a rest element and is not an unbounded array'>(
   undefined as unknown as FinalRestElement<Parameters<NoArgumentsSignature>>

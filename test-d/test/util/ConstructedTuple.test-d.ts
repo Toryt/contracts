@@ -15,9 +15,9 @@
  */
 
 import { expectNotType, expectType } from 'tsd'
-import type { UnknownFunction } from '../../src/index.ts'
-import type { ConstructedTuple } from './ConstructedTuple.ts'
-import type { DeconstructedTuple } from './DeconstructedTuple.ts'
+import type { UnknownFunction } from '../../../src/index.ts'
+import type { ConstructedTuple } from '../../../test2/util/ConstructedTuple.ts'
+import type { DeconstructedTuple } from '../../../src/util/DeconstructedTuple.ts'
 import {
   type DoubleOptionalAfterRestSignature,
   type DoubleOptionalBeforeRestSignature,
@@ -39,7 +39,7 @@ import {
   type TwoArgumentsSignature,
   type UndefinedBeforeRestSignature,
   type UndefinedNonFinalSignature
-} from '../../test2/util/SomeSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 function unknownFunction(): unknown {
   return undefined

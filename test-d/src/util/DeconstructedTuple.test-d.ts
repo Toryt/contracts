@@ -20,7 +20,7 @@ import type {
   OptionalTupleElement,
   RequiredTupleElement,
   RestTupleElement
-} from './DeconstructedTuple.ts'
+} from '../../../src/util/DeconstructedTuple.ts'
 import {
   type FinalOptionalArgumentSignature,
   type FinalRestArgumentSignature,
@@ -42,7 +42,7 @@ import {
   type DoubleOptionalAfterRestSignature,
   type SingleOptionalArgumentSignature,
   type SingleRestSignature
-} from '../../test2/util/SomeSignatures.ts'
+} from '../../../test2/util/SomeSignatures.ts'
 
 expectType<[]>([] as unknown as DeconstructedTuple<Parameters<NoArgumentsSignature>>)
 expectType<[RequiredTupleElement<number>]>([] as unknown as DeconstructedTuple<Parameters<OneArgumentSignature>>)

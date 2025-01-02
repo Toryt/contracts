@@ -19,7 +19,7 @@ import type {
   RequiredTupleElement,
   RestTupleElement,
   TupleElement
-} from './DeconstructedTuple.ts'
+} from '../../src/util/DeconstructedTuple.ts'
 
 export type ConstructedTuple<Deconstructed extends TupleElement<unknown>[]> = Deconstructed extends [
   first: RequiredTupleElement<infer Required>,

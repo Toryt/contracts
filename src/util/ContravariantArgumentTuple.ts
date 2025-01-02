@@ -20,7 +20,7 @@ import type {
   RequiredTupleElement,
   RestTupleElement,
   TupleElement
-} from '../../test-d/ts/DeconstructedTuple.ts'
+} from './DeconstructedTuple.ts'
 
 /**
  * Utility type to generate the disjunction of all sub-tuples of a given tuple `T` that start `T`.
