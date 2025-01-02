@@ -21,7 +21,9 @@ import {
   type FinalOptionalArgumentSignature,
   type MultipleFinalOptionalArgumentsSignature,
   type SingleOptionalArgumentSignature,
-  singleOptionalArgument
+  singleOptionalArgument,
+  noArgumentFunction,
+  type TwoArgumentsSignature
 } from '../../../test2/util/SomeSignatures.ts'
 
 expectType<2 | 3>(([] as unknown as Parameters<FinalOptionalArgumentSignature>).length)
@@ -77,6 +79,15 @@ expectType<boolean | undefined>(undefined as unknown as Parameters<FinalOptional
 // @ts-expect-error
 type NoElementAtIndex3a = Parameters<FinalOptionalArgumentSignature>[3]
 
+expectAssignable<FinalOptionalArgumentSignature>(finalOptionalArgument)
+expectAssignable<FinalOptionalArgumentSignature>((a: number[], b: string, c: boolean | undefined): unknown => undefined)
+expectAssignable<FinalOptionalArgumentSignature>(
+  (a: number[], b: string, c?: boolean | undefined): unknown => undefined
+)
+expectAssignable<FinalOptionalArgumentSignature>((a: number[], b: string): unknown => undefined)
+expectAssignable<FinalOptionalArgumentSignature>((a: number[]): unknown => undefined)
+expectAssignable<FinalOptionalArgumentSignature>(noArgumentFunction)
+
 /* Single optional argument
    ------------------------ */
 
@@ -91,6 +102,11 @@ expectError(singleOptionalArgument(true, 0))
 expectType<[a?: boolean | undefined]>([] as unknown as Parameters<SingleOptionalArgumentSignature>)
 
 expectType<boolean | undefined>(undefined as unknown as Parameters<SingleOptionalArgumentSignature>[0])
+
+expectAssignable<SingleOptionalArgumentSignature>(singleOptionalArgument)
+expectAssignable<SingleOptionalArgumentSignature>((a: boolean | undefined): unknown => undefined)
+expectAssignable<SingleOptionalArgumentSignature>((a?: boolean | undefined): unknown => undefined)
+expectAssignable<SingleOptionalArgumentSignature>(noArgumentFunction)
 
 /* Multiple final optional arguments
    --------------------------------- */
@@ -135,3 +151,57 @@ expectType<number | undefined>(undefined as unknown as Parameters<MultipleFinalO
 expectType<string | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArgumentsSignature>[4])
 // @ts-expect-error
 type NoElementAtIndex3 = Parameters<MultipleFinalOptionalArgumentsSignature>[5]
+
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(multipleFinalOptionalArguments)
+
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c?: boolean, d?: number, e?: string | undefined): unknown => undefined
+)
+expectAssignable<string | undefined>('' as unkown as string) // contravariant
+// @ts-expect-error
+function fail1(a: number, b: string[], c?: boolean, d?: number, e: string | undefined): unknown {
+  return undefined
+}
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined, d?: number, e?: string): unknown => undefined
+)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined, d?: number, e?: string): unknown => undefined
+)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined, d: number | undefined, e?: string): unknown => undefined
+)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined, d: number | undefined, e: string | undefined): unknown => undefined
+)
+
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c?: boolean, d?: number): unknown => undefined
+)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c?: boolean, d?: number): unknown => undefined
+)
+// @ts-expect-error
+function fail2(a: number, b: string[], c?: boolean, d: number | undefined): unknown {
+  return undefined
+}
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined, d?: number): unknown => undefined
+)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined, d: number | undefined): unknown => undefined
+)
+
+expectAssignable<MultipleFinalOptionalArgumentsSignature>((a: number, b: string[], c?: boolean): unknown => undefined)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined): unknown => undefined
+)
+
+expectAssignable<MultipleFinalOptionalArgumentsSignature>((a: number, b: string[]): unknown => undefined)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>((a: number): unknown => undefined)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(noArgumentFunction)
+
+/* So: `X | undefined <: X? <: X` */
+
+expectAssignable<TwoArgumentsSignature>((a?: number[], b?: string): unknown => undefined)
+expectAssignable<TwoArgumentsSignature>((a: number[] | undefined, b: string | undefined): unknown => undefined)
