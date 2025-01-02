@@ -17,7 +17,7 @@
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
-import type { Level1AType, Level1BType } from '../../../test2/util/SomeTypes.ts'
+import type { Level1BType } from '../../../test2/util/SomeTypes.ts'
 import type {
   ASignature,
   ASignatureWithOptionalArgs,
@@ -241,81 +241,6 @@ expectType<
   | [1]
   | []
 >([] as ContravariantArgumentTuple<Large>)
-
-type ElementAt<T extends unknown[], Index extends keyof T> = T[Index]
-
-// Example Tuples
-type Tuple1 = []
-type Tuple2 = [number]
-type Tuple3 = [number, boolean]
-type Tuple4 = [number, boolean, string | undefined]
-type Tuple5 = [number, boolean, string?]
-type Tuple6 = [number, boolean?, string[]?]
-type Tuple7 = [number, boolean?, ...string[]]
-type Tuple8 = [number, ...boolean[], string]
-type Tuple9 = [...number[], boolean, string]
-
-// TSD Tests
-// Tuple1
-expectType<undefined>(undefined as ElementAt<Tuple1, 0>) // Index out of bounds, resolves to undefined
-
-// Tuple2
-expectType<number>(undefined as unknown as ElementAt<Tuple2, 0>) // First element
-expectType<undefined>(undefined as ElementAt<Tuple2, 1>) // Index out of bounds
-
-// Tuple3
-expectType<number>(undefined as unknown as ElementAt<Tuple3, 0>) // First element
-expectType<boolean>(undefined as unknown as ElementAt<Tuple3, 1>) // Second element
-expectType<undefined>(undefined as ElementAt<Tuple3, 2>) // Index out of bounds
-
-// Tuple4
-expectType<number>(undefined as unknown as ElementAt<Tuple4, 0>) // First element
-expectType<boolean>(undefined as unknown as ElementAt<Tuple4, 1>) // Second element
-expectType<string | undefined>(undefined as ElementAt<Tuple4, 2>) // Third element
-expectType<undefined>(undefined as ElementAt<Tuple4, 3>) // Index out of bounds
-
-// Tuple5
-expectType<number>(undefined as unknown as ElementAt<Tuple5, 0>) // First element
-expectType<boolean>(undefined as unknown as ElementAt<Tuple5, 1>) // Second element
-// NOTE: `| undefined` is necessary for optional elements
-expectType<string | undefined>(undefined as unknown as ElementAt<Tuple5, 2>) // Third element (optional)
-expectType<undefined>(undefined as ElementAt<Tuple5, 3>) // Index out of bounds
-
-// Tuple6
-expectType<number>(undefined as unknown as ElementAt<Tuple6, 0>) // First element
-// NOTE: `| undefined` is necessary for optional elements
-expectNotType<boolean>(undefined as unknown as ElementAt<Tuple6, 1>) // Second element (optional)
-expectType<boolean | undefined>(undefined as unknown as ElementAt<Tuple6, 1>) // Second element (optional)
-expectType<string[] | undefined>(undefined as ElementAt<Tuple6, 2>) // Third element (optional)
-expectType<undefined>(undefined as ElementAt<Tuple6, 3>) // Index out of bounds
-
-// Tuple7
-expectType<number>(undefined as unknown as ElementAt<Tuple7, 0>) // First element
-expectType<boolean | undefined>(undefined as unknown as ElementAt<Tuple7, 1>) // Second element (optional)
-expectType<string>(undefined as unknown as ElementAt<Tuple7, 2>) // Variadic element type NOTE: THIS WORKS!
-expectNotType<undefined>(undefined as unknown as ElementAt<Tuple7, 3>) // No index out of bounds!
-expectType<string>(undefined as unknown as ElementAt<Tuple7, 3>) // No index out of bounds!
-expectType<string>(undefined as unknown as ElementAt<Tuple7, 4>) // No index out of bounds!
-expectType<string>(undefined as unknown as ElementAt<Tuple7, 999999>) // No index out of bounds!
-expectNotType<undefined>(undefined as unknown as ElementAt<Tuple7, 9999999>) // No index out of bounds!
-
-// Tuple8
-expectType<number>(undefined as unknown as ElementAt<Tuple8, 0>) // First element
-expectNotType<boolean>(undefined as unknown as ElementAt<Tuple8, 1>) // Variadic boolean
-expectType<boolean | string>(undefined as unknown as ElementAt<Tuple8, 1>) // Variadic boolean
-expectType<boolean | string>(undefined as unknown as ElementAt<Tuple8, 2>) // Last element
-expectType<boolean | string>(undefined as unknown as ElementAt<Tuple8, 3>) // Last element
-expectType<boolean | string>(undefined as unknown as ElementAt<Tuple8, 999999>) // Last element
-expectNotType<undefined>(undefined as unknown as ElementAt<Tuple8, 9999999>) // No index out of bounds!
-
-// Tuple9
-expectNotType<number>(undefined as unknown as ElementAt<Tuple9, 0>) // Variadic number
-expectType<string | number | boolean>(undefined as unknown as ElementAt<Tuple9, 0>) // Variadic number
-expectType<string | number | boolean>(undefined as unknown as ElementAt<Tuple9, 1>) // Variadic number
-expectType<string | number | boolean>(undefined as unknown as ElementAt<Tuple9, 2>) // Variadic number
-expectType<string | number | boolean>(undefined as unknown as ElementAt<Tuple9, 3>) // Variadic number
-expectType<string | number | boolean>(undefined as unknown as ElementAt<Tuple9, 999999>) // Variadic number
-expectNotType<undefined>(undefined as unknown as ElementAt<Tuple9, 9999999>) // No index out of bounds!
 
 type TupleLength<T extends unknown[]> = T['length']
 
