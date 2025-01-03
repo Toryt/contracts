@@ -87,6 +87,14 @@ interface HasLength {
   length: number
 }
 
+function generalCondition1a(result: unknown, ...args: unknown[]) {
+  return args.length > 2
+}
+
+function generalCondition1b(result: unknown, a: number[]) {
+  return a[0] !== undefined && a[0] < 0
+}
+
 const postConditions: PC<Parameters<typeof contractFunction>>[] = [
   (result: unknown, a: number[], b: string, c?: boolean, ...rest: (number | string)[]) =>
     result === a.length + b.length + (c ? 1 : 0) + rest.length,
@@ -118,7 +126,10 @@ const postConditions: PC<Parameters<typeof contractFunction>>[] = [
   (result: unknown, a: unknown[]) => typeof result === 'number' && result >= a.length,
   (result: unknown, a: HasLength) => typeof result === 'number' && result >= a.length,
 
-  (result: unknown) => Number.isInteger(result)
+  (result: unknown) => Number.isInteger(result),
+
+  generalCondition1a,
+  generalCondition1b
 ]
 
 function contractFunction(a: number[], b: string, c?: boolean, ...rest: (number | string)[]): number {
@@ -134,3 +145,57 @@ function contractFunction(a: number[], b: string, c?: boolean, ...rest: (number 
   }
   throw new Error('PC failed')
 }
+
+type PC2<Args extends unknown[]> = (result: unknown, args: Args) => unknown
+
+function generalCondition2a(result: unknown, args: unknown[]) {
+  return args.length > 2
+}
+
+function generalCondition2b(result: unknown, [a]: [number[]]) {
+  return a.length > 0 && a[0] < 0
+}
+
+const postConditions2: PC2<Parameters<typeof contractFunction>>[] = [
+  (result: unknown, [a, b, c, ...rest]: Parameters<typeof contractFunction>) =>
+    result === a.length + b.length + (c ? 1 : 0) + rest.length,
+  (result, [a, b, c, ...rest]) => result === a.length + b.length + (c ? 1 : 0) + rest.length,
+  (result: unknown, [a, b, c, ...rest]: [number[], string, (boolean | undefined)?, ...(number | string | boolean)[]]) =>
+    result === a.length + b.length + (c ? 1 : 0) + rest.length,
+  (result: unknown, [a, b, c, ...rest]: [number[], string, (boolean | undefined)?, ...unknown[]]) =>
+    result === a.length + b.length + (c ? 1 : 0) + rest.length,
+  // (result: unknown, [a, b, c, d]: [number[], string, (boolean | undefined)?, (number | string)?]) =>
+  //   result === a.length + b.length + (c ? 1 : 0) + (d ? 2 : 1),
+  (result: unknown, [a, b, c, d]: Parameters<typeof contractFunction>) =>
+    result === a.length + b.length + (c ? 1 : 0) + (d ? 2 : 1),
+  (result, [a, b, c, d]) => result === a.length + b.length + (c ? 1 : 0) + (d ? 2 : 1),
+
+  // (result: unknown, a: number[], b: string, c?: boolean) => result === a.length + b.length + (c ? 1 : 0),
+  (result, [a, b, c]) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: unknown[], b: string, c?: boolean) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: HasLength, b: HasLength, c?: boolean) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: number[], b: string, c: boolean | undefined) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: unknown[], b: string, c: boolean | undefined) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: HasLength, b: HasLength, c: boolean | undefined) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: number[], b: string, c?: unknown) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: unknown[], b: string, c?: unknown) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: HasLength, b: HasLength, c?: unknown) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: number[], b: string, c: unknown | undefined) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: unknown[], b: string, c: unknown | undefined) => result === a.length + b.length + (c ? 1 : 0),
+  // (result: unknown, a: HasLength, b: HasLength, c: unknown | undefined) => result === a.length + b.length + (c ? 1 : 0),
+  //
+  (result: unknown, [a, b]: Parameters<typeof contractFunction>) => result === a.length + b.length,
+  (result, [a, b]) => result === a.length + b.length,
+  // (result: unknown, a: unknown[], b: string) => result === a.length + b.length,
+  // (result: unknown, a: HasLength, b: HasLength) => result === a.length + b.length,
+  //
+  // (result: unknown, a: number[]) => typeof result === 'number' && result >= a.length,
+  // (result: unknown, a: unknown[]) => typeof result === 'number' && result >= a.length,
+  // (result: unknown, a: HasLength) => typeof result === 'number' && result >= a.length,
+
+  (result: unknown) => Number.isInteger(result),
+
+  generalCondition2a,
+  // generalCondition2b
+  (result, [a]) => generalCondition2b(result, [a])
+]
