@@ -17,6 +17,7 @@
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { Postcondition, PostconditionKwargs } from '../../src/index.ts'
 import type {
+  ASignature,
   DoubleOptionalAfterRestSignature,
   DoubleOptionalBeforeRestSignature,
   FinalOptionalArgumentSignature,
@@ -35,6 +36,7 @@ import type {
   UndefinedBeforeRestSignature,
   UndefinedNonFinalSignature
 } from '../../test2/util/SomeSignatures.ts'
+import { isLevel2Type } from '../../test2/util/SomeTypes.ts'
 
 /* NoArgumentsSignature */
 
@@ -496,10 +498,10 @@ expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(({ result }) =
 expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(({}) => globalThis)
 expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(() => globalThis)
 
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-//
+expectAssignable<Postcondition<ASignature>>(
+  ({ result, args: [a, b] }): boolean => isLevel2Type(result) && result.rootProperty > a + (b.level1BProperty ? 1 : 0)
+)
+
 // expectAssignable<Postcondition<(a: number) => string | undefined>>(
 //   (args: [number], result: string | undefined): boolean => args[0] > 0 && result !== undefined
 // )
