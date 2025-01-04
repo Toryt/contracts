@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,6 +17,14 @@
 export interface RootType {
   rootProperty: number
 }
+export function isRootType(candidate: unknown): candidate is RootType {
+  return (
+    candidate !== null &&
+    typeof candidate === 'object' &&
+    'rootProperty' in candidate &&
+    typeof candidate.rootProperty === 'number'
+  )
+}
 
 export abstract class RootClass implements RootType {
   rootProperty: number
@@ -29,6 +37,9 @@ export abstract class RootClass implements RootType {
 export interface Level1AType extends RootType {
   // NOTE: `readonly` means that, via this type, the property can be read, but not set.
   readonly level1AProperty: string
+}
+export function isLevel1AType(candidate: unknown): candidate is Level1AType {
+  return isRootType(candidate) && 'level1AProperty' in candidate && typeof candidate.level1AProperty === 'string'
 }
 
 export class Level1AClass extends RootClass implements Level1AType {
@@ -45,10 +56,13 @@ export class Level1AClass extends RootClass implements Level1AType {
 
 export interface Level1BType extends RootType {
   /* NOTE: Not having `readonly` on an interface means that the property can be read via this type, and that the user
-           _is allowed to try to set the property via this type, and can learn at runtime wether this is possible or
+           _is allowed to try to set the property via this type, and can learn at runtime whether this is possible or
            not_. There is no guarantee that this will work, as subtypes are _not required to make setting the property
            value possible_ (see `Level1BClass`). */
   level1BProperty: boolean
+}
+export function isLevel1BType(candidate: unknown): candidate is Level1AType {
+  return isRootType(candidate) && 'level1BProperty' in candidate && typeof candidate.level1BProperty === 'boolean'
 }
 
 export abstract class Level1BClass extends RootClass implements Level1BType {
@@ -65,6 +79,15 @@ export abstract class Level1BClass extends RootClass implements Level1BType {
 
 export interface Level2Type extends Level1AType, Level1BType {
   level2Property: Level1AType
+}
+
+export function isLevel2Type(candidate: unknown): candidate is Level2Type {
+  return (
+    isLevel1AType(candidate) &&
+    isLevel1BType(candidate) &&
+    'level2Property' in candidate &&
+    isLevel1AType(candidate.level2Property)
+  )
 }
 
 export class Level2Class extends Level1BClass implements Level2Type {
