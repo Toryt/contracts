@@ -17,6 +17,7 @@
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { Postcondition, PostconditionKwargs } from '../../src/index.ts'
 import type {
+  DoubleOptionalAfterRestSignature,
   DoubleOptionalBeforeRestSignature,
   FinalOptionalArgumentSignature,
   FinalRestArgumentAfterArraySignature,
@@ -31,6 +32,7 @@ import type {
   SingleOptionalArgumentSignature,
   SingleRestSignature,
   TwoArgumentsSignature,
+  UndefinedBeforeRestSignature,
   UndefinedNonFinalSignature
 } from '../../test2/util/SomeSignatures.ts'
 
@@ -439,6 +441,60 @@ expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
 expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(({ result }) => typeof result === 'string')
 expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(({}) => globalThis)
 expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(() => globalThis)
+
+/* UndefinedBeforeRestSignature */
+
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(
+  ({ result, args: [a, b, ...c] }) =>
+    (typeof result === 'string' && a.length > 0 && (b === undefined || !b) && c.length === 0) || c.every(e => e === '')
+)
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(
+  ({ result, args: [a, b, c, d, e] }) =>
+    typeof result === 'string' &&
+    a.length > 0 &&
+    (b === undefined || !b) &&
+    typeof c === 'string' &&
+    c === '' &&
+    typeof d === 'string' &&
+    d === '' &&
+    typeof e === 'string' &&
+    e === ''
+)
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a.length > 0 && (b === undefined || !b)
+)
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a.length > 0
+)
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(() => globalThis)
+
+/* DoubleOptionalAfterRestSignature */
+
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(
+  ({ result, args: [a, ...b] }) => typeof result === 'string' && a.length > 0 && b.every(e => e === '' || e === 0 || e)
+)
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(
+  ({ result, args: [a, b, ...c] }) =>
+    typeof result === 'string' &&
+    a.length > 0 &&
+    b !== undefined &&
+    ((typeof b === 'string' && b === '') || (typeof b === 'number' && b > 0) || (typeof b === 'boolean' && !b)) &&
+    c.every(e => e === '' || e === 0 || e)
+)
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a.length > 0
+)
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(() => globalThis)
 
 // expectAssignable<Postcondition<ASignature>>(
 //   (args: [number, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
