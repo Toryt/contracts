@@ -15,5 +15,5 @@
  */
 
 export interface ConditionKwargs {
-  readonly result: unknown
+  readonly value: unknown
 }
