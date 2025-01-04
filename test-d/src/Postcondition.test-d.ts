@@ -550,15 +550,15 @@ expectAssignable<Postcondition<OneArgumentSignature>>(
 /* Unrelated or covariant result */
 
 expectAssignable<Postcondition<NoArgumentsSignature>>(({ value }: { value: unknown }) => typeof value === 'string')
-function c1({ value }: { value: string }) {
+function c1({ value }: { value: string }): boolean {
   return value === ''
 }
 expectNotAssignable<Postcondition<NoArgumentsSignature>>(c1)
-function c2({ value }: { value: number }) {
+function c2({ value }: { value: number }): boolean {
   return value === 0
 }
 expectNotAssignable<Postcondition<NoArgumentsSignature>>(c2)
-function c3({ value }: { value: never }) {
+function c3({ value }: { value: never }): never {
   throw new Error('' + value)
 }
 expectNotAssignable<Postcondition<NoArgumentsSignature>>(c3)
