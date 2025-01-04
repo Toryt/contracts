@@ -68,10 +68,13 @@ expectAssignable<ASignature>((a: number, b: Level1BType): never => {
 
 // Sadly also ok
 expectAssignable<ASignature>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (a: any, b: Level1BType): Level2Type => new Level2Class(a, b.rootProperty > 0, level1AInstance)
 )
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 expectAssignable<ASignature>((a: number, b: any): Level2Type => new Level2Class(a, b.rootProperty > 0, level1AInstance))
 expectAssignable<ASignature>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (a: number, b: Level1BType): any => new Level2Class(a, b.rootProperty > 0, level1AInstance)
 )
 
