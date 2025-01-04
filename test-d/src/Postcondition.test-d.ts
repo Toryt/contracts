@@ -16,9 +16,7 @@
 
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { Postcondition, PostconditionKwargs } from '../../src/index.ts'
-import type { NoArgumentsSignature } from '../../test2/util/SomeSignatures.ts'
-
-/* Valid postconditions */
+import type { NoArgumentsSignature, OneArgumentSignature } from '../../test2/util/SomeSignatures.ts'
 
 expectAssignable<Postcondition<NoArgumentsSignature>>(
   ({ result, args }) => typeof result === 'string' && args.length === 0
@@ -32,6 +30,21 @@ expectNotAssignable<Postcondition<NoArgumentsSignature>>(
     typeof result === 'string' && args.length === 0 && !!somethingElse
 )
 expectNotAssignable<Postcondition<NoArgumentsSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
+)
+
+expectAssignable<Postcondition<OneArgumentSignature>>(({ result, args: [a] }) => typeof result === 'string' && a === 0)
+expectAssignable<Postcondition<OneArgumentSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<OneArgumentSignature>>(({ args: [a] }) => a === 0)
+expectAssignable<Postcondition<OneArgumentSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<OneArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<OneArgumentSignature>>(() => globalThis)
+expectNotAssignable<Postcondition<OneArgumentSignature>>(
+  ({ args: [a, b] }: { args: [number, unknown] }) => a === 0 && !!b
+)
+expectNotAssignable<Postcondition<OneArgumentSignature>>(
   ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
 )
 
