@@ -36,7 +36,7 @@ import type {
   UndefinedBeforeRestSignature,
   UndefinedNonFinalSignature
 } from '../../test2/util/SomeSignatures.ts'
-import { isLevel2Type } from '../../test2/util/SomeTypes.ts'
+import { type RootType, isRootType, isLevel2Type, Level3Class } from '../../test2/util/SomeTypes.ts'
 
 /* NoArgumentsSignature */
 
@@ -342,7 +342,7 @@ expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(
     typeof result === 'string' &&
     a.length === 0 &&
     b.length > 0 &&
-    b.every(e => (typeof e === 'boolean' ? e : e.length === 0))
+    b.every(e => (typeof e === 'string' ? e === '' : e.length === 0))
 )
 expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(
   ({ result, args: [a, b, c] }) =>
@@ -501,135 +501,65 @@ expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(() => globalTh
 expectAssignable<Postcondition<ASignature>>(
   ({ result, args: [a, b] }): boolean => isLevel2Type(result) && result.rootProperty > a + (b.level1BProperty ? 1 : 0)
 )
+expectAssignable<Postcondition<ASignature>>(
+  ({ result, args: [a] }): boolean => isLevel2Type(result) && result.rootProperty > a
+)
+expectAssignable<Postcondition<ASignature>>(({ result, args }) => isLevel2Type(result) && args.length <= 1)
+expectAssignable<Postcondition<ASignature>>(
+  ({ result, args: [a, b] }: { result: unknown; args: Readonly<[number, RootType]> }): boolean =>
+    isLevel2Type(result) && result.rootProperty > a + b.rootProperty
+)
+expectAssignable<Postcondition<ASignature>>(
+  ({ result, args: [a, b] }: { result: unknown; args: Readonly<[number, unknown]> }): boolean =>
+    isLevel2Type(result) && isRootType(b) && result.rootProperty > a + b.rootProperty
+)
+expectNotAssignable<Postcondition<ASignature>>(
+  ({ result, args: [a, b] }: { result: unknown; args: Readonly<[number, Level3Class]> }): boolean =>
+    isLevel2Type(result) && result.rootProperty > a + b.level3Property.length
+)
 
-// expectAssignable<Postcondition<(a: number) => string | undefined>>(
-//   (args: [number], result: string | undefined): boolean => args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a: number | undefined) => string | undefined>>(
-//   (args: [number | undefined], result: string | undefined): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a?: number) => string | undefined>>(
-//   (args: [number?], result: string | undefined): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a?: number) => string | undefined>>(
-//   (args: [number] | [], result: string | undefined): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a?: number, b?: string) => string>>(
-//   (args: [number?, string?], result: string): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a?: number, b?: string) => string>>(
-//   (args: [number, string] | [number] | [], result: string): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a: number, b?: string) => string>>(
-//   (args: [number, string?], result: string): boolean => args[0] > 0 && result !== undefined
-// )
-//
-// expectAssignable<Postcondition<(a: number, b: string) => string>>(
-//   (args: [number], result: string): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a: number, b: string) => string>>(
-//   (args: [], result: string): boolean => result !== undefined
-// )
-//
-// expectAssignable<Postcondition<(a: number, b?: string) => string>>(
-//   (args: [number], result: string): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-// expectAssignable<Postcondition<(a: number, b?: string) => string>>(
-//   (args: [], result: string): boolean => result !== undefined
-// )
-//
-// expectAssignable<Postcondition<(a: number, b?: string) => string>>(
-//   (args: [number?, string?], result: string): boolean => !!args[0] && args[0] > 0 && result !== undefined
-// )
-//
-// expectAssignable<Postcondition<ASignatureWithOptionalArgs>>(
-//   (args: [number, Level1BType?, number?], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-//
-// // less arguments
-// expectAssignable<Postcondition<ASignature>>((args: [number], result: Level2Type): boolean => result.rootProperty > 0)
-// expectAssignable<Postcondition<ASignature>>((args: [], result: Level2Type): boolean => result.rootProperty > 0)
-//
-// // contravariant arguments
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [unknown, Level1BType], result: Level2Type): boolean => !!args[0] && result.rootProperty > 0
-// )
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [number, RootType], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [number, unknown], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-//
-// // contravariant result
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1BType], result: Level1AType): boolean => result.rootProperty > args[0]
-// )
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: unknown): boolean => args[0] > 0)
-//
-// // not a boolean outcome
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): unknown => 'mystery')
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): number => 0)
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): undefined => undefined)
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): null => null)
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): '' => '')
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): string => 'a string')
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): void => {})
-// expectAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: Level2Type): never => {
-//   throw new Error()
-// })
-//
-// // Sadly also ok
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [any, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [number, any], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1BType], result: any): boolean => result.rootProperty > args[0]
-// )
-// expectAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1BType], result: Level2Type): any => result.rootProperty > args[0]
-// )
-//
-// /* Invalid postconditions */
-//
-// // too many arguments
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1BType, string], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-//
-// // unrelated or covariant arguments
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [string, Level1BType], result: Level2Type): boolean => result.rootProperty > 0
-// )
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [never, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, number], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1AClass], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1AClass], result: Level2Type): boolean => result.rootProperty > args[0]
-// )
-//
-// // unrelated or covariant result
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1AType], result: undefined): boolean => result === 'worf'
-// )
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1AType], result: null): boolean => result === 'worf'
-// )
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1AType], result: string): boolean => result === 'worf'
-// )
-// expectNotAssignable<Postcondition<ASignature>>(
-//   (args: [number, Level1BType], result: Level3Class): boolean => result.rootProperty > args[0]
-// )
-// expectNotAssignable<Postcondition<ASignature>>((args: [number, Level1BType], result: never): boolean => {
-//   throw new Error()
-// })
+/* Not a boolean outcome */
+expectAssignable<Postcondition<NoArgumentsSignature>>((): unknown => 'mystery')
+expectAssignable<Postcondition<NoArgumentsSignature>>((): number => 0)
+expectAssignable<Postcondition<NoArgumentsSignature>>((): undefined => undefined)
+expectAssignable<Postcondition<NoArgumentsSignature>>((): null => null)
+expectAssignable<Postcondition<NoArgumentsSignature>>((): '' => '')
+expectAssignable<Postcondition<NoArgumentsSignature>>((): string => 'a string')
+expectAssignable<Postcondition<NoArgumentsSignature>>((): void => {})
+expectAssignable<Postcondition<NoArgumentsSignature>>((): never => {
+  throw new Error()
+})
+
+/* Sadly also ok */
+
+expectAssignable<Postcondition<OneArgumentSignature>>(
+  ({ result, args: [a] }: any) => typeof result === 'string' && a === 0
+)
+expectAssignable<Postcondition<OneArgumentSignature>>(
+  ({ result, args: [a] }: { result: any; args: any }) => typeof result === 'string' && a === 0
+)
+expectAssignable<Postcondition<OneArgumentSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: any }) => typeof result === 'string' && a === 0
+)
+expectAssignable<Postcondition<OneArgumentSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: Readonly<[number]> }) => typeof result === 'string' && a === 0
+)
+expectAssignable<Postcondition<OneArgumentSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: Readonly<[any]> }) => typeof result === 'string' && a === 0
+)
+
+/* Unrelated or covariant result */
+
+expectAssignable<Postcondition<NoArgumentsSignature>>(({ result }: { result: unknown }) => typeof result === 'string')
+function c1({ result }: { result: string }) {
+  return result === ''
+}
+expectNotAssignable<Postcondition<NoArgumentsSignature>>(c1)
+function c2({ result }: { result: number }) {
+  return result === 0
+}
+expectNotAssignable<Postcondition<NoArgumentsSignature>>(c2)
+function c3({ result }: { result: never }) {
+  throw new Error('' + result)
+}
+expectNotAssignable<Postcondition<NoArgumentsSignature>>(c3)
