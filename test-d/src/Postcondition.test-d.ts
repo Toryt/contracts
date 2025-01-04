@@ -18,6 +18,8 @@ import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { Postcondition, PostconditionKwargs } from '../../src/index.ts'
 import type {
   FinalOptionalArgumentSignature,
+  FinalRestArgumentAfterArraySignature,
+  FinalRestArgumentSignature,
   MultipleFinalOptionalArgumentsSignature,
   NoArgumentsSignature,
   OneArgumentSignature,
@@ -161,6 +163,72 @@ expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
 expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(({ result }) => typeof result === 'string')
 expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(({}) => globalThis)
 expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(() => globalThis)
+
+/* FinalRestArgumentSignature */
+
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(
+  ({ result, args: [a, b, ...c] }) => typeof result === 'string' && a === 0 && b !== '' && c.every(e => e)
+)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(
+  ({ result, args: [a, b, c] }) => typeof result === 'string' && a === 0 && b !== '' && c !== undefined && c
+)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(
+  ({ result, args: [a, b, c, d, e] }) =>
+    typeof result === 'string' &&
+    a === 0 &&
+    b !== '' &&
+    c !== undefined &&
+    c &&
+    d !== undefined &&
+    d &&
+    e !== undefined &&
+    e
+)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a === 0 && b !== ''
+)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a === 0
+)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(() => globalThis)
+
+/* FinalRestArgumentAfterArraySignature */
+
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
+  ({ result, args: [a, b, ...c] }) => typeof result === 'string' && a === 0 && b.length > 0 && c.every(e => e)
+)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
+  ({ result, args: [a, b, c] }) => typeof result === 'string' && a === 0 && b.length > 0 && c !== undefined && c
+)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
+  ({ result, args: [a, b, c, d, e] }) =>
+    typeof result === 'string' &&
+    a === 0 &&
+    b.length > 0 &&
+    c !== undefined &&
+    c &&
+    d !== undefined &&
+    d &&
+    e !== undefined &&
+    e
+)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a === 0 && b.length > 0
+)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a === 0
+)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(({}) => globalThis)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(() => globalThis)
 
 // expectAssignable<Postcondition<ASignature>>(
 //   (args: [number, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
