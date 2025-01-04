@@ -18,14 +18,14 @@ import { ok, strictEqual } from 'node:assert'
 import type { Postcondition, PostconditionKwargs } from './Postcondition.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 
-export interface ContractFunctionProperties<T extends UnknownFunction> {
-  contract: FunctionContract<T>
+export interface ContractFunctionProperties<Signature extends UnknownFunction> {
+  contract: FunctionContract<Signature>
 }
 
-export type ContractFunction<T extends UnknownFunction> = T & ContractFunctionProperties<T>
+export type ContractFunction<Signature extends UnknownFunction> = Signature & ContractFunctionProperties<Signature>
 
-export interface FunctionContractKwargs<T extends UnknownFunction> {
-  post?: Postcondition<T>[]
+export interface FunctionContractKwargs<Signature extends UnknownFunction> {
+  post?: Postcondition<Signature>[]
 }
 
 /**
@@ -80,4 +80,10 @@ export class FunctionContract<Signature extends UnknownFunction> {
 
     return adornedFunc
   }
+}
+
+export function isContractFunction<Signature extends UnknownFunction>(
+  candidate: unknown
+): candidate is ContractFunction<Signature> {
+  return typeof candidate === 'function' && 'contract' in candidate && candidate.contract instanceof FunctionContract
 }
