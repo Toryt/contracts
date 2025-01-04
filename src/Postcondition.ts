@@ -61,13 +61,13 @@ export type Postcondition2<T extends UnknownFunction> = DistributeOverUnion<
 //   ? (args: PArgs, result: ReturnType<Signature>) => unknown
 //   : 'incompatible arguments'
 
-export type PC3<Signature extends UnknownFunction> = <PArgs extends PartialArgs<Parameters<Signature>>>(
-  args: PArgs,
-  result: ReturnType<Signature>
-) => unknown
-
-// Helper type to generate all valid prefixes (subsets of the tuple from left to right)
-type PartialArgs<T extends unknown[]> = T extends [infer First, ...infer Rest] ? [] | [First, ...PartialArgs<Rest>] : []
+// export type PC3<Signature extends UnknownFunction> = <PArgs extends PartialArgs<Parameters<Signature>>>(
+//   args: PArgs,
+//   result: ReturnType<Signature>
+// ) => unknown
+//
+// // Helper type to generate all valid prefixes (subsets of the tuple from left to right)
+// type PartialArgs<T extends unknown[]> = T extends [infer First, ...infer Rest] ? [] | [First, ...PartialArgs<Rest>] : []
 
 type PC<Args extends unknown[]> = (result: unknown, ...args: Args) => unknown
 
@@ -199,3 +199,144 @@ const postConditions2: PC2<Parameters<typeof contractFunction>>[] = [
   // generalCondition2b
   (result, [a]) => generalCondition2b(result, [a])
 ]
+
+// type PC3<S extends UnknownFunction> = S extends VoidFunction
+//   ? (...args: Parameters<S>) => unknown
+//   : (result: unknown, ...args: Parameters<S>) => unknown
+type PC3<S extends UnknownFunction> =
+  ReturnType<S> extends void
+    ? (...args: Parameters<S>) => unknown
+    : (result: unknown, ...args: Parameters<S>) => unknown
+
+let outsideForVoid: number
+
+function myFunction3(a: number[], b: string, c?: boolean, ...rest: (number | string)[]): void {
+  outsideForVoid = a.length + b.length + (c ? 1 : 0) + rest.length
+}
+
+function generalCondition3a(...args: unknown[]) {
+  return args.length > 2
+}
+
+function generalCondition3b(a: number[]) {
+  return a[0] !== undefined && a[0] < 0
+}
+
+const postConditions3: PC3<typeof contractFunction3>[] = [
+  (a: number[], b: string, c?: boolean, ...rest: (number | string)[]) =>
+    outsideForVoid === a.length + b.length + (c ? 1 : 0) + rest.length,
+  (a: number[], b: string, c?: boolean, ...rest: (number | string | boolean)[]) =>
+    outsideForVoid === a.length + b.length + (c ? 1 : 0) + rest.length,
+  (a: number[], b: string, c?: boolean, ...rest: unknown[]) =>
+    outsideForVoid === a.length + b.length + (c ? 1 : 0) + rest.length,
+  (a: number[], b: string, c?: boolean, d?: number | string) =>
+    outsideForVoid === a.length + b.length + (c ? 1 : 0) + (d ? 2 : 1),
+
+  (a: number[], b: string, c?: boolean) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: unknown[], b: string, c?: boolean) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: HasLength, b: HasLength, c?: boolean) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: number[], b: string, c: boolean | undefined) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: unknown[], b: string, c: boolean | undefined) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: HasLength, b: HasLength, c: boolean | undefined) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: number[], b: string, c?: unknown) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: unknown[], b: string, c?: unknown) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: HasLength, b: HasLength, c?: unknown) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: number[], b: string, c: unknown | undefined) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: unknown[], b: string, c: unknown | undefined) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+  (a: HasLength, b: HasLength, c: unknown | undefined) => outsideForVoid === a.length + b.length + (c ? 1 : 0),
+
+  (a: number[], b: string) => outsideForVoid === a.length + b.length,
+  (a: unknown[], b: string) => outsideForVoid === a.length + b.length,
+  (a: HasLength, b: HasLength) => outsideForVoid === a.length + b.length,
+
+  (a: number[]) => outsideForVoid >= a.length,
+  (a: unknown[]) => outsideForVoid >= a.length,
+  (a: HasLength) => outsideForVoid >= a.length,
+
+  (result: unknown) => Number.isInteger(result),
+
+  generalCondition3a,
+  generalCondition3b
+]
+
+function checkPost3<Signature extends UnknownFunction>(
+  pcs: PC3<Signature>[],
+  result: unknown,
+  args: Parameters<Signature>
+): result is undefined {
+  return result === undefined && pcs.every((pc: PC3<Signature>) => pc.apply(undefined, args))
+}
+
+function contractFunction3(a: number[], b: string, c?: boolean, ...rest: (number | string)[]): void {
+  const result: unknown = myFunction3.apply(undefined, arguments as unknown as Parameters<typeof contractFunction>)
+  if (
+    checkPost3<typeof contractFunction>(
+      postConditions3,
+      result,
+      Array.prototype.slice.call(arguments) as unknown as Parameters<typeof contractFunction>
+    )
+  ) {
+    return result
+  }
+  throw new Error('PC failed')
+}
+
+function voidResults<S extends (...args: never[]) => void>(voidConditions: PC3<S>[]): PC3<S>[] {
+  return voidConditions.map(
+    c =>
+      (result: unknown, ...args: Parameters<S>) =>
+        c(...args)
+  )
+}
+
+interface PC4Kwargs<Signature extends UnknownFunction> {
+  result: unknown
+  args: Parameters<Signature>
+}
+type PC4<Signature extends UnknownFunction> = (kwargs: PC4Kwargs<Signature>) => unknown
+
+function checkPost4<Signature extends UnknownFunction>(
+  pcs: PC4<Signature>[],
+  result: unknown,
+  args: Parameters<Signature>
+): result is ReturnType<Signature> {
+  return pcs.every((pc: P4C<Signature>) => pc.call(undefined, { result, args }))
+}
+
+function generalCondition4a({ args }: { args: unknown[] }) {
+  return args.length > 2
+}
+
+function generalCondition4b({ args: [a] }: { args: [number[]] }) {
+  return a[0] !== undefined && a[0] < 0
+}
+
+const postConditions4: PC4<typeof contractFunction4>[] = [
+  kwargs =>
+    kwargs.result === kwargs.args[0].length + kwargs.args[1].length + (kwargs.args[2] ? 1 : 0) + kwargs.args.length - 3,
+  ({ result, args }) => result === args[0].length + args[1].length + (args[2] ? 1 : 0) + args.length - 3,
+  ({ result, args: [a, b, c, ...rest] }) => result === a.length + b.length + (c ? 1 : 0) + rest.length,
+  ({ result, args: [a, b, c, d] }) => result === a.length + b.length + (c ? 1 : 0) + +(d ? 2 : 1),
+  ({ result, args: [a, b, c] }) => result === a.length + b.length + (c ? 1 : 0),
+  ({ result, args: [a, b] }) => result === a.length + b.length,
+  ({ result, args: [a] }) => typeof result === 'number' && result >= a.length,
+  ({ result }) => Number.isInteger(result),
+  ({ result: unknown }) => Number.isInteger(result),
+
+  generalCondition4a,
+  ({ args: [a] }) => generalCondition4b({ args: [a] })
+]
+
+function contractFunction4(a: number[], b: string, c?: boolean, ...rest: (number | string)[]): number {
+  const result: unknown = myFunction.apply(undefined, arguments as unknown as Parameters<typeof contractFunction>)
+  if (
+    checkPost4<typeof contractFunction4>(
+      postConditions4,
+      result,
+      Array.prototype.slice.call(arguments) as unknown as Parameters<typeof contractFunction4>
+    )
+  ) {
+    return result
+  }
+  throw new Error('PC failed')
+}
