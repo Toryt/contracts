@@ -41,5 +41,5 @@ expectType<string>(undefined as unknown as Parameters<TwoArgumentsSignature>[1])
 // @ts-expect-error
 type NoElementAtIndex2 = Parameters<TwoArgumentsSignature>[2]
 expectAssignable<TwoArgumentsSignature>(twoArguments)
-expectAssignable<TwoArgumentsSignature>((a: number[]): unknown => undefined)
+expectAssignable<TwoArgumentsSignature>((a: number[]): string => a.join(', '))
 expectAssignable<TwoArgumentsSignature>(noArguments)

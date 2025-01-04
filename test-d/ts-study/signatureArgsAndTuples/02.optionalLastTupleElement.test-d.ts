@@ -80,12 +80,16 @@ expectType<boolean | undefined>(undefined as unknown as Parameters<FinalOptional
 type NoElementAtIndex3a = Parameters<FinalOptionalArgumentSignature>[3]
 
 expectAssignable<FinalOptionalArgumentSignature>(finalOptionalArgument)
-expectAssignable<FinalOptionalArgumentSignature>((a: number[], b: string, c: boolean | undefined): unknown => undefined)
 expectAssignable<FinalOptionalArgumentSignature>(
-  (a: number[], b: string, c?: boolean | undefined): unknown => undefined
+  (a: number[], b: string, c: boolean | undefined): string =>
+    `result ${a.join(', ')} ${b} ${c === undefined ? 'undefined' : c}`
 )
-expectAssignable<FinalOptionalArgumentSignature>((a: number[], b: string): unknown => undefined)
-expectAssignable<FinalOptionalArgumentSignature>((a: number[]): unknown => undefined)
+expectAssignable<FinalOptionalArgumentSignature>(
+  (a: number[], b: string, c?: boolean | undefined): string =>
+    `result ${a.join(', ')} ${b} ${c === undefined ? 'undefined' : c}`
+)
+expectAssignable<FinalOptionalArgumentSignature>((a: number[], b: string): string => `result ${a.join(', ')} ${b}`)
+expectAssignable<FinalOptionalArgumentSignature>((a: number[]): string => `result ${a.join(', ')}`)
 expectAssignable<FinalOptionalArgumentSignature>(noArguments)
 
 /* Single optional argument
@@ -104,8 +108,12 @@ expectType<[a?: boolean | undefined]>([] as unknown as Parameters<SingleOptional
 expectType<boolean | undefined>(undefined as unknown as Parameters<SingleOptionalArgumentSignature>[0])
 
 expectAssignable<SingleOptionalArgumentSignature>(singleOptionalArgument)
-expectAssignable<SingleOptionalArgumentSignature>((a: boolean | undefined): unknown => undefined)
-expectAssignable<SingleOptionalArgumentSignature>((a?: boolean | undefined): unknown => undefined)
+expectAssignable<SingleOptionalArgumentSignature>(
+  (a: boolean | undefined): string => `result ${a ? 'no a or false' : 'true'}`
+)
+expectAssignable<SingleOptionalArgumentSignature>(
+  (a?: boolean | undefined): string => `result ${a ? 'no a or false' : 'true'}`
+)
 expectAssignable<SingleOptionalArgumentSignature>(noArguments)
 
 /* Multiple final optional arguments
@@ -154,54 +162,66 @@ type NoElementAtIndex3 = Parameters<MultipleFinalOptionalArgumentsSignature>[5]
 
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(multipleFinalOptionalArguments)
 
-expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c?: boolean, d?: number, e?: string | undefined): unknown => undefined
-)
 expectAssignable<string | undefined>('' as unknown as string) // contravariant
 // @ts-expect-error
 function fail1(a: number, b: string[], c?: boolean, d?: number, e: string | undefined): unknown {
   return undefined
 }
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c: boolean | undefined, d?: number, e?: string): unknown => undefined
+  (a: number, b: string[], c?: boolean | undefined, d?: number, e?: string): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d} ${e ? 'no e or empty' : e}`
 )
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c: boolean | undefined, d?: number, e?: string): unknown => undefined
+  (a: number, b: string[], c: boolean | undefined, d?: number, e?: string): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d} ${e ? 'no e or empty' : e}`
 )
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c: boolean | undefined, d: number | undefined, e?: string): unknown => undefined
+  (a: number, b: string[], c: boolean | undefined, d: number | undefined, e?: string): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d} ${e ? 'no e or empty' : e}`
 )
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c: boolean | undefined, d: number | undefined, e: string | undefined): unknown => undefined
+  (a: number, b: string[], c: boolean | undefined, d: number | undefined, e: string | undefined): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d} ${e ? 'no e or empty' : e}`
 )
 
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c?: boolean, d?: number): unknown => undefined
-)
-expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c?: boolean, d?: number): unknown => undefined
+  (a: number, b: string[], c?: boolean, d?: number): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d}`
 )
 // @ts-expect-error
-function fail2(a: number, b: string[], c?: boolean, d: number | undefined): unknown {
-  return undefined
+function fail2(a: number, b: string[], c?: boolean, d: number | undefined): string {
+  return `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d}`
 }
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c: boolean | undefined, d?: number): unknown => undefined
+  (a: number, b: string[], c: boolean | undefined, d?: number): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d}`
 )
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c: boolean | undefined, d: number | undefined): unknown => undefined
+  (a: number, b: string[], c: boolean | undefined, d: number | undefined): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d 0' : d}}`
 )
 
-expectAssignable<MultipleFinalOptionalArgumentsSignature>((a: number, b: string[], c?: boolean): unknown => undefined)
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
-  (a: number, b: string[], c: boolean | undefined): unknown => undefined
+  (a: number, b: string[], c?: boolean): string => `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'}`
+)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[], c: boolean | undefined): string =>
+    `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'}`
 )
 
-expectAssignable<MultipleFinalOptionalArgumentsSignature>((a: number, b: string[]): unknown => undefined)
-expectAssignable<MultipleFinalOptionalArgumentsSignature>((a: number): unknown => undefined)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>(
+  (a: number, b: string[]): string => `result ${a} ${b.join(', ')}`
+)
+expectAssignable<MultipleFinalOptionalArgumentsSignature>((a: number): string => `result ${a}`)
+
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(noArguments)
 
 /* So: `X | undefined <: X? <: X` */
 
-expectAssignable<TwoArgumentsSignature>((a?: number[], b?: string): unknown => undefined)
-expectAssignable<TwoArgumentsSignature>((a: number[] | undefined, b: string | undefined): unknown => undefined)
+expectAssignable<TwoArgumentsSignature>(
+  (a?: number[], b?: string): string => `result ${a ? a.join(', ') : 'not an a'} ${b ? b : 'no b'}`
+)
+expectAssignable<TwoArgumentsSignature>(
+  (a: number[] | undefined, b: string | undefined): string =>
+    `result ${a ? a.join(', ') : 'not an a'} ${b ? b : 'no b'}`
+)
