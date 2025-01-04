@@ -45,11 +45,13 @@ function unknownFunction(): unknown {
   return undefined
 }
 
-function reconstructedSignature<T extends UnknownFunction>() {
+function reconstructedSignature<T extends UnknownFunction>(): (
+  ...args: ConstructedTuple<DeconstructedTuple<Parameters<T>>>
+) => ReturnType<T> {
   return unknownFunction as unknown as (...args: ConstructedTuple<DeconstructedTuple<Parameters<T>>>) => ReturnType<T>
 }
 
-function reconstructedTuple<T extends unknown[]>() {
+function reconstructedTuple<T extends unknown[]>(): ConstructedTuple<DeconstructedTuple<T>> {
   return [] as unknown as ConstructedTuple<DeconstructedTuple<T>>
 }
 

@@ -128,9 +128,9 @@ expectAssignable<ASignatureWithOptionalArgs>((): Level2Type => new Level2Class(0
 // required arguments
 expectNotAssignable<ASignatureWithOptionalArgs>(
   (a: number, b: string, c: Level1BType, d?: number): Level2Type =>
-    new Level2Class(a, !!c && c.rootProperty > 0, level1AInstance)
+    new Level2Class(a + (d ?? 0), c.rootProperty > 0, level1AInstance)
 )
 expectNotAssignable<ASignatureWithOptionalArgs>(
   (a: number, b: string, c: Level1BType, d: number): Level2Type =>
-    new Level2Class(a, !!c && c.rootProperty > 0, level1AInstance)
+    new Level2Class(a + d, c.rootProperty > 0, level1AInstance)
 )

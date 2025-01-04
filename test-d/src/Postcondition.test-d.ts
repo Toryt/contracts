@@ -61,9 +61,7 @@ expectNotAssignable<Postcondition<NoArgumentsSignature>>(
 /* OneArgumentSignature */
 
 expectAssignable<Postcondition<OneArgumentSignature>>(({ value, args: [a] }) => typeof value === 'string' && a === 0)
-expectAssignable<Postcondition<OneArgumentSignature>>(
-  ({ value, args }) => typeof value === 'string' && args.length <= 1
-)
+expectAssignable<Postcondition<OneArgumentSignature>>(({ value, args }) => typeof value === 'string' && args[0] <= 1)
 expectAssignable<Postcondition<OneArgumentSignature>>(({ args: [a] }) => a === 0)
 expectAssignable<Postcondition<OneArgumentSignature>>(({ value }) => typeof value === 'string')
 expectAssignable<Postcondition<OneArgumentSignature>>(({}) => globalThis)

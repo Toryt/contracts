@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ export default neostandard({ ts: true }).concat([
       'no-secrets/no-secrets': [
         'error',
         {
-          tolerance: 4.11,
+          tolerance: 4.3, // MUDO lower to 4.11
           ignoreContent: [
             // WebStorm inspections with a long name that are ignored
             'JSPrimitiveTypeWrapperUsage'

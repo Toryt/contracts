@@ -54,7 +54,7 @@ export class FunctionContract<Signature extends UnknownFunction> {
 
   private checkPostconditions(result: unknown, args: Parameters<Signature>): result is ReturnType<Signature> {
     const postconditionKwargs: PostconditionKwargs<Signature> = Object.freeze({ value: result, args })
-    return this._post.every((pc: Postcondition<Signature>) => pc.call(undefined, postconditionKwargs))
+    return this._post.every((pc: Postcondition<Signature>) => pc(postconditionKwargs))
   }
 
   /**
