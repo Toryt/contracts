@@ -48,7 +48,7 @@ expectAssignable<Postcondition<NoArgumentsSignature>>(
 )
 expectAssignable<Postcondition<NoArgumentsSignature>>(({ args }) => args.length === 0)
 expectAssignable<Postcondition<NoArgumentsSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<NoArgumentsSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<NoArgumentsSignature>>(() => globalThis)
 expectAssignable<Postcondition<NoArgumentsSignature>>(() => globalThis)
 expectNotAssignable<Postcondition<NoArgumentsSignature>>(
   ({ value, args, somethingElse }: PostconditionKwargs<NoArgumentsSignature> & { readonly somethingElse: unknown }) =>
@@ -64,7 +64,7 @@ expectAssignable<Postcondition<OneArgumentSignature>>(({ value, args: [a] }) => 
 expectAssignable<Postcondition<OneArgumentSignature>>(({ value, args }) => typeof value === 'string' && args[0] <= 1)
 expectAssignable<Postcondition<OneArgumentSignature>>(({ args: [a] }) => a === 0)
 expectAssignable<Postcondition<OneArgumentSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<OneArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<OneArgumentSignature>>(() => globalThis)
 expectAssignable<Postcondition<OneArgumentSignature>>(() => globalThis)
 expectNotAssignable<Postcondition<OneArgumentSignature>>(
   ({ args: [a, b] }: { args: [number, unknown] }) => a === 0 && !!b
@@ -85,7 +85,7 @@ expectAssignable<Postcondition<TwoArgumentsSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<TwoArgumentsSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<TwoArgumentsSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<TwoArgumentsSignature>>(() => globalThis)
 expectAssignable<Postcondition<TwoArgumentsSignature>>(() => globalThis)
 expectNotAssignable<Postcondition<TwoArgumentsSignature>>(
   ({ args: [a, b] }: { args: [number, unknown] }) => a === 0 && !!b
@@ -113,7 +113,7 @@ expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(() => globalThis)
 expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(() => globalThis)
 expectNotAssignable<Postcondition<FinalOptionalArgumentSignature>>(
   ({ args: [a, b] }: { args: [number, unknown] }) => a === 0 && !!b
@@ -135,7 +135,7 @@ expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(() => globalThis)
 expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(() => globalThis)
 expectNotAssignable<Postcondition<SingleOptionalArgumentSignature>>(({ args: [a] }: { args: [boolean] }) => a)
 expectNotAssignable<Postcondition<SingleOptionalArgumentSignature>>(
@@ -173,7 +173,7 @@ expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(() => globalThis)
 expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(() => globalThis)
 
 /* FinalRestArgumentSignature */
@@ -206,7 +206,7 @@ expectAssignable<Postcondition<FinalRestArgumentSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<FinalRestArgumentSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<FinalRestArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<FinalRestArgumentSignature>>(() => globalThis)
 expectAssignable<Postcondition<FinalRestArgumentSignature>>(() => globalThis)
 
 /* FinalRestArgumentAfterArraySignature */
@@ -239,7 +239,7 @@ expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(({}) => globalThis)
+expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(() => globalThis)
 expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(() => globalThis)
 
 /* SingleRestSignature */
@@ -255,7 +255,7 @@ expectAssignable<Postcondition<SingleRestSignature>>(
   ({ value, args }) => typeof value === 'string' && args.some(e => value === e)
 )
 expectAssignable<Postcondition<SingleRestSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<SingleRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<SingleRestSignature>>(() => globalThis)
 expectAssignable<Postcondition<SingleRestSignature>>(() => globalThis)
 
 /* PseudoOptionalNonFinalSignature */
@@ -276,7 +276,7 @@ expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(() => globalThis)
 expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(() => globalThis)
 
 /* UndefinedNonFinalSignature */
@@ -297,7 +297,7 @@ expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<UndefinedNonFinalSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<UndefinedNonFinalSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(() => globalThis)
 expectAssignable<Postcondition<UndefinedNonFinalSignature>>(() => globalThis)
 
 /* PseudoRestNonFinalSignature */
@@ -331,7 +331,7 @@ expectAssignable<Postcondition<PseudoRestNonFinalSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<PseudoRestNonFinalSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<PseudoRestNonFinalSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<PseudoRestNonFinalSignature>>(() => globalThis)
 expectAssignable<Postcondition<PseudoRestNonFinalSignature>>(() => globalThis)
 
 /* OneRestInTheMiddleInArraysSignature */
@@ -368,7 +368,7 @@ expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(() => globalThis)
 expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(() => globalThis)
 
 /* OptionalBeforeRestSignature */
@@ -399,7 +399,7 @@ expectAssignable<Postcondition<OptionalBeforeRestSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<OptionalBeforeRestSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<OptionalBeforeRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(() => globalThis)
 expectAssignable<Postcondition<OptionalBeforeRestSignature>>(() => globalThis)
 
 /* DoubleOptionalBeforeRestSignature */
@@ -440,7 +440,7 @@ expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(() => globalThis)
 expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(() => globalThis)
 
 /* UndefinedBeforeRestSignature */
@@ -471,7 +471,7 @@ expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(() => globalThis)
 expectAssignable<Postcondition<UndefinedBeforeRestSignature>>(() => globalThis)
 
 /* DoubleOptionalAfterRestSignature */
@@ -494,7 +494,7 @@ expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(
   ({ value, args }) => typeof value === 'string' && args.length <= 1
 )
 expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(({ value }) => typeof value === 'string')
-expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(() => globalThis)
 expectAssignable<Postcondition<DoubleOptionalAfterRestSignature>>(() => globalThis)
 
 expectAssignable<Postcondition<ASignature>>(
