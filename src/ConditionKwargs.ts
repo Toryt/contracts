@@ -14,11 +14,6 @@
   limitations under the License.
  */
 
-import type { ConditionKwargs } from './ConditionKwargs.ts'
-import type { UnknownFunction } from './types/UnknownFunction.ts'
-
-export interface PostconditionKwargs<Signature extends UnknownFunction> extends ConditionKwargs {
-  readonly args: Readonly<Parameters<Signature>>
+export interface ConditionKwargs {
+  readonly result: unknown
 }
-
-export type Postcondition<Signature extends UnknownFunction> = (kwargs: PostconditionKwargs<Signature>) => unknown
