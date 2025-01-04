@@ -18,12 +18,18 @@ import { ok, strictEqual } from 'node:assert'
 import type { Postcondition, PostconditionKwargs } from './Postcondition.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 
-export interface ContractFunctionProperties<Signature extends UnknownFunction> {
-  contract: FunctionContract<Signature>
-  implementation: Signature
+export interface ContractFunctionProperties<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> {
+  contract: FunctionContract<ContractSignature>
+  implementation: ImplementationSignature
 }
 
-export type ContractFunction<Signature extends UnknownFunction> = Signature & ContractFunctionProperties<Signature>
+export type ContractFunction<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> = ContractSignature & ContractFunctionProperties<ContractSignature, ImplementationSignature>
 
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
   post?: Postcondition<Signature>[]
@@ -63,7 +69,9 @@ export class FunctionContract<Signature extends UnknownFunction> {
    * @param implFunction - The function to validate.
    * @returns The provided function.
    */
-  implementation(implFunction: Signature): ContractFunction<Signature> {
+  implementation<ImplementationSignature extends Signature>(
+    implFunction: ImplementationSignature
+  ): ContractFunction<Signature, ImplementationSignature> {
     strictEqual(typeof implFunction, 'function')
 
     const contract = this
@@ -76,8 +84,8 @@ export class FunctionContract<Signature extends UnknownFunction> {
       throw new Error('Postcondition failed')
     }
 
-    const adornedFunc = contractFunction as ContractFunction<Signature>
     adornedFunc.contract = contract
+    const adornedFunc = contractFunction as ContractFunction<Signature, ImplementationSignature>
     adornedFunc.implementation = implFunction
 
     return adornedFunc
