@@ -24,6 +24,7 @@ import type {
   NoArgumentsSignature,
   OneArgumentSignature,
   SingleOptionalArgumentSignature,
+  SingleRestSignature,
   TwoArgumentsSignature
 } from '../../test2/util/SomeSignatures.ts'
 
@@ -229,6 +230,24 @@ expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(
 expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(({ result }) => typeof result === 'string')
 expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(({}) => globalThis)
 expectAssignable<Postcondition<FinalRestArgumentAfterArraySignature>>(() => globalThis)
+
+/* SingleRestSignature */
+
+expectAssignable<Postcondition<SingleRestSignature>>(
+  ({ result, args: [...a] }) => typeof result === 'string' && a.some(e => result === e)
+)
+expectAssignable<Postcondition<SingleRestSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && result === a
+)
+expectAssignable<Postcondition<SingleRestSignature>>(
+  ({ result, args: [a, b, c] }) => typeof result === 'string' && (result === a || result === b || result === c)
+)
+expectAssignable<Postcondition<SingleRestSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.some(e => result === e)
+)
+expectAssignable<Postcondition<SingleRestSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<SingleRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<SingleRestSignature>>(() => globalThis)
 
 // expectAssignable<Postcondition<ASignature>>(
 //   (args: [number, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
