@@ -157,7 +157,7 @@ expectAssignable<MultipleFinalOptionalArgumentsSignature>(multipleFinalOptionalA
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(
   (a: number, b: string[], c?: boolean, d?: number, e?: string | undefined): unknown => undefined
 )
-expectAssignable<string | undefined>('' as unkown as string) // contravariant
+expectAssignable<string | undefined>('' as unknown as string) // contravariant
 // @ts-expect-error
 function fail1(a: number, b: string[], c?: boolean, d?: number, e: string | undefined): unknown {
   return undefined
