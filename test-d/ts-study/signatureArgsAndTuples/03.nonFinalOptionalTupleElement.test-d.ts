@@ -29,8 +29,8 @@ import {
 
 /* There can be no required arguments after an optional argument in a signature, or a tuple. Even `expectError` of
    `tsd` rejects this. We need `@ts-expect-error` to show this. */
-// @ts-expect-error
 
+// @ts-expect-error
 function optionalBeforeRequired(a: number, b?: string, c: boolean): unknown {
   return undefined
 }

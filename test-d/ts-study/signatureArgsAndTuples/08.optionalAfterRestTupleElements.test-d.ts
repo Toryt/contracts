@@ -29,6 +29,7 @@ import {
 
 // @ts-expect-error
 type OptionalAfterRestSignatureFail = (a: number[], ...b: string[], c?: boolean) => unknown
+
 // @ts-expect-error
 function optionalAfterRestFail(a: number[], ...b: string[], c?: boolean): unknown {
   return undefined

@@ -33,6 +33,7 @@ import {
 function restBeforeRequired(a: number, ...b: string[], c: boolean): unknown {
   return undefined
 }
+
 /* But we _can_ have rest elements before required elements in a tuple: */
 function restBeforeRequiredInTuple(): OneRestInTheMiddleTuple {
   let vbrit: OneRestInTheMiddleTuple = [0, '', true]
