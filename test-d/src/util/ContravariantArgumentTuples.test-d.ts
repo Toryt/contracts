@@ -14,10 +14,9 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectType } from 'tsd'
+import { expectAssignable, expectNotAssignable, expectType } from 'tsd'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { type ContravariantArgumentTuple } from '../../../src/util/ContravariantArgumentTuple.ts'
-import type { Level1BType } from '../../../test2/util/SomeTypes.ts'
 import type {
   ASignature,
   ASignatureWithOptionalArgs,
@@ -36,12 +35,14 @@ import type {
   PseudoOptionalNonFinalSignature,
   PseudoOptionalNonFinalTuple,
   PseudoRestNonFinalSignature,
+  PseudoRestNonFinalTuple,
   SingleOptionalArgumentSignature,
   SingleRestSignature,
   TwoArgumentsSignature,
   UndefinedBeforeRestSignature,
   UndefinedNonFinalSignature
 } from '../../../test2/util/SomeSignatures.ts'
+import type { Level1BType } from '../../../test2/util/SomeTypes.ts'
 
 function unknownFunction(): unknown {
   return undefined
@@ -135,6 +136,92 @@ expectType<[] | [number] | [number, ...string[]] | [number, ...string[], boolean
   contravariantArguments<PseudoRestNonFinalSignature>()
 )
 expectAssignable<PseudoRestNonFinalSignature>(contravariantArgumentsSignature<PseudoRestNonFinalSignature>())
+function pseudoRestNonFinal(...args: PseudoRestNonFinalTuple): unknown {
+  const arg0: number = args[0] // first arg is required number
+  /* We have at least 2 arguments, and the second one is either part of the rest argument (`string`), or the last
+     argument (`boolean`). */
+  const arg1: string | boolean = args[1]
+  /* We might have more than 2 arguments, but we might not. We might be past the end of the array (`undefined`).
+     Otherwise, this is either part of the rest argument (`string`), or the last argument (`boolean`). */
+  const arg2: string | boolean | undefined = args[2]
+  const arg999: string | boolean | undefined = args[999]
+  /* TS does not know about the index of the last element. This value can be anything. */
+  const argLast: number | string | boolean | undefined = args[args.length - 1]
+
+  if (args.length <= 2) {
+    // a guard does not exist for the length
+    const arg1b: string | boolean = args[1]
+    return [arg0, arg1, arg1b]
+  }
+
+  return [arg0, arg1, arg2, arg999, argLast]
+}
+// expectAssignable<PseudoRestNonFinalSignature>(
+//   pseudoRestNonFinal as unknown as
+//     | (() => unknown)
+//     | ((a: number) => unknown)
+//     | ((a: number, ...b: (string | boolean)[]) => unknown)
+// )
+expectAssignable<PseudoRestNonFinalSignature>(function pseudoRestNonFinal1(a: number): unknown {
+  return undefined
+})
+function consume(...args: unknown[]) {}
+
+const pseudoRestNonFinalTuple1: PseudoRestNonFinalTuple = [0, true]
+
+const [deconstructed1a0] = pseudoRestNonFinalTuple1
+const typedDeconstructed1a0: number = deconstructed1a0
+consume(typedDeconstructed1a0)
+
+const [deconstructed1b0, deconstructed1b1] = pseudoRestNonFinalTuple1
+const typedDeconstructed1b0: number = deconstructed1b0
+const typedDeconstructed1b1: string | boolean = deconstructed1b1
+consume(typedDeconstructed1b0, typedDeconstructed1b1)
+
+const [deconstructed1c0, deconstructed1c1, deconstructed1c2] = pseudoRestNonFinalTuple1
+const typedDeconstructed1c0: number = deconstructed1c0
+const typedDeconstructed1c1: string | boolean = deconstructed1c1
+const typedDeconstructed1c2: string | boolean | undefined = deconstructed1c2
+consume(typedDeconstructed1c0, typedDeconstructed1c1, typedDeconstructed1c2)
+
+const pseudoRestNonFinalTuple2: PseudoRestNonFinalTuple = [0, 'string', true]
+
+const [deconstructed2a0] = pseudoRestNonFinalTuple2
+const typedDeconstructed2a0: number = deconstructed2a0
+consume(typedDeconstructed2a0)
+
+const [deconstructed2b0, deconstructed2b1] = pseudoRestNonFinalTuple2
+const typedDeconstructed2b0: number = deconstructed2b0
+const typedDeconstructed2b1: string | boolean = deconstructed2b1
+consume(typedDeconstructed2b0, typedDeconstructed2b1)
+
+const [deconstructed2c0, deconstructed2c1, deconstructed2c2] = pseudoRestNonFinalTuple2
+const typedDeconstructed2c0: number = deconstructed2c0
+const typedDeconstructed2c1: string | boolean = deconstructed2c1
+const typedDeconstructed2c2: string | boolean | undefined = deconstructed2c2
+consume(typedDeconstructed2c0, typedDeconstructed2c1, typedDeconstructed2c2)
+
+expectAssignable<PseudoRestNonFinalSignature>(function pseudoRestNonFinal2(
+  ...args: [number] | [number, ...(string | boolean)[]]
+): unknown {
+  return undefined
+})
+
+expectAssignable<PseudoRestNonFinalSignature>((): unknown => {
+  return undefined
+})
+// MUDO this is not ok! TS issue?
+expectNotAssignable<PseudoRestNonFinalSignature>((a: number): unknown => {
+  return undefined
+})
+expectNotAssignable<PseudoRestNonFinalSignature>((a: number, b: string | boolean): unknown => {
+  return undefined
+})
+/* NOTE: Since the rest element can be empty, this also covers the 2 previous options. But the fact thqt I cannot use
+         a one-argument function (and I can use a zero-argument function) is plain wrong. */
+expectAssignable<PseudoRestNonFinalSignature>((a: number, ...b: (string | boolean)[]): unknown => {
+  return undefined
+})
 
 expectType<[] | [number[]] | [number[], ...string[]] | [number[], ...string[], boolean[]]>(
   contravariantArguments<OneRestInTheMiddleInArraysSignature>()
