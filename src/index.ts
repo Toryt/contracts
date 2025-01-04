@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 
 export type * from './types/UnknownFunction.ts'
 export type * from './types/NeverFunction.ts'
-export type { ContractFunctionProperties, ContractFunction } from './FunctionContract.ts'
+export type * from './Postcondition.ts'
 
-export { FunctionContract } from './FunctionContract.ts'
+// export type { ContractFunctionProperties, ContractFunction } from './FunctionContract.ts'
+//
+// export { FunctionContract } from './FunctionContract.ts'
