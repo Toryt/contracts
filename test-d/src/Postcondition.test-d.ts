@@ -16,7 +16,15 @@
 
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { Postcondition, PostconditionKwargs } from '../../src/index.ts'
-import type { NoArgumentsSignature, OneArgumentSignature } from '../../test2/util/SomeSignatures.ts'
+import type {
+  FinalOptionalArgumentSignature,
+  NoArgumentsSignature,
+  OneArgumentSignature,
+  SingleOptionalArgumentSignature,
+  TwoArgumentsSignature
+} from '../../test2/util/SomeSignatures.ts'
+
+/* NoArgumentsSignature */
 
 expectAssignable<Postcondition<NoArgumentsSignature>>(
   ({ result, args }) => typeof result === 'string' && args.length === 0
@@ -33,6 +41,8 @@ expectNotAssignable<Postcondition<NoArgumentsSignature>>(
   ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
 )
 
+/* OneArgumentSignature */
+
 expectAssignable<Postcondition<OneArgumentSignature>>(({ result, args: [a] }) => typeof result === 'string' && a === 0)
 expectAssignable<Postcondition<OneArgumentSignature>>(
   ({ result, args }) => typeof result === 'string' && args.length <= 1
@@ -45,6 +55,78 @@ expectNotAssignable<Postcondition<OneArgumentSignature>>(
   ({ args: [a, b] }: { args: [number, unknown] }) => a === 0 && !!b
 )
 expectNotAssignable<Postcondition<OneArgumentSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
+)
+
+/* TwoArgumentsSignature */
+
+expectAssignable<Postcondition<TwoArgumentsSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a.length === 0 && b !== ''
+)
+expectAssignable<Postcondition<TwoArgumentsSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a.length === 0
+)
+expectAssignable<Postcondition<TwoArgumentsSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<TwoArgumentsSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<TwoArgumentsSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<TwoArgumentsSignature>>(() => globalThis)
+expectNotAssignable<Postcondition<TwoArgumentsSignature>>(
+  ({ args: [a, b] }: { args: [number, unknown] }) => a === 0 && !!b
+)
+expectNotAssignable<Postcondition<TwoArgumentsSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
+)
+
+/* FinalOptionalArgumentSignature */
+
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(
+  ({ result, args: [a, b, c] }) => typeof result === 'string' && a.length === 0 && b !== '' && c === undefined
+)
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(
+  ({ result, args: [a, b, c] }: { result: unknown; args: readonly [number[], string, (boolean | undefined)?] }) =>
+    typeof result === 'string' && a.length === 0 && b !== '' && c === undefined
+)
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a.length === 0 && b !== ''
+)
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a.length === 0
+)
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<FinalOptionalArgumentSignature>>(() => globalThis)
+expectNotAssignable<Postcondition<FinalOptionalArgumentSignature>>(
+  ({ args: [a, b] }: { args: [number, unknown] }) => a === 0 && !!b
+)
+expectNotAssignable<Postcondition<FinalOptionalArgumentSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
+)
+
+/* SingleOptionalArgumentSignature */
+
+expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(({ result, args: [a] }) =>
+  typeof result === 'string' && a === undefined ? 'undefined' : a
+)
+expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(
+  ({ result, args: [a] }: { result: unknown; args: readonly [(boolean | undefined)?] }) =>
+    typeof result === 'string' && a === undefined ? 'undefined' : a
+)
+expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<SingleOptionalArgumentSignature>>(() => globalThis)
+expectNotAssignable<Postcondition<SingleOptionalArgumentSignature>>(({ args: [a] }: { args: [boolean] }) => a)
+expectNotAssignable<Postcondition<SingleOptionalArgumentSignature>>(
+  ({ args: [a, b] }: { args: [boolean?, unknown?] }) => a !== undefined && !!b
+)
+expectNotAssignable<Postcondition<SingleOptionalArgumentSignature>>(
   ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
 )
 
