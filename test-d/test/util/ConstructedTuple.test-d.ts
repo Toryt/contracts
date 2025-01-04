@@ -45,8 +45,9 @@ function unknownFunction(): unknown {
   return undefined
 }
 
+/* prettier-ignore */
 function reconstructedSignature<T extends UnknownFunction>(): (
-  ...args: ConstructedTuple<DeconstructedTuple<Parameters<T>>>
+...args: ConstructedTuple<DeconstructedTuple<Parameters<T>>>
 ) => ReturnType<T> {
   return unknownFunction as unknown as (...args: ConstructedTuple<DeconstructedTuple<Parameters<T>>>) => ReturnType<T>
 }

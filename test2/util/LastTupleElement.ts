@@ -33,15 +33,17 @@ export type FinalRestElement<T extends unknown[]> = number extends T['length']
       : [T, 'rest'] // `T` is unbounded array
   : 'error: tuple does not contain a rest element and is not an unbounded array'
 
-export type LastTupleElement<T extends unknown[]> = T extends []
-  ? 'error: there is no last tuple element in an empty tuple'
-  : T extends [...start: unknown[], last: infer Last1] // required single
-    ? [Last1, 'required']
-    : /* The last element is not required. It is either optional or rest.
-         Since rest elements can not be followed by optional or other rest elements, if there is a rest element in `T`,
-         it is the last one. */ number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
-      ? FinalRestElement<T>
-      : // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type LastTupleElement<T extends unknown[]> =
+  /* prettier-ignore */
+  T extends []
+    ? 'error: there is no last tuple element in an empty tuple'
+    : T extends [...start: unknown[], last: infer Last1] // required single
+      ? [Last1, 'required']
+      : /* The last element is not required. It is either optional or rest.
+           Since rest elements can not be followed by optional or other rest elements, if there is a rest element in `T`,
+           it is the last one. */ number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
+        ? FinalRestElement<T>
+        : // eslint-disable-next-line @typescript-eslint/no-unused-vars
         T extends [...start: infer _, last?: infer Last2]
-        ? [Last2, 'optional'] // optional single
-        : 'impossible: not empty, not required, not optional or rest'
+          ? [Last2, 'optional'] // optional single
+          : 'impossible: not empty, not required, not optional or rest'
