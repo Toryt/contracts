@@ -18,6 +18,7 @@ import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { Postcondition, PostconditionKwargs } from '../../src/index.ts'
 import type {
   FinalOptionalArgumentSignature,
+  MultipleFinalOptionalArgumentsSignature,
   NoArgumentsSignature,
   OneArgumentSignature,
   SingleOptionalArgumentSignature,
@@ -129,6 +130,37 @@ expectNotAssignable<Postcondition<SingleOptionalArgumentSignature>>(
 expectNotAssignable<Postcondition<SingleOptionalArgumentSignature>>(
   ({ result, args: [a] }: { result: unknown; args: [unknown] }) => typeof result === 'string' && !!a
 )
+
+/* MultipleFinalOptionalArgumentsSignature */
+
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
+  ({ result, args: [a, b, c, d, e] }) =>
+    typeof result === 'string' &&
+    a === 0 &&
+    b.length > 0 &&
+    c === undefined &&
+    (d === undefined || d < 0) &&
+    (e === undefined || e !== '')
+)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
+  ({ result, args: [a, b, c, d] }) =>
+    typeof result === 'string' && a === 0 && b.length > 0 && c === undefined && (d === undefined || d < 0)
+)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
+  ({ result, args: [a, b, c] }) => typeof result === 'string' && a === 0 && b.length > 0 && c === undefined
+)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a === 0 && b.length > 0
+)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a === 0
+)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<MultipleFinalOptionalArgumentsSignature>>(() => globalThis)
 
 // expectAssignable<Postcondition<ASignature>>(
 //   (args: [number, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
