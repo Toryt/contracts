@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import { ok, strictEqual } from 'node:assert'
-import type { Postcondition } from './Postcondition.ts'
+import type { Postcondition, PostconditionKwargs } from './Postcondition.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 
 export interface ContractFunctionProperties<T extends UnknownFunction> {
@@ -29,23 +29,31 @@ export interface FunctionContractKwargs<T extends UnknownFunction> {
 }
 
 /**
- * A class representing a function contract where the implementation
- * must conform to a specified signature.
+ * A class representing a function contract where the implementation must conform to a specified signature.
  *
  * @template T - The generic signature type defining the contract.
  */
-export class FunctionContract<T extends UnknownFunction> {
-  public readonly post: ReadonlyArray<Postcondition<T>>
+export class FunctionContract<Signature extends UnknownFunction> {
+  private readonly _post: ReadonlyArray<Postcondition<Signature>>
 
-  constructor(kwargs: FunctionContractKwargs<T>) {
+  constructor(kwargs: FunctionContractKwargs<Signature>) {
     ok(kwargs, 'kwargs is mandatory')
     strictEqual(typeof kwargs, 'object', 'kwargs must be an object')
     ok(
       kwargs.post === undefined || (Array.isArray(kwargs.post) && kwargs.post.every(p => typeof p === 'function')),
-      'optional kwargs.post is an array'
+      'optional kwargs.post must be an array of functions as postconditions'
     )
 
-    this.post = Object.freeze(kwargs.post ? kwargs.post.slice() : [])
+    this._post = Object.freeze(kwargs.post ? kwargs.post.slice() : [])
+  }
+
+  public get post(): ReadonlyArray<Postcondition<Signature>> {
+    return this._post // safe: has been frozen
+  }
+
+  private checkPostconditions(result: unknown, args: Parameters<Signature>): result is ReturnType<Signature> {
+    const postconditionKwargs: PostconditionKwargs<Signature> = Object.freeze({ result, args })
+    return this._post.every((pc: Postcondition<Signature>) => pc.call(undefined, postconditionKwargs))
   }
 
   /**
@@ -54,11 +62,22 @@ export class FunctionContract<T extends UnknownFunction> {
    * @param implFunction - The function to validate.
    * @returns The provided function.
    */
-  implementation(implFunction: T): ContractFunction<T> {
+  implementation(implFunction: Signature): ContractFunction<Signature> {
     strictEqual(typeof implFunction, 'function')
 
-    const adornedFunc = implFunction as ContractFunction<T>
-    adornedFunc.contract = this
+    const contract = this
+
+    const contractFunction = function contractFunction(...args: Parameters<Signature>): ReturnType<Signature> {
+      const result: unknown = implFunction.apply(undefined, args)
+      if (contract.checkPostconditions(result, args.slice() as Parameters<Signature>)) {
+        return result
+      }
+      throw new Error('Postcondition failed')
+    }
+
+    const adornedFunc = contractFunction as ContractFunction<Signature>
+    adornedFunc.contract = contract
+
     return adornedFunc
   }
 }
