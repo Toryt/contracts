@@ -20,6 +20,7 @@ import type { UnknownFunction } from './types/UnknownFunction.ts'
 
 export interface ContractFunctionProperties<Signature extends UnknownFunction> {
   contract: FunctionContract<Signature>
+  implementation: Signature
 }
 
 export type ContractFunction<Signature extends UnknownFunction> = Signature & ContractFunctionProperties<Signature>
@@ -77,6 +78,7 @@ export class FunctionContract<Signature extends UnknownFunction> {
 
     const adornedFunc = contractFunction as ContractFunction<Signature>
     adornedFunc.contract = contract
+    adornedFunc.implementation = implFunction
 
     return adornedFunc
   }
@@ -85,5 +87,11 @@ export class FunctionContract<Signature extends UnknownFunction> {
 export function isContractFunction<Signature extends UnknownFunction>(
   candidate: unknown
 ): candidate is ContractFunction<Signature> {
-  return typeof candidate === 'function' && 'contract' in candidate && candidate.contract instanceof FunctionContract
+  return (
+    typeof candidate === 'function' &&
+    'contract' in candidate &&
+    candidate.contract instanceof FunctionContract &&
+    'implementation' in candidate &&
+    typeof candidate.implementation === 'function'
+  )
 }
