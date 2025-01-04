@@ -143,7 +143,8 @@ describe('FunctionContract', function () {
   describe('implementation', function () {
     function verifyImplementationPost(contract, implementation, subject) {
       isContractFunction(subject)
-      subject.contract.should.equal(contract)
+      subject.contract.should.not.equal(contract)
+      Object.getPrototypeOf(subject.contract).should.equal(contract)
       subject.implementation.should.equal(implementation)
       functionContractInvariants(contract)
     }

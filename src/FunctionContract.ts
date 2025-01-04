@@ -84,8 +84,8 @@ export class FunctionContract<Signature extends UnknownFunction> {
       throw new Error('Postcondition failed')
     }
 
-    adornedFunc.contract = contract
     const adornedFunc = contractFunction as ContractFunction<Signature, ImplementationSignature>
+    adornedFunc.contract = Object.create(contract)
     adornedFunc.implementation = implFunction
 
     return adornedFunc
