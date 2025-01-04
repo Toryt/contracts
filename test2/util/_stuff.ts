@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 // eslint-disable-next-line no-new-func
 const getGlobal = new Function('return this;')
+export const global: object = getGlobal()
 
 export type ExtendedType =
   | 'object'
@@ -81,7 +82,6 @@ export function generateStuff(): Array<StuffWrapper> {
     { subject: '', expected: 'string', isPrimitive: true },
     { subject: 4, expected: 'number', isPrimitive: true },
     { subject: false, expected: 'boolean', isPrimitive: true },
-    { subject: getGlobal(), expected: 'object', isPrimitive: false },
     // eslint-disable-next-line no-secrets/no-secrets
     { subject: Symbol('abcdefghijklmnopqrstuvwxyz'), expected: 'symbol', isPrimitive: false }
   ]
