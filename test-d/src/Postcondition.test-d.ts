@@ -532,18 +532,23 @@ expectAssignable<Postcondition<NoArgumentsSignature>>((): never => {
 /* Sadly also ok */
 
 expectAssignable<Postcondition<OneArgumentSignature>>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ({ value, args: [a] }: any) => typeof value === 'string' && a === 0
 )
 expectAssignable<Postcondition<OneArgumentSignature>>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ({ value, args: [a] }: { value: any; args: any }) => typeof value === 'string' && a === 0
 )
 expectAssignable<Postcondition<OneArgumentSignature>>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ({ value, args: [a] }: { value: unknown; args: any }) => typeof value === 'string' && a === 0
 )
 expectAssignable<Postcondition<OneArgumentSignature>>(
-  ({ value, args: [a] }: { value: unknown; args: Readonly<[number]> }) => typeof value === 'string' && a === 0
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ({ value, args: [a] }: { value: unknown; args: Readonly<[any]> }) => typeof value === 'string' && a === 0
 )
 expectAssignable<Postcondition<OneArgumentSignature>>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ({ value, args: [a] }: { value: unknown; args: Readonly<[any]> }) => typeof value === 'string' && a === 0
 )
 
