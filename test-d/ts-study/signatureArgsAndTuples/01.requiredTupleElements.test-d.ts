@@ -18,9 +18,9 @@ import { expectAssignable, expectType } from 'tsd'
 import {
   type OneArgumentSignature,
   type TwoArgumentsSignature,
-  noArgumentFunction,
-  oneArgumentsFunction,
-  twoArgumentsFunction
+  noArguments,
+  oneArgument,
+  twoArguments
 } from '../../../test2/util/SomeSignatures.ts'
 
 /* The arguments of literal signatures of functions can be required, optional (`?`) , or rest (`...`), in that
@@ -31,8 +31,8 @@ expectType<1>(([] as unknown as Parameters<OneArgumentSignature>).length)
 expectType<number>(undefined as unknown as Parameters<OneArgumentSignature>[0])
 // @ts-expect-error
 type NoElementAtIndex1 = Parameters<OneArgumentSignature>[1]
-expectAssignable<OneArgumentSignature>(oneArgumentsFunction)
-expectAssignable<OneArgumentSignature>(noArgumentFunction)
+expectAssignable<OneArgumentSignature>(oneArgument)
+expectAssignable<OneArgumentSignature>(noArguments)
 
 expectType<[a: number[], b: string]>([] as unknown as Parameters<TwoArgumentsSignature>)
 expectType<2>(([] as unknown as Parameters<TwoArgumentsSignature>).length)
@@ -40,6 +40,6 @@ expectType<number[]>(undefined as unknown as Parameters<TwoArgumentsSignature>[0
 expectType<string>(undefined as unknown as Parameters<TwoArgumentsSignature>[1])
 // @ts-expect-error
 type NoElementAtIndex2 = Parameters<TwoArgumentsSignature>[2]
-expectAssignable<TwoArgumentsSignature>(twoArgumentsFunction)
+expectAssignable<TwoArgumentsSignature>(twoArguments)
 expectAssignable<TwoArgumentsSignature>((a: number[]): unknown => undefined)
-expectAssignable<TwoArgumentsSignature>(noArgumentFunction)
+expectAssignable<TwoArgumentsSignature>(noArguments)

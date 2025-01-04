@@ -16,9 +16,9 @@
 
 import { expectType } from 'tsd'
 import {
-  type NoRestViaMultipleVariadics,
-  type OneRestViaMultipleVariadics1,
-  type OneRestViaMultipleVariadics2,
+  type NoRestViaMultipleRest,
+  type OneRestViaMultipleRests1,
+  type OneRestViaMultipleRests2,
   type OneRest1,
   type OneRest2
 } from '../../../test2/util/SomeSignatures.ts'
@@ -27,14 +27,14 @@ import {
 
 /* We can combine multiple variadics in a tuple type: */
 
-expectType<4>(([] as unknown as NoRestViaMultipleVariadics).length)
-expectType<[number, string, boolean, string]>([] as unknown as NoRestViaMultipleVariadics)
+expectType<4>(([] as unknown as NoRestViaMultipleRest).length)
+expectType<[number, string, boolean, string]>([] as unknown as NoRestViaMultipleRest)
 
-expectType<number>(([] as unknown as OneRestViaMultipleVariadics1).length)
-expectType<[number, ...string[], boolean, string]>([] as unknown as OneRestViaMultipleVariadics1)
+expectType<number>(([] as unknown as OneRestViaMultipleRests1).length)
+expectType<[number, ...string[], boolean, string]>([] as unknown as OneRestViaMultipleRests1)
 
-expectType<number>(([] as unknown as OneRestViaMultipleVariadics2).length)
-expectType<[number, string, ...boolean[], string]>([] as unknown as OneRestViaMultipleVariadics2)
+expectType<number>(([] as unknown as OneRestViaMultipleRests2).length)
+expectType<[number, string, ...boolean[], string]>([] as unknown as OneRestViaMultipleRests2)
 
 /* But not if the different rest elements together contain more than 1 rest element. Note that the error message is
    confusing (“A rest element cannot follow another rest element.”). */
