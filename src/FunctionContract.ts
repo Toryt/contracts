@@ -92,9 +92,10 @@ export class FunctionContract<Signature extends UnknownFunction> {
   }
 }
 
-export function isContractFunction<Signature extends UnknownFunction>(
+// MUDO add contract and implemenation to check? -> gives type security
+export function isContractFunction(
   candidate: unknown
-): candidate is ContractFunction<Signature> {
+): candidate is ContractFunction<UnknownFunction, UnknownFunction> {
   return (
     typeof candidate === 'function' &&
     'contract' in candidate &&
