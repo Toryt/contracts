@@ -223,9 +223,9 @@ expectAssignable<MultipleFinalOptionalArgumentsSignature>(noArguments)
 /* So: `X | undefined <: X? <: X` */
 
 expectAssignable<TwoArgumentsSignature>(
-  (a?: number[], b?: string): string => `result ${a ? a.join(', ') : 'not an a'} ${b ? b : 'no b'}`
+  (a?: number[], b?: string): string => `result ${a ? a.join(', ') : 'not an a'} ${b !== undefined ? b : 'no b'}`
 )
 expectAssignable<TwoArgumentsSignature>(
   (a: number[] | undefined, b: string | undefined): string =>
-    `result ${a ? a.join(', ') : 'not an a'} ${b ? b : 'no b'}`
+    `result ${a ? a.join(', ') : 'not an a'} ${b !== undefined ? b : 'no b'}`
 )
