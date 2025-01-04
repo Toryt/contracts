@@ -21,7 +21,7 @@
  *               required elements cannot follow optional elements.
  */
 export type FinalRestElement<T extends unknown[]> = number extends T['length']
-  ? T extends [first: infer First1, ...tail: infer Tail1]
+  ? T extends [first: unknown, ...tail: infer Tail1]
     ? FinalRestElement<Tail1> // required single first element, continue
     : T extends [first?: infer First, ...tail: infer Tail2]
       ? T extends [first?: First, ...tail: First[]]

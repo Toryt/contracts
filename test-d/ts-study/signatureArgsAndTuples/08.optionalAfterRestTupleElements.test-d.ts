@@ -28,9 +28,11 @@ import {
 /* An optional after a rest argument is impossible directly: */
 
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type OptionalAfterRestSignatureFail = (a: number[], ...b: string[], c?: boolean) => unknown
 
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function optionalAfterRestFail(a: number[], ...b: string[], c?: boolean): unknown {
   return undefined
 }

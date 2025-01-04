@@ -30,6 +30,7 @@ import {
 /* There can be no required arguments after a rest argument in a signature either. Even `expectError` of `tsd`
    rejects this. We need `@ts-expect-error` to show this. */
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function restBeforeRequired(a: number, ...b: string[], c: boolean): unknown {
   return undefined
 }
