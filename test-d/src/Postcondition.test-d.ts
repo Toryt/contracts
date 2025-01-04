@@ -17,6 +17,7 @@
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { Postcondition, PostconditionKwargs } from '../../src/index.ts'
 import type {
+  DoubleOptionalBeforeRestSignature,
   FinalOptionalArgumentSignature,
   FinalRestArgumentAfterArraySignature,
   FinalRestArgumentSignature,
@@ -24,6 +25,7 @@ import type {
   NoArgumentsSignature,
   OneArgumentSignature,
   OneRestInTheMiddleInArraysSignature,
+  OptionalBeforeRestSignature,
   PseudoOptionalNonFinalSignature,
   PseudoRestNonFinalSignature,
   SingleOptionalArgumentSignature,
@@ -365,6 +367,78 @@ expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(
 expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(({ result }) => typeof result === 'string')
 expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(({}) => globalThis)
 expectAssignable<Postcondition<OneRestInTheMiddleInArraysSignature>>(() => globalThis)
+
+/* OptionalBeforeRestSignature */
+
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(
+  ({ result, args: [a, b, ...c] }) =>
+    (typeof result === 'string' && a.length > 0 && (b === undefined || !b) && c.length === 0) || c.every(e => e === '')
+)
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(
+  ({ result, args: [a, b, c, d, e] }) =>
+    typeof result === 'string' &&
+    a.length > 0 &&
+    (b === undefined || !b) &&
+    typeof c === 'string' &&
+    c === '' &&
+    typeof d === 'string' &&
+    d === '' &&
+    typeof e === 'string' &&
+    e === ''
+)
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a.length > 0 && (b === undefined || !b)
+)
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a.length > 0
+)
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<OptionalBeforeRestSignature>>(() => globalThis)
+
+/* DoubleOptionalBeforeRestSignature */
+
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
+  ({ result, args: [a, b, c, ...d] }) =>
+    (typeof result === 'string' &&
+      a.length > 0 &&
+      (b === undefined || b.length > 0) &&
+      (c === undefined || !c) &&
+      d.length === 0) ||
+    d.every(e => e === '')
+)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
+  ({ result, args: [a, b, c, d, e, f] }) =>
+    typeof result === 'string' &&
+    a.length > 0 &&
+    (b === undefined || b.length > 0) &&
+    (c === undefined || !c) &&
+    typeof d === 'string' &&
+    d === '' &&
+    typeof e === 'string' &&
+    e === '' &&
+    typeof f === 'string' &&
+    f === ''
+)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
+  ({ result, args: [a, b, c] }) =>
+    typeof result === 'string' && a.length > 0 && (b === undefined || b.length > 0) && (c === undefined || !c)
+)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a.length > 0 && (b === undefined || b.length > 0)
+)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a.length > 0
+)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<DoubleOptionalBeforeRestSignature>>(() => globalThis)
 
 // expectAssignable<Postcondition<ASignature>>(
 //   (args: [number, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
