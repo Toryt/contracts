@@ -25,7 +25,7 @@ import {
 
 /* There seems to be no way to get a signature, or a tuple type, with multiple rest arguments or elements. */
 
-/* We can combine multiple variadics in a tuple type: */
+/* We can combine multiple rest elements in a tuple type: */
 
 expectType<4>(([] as unknown as NoRestViaMultipleRest).length)
 expectType<[number, string, boolean, string]>([] as unknown as NoRestViaMultipleRest)
@@ -40,3 +40,37 @@ expectType<[number, string, ...boolean[], string]>([] as unknown as OneRestViaMu
    confusing (“A rest element cannot follow another rest element.”). */
 // @ts-expect-error
 type MultipleRestsViaMultipleVariadics = [...OneRest1, ...OneRest2]
+
+/* Multiple final rest arguments
+   --------------------------------- */
+
+/* Multiple final rest arguments are not possible, and even do not pass `tsd` `expectError` */
+
+function multipleFinalRestArguments(
+  a: number,
+  b: string,
+  // @ts-expect-error
+  ...c: boolean[],
+  ...d: number[],
+  ...e: string[]
+): unknown {
+  return undefined
+}
+multipleFinalRestArguments(0, '')
+
+/* The same applies to tuples: */
+// @ts-expect-error
+type NoMultipleRestsInTuple = [a: number, b: string, ...c: boolean[], ...d: number[], ...e: string[]]
+
+/* Even when we introduce separator types: */
+// @ts-expect-error
+type SeparatedMultipleRestsInTuple = [
+  a: number,
+  b: string,
+  ...c: boolean[],
+  c1: string,
+  // @ts-expect-error
+  ...d: number[],
+  d1: boolean,
+  ...e: string[]
+]

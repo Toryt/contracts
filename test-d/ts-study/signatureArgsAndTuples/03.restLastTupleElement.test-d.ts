@@ -54,40 +54,6 @@ expectType<[a: number, b: string[], ...c: boolean[]]>([] as unknown as Parameter
 //   return undefined
 // }
 
-/* Multiple final rest arguments
-   --------------------------------- */
-
-/* Multiple final rest arguments are not possible, and even do not pass `tsd` `expectError` */
-
-function multipleFinalRestArguments(
-  a: number,
-  b: string,
-  // @ts-expect-error
-  ...c: boolean[],
-  ...d: number[],
-  ...e: string[]
-): unknown {
-  return undefined
-}
-multipleFinalRestArguments(0, '')
-
-/* The same applies to tuples: */
-// @ts-expect-error
-type NoMultipleRestsInTuple = [a: number, b: string, ...c: boolean[], ...d: number[], ...e: string[]]
-
-/* Even when we introduce separator types: */
-// @ts-expect-error
-type SeparatedMultipleRestsInTuple = [
-  a: number,
-  b: string,
-  ...c: boolean[],
-  c1: string,
-  // @ts-expect-error
-  ...d: number[],
-  d1: boolean,
-  ...e: string[]
-]
-
 /* Single rest argument
    --------------------------- */
 
