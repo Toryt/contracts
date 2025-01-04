@@ -31,6 +31,7 @@ import {
    `tsd` rejects this. We need `@ts-expect-error` to show this. */
 
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function optionalBeforeRequired(a: number, b?: string, c: boolean): unknown {
   return undefined
 }
@@ -61,6 +62,7 @@ expectType<number>(undefined as unknown as Parameters<PseudoOptionalNonFinalSign
 expectType<string | undefined>(undefined as unknown as Parameters<PseudoOptionalNonFinalSignature>[1])
 expectType<boolean>(undefined as unknown as Parameters<PseudoOptionalNonFinalSignature>[2])
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type NoElementAtIndex3b = Parameters<PseudoOptionalNonFinalSignature>[3]
 
 function pseudoOptionalBeforeRequiredInTupleRevisited(): unknown {

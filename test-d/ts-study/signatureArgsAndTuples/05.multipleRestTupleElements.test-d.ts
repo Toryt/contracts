@@ -39,6 +39,7 @@ expectType<[number, string, ...boolean[], string]>([] as unknown as OneRestViaMu
 /* But not if the different rest elements together contain more than 1 rest element. Note that the error message is
    confusing (“A rest element cannot follow another rest element.”). */
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type MultipleRestsViaMultipleVariadics = [...OneRest1, ...OneRest2]
 
 /* Multiple final rest arguments
@@ -60,10 +61,12 @@ multipleFinalRestArguments(0, '')
 
 /* The same applies to tuples: */
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type NoMultipleRestsInTuple = [a: number, b: string, ...c: boolean[], ...d: number[], ...e: string[]]
 
 /* Even when we introduce separator types: */
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type SeparatedMultipleRestsInTuple = [
   a: number,
   b: string,

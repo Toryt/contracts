@@ -23,5 +23,6 @@ import { type NoArgumentsSignature, noArguments } from '../../../test2/util/Some
 expectType<[]>([] as unknown as Parameters<NoArgumentsSignature>)
 expectType<0>(([] as unknown as Parameters<NoArgumentsSignature>).length)
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type NoElementAtIndex0 = NoArgumentsSignature<NoArgumentsSignature>[0]
 expectAssignable<NoArgumentsSignature>(noArguments)

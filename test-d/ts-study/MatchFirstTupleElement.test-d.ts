@@ -16,11 +16,11 @@
 
 import { expectType } from 'tsd'
 
-type RequiredMatches<T extends unknown[]> = T extends [first: infer First, ...tail: infer Tail2] ? [First] : false
-type OptionalMatches1<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2] ? [First] : false
-type OptionalMatches2<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2] ? [First?] : false
-type OptionalMatches<T extends unknown[]> = T extends [first?: infer First, ...tail: infer Tail2]
-  ? T extends [first: infer FirstRequired, ...tail: infer Tail2]
+type RequiredMatches<T extends unknown[]> = T extends [first: infer First, ...tail: unknown[]] ? [First] : false
+type OptionalMatches1<T extends unknown[]> = T extends [first?: infer First, ...tail: unknown[]] ? [First] : false
+type OptionalMatches2<T extends unknown[]> = T extends [first?: infer First, ...tail: unknown[]] ? [First?] : false
+type OptionalMatches<T extends unknown[]> = T extends [first?: infer First, ...tail: unknown[]]
+  ? T extends [first: infer FirstRequired, ...tail: unknown[]]
     ? [FirstRequired]
     : [First?]
   : false

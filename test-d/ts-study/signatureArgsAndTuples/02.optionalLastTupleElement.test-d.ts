@@ -77,6 +77,7 @@ expectType<number[]>(undefined as unknown as Parameters<FinalOptionalArgumentSig
 expectType<string>(undefined as unknown as Parameters<FinalOptionalArgumentSignature>[1])
 expectType<boolean | undefined>(undefined as unknown as Parameters<FinalOptionalArgumentSignature>[2])
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type NoElementAtIndex3a = Parameters<FinalOptionalArgumentSignature>[3]
 
 expectAssignable<FinalOptionalArgumentSignature>(finalOptionalArgument)
@@ -158,12 +159,14 @@ expectType<boolean | undefined>(undefined as unknown as Parameters<MultipleFinal
 expectType<number | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArgumentsSignature>[3])
 expectType<string | undefined>(undefined as unknown as Parameters<MultipleFinalOptionalArgumentsSignature>[4])
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type NoElementAtIndex3 = Parameters<MultipleFinalOptionalArgumentsSignature>[5]
 
 expectAssignable<MultipleFinalOptionalArgumentsSignature>(multipleFinalOptionalArguments)
 
 expectAssignable<string | undefined>('' as unknown as string) // contravariant
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function fail1(a: number, b: string[], c?: boolean, d?: number, e: string | undefined): unknown {
   return undefined
 }
@@ -189,6 +192,7 @@ expectAssignable<MultipleFinalOptionalArgumentsSignature>(
     `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d}`
 )
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function fail2(a: number, b: string[], c?: boolean, d: number | undefined): string {
   return `result ${a} ${b.join(', ')} ${c ? 'no c or false' : 'true'} ${d ? 'no d or 0' : d}`
 }

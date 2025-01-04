@@ -30,6 +30,7 @@ expectType<[a: number]>([] as unknown as Parameters<OneArgumentSignature>)
 expectType<1>(([] as unknown as Parameters<OneArgumentSignature>).length)
 expectType<number>(undefined as unknown as Parameters<OneArgumentSignature>[0])
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type NoElementAtIndex1 = Parameters<OneArgumentSignature>[1]
 expectAssignable<OneArgumentSignature>(oneArgument)
 expectAssignable<OneArgumentSignature>(noArguments)
@@ -39,6 +40,7 @@ expectType<2>(([] as unknown as Parameters<TwoArgumentsSignature>).length)
 expectType<number[]>(undefined as unknown as Parameters<TwoArgumentsSignature>[0])
 expectType<string>(undefined as unknown as Parameters<TwoArgumentsSignature>[1])
 // @ts-expect-error
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type NoElementAtIndex2 = Parameters<TwoArgumentsSignature>[2]
 expectAssignable<TwoArgumentsSignature>(twoArguments)
 expectAssignable<TwoArgumentsSignature>((a: number[]): string => a.join(', '))
