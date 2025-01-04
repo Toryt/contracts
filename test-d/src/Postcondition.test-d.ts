@@ -23,9 +23,11 @@ import type {
   MultipleFinalOptionalArgumentsSignature,
   NoArgumentsSignature,
   OneArgumentSignature,
+  PseudoOptionalNonFinalSignature,
   SingleOptionalArgumentSignature,
   SingleRestSignature,
-  TwoArgumentsSignature
+  TwoArgumentsSignature,
+  UndefinedNonFinalSignature
 } from '../../test2/util/SomeSignatures.ts'
 
 /* NoArgumentsSignature */
@@ -248,6 +250,48 @@ expectAssignable<Postcondition<SingleRestSignature>>(
 expectAssignable<Postcondition<SingleRestSignature>>(({ result }) => typeof result === 'string')
 expectAssignable<Postcondition<SingleRestSignature>>(({}) => globalThis)
 expectAssignable<Postcondition<SingleRestSignature>>(() => globalThis)
+
+/* PseudoOptionalNonFinalSignature */
+
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
+  ({ result, args: [a, b, c] }) => typeof result === 'string' && a > 0 && (b === undefined || b === '') && c
+)
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
+  ({ result, args: [a, ...b] }) => typeof result === 'string' && a > 0 && b.length > 1 && typeof b[0] === 'boolean'
+)
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a > 0 && (b === undefined || b === '')
+)
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a > 0
+)
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(() => globalThis)
+
+/* UndefinedNonFinalSignature */
+
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
+  ({ result, args: [a, b, c] }) => typeof result === 'string' && a > 0 && (b === undefined || b === '') && c
+)
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
+  ({ result, args: [a, ...b] }) => typeof result === 'string' && a > 0 && b.length > 1 && typeof b[0] === 'boolean'
+)
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
+  ({ result, args: [a, b] }) => typeof result === 'string' && a > 0 && (b === undefined || b === '')
+)
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
+  ({ result, args: [a] }) => typeof result === 'string' && a > 0
+)
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
+  ({ result, args }) => typeof result === 'string' && args.length <= 1
+)
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(({ result }) => typeof result === 'string')
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(({}) => globalThis)
+expectAssignable<Postcondition<UndefinedNonFinalSignature>>(() => globalThis)
 
 // expectAssignable<Postcondition<ASignature>>(
 //   (args: [number, Level1BType], result: Level2Type): boolean => result.rootProperty > args[0]
