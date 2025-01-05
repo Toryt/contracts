@@ -81,7 +81,6 @@ describe('_private/property', function () {
         Object.getPrototypeOf(this.subject).should.equal(this.prototype)
         should(Object.getOwnPropertyDescriptor(changedPrototype, propertyName)).be.an.Object()
         should(Object.getOwnPropertyDescriptor(this.subject, propertyName)).be.undefined()
-        expectConfigurableDerivedPropertyOnAPrototype(this.subject, propertyName)
       }
     })
 
@@ -93,6 +92,7 @@ describe('_private/property', function () {
 
         self.shouldKeepPrototypeChainAndAddConfigurableDerivedProperty(changedPrototype)
         const changedSubject = self.subject as typeof changedPrototype & typeof self.subject
+        expectConfigurableDerivedPropertyOnAPrototype(changedSubject, propertyName)
         should(changedSubject[propertyName]).equal(changedSubject.expectedOfGetter)
       })
     })
@@ -104,7 +104,6 @@ describe('_private/property', function () {
         const changedPrototype = frozenDerived(self.prototype, propertyName, self.getter)
 
         self.shouldKeepPrototypeChainAndAddConfigurableDerivedProperty(changedPrototype)
-
         const changedSubject = self.subject as typeof changedPrototype & typeof self.subject
         expectFrozenDerivedPropertyOnAPrototype(changedSubject, propertyName)
         changedSubject[propertyName].should.equal(changedSubject.expectedOfGetter)
