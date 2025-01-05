@@ -221,8 +221,8 @@ describe('_private/is', function () {
       if (
         !configurable &&
         enumerable &&
-        typeof get === 'function' &&
-        set === undefined &&
+        ((typeof get === 'function' && set === undefined) ||
+          (get === undefined && set === undefined)) /* writable is false by default, so it is frozen */ &&
         Object.prototype.hasOwnProperty.call(subject, propName)
       ) {
         it('reports true if the property is an own property, and it is enumerable, and not configurable, has a getter, but not a setter', function () {
