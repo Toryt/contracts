@@ -66,7 +66,9 @@ export function stack(stack: unknown): stack is string {
   return lines && lines.length > 0 && lines.every(l => stackLocation(l))
 }
 
-export function frozenOwnProperty(obj: NonNullable<object>, propName: string): boolean | undefined {
+export type NotNullAndNotUndefined<T = unknown> = T extends null ? never : T extends undefined ? never : T
+
+export function frozenOwnProperty(obj: NotNullAndNotUndefined, propName: string): boolean | undefined {
   notStrictEqual(obj, null)
   notStrictEqual(obj, undefined)
 

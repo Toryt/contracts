@@ -15,11 +15,11 @@
  */
 
 import should from 'should'
-import { functionArguments, primitive, stackLocation, stack, frozenOwnProperty } from '../../../build/src/private/is.js'
-import { n, rn, stack as stackEOL } from '../../../build/src/private/eol.js'
-import { notStackEOL } from '../../../build/test2/util/cases.js'
-import { generateStuff } from '../../../build/test2/util/_stuff.js'
-import { x, log, safeToString, showStack } from '../../../build/test2/util/testUtil.js'
+import { functionArguments, primitive, stackLocation, stack, frozenOwnProperty } from '../../../../src/private/is.ts'
+import { n, rn, stack as stackEOL } from '../../../../src/private/eol.ts'
+import { notStackEOL } from '../../../util/cases.ts'
+import { generateStuff } from '../../../util/_stuff.ts'
+import { x, log, safeToString, showStack } from '../../../util/testUtil.ts'
 
 describe('_private/is', function () {
   describe('#arguments', function () {
@@ -77,7 +77,7 @@ describe('_private/is', function () {
     it('says yes to all lines of a stack trace', function () {
       // sadly, also to the message
       const error = new Error('This is an error to get a platform dependent stack')
-      const lines = error.stack.split(stackEOL)
+      const lines = error.stack!.split(stackEOL)
       lines
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
         .filter(line => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
@@ -91,11 +91,10 @@ describe('_private/is', function () {
 
   describe('#stack', function () {
     generateStuff()
-      .map(s => s.subject)
-      .filter(s => typeof s !== 'string')
-      .forEach(s => {
-        it(`says no to ${safeToString(s)}`, function () {
-          const result = stack(s)
+      .filter(({ subject }) => typeof subject !== 'string')
+      .forEach(({ subject }) => {
+        it(`says no to ${safeToString(subject)}`, function () {
+          const result = stack(subject)
           result.should.be.false()
         })
       })
@@ -150,7 +149,7 @@ describe('_private/is', function () {
       // sadly, also to the message, on some platforms
       const error = new Error(message)
       showStack(error)
-      const stackLines = error.stack.split(stackEOL)
+      const stackLines = error.stack!.split(stackEOL)
       const rawStack = stackLines
         // remove message line
         .filter(sl => sl && sl.indexOf(message) < 0)
@@ -191,14 +190,17 @@ describe('_private/is', function () {
         should(result).not.be.ok()
       })
 
-      const specialized = {}
+      const specialized: Record<string, string> = {}
       Object.setPrototypeOf(specialized, subject)
       should(specialized[propName]).equal(propValue) // check inheritance — test code validity
 
-      it(`reports false if the property is not an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`, function () {
-        const specializedResult = frozenOwnProperty(specialized, propName)
-        should(specializedResult).not.be.ok()
-      })
+      it(
+        `reports false if the property is not an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`,
+        function () {
+          const specializedResult = frozenOwnProperty(specialized, propName)
+          should(specializedResult).not.be.ok()
+        }
+      )
     })
 
     const notObjects = [0, false, '', 'lala']
