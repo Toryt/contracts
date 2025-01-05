@@ -76,19 +76,23 @@ export class FunctionContract<Signature extends UnknownFunction> {
 
     const contract = this
 
-    const contractFunction = function contractFunction(...args: Parameters<Signature>): ReturnType<Signature> {
-      const result: unknown = implFunction.apply(undefined, args)
-      if (contract.checkPostconditions(result, args.slice() as Parameters<Signature>)) {
-        return result
+    const proxyHandler = {
+      apply(target: ImplementationSignature, thisArg: unknown, args: Parameters<Signature>): ReturnType<Signature> {
+        const result: unknown = target.apply(thisArg, args)
+        if (contract.checkPostconditions(result, args.slice() as Parameters<Signature>)) {
+          return result
+        }
+        throw new Error('Postcondition failed')
       }
-      throw new Error('Postcondition failed')
     }
 
-    const adornedFunc = contractFunction as ContractFunction<Signature, ImplementationSignature>
-    adornedFunc.contract = Object.create(contract)
-    adornedFunc.implementation = implFunction
+    const proxy = new Proxy(implFunction, proxyHandler)
+    const contractFunction = proxy as unknown as ContractFunction<Signature, ImplementationSignature>
 
-    return adornedFunc
+    contractFunction.contract = Object.create(contract)
+    contractFunction.implementation = implFunction
+
+    return contractFunction
   }
 }
 
