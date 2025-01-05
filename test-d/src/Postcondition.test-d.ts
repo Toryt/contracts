@@ -41,18 +41,18 @@ import { type RootType, isRootType, isLevel2Type, Level3Class } from '../../test
 /* NoArgumentsSignature */
 
 expectAssignable<Postcondition<NoArgumentsSignature>>(
-  ({ value: result, args }) => typeof result === 'string' && args.length === 0
+  ({ value: result, args }) => typeof result === 'string' && !('something' in args)
 )
 expectAssignable<Postcondition<NoArgumentsSignature>>(
-  ({ value, args }) => typeof value === 'string' && args.length === 0
+  ({ value, args }) => typeof value === 'string' && !('something' in args)
 )
-expectAssignable<Postcondition<NoArgumentsSignature>>(({ args }) => args.length === 0)
+expectAssignable<Postcondition<NoArgumentsSignature>>(({ args }) => !('something' in args))
 expectAssignable<Postcondition<NoArgumentsSignature>>(({ value }) => typeof value === 'string')
 expectAssignable<Postcondition<NoArgumentsSignature>>(() => globalThis)
 expectAssignable<Postcondition<NoArgumentsSignature>>(() => globalThis)
 expectNotAssignable<Postcondition<NoArgumentsSignature>>(
   ({ value, args, somethingElse }: PostconditionKwargs<NoArgumentsSignature> & { readonly somethingElse: unknown }) =>
-    typeof value === 'string' && args.length === 0 && !!somethingElse
+    typeof value === 'string' && !('something' in args) && !!somethingElse
 )
 expectNotAssignable<Postcondition<NoArgumentsSignature>>(
   ({ value, args: [a] }: { value: unknown; args: [unknown] }) => typeof value === 'string' && !!a
@@ -82,7 +82,7 @@ expectAssignable<Postcondition<TwoArgumentsSignature>>(
   ({ value, args: [a] }) => typeof value === 'string' && a.length === 0
 )
 expectAssignable<Postcondition<TwoArgumentsSignature>>(
-  ({ value, args }) => typeof value === 'string' && args.length <= 1
+  ({ value, args }) => typeof value === 'string' && !('something' in args)
 )
 expectAssignable<Postcondition<TwoArgumentsSignature>>(({ value }) => typeof value === 'string')
 expectAssignable<Postcondition<TwoArgumentsSignature>>(() => globalThis)
@@ -264,7 +264,7 @@ expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
   ({ value, args: [a, b, c] }) => typeof value === 'string' && a > 0 && (b === undefined || b === '') && c
 )
 expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
-  ({ value, args: [a, ...b] }) => typeof value === 'string' && a > 0 && b.length > 1 && typeof b[0] === 'boolean'
+  ({ value, args: [a, ...b] }) => typeof value === 'string' && a > 0 && typeof b[1] === 'boolean'
 )
 expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
   ({ value, args: [a, b] }) => typeof value === 'string' && a > 0 && (b === undefined || b === '')
@@ -273,7 +273,7 @@ expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
   ({ value, args: [a] }) => typeof value === 'string' && a > 0
 )
 expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(
-  ({ value, args }) => typeof value === 'string' && args.length <= 1
+  ({ value, args }) => typeof value === 'string' && !('something' in args)
 )
 expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(({ value }) => typeof value === 'string')
 expectAssignable<Postcondition<PseudoOptionalNonFinalSignature>>(() => globalThis)
@@ -285,7 +285,7 @@ expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
   ({ value, args: [a, b, c] }) => typeof value === 'string' && a > 0 && (b === undefined || b === '') && c
 )
 expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
-  ({ value, args: [a, ...b] }) => typeof value === 'string' && a > 0 && b.length > 1 && typeof b[0] === 'boolean'
+  ({ value, args: [a, ...b] }) => typeof value === 'string' && a > 0 && b[0] === undefined
 )
 expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
   ({ value, args: [a, b] }) => typeof value === 'string' && a > 0 && (b === undefined || b === '')
@@ -294,7 +294,7 @@ expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
   ({ value, args: [a] }) => typeof value === 'string' && a > 0
 )
 expectAssignable<Postcondition<UndefinedNonFinalSignature>>(
-  ({ value, args }) => typeof value === 'string' && args.length <= 1
+  ({ value, args }) => typeof value === 'string' && !('something' in args)
 )
 expectAssignable<Postcondition<UndefinedNonFinalSignature>>(({ value }) => typeof value === 'string')
 expectAssignable<Postcondition<UndefinedNonFinalSignature>>(() => globalThis)
@@ -503,7 +503,7 @@ expectAssignable<Postcondition<ASignature>>(
 expectAssignable<Postcondition<ASignature>>(
   ({ value, args: [a] }): boolean => isLevel2Type(value) && value.rootProperty > a
 )
-expectAssignable<Postcondition<ASignature>>(({ value, args }) => isLevel2Type(value) && args.length <= 1)
+expectAssignable<Postcondition<ASignature>>(({ value, args }) => isLevel2Type(value) && !('something' in args))
 expectAssignable<Postcondition<ASignature>>(
   ({ value, args: [a, b] }: { value: unknown; args: Readonly<[number, RootType]> }): boolean =>
     isLevel2Type(value) && value.rootProperty > a + b.rootProperty
