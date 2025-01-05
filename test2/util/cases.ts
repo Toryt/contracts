@@ -29,8 +29,8 @@ export const any: unknown[] = [
   false,
   {},
   /foo/,
-  function () {},
-  () => '',
+  function (): void {},
+  (): string => '',
   [],
   new ReferenceError(),
   Math,
@@ -42,7 +42,7 @@ export const any: unknown[] = [
   // eslint-disable-next-line no-new-wrappers
   new Boolean(false),
   Object,
-  (function () {
+  (function (): IArguments {
     return arguments
   })()
 ]

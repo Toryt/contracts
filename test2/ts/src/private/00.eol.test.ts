@@ -26,10 +26,12 @@ describe('_private/eol', function () {
     rn.should.equal('\r\n')
   })
   describe('#EOL', function () {
+    /* TODO unnecessary test in TS
     it('is either n or rn', function () {
       const result = stack === n || stack === rn
       result.should.be.true()
     })
+    */
     it('a stack contains the expected EOL', function () {
       const err = new Error('just an error')
       err.stack!.should.containEql(stack)

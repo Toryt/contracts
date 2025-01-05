@@ -17,7 +17,7 @@
 import { rn as rnEOL, n as nEOL, stack as stackEOL } from './eol.ts'
 import { notStrictEqual } from 'assert'
 
-const anArgumentsToString: string = (function () {
+const anArgumentsToString: string = (function (): string {
   return Object.prototype.toString.call(arguments)
 })()
 

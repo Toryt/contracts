@@ -44,7 +44,7 @@ export function expectOwnFrozenProperty(subject: object, propertyName: string): 
   should(propertyDescriptor!.writable).be.false()
 
   const record = subject as Record<string, unknown>
-  const failFunction = () => {
+  const failFunction = (): void => {
     record[propertyName] = 42 + ' some outlandish other value'
   }
 
@@ -100,7 +100,7 @@ export function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(
   expectOwnFrozenProperty(record, privatePropName)
   should(record[propName]).be.an.Array()
   expectFrozenDerivedPropertyOnAPrototype(record, propName)
-  const failFunction = function () {
+  const failFunction = function (): void {
     record[propName] = 42 + ' some outlandish other value'
   }
   failFunction.should.throw(TypeError)
@@ -117,6 +117,7 @@ export function expectToBeArrayOfFunctions(a: unknown): void {
 const doLog = false
 
 export function log(...args: unknown[]): void {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (doLog) {
     console.log(...args)
     console.log()
@@ -142,39 +143,38 @@ export function regExpEscape(s: string): string {
 export function anyCasesGenerators(discriminator: string): (() => unknown)[] {
   // noinspection JSPrimitiveTypeWrapperUsage
   const generators = [
-    () => new Error('This is a ' + discriminator + ' case'),
-    () => undefined,
-    () => null,
-    () => 1,
-    () => 0,
-    () => 'a string that is used as a ' + discriminator,
-    () => '',
-    () => true,
-    () => false,
-    () => new Date(),
-    () => /foo/,
-    () =>
-      function () {
+    (): Error => new Error('This is a ' + discriminator + ' case'),
+    (): undefined => undefined,
+    (): null => null,
+    (): number => 1,
+    (): number => 0,
+    (): string => 'a string that is used as a ' + discriminator,
+    (): string => '',
+    (): boolean => true,
+    (): boolean => false,
+    (): Date => new Date(),
+    (): RegExp => /foo/,
+    (): (() => string) =>
+      function (): string {
         return 'this simulates a ' + discriminator
       },
     // eslint-disable-next-line no-new-wrappers
-    () => new Number(42),
+    (): Number => new Number(42),
     // eslint-disable-next-line no-new-wrappers
-    () => new Boolean(false),
+    (): Boolean => new Boolean(false),
     // eslint-disable-next-line no-new-wrappers
-    () => new String(discriminator + ' string'),
-    () => arguments,
-    () => ({}),
-    () => ({
+    (): String => new String(discriminator + ' string'),
+    (): IArguments => arguments,
+    (): {} => ({}),
+    (): { a: number; b: string; c: {}; d: { d1: undefined; d2: string; d3: { d31: number } } } => ({
       a: 1,
       b: 'b',
       c: {},
       d: { d1: undefined, d2: 'd2', d3: { d31: 31 } }
     }),
-    () => []
+    (): [] => []
   ]
   const result = generators.slice()
-  // noinspection JSCheckFunctionSignatures
   result.push(() => generators.map(g => g()))
   return result
 }
@@ -214,19 +214,20 @@ function getEnvironment(): Environment {
   ) {
     return 'opera'
   }
-  // @ts-ignore
+  // @ts-expect-error
   if (typeof InstallTrigger !== 'undefined') {
     return 'firefox'
   }
   // this no longer detects safari in v11
   if (
     /constructor/i.test(window.HTMLElement as unknown as string) ||
-    (function (p: true | object | undefined) {
+    (function (p: true | object | undefined): boolean {
       return !!p && p.toString() === '[object SafariRemoteNotification]'
     })(!windowRecord['safari'] || (windowRecord['safari'] as Record<string, object>)['pushNotification'])
   ) {
     return 'safari'
   }
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (/* @cc_on!@ */ false || !!(document as unknown as Record<string, unknown>)['documentMode']) {
     return 'ie'
   }
@@ -236,6 +237,7 @@ function getEnvironment(): Environment {
   if (windowRecord['chrome']) {
     return 'chrome'
   }
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (window.CSS) {
     if (ua.indexOf('HeadlessChrome') >= 0) {
       return 'headless-chrome'

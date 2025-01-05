@@ -194,13 +194,10 @@ describe('_private/is', function () {
       Object.setPrototypeOf(specialized, subject)
       should(specialized[propName]).equal(propValue) // check inheritance — test code validity
 
-      it(
-        `reports false if the property is not an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`,
-        function () {
-          const specializedResult = frozenOwnProperty(specialized, propName)
-          should(specializedResult).not.be.ok()
-        }
-      )
+      it(`reports false if the property is not an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`, function () {
+        const specializedResult = frozenOwnProperty(specialized, propName)
+        should(specializedResult).not.be.ok()
+      })
     })
 
     const notObjects = [0, false, '', 'lala']
@@ -212,7 +209,7 @@ describe('_private/is', function () {
       })
     })
 
-    const fCandidates = [undefined, function () {}]
+    const fCandidates = [undefined, function (): void {}]
     x(truths, truths, fCandidates, fCandidates).forEach(([configurable, enumerable, get, set]) => {
       const subject = {}
       Object.defineProperty(subject, propName, {
