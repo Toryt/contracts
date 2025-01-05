@@ -27,6 +27,7 @@
     "test:js": "nyc mocha 'test2/js/**/*.test.js'",
     "pretest": "npm run build",
     "test": "npm run lint && tsd && npm run test:ts && npm run test:js",
+    "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
     "format": "prettier -w .",
     "preversion": "npm run test"
   },
