@@ -17,11 +17,15 @@
 import { primitive } from './is.ts'
 import { notStrictEqual, ok, strictEqual } from 'assert'
 
-export function setAndFreeze<
-  PropertyName extends string,
-  PropertyType,
-  O extends { readonly PropertyName: PropertyType }
->(obj: O, propertyName: PropertyName, value: PropertyType): void {
+type WithReadonlyProperty<O extends object | unknown, PropertyName extends string, PropertyType> = O & {
+  readonly [P in PropertyName]: PropertyType
+}
+
+export function setAndFreeze<O extends object, PropertyName extends string, PropertyType>(
+  obj: O,
+  propertyName: PropertyName,
+  value?: PropertyType
+): WithReadonlyProperty<O, PropertyName, PropertyType> {
   ok(!primitive(obj))
   strictEqual(typeof propertyName, 'string')
 
@@ -31,56 +35,77 @@ export function setAndFreeze<
     writable: false,
     value
   })
+
+  return obj as WithReadonlyProperty<O, PropertyName, PropertyType>
 }
 
 export function configurableDerived<
+  O extends Object,
   PropertyName extends string,
-  PropertyType,
-  Prototype extends { readonly PropertyName: PropertyType }
->(prototype: Prototype, propertyName: PropertyName, derivation: (this: Prototype) => PropertyType): void {
-  ok(prototype)
-  ok(!primitive(prototype))
+  Derivation extends (this: never) => unknown
+>(
+  obj: O,
+  propertyName: PropertyName,
+  derivation: Derivation
+): WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
+  ok(obj)
+  ok(!primitive(obj))
   strictEqual(typeof propertyName, 'string')
   strictEqual(typeof derivation, 'function')
 
-  Object.defineProperty(prototype, propertyName, {
+  Object.defineProperty(obj, propertyName, {
     configurable: true,
     enumerable: true,
     get: derivation
   })
+
+  return obj as WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>>
 }
 
 export function frozenDerived<
+  O extends Object,
   PropertyName extends string,
-  PropertyType,
-  Prototype extends { readonly PropertyName: PropertyType }
->(prototype: Prototype, propertyName: PropertyName, derivation: (this: Prototype) => PropertyType): void {
-  ok(prototype)
-  ok(!primitive(prototype))
+  Derivation extends (this: never) => unknown
+>(
+  obj: O,
+  propertyName: PropertyName,
+  derivation: Derivation
+): WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
+  ok(obj)
+  ok(!primitive(obj))
   strictEqual(typeof propertyName, 'string')
   strictEqual(typeof derivation, 'function')
 
-  Object.defineProperty(prototype, propertyName, {
+  Object.defineProperty(obj, propertyName, {
     configurable: false,
     enumerable: true,
     get: derivation
   })
+
+  return obj as WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>>
 }
 
 export function frozenReadOnlyArray<
+  O extends Object,
   PropertyName extends string,
   PrivatePropertyName extends string,
-  ElementType,
-  Prototype extends Record<PrivatePropertyName, ReadonlyArray<ElementType>> &
-    Record<PropertyName, ElementType[]> & { readonly PropertyName: ElementType[] }
->(prototype: Prototype, propertyName: PropertyName, privatePropName: PrivatePropertyName): void {
-  ok(prototype)
-  ok(!primitive(prototype))
+  ElementType extends unknown
+>(
+  obj: O,
+  propertyName: PropertyName,
+  privatePropName: PrivatePropertyName extends PropertyName ? never : PrivatePropertyName
+): WithReadonlyProperty<O, PropertyName, ElementType[]> {
+  ok(obj)
+  ok(!primitive(obj))
   strictEqual(typeof propertyName, 'string')
   strictEqual(typeof privatePropName, 'string')
   notStrictEqual(propertyName, privatePropName)
 
-  frozenDerived(prototype, propertyName, function (this: Prototype): ReadonlyArray<ElementType> {
-    return this[privatePropName].slice()
-  })
+  return frozenDerived(
+    obj,
+    propertyName,
+    function (this: { readonly [P in PrivatePropertyName]: ReadonlyArray<ElementType> }): ElementType[] {
+      return this[privatePropName].slice()
+    }
+  )
 }
