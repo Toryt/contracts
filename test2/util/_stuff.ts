@@ -34,15 +34,16 @@ export type ExtendedType =
   | 'math'
   | 'json'
   | 'symbol'
-export interface StuffWrapper {
-  subject: unknown
+
+export interface StuffWrapper<T extends unknown = unknown> {
+  subject: T
   expected: ExtendedType
   isPrimitive: boolean
 }
 
-export function generateMutableStuff(): Array<StuffWrapper> {
+export function generateMutableStuff(): Array<StuffWrapper<object>> {
   // noinspection JSPrimitiveTypeWrapperUsage,SpellCheckingInspection
-  const base: Array<Omit<StuffWrapper, 'isPrimitive'>> = [
+  const base: Array<Omit<StuffWrapper<object>, 'isPrimitive'>> = [
     { subject: { a: 4 }, expected: 'object' },
     { subject: [1, 2, 3], expected: 'array' },
     { subject: function (): void {}, expected: 'function' },
@@ -64,7 +65,7 @@ export function generateMutableStuff(): Array<StuffWrapper> {
   ]
 
   const result = base.map(
-    (r: Omit<StuffWrapper, 'isPrimitive'>): StuffWrapper => ({
+    (r: Omit<StuffWrapper<object>, 'isPrimitive'>): StuffWrapper<object> => ({
       ...r,
       isPrimitive: false
     })
