@@ -287,5 +287,5 @@ export function safeToString(s: unknown): string {
   }
 }
 
-export const env: Environment = getEnvironment()
-console.log(`Detected environment "${env}"`)
+export const environment: Environment = getEnvironment()
+console.log(`Detected environment "${environment}"`)
