@@ -15,6 +15,9 @@
  */
 
 import assert, { strictEqual } from 'assert'
+import { inspect } from 'node:util'
+import { primitive } from './is.ts'
+import { stack as stackEOL } from './eol.ts'
 
 function safeToString(s: unknown): string {
   try {
@@ -66,60 +69,57 @@ export function conciseCondition(prefix: string, f: unknown): string {
 //               ? 'arguments'
 //               : v.constructor.name
 //   },
-//
-//   value: function (v) {
-//     // noinspection IfStatementWithTooManyBranchesJS
-//     if (v === global) {
-//       /* browserified util.inspect has trouble with Safari Window; this works around this by showing a concise
-//          representation of this complex object */
-//       return '{global}'
-//     } else if (typeof v === 'string' || v instanceof String) {
-//       return `'${v}'`
-//     } else if (primitive(v) || v instanceof Date || v instanceof Error || v instanceof Number || v instanceof Boolean) {
-//       return '' + v
-//     } else if (typeof v === 'function') {
-//       return report.conciseCondition('', v)
-//     } else {
-//       try {
-//         return util.inspect(v, { depth: 0, maxArrayLength: 5, breakLength: 120 })
-//       } catch (err) {
-//         /* There are several libraries that we might use that make util.inspect fail on circular data structures,
-//              notably in unit test frameworks. That sometimes results in false positives.
-//              Some issues are created:
-//              - https://github.com/Wizcorp/mocha-reporter/issues/5
-//              - https://youtrack.jetbrains.com/issue/WEB-39186
-//              This catch is here to protect ourselves from false positives, whenever this fails.
-//            */
-//         return `${namePrefix} [[failed to represent the value]] (${err.message || err})`
-//       }
-//     }
-//   },
-//
-//   /**
-//    * <p>Returns a moderately normalized extensive, multi-line representation of a <em>thrown</em>.</p>
-//    * <p>Anything can be thrown, not only Error instances.</p>
-//    * <p>The stack of an Error is different in different environments. In node and Chrome, the first line of the
-//    *   stack is actually the toString of the Error, followed by the true stack, one call per line, that starts
-//    *   with <code>/^    at/</code>, followed by the path of the file where the call was made.
-//    *   In Firefox and Safari, the stack only contains the true stack, and the lines
-//    *   are the name of the called function (or the empty string for anonymous functions), followed by <code>@</code>,
-//    *   followed by the path of the file where the call was made.</p>
-//    * <p>If the <em>thrown</em> does not have a stack property, its standard string representation is returned.</p>
-//    * <p>If the <em>thrown</em> does have a stack property, its stack is returned. If the stack starts with
-//    *   the string representation of the <em>thrown</em>, that's it. Otherwise, the string representation of the
-//    *   <em>thrown</em> is added in the front on a separate line.</p>
-//    */
-//   extensiveThrown: function (thrown) {
-//     const thrownString = report.value(thrown)
-//     let stack = thrown && thrown.stack
-//     if (!stack) {
-//       return thrownString
-//     }
-//     stack = '' + stack // make sure it is a string
-//     /* On node and chrome, the stack starts with thrown.toString (name and message).
-//        On safari and FF, it doesn't: thrown.stack it is the pure stack. We add the toString ourselves */
-//     return stack.indexOf(thrownString) === 0 ? stack : thrownString + stackEOL + stack
-//   }
-// }
-//
-// module.exports = report
+
+export function value(v: unknown): string {
+  if (v === global) {
+    /* browserified util.inspect has trouble with Safari Window; this works around this by showing a concise
+         representation of this complex object */
+    return '{global}'
+  } else if (typeof v === 'string' || v instanceof String) {
+    return `'${v}'`
+  } else if (primitive(v) || v instanceof Date || v instanceof Error || v instanceof Number || v instanceof Boolean) {
+    return '' + v
+  } else if (typeof v === 'function') {
+    return conciseCondition('', v)
+  } else {
+    try {
+      return inspect(v, { depth: 0, maxArrayLength: 5, breakLength: 120 })
+    } catch (err: unknown) {
+      /* There are several libraries that we might use that make util.inspect fail on circular data structures,
+             notably in unit test frameworks. That sometimes results in false positives.
+             Some issues are created:
+             - https://github.com/Wizcorp/mocha-reporter/issues/5
+             - https://youtrack.jetbrains.com/issue/WEB-39186
+             This catch is here to protect ourselves from false positives, whenever this fails.
+           */
+      return `${namePrefix} [[failed to represent the value]] (${(!!err && (typeof err === 'object' || typeof err === 'function') && 'message' in err && err.message) || err})`
+    }
+  }
+}
+
+/**
+ * <p>Returns a moderately normalized extensive, multi-line representation of a <em>thrown</em>.</p>
+ * <p>Anything can be thrown, not only Error instances.</p>
+ * <p>The stack of an Error is different in different environments. In node and Chrome, the first line of the
+ *   stack is actually the toString of the Error, followed by the true stack, one call per line, that starts
+ *   with <code>/^    at/</code>, followed by the path of the file where the call was made.
+ *   In Firefox and Safari, the stack only contains the true stack, and the lines
+ *   are the name of the called function (or the empty string for anonymous functions), followed by <code>@</code>,
+ *   followed by the path of the file where the call was made.</p>
+ * <p>If the <em>thrown</em> does not have a stack property, its standard string representation is returned.</p>
+ * <p>If the <em>thrown</em> does have a stack property, its stack is returned. If the stack starts with
+ *   the string representation of the <em>thrown</em>, that's it. Otherwise, the string representation of the
+ *   <em>thrown</em> is added in the front on a separate line.</p>
+ */
+export function extensiveThrown(thrown: unknown): string {
+  const thrownString = value(thrown)
+  const stack =
+    thrown && (typeof thrown === 'object' || typeof thrown === 'function') && 'stack' in thrown && thrown.stack
+  if (!stack) {
+    return thrownString
+  }
+  const stackString = '' + stack // make sure it is a string
+  /* On node and chrome, the stack starts with thrown.toString (name and message).
+       On safari and FF, it doesn't: thrown.stack it is the pure stack. We add the toString ourselves */
+  return stackString.indexOf(thrownString) === 0 ? stackString : thrownString + stackEOL + stackString
+}
