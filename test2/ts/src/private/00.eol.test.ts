@@ -17,8 +17,9 @@
 import { n, rn, stack, os } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { EOL } from 'os'
+import { testName } from '../../../util/testName.ts'
 
-describe('_private/eol', function () {
+describe(testName(import.meta), function () {
   it('#n', function () {
     n.should.equal('\n')
   })

@@ -27,10 +27,11 @@ import {
   expectOwnFrozenProperty
 } from '../../../util/testUtil.ts'
 import should from 'should'
+import { testName } from '../../../util/testName.ts'
 
 const propertyName = 'a new property'
 
-describe('_private/property', function () {
+describe(testName(import.meta), function () {
   describe('setAndFreeze', function () {
     it('sets a property, with a value, and freezes it', function () {
       const subject = { a: 4 }

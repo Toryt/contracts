@@ -20,8 +20,9 @@ import { n, rn, stack as stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { generateStuff } from '../../../util/_stuff.ts'
 import { x, log, safeToString, showStack } from '../../../util/testUtil.ts'
+import { testName } from '../../../util/testName.ts'
 
-describe('_private/is', function () {
+describe(testName(import.meta), function () {
   describe('#arguments', function () {
     generateStuff().forEach(({ subject, expected }) => {
       it(`returns ${expected === 'arguments' ? 'true' : 'false'} for ${safeToString(subject)}`, function () {

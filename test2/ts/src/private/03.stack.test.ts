@@ -19,8 +19,9 @@ import { stackLocation as isStackLocation, stack as isStack } from '../../../../
 import { n as nEOL, rn as rnEOL, stack as stackEOL } from '../../../../src/private/eol.ts'
 import { log, environment } from '../../../util/testUtil.ts'
 import { location, raw, skipsForEach } from '../../../../src/private/stack.ts'
+import { testName } from '../../../util/testName.ts'
 
-describe('_private/stack', function () {
+describe(testName(import.meta), function () {
   describe('location', function () {
     function checkStackLocation(result: string): void {
       log(result)

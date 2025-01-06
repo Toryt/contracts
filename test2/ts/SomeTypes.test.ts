@@ -1,5 +1,5 @@
 /*
-  Copyright 2024 Jan Dockx
+  Copyright 2024–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 import { describe, it } from 'mocha'
 import { Level1BClass, type Level1BType } from '../util/SomeTypes.ts'
 import should from 'should'
+import { testName } from '../util/testName.ts'
 
 class ConcreteLevel1BClass extends Level1BClass {
   /* NOTE: Explicitly mark constructor as public to resolve eslint false–positive.
@@ -26,7 +27,7 @@ class ConcreteLevel1BClass extends Level1BClass {
   }
 }
 
-describe('SomeTypes', function () {
+describe(testName(import.meta), function () {
   it('can write to a readonly property of a class via an interface', function () {
     should(true).be.true()
     const instance = new ConcreteLevel1BClass(42, true)

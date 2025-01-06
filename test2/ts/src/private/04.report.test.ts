@@ -29,8 +29,9 @@ import { n, rn, stack as stackEOL } from '../../../../src/private/eol.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
 import { generateMutableStuff, generateStuff } from '../../../util/_stuff.ts'
 import { safeToString, log, anyCasesGenerators } from '../../../util/testUtil.ts'
+import { testName } from '../../../util/testName.ts'
 
-describe('_private/report', function () {
+describe(testName(import.meta), function () {
   describe('conciseCondition', function () {
     function isAConciseVersion(original: string, concise: string): boolean {
       const split = ('' + concise).split(conciseSeparator)
