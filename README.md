@@ -1,4 +1,4 @@
-# contracts-v
+# contracts
 
 [![npm version](http://img.shields.io/npm/v/@toryt/contracts-v.svg?style=flat)](https://npmjs.org/package/@toryt/contracts-v 'View this project on npm')
 ![license](https://img.shields.io/npm/l/@toryt/contracts-v)
