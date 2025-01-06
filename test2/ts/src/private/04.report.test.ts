@@ -14,13 +14,16 @@
   limitations under the License.
  */
 
+import * as util from 'util'
 import should from 'should'
+import { primitive } from '../../../../src/private/is.ts'
 import {
   conciseSeparator,
   maxLengthOfConciseRepresentation,
   conciseCondition,
   value,
-  extensiveThrown
+  extensiveThrown,
+  type
 } from '../../../../src/private/report.ts'
 import { n, rn, stack as stackEOL } from '../../../../src/private/eol.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
@@ -130,7 +133,7 @@ this function should have a name   ` // trim
     function stackDoesNotContainToString(): unknown {
       return {
         stack: stackString,
-        toString: function () {
+        toString: function (): string {
           return toStringString
         }
       }
@@ -139,7 +142,7 @@ this function should have a name   ` // trim
     function stackDoesContainToString(): unknown {
       return {
         stack: toStringString + stackEOL + stackString,
-        toString: function () {
+        toString: function (): string {
           return toStringString
         }
       }
@@ -150,7 +153,7 @@ this function should have a name   ` // trim
     caseGenerators = caseGenerators.concat(
       anyCasesGenerators('throw stack').map(ac => (): unknown => ({
         stack: ac(),
-        toString: function () {
+        toString: function (): string {
           return toStringString
         }
       }))
@@ -158,6 +161,7 @@ this function should have a name   ` // trim
 
     caseGenerators.forEach(thrownGenerator => {
       const thrown = thrownGenerator()
+
       it(`returns the expected, normalized string representation for ${thrown}`, function () {
         const result = extensiveThrown(thrown)
 
@@ -175,102 +179,65 @@ this function should have a name   ` // trim
     })
   })
 
-  // describe('#type', function () {
-  //   stuff
-  //     .map(s => s.subject)
-  //     .forEach(s => {
-  //       it(`returns a string that is expected for ${safeToString(s)}`, function () {
-  //         const result = type(s)
-  //         log(result)
-  //         result.should.be.a.String()
-  //         result.should.not.equal('')
-  //         // noinspection IfStatementWithTooManyBranchesJS
-  //         if (s === null) {
-  //           result.should.equal('null')
-  //         } else if (typeof s === 'object') {
-  //           // noinspection IfStatementWithTooManyBranchesJS
-  //           if (s === Math) {
-  //             result.should.equal('Math')
-  //           } else if (s === JSON) {
-  //             result.should.equal('JSON')
-  //           } else if (Array.isArray(s)) {
-  //             result.should.equal('Array')
-  //           } else if (s.toString().indexOf('Arguments') >= 0) {
-  //             result.should.equal('arguments')
-  //           } else {
-  //             result.should.equal(s.constructor.name)
-  //           }
-  //         } else {
-  //           result.should.equal(typeof s)
-  //         }
-  //       })
-  //     })
-  // })
-  //
-  // describe('#value', function () {
-  //   stuff
-  //     .map(s => s.subject)
-  //     .forEach(s => {
-  //       it(`returns a string that is expected for ${safeToString(s)}`, function () {
-  //         const result = value(s)
-  //         log(result)
-  //         result.should.be.a.String()
-  //         result.should.not.equal('')
-  //         // noinspection IfStatementWithTooManyBranchesJS
-  //         if (s === global) {
-  //           result.should.equal('{global}')
-  //         } else if (typeof s === 'string' || s instanceof String) {
-  //           result.should.equal(`'${s}'`)
-  //         } else if (
-  //           primitive(s) ||
-  //           s instanceof Date ||
-  //           s instanceof Error ||
-  //           s instanceof Number ||
-  //           s instanceof Boolean
-  //         ) {
-  //           result.should.equal('' + s)
-  //         } else if (typeof s === 'function') {
-  //           result.should.equal(conciseCondition('', s))
-  //         } else {
-  //           const expected = util.inspect(s, {
-  //             depth: 0,
-  //             maxArrayLength: 5,
-  //             breakLength: 120
-  //           })
-  //           result.should.equal(expected)
-  //         }
-  //       })
-  //     })
-  //   describe('failing util.inspect', function () {
-  //     before(function () {
-  //       // poor man's stub, without sinon
-  //       this.utilInspect = util.inspect
-  //       this.error = null
-  //       util.inspect = () => {
-  //         throw this.error
-  //       }
-  //     })
-  //     after(function () {
-  //       util.inspect = this.utilInspect
-  //     })
-  //     it('returns a message when `util.inspect` fails with an error with a message', function () {
-  //       this.error = cases.intentionalError
-  //       const v = {} // an object triggers the interesting branch
-  //       const result = value(v)
-  //       log(result)
-  //       result.should.match(/𝕋⚖️ \[\[failed to represent the value]] /)
-  //       result.should.endWith(`(${cases.intentionalError.message})`)
-  //       log()
-  //     })
-  //     it('returns a message when `util.inspect` fails with an error without a message', function () {
-  //       this.error = new Error()
-  //       const v = {} // an object triggers the interesting branch
-  //       const result = value(v)
-  //       log(result)
-  //       result.should.match(/𝕋⚖️ \[\[failed to represent the value]] /)
-  //       result.should.endWith(`(${this.error})`)
-  //       log()
-  //     })
-  //   })
-  // })
+  describe('type', function () {
+    generateStuff().forEach(({ subject }) => {
+      it(`returns a string that is expected for ${safeToString(subject)}`, function () {
+        const result = type(subject)
+        log(result)
+        result.should.be.a.String()
+        result.should.not.equal('')
+        if (subject === null) {
+          result.should.equal('null')
+        } else if (typeof subject === 'object') {
+          if (subject === Math) {
+            result.should.equal('Math')
+          } else if (subject === JSON) {
+            result.should.equal('JSON')
+          } else if (Array.isArray(subject)) {
+            result.should.equal('Array')
+          } else if (subject.toString().indexOf('Arguments') >= 0) {
+            result.should.equal('arguments')
+          } else {
+            result.should.equal(subject.constructor.name)
+          }
+        } else {
+          result.should.equal(typeof subject)
+        }
+      })
+    })
+  })
+
+  describe('value', function () {
+    generateStuff().forEach(({ subject }) => {
+      it(`returns a string that is expected for ${safeToString(subject)}`, function () {
+        const result = value(subject)
+        log(result)
+        result.should.be.a.String()
+        result.should.not.equal('')
+        // noinspection IfStatementWithTooManyBranchesJS
+        if (subject === global) {
+          result.should.equal('{global}')
+        } else if (typeof subject === 'string' || subject instanceof String) {
+          result.should.equal(`'${subject}'`)
+        } else if (
+          primitive(subject) ||
+          subject instanceof Date ||
+          subject instanceof Error ||
+          subject instanceof Number ||
+          subject instanceof Boolean
+        ) {
+          result.should.equal('' + subject)
+        } else if (typeof subject === 'function') {
+          result.should.equal(conciseCondition('', subject))
+        } else {
+          const expected = util.inspect(subject, {
+            depth: 0,
+            maxArrayLength: 5,
+            breakLength: 120
+          })
+          result.should.equal(expected)
+        }
+      })
+    })
+  })
 })

@@ -16,7 +16,7 @@
 
 import assert, { strictEqual } from 'assert'
 import { inspect } from 'node:util'
-import { primitive } from './is.ts'
+import { functionArguments, primitive } from './is.ts'
 import { stack as stackEOL } from './eol.ts'
 
 function safeToString(s: unknown): string {
@@ -53,22 +53,22 @@ export function conciseCondition(prefix: string, f: unknown): string {
   return result.trim()
 }
 
-//   /**
-//    * Return a string that is a human-readable description of the type of `v`, as good as possible
-//    */
-//   type: function (v) {
-//     return typeof v !== 'object'
-//       ? typeof v
-//       : /* prettier-ignore */ v === null // prettier-ignore resolves infighting between prettier and standard
-//         ? 'null'
-//         : v === Math
-//           ? 'Math'
-//           : v === JSON
-//             ? 'JSON'
-//             : functionArguments(v)
-//               ? 'arguments'
-//               : v.constructor.name
-//   },
+/**
+ * Return a string that is a human-readable description of the type of `v`, as good as possible
+ */
+export function type(v: unknown): string {
+  return typeof v !== 'object'
+    ? typeof v
+    : v === null
+      ? 'null'
+      : v === Math
+        ? 'Math'
+        : v === JSON
+          ? 'JSON'
+          : functionArguments(v)
+            ? 'arguments'
+            : v.constructor.name
+}
 
 export function value(v: unknown): string {
   if (v === global) {
@@ -84,14 +84,18 @@ export function value(v: unknown): string {
   } else {
     try {
       return inspect(v, { depth: 0, maxArrayLength: 5, breakLength: 120 })
-    } catch (err: unknown) {
+    } catch (err: unknown) /* istanbul ignore next */ {
       /* There are several libraries that we might use that make util.inspect fail on circular data structures,
-             notably in unit test frameworks. That sometimes results in false positives.
-             Some issues are created:
-             - https://github.com/Wizcorp/mocha-reporter/issues/5
-             - https://youtrack.jetbrains.com/issue/WEB-39186
-             This catch is here to protect ourselves from false positives, whenever this fails.
-           */
+         notably in unit test frameworks. That sometimes results in false positives.
+         Some issues are created:
+         - https://github.com/Wizcorp/mocha-reporter/issues/5
+         - https://youtrack.jetbrains.com/issue/WEB-39186
+         This catch is here to protect ourselves from false positives, whenever this fails.
+
+         This can no longer be tested, because with ES Modules, we cannot stub util.inspect like we could with
+         `require`. See, e.g., https://stackoverflow.com/a/68299987.
+
+         Also note that the issues mentioned above have been fixed by now. */
       return `${namePrefix} [[failed to represent the value]] (${(!!err && (typeof err === 'object' || typeof err === 'function') && 'message' in err && err.message) || err})`
     }
   }
