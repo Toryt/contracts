@@ -154,6 +154,10 @@ to create a browser distribution.
         - `mochify` seems no longer maintains, but continues to work; there are however dependencies with security
           issues; `mochify` is only used as a `devDependency` however
       - formatting
+    - 6.0.1
+      - upgrade dependencies
+        - `mochify` seems no longer maintains, but continues to work; there are however dependencies with security
+          issues; `mochify` is only used as a `devDependency` however
 
 ## Where to find
 
