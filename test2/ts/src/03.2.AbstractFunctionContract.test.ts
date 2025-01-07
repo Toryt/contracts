@@ -16,6 +16,7 @@
 
 'use strict'
 
+import should from 'should'
 import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 import { testName } from '../../util/testName.ts'
 
@@ -36,15 +37,15 @@ describe(testName(import.meta), function () {
       // AbstractFunctionContract.isAContractFunction.should.be.a.Function()
       // AbstractFunctionContract.should.have.ownProperty('bless')
       // AbstractFunctionContract.bless.should.be.a.Function()
-      // AbstractFunctionContract.should.have.ownProperty('internalLocation')
-      // AbstractFunctionContract.internalLocation.should.be.an.Object()
-      // ;('' + AbstractFunctionContract.internalLocation).should.be.equal('INTERNAL')
-      // AbstractFunctionContract.should.have.ownProperty('falseCondition')
-      // AbstractFunctionContract.falseCondition.should.be.a.Function()
-      // AbstractFunctionContract.should.have.ownProperty('mustNotHappen')
-      // AbstractFunctionContract.mustNotHappen.should.be.an.Array()
-      // AbstractFunctionContract.mustNotHappen.should.have.length(1)
-      // AbstractFunctionContract.mustNotHappen[0].should.equal(AbstractFunctionContract.falseCondition)
+      AbstractFunctionContract.should.have.ownProperty('internalLocation')
+      AbstractFunctionContract.internalLocation.should.be.an.Object()
+      ;('' + AbstractFunctionContract.internalLocation).should.be.equal('INTERNAL')
+      AbstractFunctionContract.should.have.ownProperty('falseCondition')
+      AbstractFunctionContract.falseCondition.should.be.a.Function()
+      AbstractFunctionContract.should.have.ownProperty('mustNotHappen')
+      AbstractFunctionContract.mustNotHappen.should.be.an.Array()
+      AbstractFunctionContract.mustNotHappen.should.have.length(1)
+      should(AbstractFunctionContract.mustNotHappen[0]).equal(AbstractFunctionContract.falseCondition)
       // AbstractFunctionContract.should.have.ownProperty('outcome')
       // AbstractFunctionContract.outcome.should.be.a.Function()
       // AbstractFunctionContract.should.have.ownProperty('callee')

@@ -21,20 +21,6 @@ import { location as stackLocation } from './private/stack.ts'
 import { setAndFreeze } from './private/property.ts'
 import { namePrefix } from './private/report.ts'
 
-// /**
-//  * Function that always returns <code>false</code>.
-//  */
-// const falseCondition = function (): boolean {
-//   return false
-// }
-//
-// /**
-//  * Singleton array of {@linkplain AbstractFunctionContract#falseCondition}. Can be used the clearly signal
-//  * that a function should never throw exceptions, or never end nominally, or should never be called,
-//  * because the conditions will always fail.
-//  */
-// const mustNotHappen: readonly (typeof falseCondition)[] = Object.freeze([falseCondition])
-
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
   post?: Postcondition<Signature>[]
 }
@@ -91,6 +77,22 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
       return 'INTERNAL'
     }
   })
+
+  /**
+   * Function that always returns <code>false</code>.
+   */
+  static falseCondition(): boolean {
+    return false
+  }
+
+  /**
+   * Singleton array of {@linkplain AbstractFunctionContract#falseCondition}. Can be used the clearly signal
+   * that a function should never throw exceptions, or never end nominally, or should never be called,
+   * because the conditions will always fail.
+   */
+  static readonly mustNotHappen: readonly (typeof AbstractFunctionContract.falseCondition)[] = Object.freeze([
+    AbstractFunctionContract.falseCondition
+  ])
 
   constructor(kwargs: FunctionContractKwargs<Signature>, _location: string) {
     ok(kwargs, 'kwargs is mandatory')
