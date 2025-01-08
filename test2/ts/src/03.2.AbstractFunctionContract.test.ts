@@ -17,8 +17,10 @@
 'use strict'
 
 import should from 'should'
+import type { UnknownFunction } from '../../../src/index.ts'
 import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 import { testName } from '../../util/testName.ts'
+import { expectConstructorPost } from './AbstractFunctionContractCommon.ts'
 
 // const testUtil = require('./_util/testUtil')
 // const stack = require('../lib/_private/stack')
@@ -175,27 +177,29 @@ describe(testName(import.meta), function () {
   //     })
   //   })
   // })
-  //
-  // describe('#AbstractFunctionContract()', function () {
-  //   common.constructorPreCases.forEach(pre => {
-  //     common.constructorPostCases.forEach(post => {
-  //       common.constructorExceptionCases.forEach(exception => {
-  //         it('works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception, function () {
-  //           const preConditions = pre()
-  //           const postConditions = post()
-  //           const exceptionConditions = exception()
-  //           const result = new AbstractFunctionContract({
-  //             pre: preConditions,
-  //             post: postConditions,
-  //             exception: exceptionConditions
-  //           })
-  //           common.expectConstructorPost(preConditions, postConditions, exceptionConditions, stack.location(), result)
-  //         })
-  //       })
-  //     })
-  //   })
-  // })
-  //
+
+  describe('AbstractFunctionContract()', function () {
+    class AFC<Signature extends UnknownFunction> extends AbstractFunctionContract<Signature> {}
+
+    // common.constructorPreCases.forEach(pre => {
+    //   common.constructorPostCases.forEach(post => {
+    //     common.constructorExceptionCases.forEach(exception => {
+    it('works', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function () {
+      // const preConditions = pre()
+      // const postConditions = post()
+      // const exceptionConditions = exception()
+      const result = new AFC({
+        // pre: preConditions,
+        // post: postConditions,
+        // exception: exceptionConditions
+      })
+      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, stackLocation(), */ result)
+    })
+    //     })
+    //   })
+    // })
+  })
+
   // common.generatePrototypeMethodsDescriptions(
   //   () => new AbstractFunctionContract({}),
   //   testUtil

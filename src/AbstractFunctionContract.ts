@@ -64,7 +64,7 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  *
  * The `_location` argument is for internal use, and might be removed.
  */
-export class AbstractFunctionContract<Signature extends UnknownFunction> {
+export abstract class AbstractFunctionContract<Signature extends UnknownFunction> {
   static readonly namePrefix: typeof namePrefix = namePrefix
 
   /**
@@ -94,7 +94,10 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
     AbstractFunctionContract.falseCondition
   ])
 
-  constructor(kwargs: FunctionContractKwargs<Signature>, _location: string) {
+  verify: boolean = true
+  verifyPostconditions: boolean = false
+
+  constructor(kwargs: FunctionContractKwargs<Signature>, _location?: string) {
     ok(kwargs, 'kwargs is mandatory')
     strictEqual(typeof kwargs, 'object', 'kwargs must be an object')
     ok(
@@ -148,8 +151,6 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 // property.frozenReadOnlyArray(AbstractContract.prototype, 'exception', '_exception')
 // property.setAndFreeze(AbstractContract.prototype, 'location', AbstractContract.internalLocation)
 // property.setAndFreeze(AbstractContract.prototype, 'abstract', null)
-// AbstractContract.prototype.verify = true
-// AbstractContract.prototype.verifyPostconditions = false
 
 // /**
 //  * This function is intended to be used as the bind function of contract functions. It makes sure
@@ -328,8 +329,6 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 //   return args[args.length - 1]
 // }
 //
-// AbstractContract.falseCondition = falseCondition
-// AbstractContract.mustNotHappen = mustNotHappen
 // AbstractContract.outcome = outcome
 // // noinspection JSAnnotator
 // AbstractContract.callee = callee
