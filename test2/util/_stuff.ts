@@ -15,6 +15,8 @@
  */
 
 // eslint-disable-next-line no-new-func
+import { types } from 'node:util'
+
 const getGlobal = new Function('return this;')
 export const global: object = getGlobal()
 
@@ -88,3 +90,78 @@ export function generateStuff(): Array<StuffWrapper> {
   ]
   return base.concat(generateMutableStuff())
 }
+
+const instanceofConstructors = [
+  // Core constructors
+  Object,
+  Function,
+  Boolean,
+  Symbol,
+  Number,
+  BigInt,
+  String,
+  RegExp,
+  Date,
+  Error,
+
+  // Error Subclasses
+  EvalError,
+  RangeError,
+  ReferenceError,
+  SyntaxError,
+  TypeError,
+  URIError,
+
+  // Collections
+  Array,
+  Map,
+  Set,
+  WeakMap,
+  WeakSet,
+
+  // Typed Arrays
+  Int8Array,
+  Uint8Array,
+  Uint8ClampedArray,
+  Int16Array,
+  Uint16Array,
+  Int32Array,
+  Uint32Array,
+  Float32Array,
+  Float64Array,
+  BigInt64Array,
+  BigUint64Array,
+
+  // Buffers
+  ArrayBuffer,
+  SharedArrayBuffer,
+  DataView,
+
+  // Control abstractions
+  Promise,
+  Proxy,
+
+  // WebAssembly
+  WebAssembly.Module,
+  WebAssembly.Instance,
+  WebAssembly.Memory,
+  WebAssembly.Table,
+  WebAssembly.CompileError,
+  WebAssembly.LinkError,
+  WebAssembly.RuntimeError,
+
+  // Internationalization
+  Intl.Collator,
+  Intl.DateTimeFormat,
+  Intl.ListFormat,
+  Intl.Locale,
+  Intl.NumberFormat,
+  Intl.PluralRules,
+  Intl.RelativeTimeFormat,
+  Intl.Segmenter,
+  Intl.DisplayNames
+]
+
+const possibleResultsOfTypeof = ['undefined', 'object', 'boolean', 'number', 'bigint', 'string', 'symbol', 'function']
+
+export const types: (string | Function)[] = [...possibleResultsOfTypeof, ...instanceofConstructors]
