@@ -48,10 +48,12 @@ export function location(depth?: number): string {
   assert(!depth || depth >= 0, 'optional depth is positive')
 
   const stackLines = createStackLines()
-  /* Return the line at 2 + (depth || 0)
+  /* Return the line at 2 + (depth || 0) (because the stack is created 1 level deeper in `createStackLines()`, while the
+     description explains this in the context of `location()`.
+
      Since Safari skips stack frames, this might not work in Safari.
      There will however be at least 1 element in stack frames.
-     The Math.min protects this call for safari for array out of bounds problems.
+     The Math.min protects this call for Safari for array out of bounds problems.
      This returns a technical result (a string), without real semantic meaning.
      Furthermore, when used via Web Driver, that stack is again different in Safari, and contains many empty
      lines. A warning string is returned: there is nothing we can do. */
