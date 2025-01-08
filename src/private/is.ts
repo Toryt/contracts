@@ -15,7 +15,7 @@
  */
 
 import { rn as rnEOL, n as nEOL, stack as stackEOL } from './eol.ts'
-import { notStrictEqual } from 'assert'
+import { notStrictEqual, strictEqual } from 'assert'
 
 const anArgumentsToString: string = (function (): string {
   return Object.prototype.toString.call(arguments)
@@ -68,13 +68,18 @@ export function stack(stack: unknown): stack is string {
 
 export type NotNullAndNotUndefined<T = unknown> = T extends null ? never : T extends undefined ? never : T
 
-export function frozenOwnProperty(obj: NotNullAndNotUndefined, propName: string): boolean | undefined {
+export function frozenOwnProperty<
+  Obj extends NotNullAndNotUndefined,
+  PropertyName extends string,
+  PropertyType extends unknown
+>(obj: Obj, propName: PropertyName): obj is Obj & { [K in PropertyName]: PropertyType } {
   notStrictEqual(obj, null)
   notStrictEqual(obj, undefined)
+  strictEqual(typeof propName, 'string')
 
   const descriptor = Object.getOwnPropertyDescriptor(obj, propName)
   return (
-    descriptor &&
+    !!descriptor &&
     descriptor.enumerable === true &&
     descriptor.configurable === false &&
     (descriptor.writable === false || (typeof descriptor.get === 'function' && !descriptor.set))
