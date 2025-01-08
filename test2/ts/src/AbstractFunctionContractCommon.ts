@@ -17,7 +17,7 @@
 import { inspect } from 'node:util'
 import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
-import { AbstractFunctionContract, type FunctionContractKwargs } from '../../../src/AbstractFunctionContract.ts'
+import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 import { location as stackLocation } from '../../../src/private/stack.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
@@ -105,6 +105,7 @@ export function expectInvariants<Signature extends UnknownFunction>(
   subject: unknown
 ): AbstractFunctionContract<Signature> {
   should(subject).be.an.instanceof(AbstractFunctionContract)
+  // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
   // /* MUDO given a contract c, and contract function cf = c.implementation(…), cf.contract !== c, but
   //         Object.getPrototypeOf(cf.contract) === c
@@ -119,8 +120,10 @@ export function expectInvariants<Signature extends UnknownFunction>(
   //         or we slice the arrays in bless - the latter seems like not a good idea, since in this case we intend
   //         this to be semantically "the same contract" - what will happen here with extend? */
   // testUtil.expectToBeArrayOfFunctions(subject.pre)
+  // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'post', '_post')
   // testUtil.expectToBeArrayOfFunctions(subject.post)
+  // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'exception', '_exception')
   // testUtil.expectToBeArrayOfFunctions(subject.exception)
   // testUtil.expectOwnFrozenProperty(subject, 'location')
@@ -174,13 +177,9 @@ export function expectConstructorPost(/* pre, post, exception, */ location: stri
   afcSubject.verifyPostconditions.should.be.false()
 }
 
-type Constructor<T> = new (...args: any[]) => T
+type Constructor<T> = new (...args: unknown[]) => T
 
-class AFC extends AbstractFunctionContract<UnknownFunction> {
-  constructor(kwargs: FunctionContractKwargs<UnknownFunction>) {
-    super(kwargs)
-  }
-}
+class AFC extends AbstractFunctionContract<UnknownFunction> {}
 
 export function createCandidateContractFunction<FunctionContract extends AbstractFunctionContract<UnknownFunction>>(
   ContractConstructor?: Constructor<FunctionContract>,
@@ -188,9 +187,9 @@ export function createCandidateContractFunction<FunctionContract extends Abstrac
   otherPropertyName?: string,
   otherPropertyValue?: unknown
 ): unknown {
-  function candidate() {}
+  function candidate(): void {}
 
-  function impl() {}
+  function impl(): void {}
 
   let contract = otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AFC)({})
   if (typeof contract === 'object') {
@@ -254,7 +253,7 @@ export function generateIAGCFTests<FunctionContract extends AbstractFunctionCont
     })
   })
 
-  const properties = ['contract', 'implementation', 'location' /* MUDO , 'bind' */]
+  const properties = ['contract', 'implementation', 'location'] /* MUDO , 'bind'] */
 
   properties.forEach(doNotFreezeProperty => {
     it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
@@ -267,7 +266,7 @@ export function generateIAGCFTests<FunctionContract extends AbstractFunctionCont
     {
       propertyName: 'contract',
       expected: 'an AbstractFunctionContract',
-      extra: [function () {}]
+      extra: [function (): void {}]
     },
     {
       propertyName: 'implementation',

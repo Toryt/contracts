@@ -168,6 +168,7 @@ export abstract class AbstractFunctionContract<Signature extends UnknownFunction
       //     (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation)))
     )
   }
+
   /**
    * A reference to the line where the `…FunctionContract` is constructed. This representation contains the name of the
    * function inside which the constructor is called.
