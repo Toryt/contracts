@@ -15,8 +15,6 @@
  */
 
 // eslint-disable-next-line no-new-func
-import { types } from 'node:util'
-
 const getGlobal = new Function('return this;')
 export const global: object = getGlobal()
 
