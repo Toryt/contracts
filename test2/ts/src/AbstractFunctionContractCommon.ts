@@ -14,11 +14,14 @@
   limitations under the License.
  */
 
+import { inspect } from 'node:util'
 import should from 'should'
-import type { UnknownFunction } from '../../../src/index.ts'
-import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
-//import type { Condition, Postcondition, UnknownFunction } from '../../../src/index.ts'
-//
+import { type UnknownFunction } from '../../../src/index.ts'
+import { AbstractFunctionContract, type FunctionContractKwargs } from '../../../src/AbstractFunctionContract.ts'
+import { location as stackLocation } from '../../../src/private/stack.ts'
+import { setAndFreeze } from '../../../src/private/property.ts'
+import { mustBeCallerLocation } from '../../util/testUtil.ts'
+
 // type ConditionsGenerator = () => Condition<UnknownFunction>[]
 //
 // const someConditions: ConditionsGenerator[] = [
@@ -56,27 +59,27 @@ import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.
 //     return null
 //   }
 // ].concat(someConditions)
-//
-// const notAFunctionNorAContract: unknown[] = [
-//   undefined,
-//   null,
-//   '',
-//   'foo',
-//   0,
-//   -1,
-//   true,
-//   false,
-//   /lala/,
-//   {},
-//   new Date(),
-//   // eslint-disable-next-line no-new-wrappers
-//   new Number(42),
-//   // eslint-disable-next-line no-new-wrappers
-//   new Boolean(true),
-//   // eslint-disable-next-line no-new-wrappers
-//   new String('lalala')
-// ]
-//
+
+export const notAFunctionNorAContract: unknown[] = [
+  undefined,
+  null,
+  '',
+  'foo',
+  0,
+  -1,
+  true,
+  false,
+  /lala/,
+  {},
+  new Date(),
+  // eslint-disable-next-line no-new-wrappers
+  new Number(42),
+  // eslint-disable-next-line no-new-wrappers
+  new Boolean(true),
+  // eslint-disable-next-line no-new-wrappers
+  new String('lalala')
+]
+
 // // noinspection JSCheckFunctionSignatures
 // const constructorPreCases = [
 //   function () {
@@ -98,7 +101,9 @@ import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.
 //
 // export const location = eol.stack + '    at /'
 
-export function expectInvariants<Signature extends UnknownFunction>(subject: unknown): void {
+export function expectInvariants<Signature extends UnknownFunction>(
+  subject: unknown
+): AbstractFunctionContract<Signature> {
   should(subject).be.an.instanceof(AbstractFunctionContract)
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
   // /* MUDO given a contract c, and contract function cf = c.implementation(…), cf.contract !== c, but
@@ -138,6 +143,7 @@ export function expectInvariants<Signature extends UnknownFunction>(subject: unk
   //   stack.split(eol.stack)[0].should.containEql('abstract')
   //   testUtil.log(stack)
   // }
+  return subject as AbstractFunctionContract<Signature>
 }
 
 // function expectArrayPost(result, array, propName, privatePropName) {
@@ -157,122 +163,140 @@ export function expectInvariants<Signature extends UnknownFunction>(subject: unk
 //   }
 // }
 
-export function expectConstructorPost(/* pre, post, exception, location: string, */ result: unknown): void {
+export function expectConstructorPost(/* pre, post, exception, */ location: string, result: unknown): void {
+  const afcSubject = expectInvariants(result)
+  // MUDO
   // expectArrayPost(result, pre, 'pre', '_pre')
   // expectArrayPost(result, post, 'post', '_post')
   // expectArrayPost(result, exception, 'exception', '_exception')
-  // testUtil.mustBeCallerLocation(result.location, location)
-  expectInvariants(result)
+  mustBeCallerLocation(afcSubject.location, location)
+  afcSubject.verify.should.be.true()
+  afcSubject.verifyPostconditions.should.be.false()
 }
 
-//
-// // noinspection OverlyComplexFunctionJS, ParameterNamingConventionJS
-// function createCandidateContractFunction(
-//   ContractConstructor,
-//   doNotFreezeProperty,
-//   otherPropertyName,
-//   otherPropertyValue
-// ) {
-//   function candidate() {}
-//
-//   function impl() {}
-//
-//   let contract =
-//     otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AbstractFunctionContract)({})
-//   if (typeof contract === 'object') {
-//     contract = Object.create(contract)
-//   }
-//   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
-//   const location = otherPropertyName === 'location' ? otherPropertyValue : stack.location()
-//   const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractFunctionContract.bindContractFunction
-//
-//   if (doNotFreezeProperty === 'contract') {
-//     candidate.contract = contract
-//   } else {
-//     property.setAndFreeze(candidate, 'contract', contract)
-//   }
-//   if (doNotFreezeProperty === 'implementation') {
-//     candidate.implementation = implementation
-//   } else {
-//     property.setAndFreeze(candidate, 'implementation', implementation)
-//   }
-//   if (doNotFreezeProperty === 'location') {
-//     candidate.location = location
-//   } else {
-//     property.setAndFreeze(candidate, 'location', location)
-//   }
-//   if (doNotFreezeProperty === 'bind') {
-//     candidate.bind = bind
-//   } else {
-//     property.setAndFreeze(candidate, 'bind', bind)
-//   }
-//   property.setAndFreeze(
-//     candidate,
-//     'name',
-//     otherPropertyName === 'name'
-//       ? otherPropertyValue
-//       : report.conciseCondition(AbstractFunctionContract.namePrefix, implementation)
-//   )
-//   // noinspection JSPotentiallyInvalidConstructorUsage
-//   candidate.prototype = Object.create(impl.prototype, {
-//     constructor: { value: candidate }
-//   })
-//   return candidate
-// }
-//
-// // noinspection ParameterNamingConventionJS
-// function generateIAGCFTests(ContractConstructor, isAXXXContractFunction) {
-//   it(
-//     'says yes if there is an implementation Function, an AbstractFunctionContract, and a location, and all 3 ' +
-//       'properties are frozen, and it has the expected name',
-//     function () {
-//       const candidate = createCandidateContractFunction(ContractConstructor)
-//       isAXXXContractFunction.call(ContractConstructor, candidate).should.be.ok()
-//     }
-//   )
-//
-//   notAFunctionNorAContract.forEach(thing => {
-//     it('says no if the argument is not a function, but ' + thing, function () {
-//       should(isAXXXContractFunction.call(ContractConstructor, thing)).not.be.ok()
-//     })
-//   })
-//   ;['contract', 'implementation', 'location', 'bind'].forEach(doNotFreezeProperty => {
-//     it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
-//       const candidate = createCandidateContractFunction(ContractConstructor, doNotFreezeProperty)
-//       should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
-//     })
-//   })
-//   ;[
-//     {
-//       propertyName: 'contract',
-//       expected: 'an AbstractFunctionContract',
-//       extra: [function () {}]
-//     },
-//     {
-//       propertyName: 'implementation',
-//       expected: 'a Function',
-//       extra: [new AbstractFunctionContract({})]
-//     },
-//     {
-//       propertyName: 'bind',
-//       expected: 'AbstractFunctionContract.bindContractFunction',
-//       extra: []
-//     },
-//     {
-//       propertyName: 'name',
-//       expected: 'the contractFunction.name',
-//       extra: ['candidate', AbstractFunctionContract.namePrefix]
-//     }
-//   ].forEach(aCase => {
-//     notAFunctionNorAContract.concat(aCase.extra).forEach(v => {
-//       it('says no if the ' + aCase.propertyName + ' is not ' + aCase.expected + ' but ' + v, function () {
-//         const candidate = createCandidateContractFunction(ContractConstructor, null, aCase.propertyName, v)
-//         should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
-//       })
-//     })
-//   })
-// }
-//
+type Constructor<T> = new (...args: any[]) => T
+
+class AFC extends AbstractFunctionContract<UnknownFunction> {
+  constructor(kwargs: FunctionContractKwargs<UnknownFunction>) {
+    super(kwargs)
+  }
+}
+
+export function createCandidateContractFunction<FunctionContract extends AbstractFunctionContract<UnknownFunction>>(
+  ContractConstructor?: Constructor<FunctionContract>,
+  doNotFreezeProperty?: string,
+  otherPropertyName?: string,
+  otherPropertyValue?: unknown
+): unknown {
+  function candidate() {}
+
+  function impl() {}
+
+  let contract = otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AFC)({})
+  if (typeof contract === 'object') {
+    contract = Object.create(contract)
+  }
+  const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
+  const location = otherPropertyName === 'location' ? otherPropertyValue : stackLocation()
+  // MUDO
+  // const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractFunctionContract.bindContractFunction
+
+  if (doNotFreezeProperty === 'contract') {
+    candidate.contract = contract
+  } else {
+    setAndFreeze(candidate, 'contract', contract)
+  }
+  if (doNotFreezeProperty === 'implementation') {
+    candidate.implementation = implementation
+  } else {
+    setAndFreeze(candidate, 'implementation', implementation)
+  }
+  if (doNotFreezeProperty === 'location') {
+    candidate.location = location
+  } else {
+    setAndFreeze(candidate, 'location', location)
+  }
+  // MUDO
+  // if (doNotFreezeProperty === 'bind') {
+  //   candidate.bind = bind
+  // } else {
+  //   setAndFreeze(candidate, 'bind', bind)
+  // }
+  // property.setAndFreeze(
+  //   candidate,
+  //   'name',
+  //   otherPropertyName === 'name'
+  //     ? otherPropertyValue
+  //     : report.conciseCondition(AbstractFunctionContract.namePrefix, implementation)
+  // )
+  candidate.prototype = Object.create(impl.prototype, {
+    constructor: { value: candidate }
+  })
+  return candidate
+}
+
+export function generateIAGCFTests<FunctionContract extends AbstractFunctionContract<UnknownFunction>>(
+  isAXXXContractFunction: typeof AbstractFunctionContract.isAGeneralContractFunction,
+  ContractConstructor?: Constructor<FunctionContract>
+): void {
+  it(
+    'says yes if there is an implementation Function, an AbstractFunctionContract, and a location, and all 3 ' +
+      'properties are frozen, and it has the expected name',
+    function () {
+      const candidate = createCandidateContractFunction(ContractConstructor)
+      isAXXXContractFunction.call(ContractConstructor, candidate).should.be.ok()
+    }
+  )
+
+  notAFunctionNorAContract.forEach(thing => {
+    it('says no if the argument is not a function, but ' + thing, function () {
+      should(isAXXXContractFunction.call(ContractConstructor, thing)).not.be.ok()
+    })
+  })
+
+  const properties = ['contract', 'implementation', 'location' /* MUDO , 'bind' */]
+
+  properties.forEach(doNotFreezeProperty => {
+    it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
+      const candidate = createCandidateContractFunction(ContractConstructor, doNotFreezeProperty)
+      should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
+    })
+  })
+
+  const cases = [
+    {
+      propertyName: 'contract',
+      expected: 'an AbstractFunctionContract',
+      extra: [function () {}]
+    },
+    {
+      propertyName: 'implementation',
+      expected: 'a Function',
+      extra: [new AFC({})]
+    }
+    // MUDO
+    // {
+    //   propertyName: 'bind',
+    //   expected: 'AbstractFunctionContract.bindContractFunction',
+    //   extra: []
+    // },
+    // {
+    //   propertyName: 'name',
+    //   expected: 'the contractFunction.name',
+    //   extra: ['candidate', AbstractFunctionContract.namePrefix]
+    // }
+  ]
+
+  cases.forEach(aCase => {
+    notAFunctionNorAContract.concat(aCase.extra).forEach(v => {
+      it(`says no if the ${aCase.propertyName} is not ${aCase.expected} but ${inspect(v)}`, function () {
+        const candidate = createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v)
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
+      })
+    })
+  })
+}
+
 // // noinspection FunctionNamingConventionJS, ParameterNamingConventionJS
 // function generateConstructorMethodsDescriptions(ContractConstructor) {
 //   describe('@isAContractFunction', function () {

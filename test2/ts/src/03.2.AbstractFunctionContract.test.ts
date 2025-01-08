@@ -16,11 +16,18 @@
 
 'use strict'
 
+import { inspect } from 'node:util'
 import should from 'should'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
+import { location as stackLocation } from '../../../src/private/stack.ts'
 import { testName } from '../../util/testName.ts'
-import { expectConstructorPost } from './AbstractFunctionContractCommon.ts'
+import {
+  createCandidateContractFunction,
+  expectConstructorPost,
+  generateIAGCFTests,
+  notAFunctionNorAContract
+} from './AbstractFunctionContractCommon.ts'
 
 // const testUtil = require('./_util/testUtil')
 // const stack = require('../lib/_private/stack')
@@ -89,25 +96,20 @@ describe(testName(import.meta), function () {
   //     }
   //   })
   // })
-  //
-  // describe('AbstractFunctionContract.isAGeneralizedContractFunction', function () {
-  //   common.generateIAGCFTests(AbstractFunctionContract, AbstractFunctionContract.isAGeneralContractFunction)
-  //   common.thingsThatAreNotAFunctionNorAContract
-  //     .filter(v => !!v)
-  //     .concat(['    at', 'at /', {}, AbstractFunctionContract.internalLocation])
-  //     .forEach(v => {
-  //       it(
-  //         'says yes if there is an implementation Function, an AbstractFunctionContract, and a location that is ' +
-  //           v +
-  //           ', and all 3 properties are frozen, and it has the expected name',
-  //         function () {
-  //           const candidate = common.createCandidateContractFunction(AbstractFunctionContract, null, 'location', v)
-  //           AbstractFunctionContract.isAGeneralContractFunction(candidate).should.be.ok()
-  //         }
-  //       )
-  //     })
-  // })
-  //
+
+  describe('isAGeneralContractFunction', function () {
+    generateIAGCFTests(AbstractFunctionContract.isAGeneralContractFunction)
+    notAFunctionNorAContract
+      .filter(v => !!v)
+      .concat(['    at', 'at /', {}, AbstractFunctionContract.internalLocation])
+      .forEach(v => {
+        it(`says yes if there is an implementation Function, an AbstractFunctionContract, and a location that is ${inspect(v)}, and all 3 properties are frozen, and it has the expected name`, function () {
+          const candidate = createCandidateContractFunction(undefined, undefined, 'location', v)
+          AbstractFunctionContract.isAGeneralContractFunction(candidate).should.be.ok()
+        })
+      })
+  })
+
   // common.generateConstructorMethodsDescriptions(AbstractFunctionContract)
   //
   // describe('AbstractFunctionContract.bless', function () {
@@ -179,21 +181,52 @@ describe(testName(import.meta), function () {
   // })
 
   describe('AbstractFunctionContract()', function () {
-    class AFC<Signature extends UnknownFunction> extends AbstractFunctionContract<Signature> {}
+    class AFCWithoutLocationCorrection<Signature extends UnknownFunction> extends AbstractFunctionContract<Signature> {
+      readonly expectedLocation: string
+
+      constructor() {
+        super({}) // this is where the function where we determine the location is called; remember the location
+        this.expectedLocation = stackLocation()
+      }
+    }
 
     // common.constructorPreCases.forEach(pre => {
     //   common.constructorPostCases.forEach(post => {
     //     common.constructorExceptionCases.forEach(exception => {
-    it('works', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function () {
+    it('works with the AbstractFunctionContract location', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFCWithoutLocationCorrection() {
       // const preConditions = pre()
       // const postConditions = post()
       // const exceptionConditions = exception()
-      const result = new AFC({
+      const result = new AFCWithoutLocationCorrection(/* {
         // pre: preConditions,
         // post: postConditions,
         // exception: exceptionConditions
-      })
-      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, stackLocation(), */ result)
+      } */)
+      /* location is expected to contain the name of the `AFCWithoutLocationCorrection` constructor, because the
+         `AbstractFunctionContract`, where the location is determined as “1-up”, is called there. */
+      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, */ result.expectedLocation, result)
+    })
+
+    class AFC<Signature extends UnknownFunction> extends AbstractFunctionContract<Signature> {
+      constructor() {
+        super(
+          {},
+          stackLocation(1) /* do not point to the AbstractFunctionContract constructor, but to the AFC constructor */
+        )
+      }
+    }
+
+    it('works', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFConstructor() {
+      // const preConditions = pre()
+      // const postConditions = post()
+      // const exceptionConditions = exception()
+      const result = new AFC(/* {
+        // pre: preConditions,
+        // post: postConditions,
+        // exception: exceptionConditions
+      } */)
+      // location is expected to contain the name of this test function, because `new AFC(…)` was called here
+      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, */ stackLocation(), result)
     })
     //     })
     //   })

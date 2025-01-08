@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+import { frozenOwnProperty } from './private/is.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
 import assert, { ok, strictEqual } from 'assert'
@@ -21,9 +22,33 @@ import { location as stackLocation } from './private/stack.ts'
 import { setAndFreeze } from './private/property.ts'
 import { namePrefix } from './private/report.ts'
 
+export interface ContractFunctionProperties<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> {
+  contract: AbstractFunctionContract<ContractSignature>
+  implementation: ImplementationSignature
+}
+
+export type GeneralContractFunction<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> = ContractSignature & ContractFunctionProperties<ContractSignature, ImplementationSignature>
+
+export type ContractFunction<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> = ContractSignature & ContractFunctionProperties<ContractSignature, ImplementationSignature>
+
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
   post?: Postcondition<Signature>[]
 }
+
+export type InternalLocation = Readonly<{
+  toString: () => 'INTERNAL'
+}>
+
+export type FunctionContractLocation = string | InternalLocation
 
 /**
  * Abstract definition of a function contract.
@@ -70,9 +95,7 @@ export abstract class AbstractFunctionContract<Signature extends UnknownFunction
   /**
    * Object to be used as location for contracts and implementations that are generated inside this library.
    */
-  static readonly internalLocation: Readonly<{
-    toString: () => 'INTERNAL'
-  }> = Object.freeze({
+  static readonly internalLocation: InternalLocation = Object.freeze({
     toString: function (): 'INTERNAL' {
       return 'INTERNAL'
     }
@@ -94,10 +117,73 @@ export abstract class AbstractFunctionContract<Signature extends UnknownFunction
     AbstractFunctionContract.falseCondition
   ])
 
+  /**
+   * A {@link GeneralContractFunction} is an {@link AbstractFunctionContract#implementation} of an
+   * {@link AbstractFunctionContract}. This function verifies whether a function given as a parameter is a
+   * General Contract Function.
+   *
+   * To be a {@link GeneralContractFunction}, the subject must
+   *
+   *   * be a function,
+   *   * have a frozen {@link GeneralContractFunction#contract} property that refers to an
+   *     {@link AbstractFunctionContract},
+   *   * have a frozen {@link GeneralContractFunction#implementation} property that refers to a function (that realizes
+   *     the contract),
+   *   * have a frozen {@link GeneralContractFunction#location} property, that has a value,
+   *   * have a frozen {@link GeneralContractFunction#bind} property, that is
+   *     {@link AbstractContract.bindContractFunction}, and
+   *   * if the {@link GeneralContractFunction#implementation} function has a `prototype`, have a `prototype` property,
+   *       * that is an object,
+   *       * that has a `constructor` property that is the contract function, and
+   *       * that has `f.implementation.prototype` in its prototype chain, or is equal to it, and
+   *
+   * should have a {@link GeneralContractFunction#name}, which is a string that gives information for a programmer to
+   * understand what contract function this is. The {@link GeneralContractFunction#name} however is controlled by the
+   * JavaScript engine. We cannot freeze it, and it is not guaranteed to exist or have a specific value in all engines.
+   */
+  static isAGeneralContractFunction<
+    ContractSignature extends UnknownFunction,
+    ImplementationSignature extends ContractSignature
+  >(f: unknown): f is GeneralContractFunction<ContractSignature, ImplementationSignature> {
+    // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
+    // freeze it, and not guaranteed in all engines.
+    return (
+      typeof f === 'function' &&
+      frozenOwnProperty(f, 'contract') &&
+      f.contract instanceof AbstractFunctionContract &&
+      frozenOwnProperty(f, 'implementation') &&
+      typeof f.implementation === 'function' &&
+      frozenOwnProperty(f, 'location') &&
+      !!f.location
+      // &&
+      // MUDO
+      // (f === f.implementation || f.name === conciseCondition(AbstractFunctionContract.namePrefix, f.implementation))
+      // &&
+      // frozenOwnProperty(f, 'bind')
+      // &&
+      // f.bind === AbstractContract.bindContractFunction &&
+      // (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||
+      //   (typeof f.prototype === 'object' &&
+      //     f.prototype.constructor === f &&
+      //     (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation)))
+    )
+  }
+  /**
+   * A reference to the line where the `…FunctionContract` is constructed. This representation contains the name of the
+   * function inside which the constructor is called.
+   *
+   * When this result is used as a line on its own, it is clickable to navigate to the referred source code in most
+   * consoles.
+   */
+  readonly location!: FunctionContractLocation // initialized with setAndFreeze
+
   verify: boolean = true
   verifyPostconditions: boolean = false
 
-  constructor(kwargs: FunctionContractKwargs<Signature>, _location?: string) {
+  // noinspection TypeScriptAbstractClassConstructorCanBeMadeProtected
+  constructor(kwargs: FunctionContractKwargs<Signature>, _location?: FunctionContractLocation) {
+    /* NOTE: Yes, yes, this can be made protected, but we need it public in tests, and there is no harm in having it
+             public */
     ok(kwargs, 'kwargs is mandatory')
     strictEqual(typeof kwargs, 'object', 'kwargs must be an object')
     ok(
@@ -119,7 +205,7 @@ export abstract class AbstractFunctionContract<Signature extends UnknownFunction
     //   throw new AbstractContract.AbstractError(self, rawStack())
     // }
 
-    const location = _location || stackLocation(1)
+    const location: FunctionContractLocation = _location || stackLocation(1)
     // AbstractContract.bless(abstract, self, abstract, location)
     // property.setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []))
     // property.setAndFreeze(self, '_post', Object.freeze(kwargs.post ? kwargs.post.slice() : []))
