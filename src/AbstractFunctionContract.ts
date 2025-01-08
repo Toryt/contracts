@@ -22,33 +22,42 @@ import { location as stackLocation } from './private/stack.ts'
 import { setAndFreeze } from './private/property.ts'
 import { namePrefix } from './private/report.ts'
 
-export interface ContractFunctionProperties<
-  ContractSignature extends UnknownFunction,
-  ImplementationSignature extends ContractSignature
-> {
-  contract: AbstractFunctionContract<ContractSignature>
-  implementation: ImplementationSignature
-}
-
-export type GeneralContractFunction<
-  ContractSignature extends UnknownFunction,
-  ImplementationSignature extends ContractSignature
-> = ContractSignature & ContractFunctionProperties<ContractSignature, ImplementationSignature>
-
-export type ContractFunction<
-  ContractSignature extends UnknownFunction,
-  ImplementationSignature extends ContractSignature
-> = ContractSignature & ContractFunctionProperties<ContractSignature, ImplementationSignature>
-
-export interface FunctionContractKwargs<Signature extends UnknownFunction> {
-  post?: Postcondition<Signature>[]
-}
-
 export type InternalLocation = Readonly<{
   toString: () => 'INTERNAL'
 }>
 
 export type FunctionContractLocation = string | InternalLocation
+
+export interface GeneralContractFunctionProperties<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> {
+  contract: AbstractFunctionContract<ContractSignature>
+  implementation: ImplementationSignature
+  location: FunctionContractLocation
+}
+
+export type GeneralContractFunction<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ImplementationSignature>
+
+export interface ContractFunctionProperties<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> extends GeneralContractFunctionProperties<ContractSignature, ImplementationSignature> {
+  location: string
+}
+
+export type ContractFunction<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature
+> = GeneralContractFunction<ContractSignature, ImplementationSignature> &
+  ContractFunctionProperties<ContractSignature, ImplementationSignature>
+
+export interface FunctionContractKwargs<Signature extends UnknownFunction> {
+  post?: Postcondition<Signature>[]
+}
 
 /**
  * Abstract definition of a function contract.
