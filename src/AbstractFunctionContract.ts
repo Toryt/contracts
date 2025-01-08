@@ -267,48 +267,6 @@ export abstract class AbstractFunctionContract<Signature extends UnknownFunction
 // }
 //
 // /**
-//  * A General Contract Function is an implementation of an AbstractContract. This function verifies whether a function
-//  * given as a parameter is a General Contract Function.
-//  *
-//  * To be a General Contract Function, the subject must
-//  * <ul>
-//  *   <li>be a function,</li>
-//  *   <li>have a frozen `contract` property that refers to a AbstractContract,</li>
-//  *   <li>have a frozen `implementation` property that refers to a function (which realizes the contract),</li>
-//  *   <li>have a frozen `location` property, that has a value,</li>
-//  *   <li>have a frozen `bind` property, which is {@link AbstractContract.bindContractFunction}, and</li>
-//  *   <li>have a `name`, which is a string that gives information for a programmer to understand what contract
-//  *     function this is, and</li>
-//  *   <li>if the `implementation` function has a `prototype`, have a `prototype` property,
-//  *     <ul>
-//  *       <li>that is an object,</li>
-//  *       <li>that has a `constructor` property that is the contract function, and</li>
-//  *       <li>that has `f.implementation.prototype` in its prototype chain, or is equal to it.
-//  *     </ul>
-//  *   </li>
-//  */
-// AbstractContract.isAGeneralContractFunction = function (f) {
-//   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
-//   // freeze it, and not guaranteed in all engines.
-//   return (
-//     typeof f === 'function' &&
-//     is.frozenOwnProperty(f, 'contract') &&
-//     f.contract instanceof AbstractContract &&
-//     is.frozenOwnProperty(f, 'implementation') &&
-//     typeof f.implementation === 'function' &&
-//     is.frozenOwnProperty(f, 'location') &&
-//     f.location &&
-//     (f === f.implementation || f.name === report.conciseCondition(AbstractContract.namePrefix, f.implementation)) &&
-//     is.frozenOwnProperty(f, 'bind') &&
-//     f.bind === AbstractContract.bindContractFunction &&
-//     (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||
-//       (typeof f.prototype === 'object' &&
-//         f.prototype.constructor === f &&
-//         (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation)))
-//   )
-// }
-//
-// /**
 //  * A Contract Function is an implementation of a Contract. This function verifies whether a function
 //  * given as a parameter is a Contract Function.
 //  *
