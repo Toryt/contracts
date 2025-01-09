@@ -125,7 +125,8 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  *
  * The `_location` argument is for internal use, and might be removed.
  */
-export abstract class AbstractFunctionContract<Signature extends UnknownFunction> {
+export class AbstractFunctionContract<Signature extends UnknownFunction> {
+  // MUDO rename: this is not abstract (see root)
   static readonly namePrefix: typeof namePrefix = namePrefix
 
   /**
@@ -217,10 +218,7 @@ export abstract class AbstractFunctionContract<Signature extends UnknownFunction
   verify: boolean = true
   verifyPostconditions: boolean = false
 
-  // noinspection TypeScriptAbstractClassConstructorCanBeMadeProtected
   constructor(kwargs: FunctionContractKwargs<Signature>, _location?: FunctionContractLocation) {
-    /* NOTE: Yes, yes, this can be made protected, but we need it public in tests, and there is no harm in having it
-             public */
     ok(kwargs, 'kwargs is mandatory')
     strictEqual(typeof kwargs, 'object', 'kwargs must be an object')
     ok(
