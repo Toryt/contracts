@@ -75,26 +75,28 @@ export const contractErrorMessage = 'abstract type'
  *
  *   * {@link ContractError#name} is a mandatory property, and refers to a `string`
  *   * {@link ContractError#message} refers to a `string`
+ *   * {@link ContractError#rawStack} is a read-only `string` property, that lists stack code references, that do not
+ *     contain references to the inner workings of the Toryt Contracts library
  *   * {@link ContractError#stack} is a read-only property, that returns a `string`, that starts with the instance’s
- *     {@link ContractError#name}, the string `': '`, and {@link ContractError#message}, and is followed by stack code
- *     references, that do not contain references to the inner workings of the Toryt Contracts library.
+ *     {@link ContractError#name}, the string `': '`, and {@link ContractError#message}, and is followed by instance’s
+ *     {@link ContractError#rawStack}.
  */
 export abstract class ContractError extends Error {
   static {
     setAndFreeze(this.prototype, 'name', ContractError.name)
     setAndFreeze(this.prototype, 'message', contractErrorMessage)
-    setAndFreeze(this.prototype, '_rawStack', rawStack())
+    setAndFreeze(this.prototype, 'rawStack', rawStack())
     configurableDerived(this.prototype, 'stack', function (this: ContractError) {
-      return `${this.name}: ${this.message}` + stackEOL + this._rawStack
+      return `${this.name}: ${this.message}` + stackEOL + this.rawStack
     })
   }
 
-  private readonly _rawStack!: string
+  readonly rawStack!: string
 
   protected constructor(rawStack: string) {
     ok(isStack(rawStack), 'rawStack must be a stack')
 
     super()
-    setAndFreeze(this, '_rawStack', rawStack)
+    setAndFreeze(this, 'rawStack', rawStack)
   }
 }

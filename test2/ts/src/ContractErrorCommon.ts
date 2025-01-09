@@ -23,7 +23,7 @@ import { stack as stackEOL } from '../../../src/private/eol.ts'
 export function expectStackInvariants(subject: ContractError): void {
   const stack = subject.stack
   should(stack).be.a.String()
-  const startOfStack = subject.name + ': ' + subject.message + stackEOL
+  const startOfStack = `${subject.name}: ${subject.message}${stackEOL}`
   stack!.should.match(new RegExp('^' + regExpEscape(startOfStack)))
   const restOfStack = stack!
     .replace(startOfStack, '')
@@ -32,25 +32,21 @@ export function expectStackInvariants(subject: ContractError): void {
     .filter(l => !!l)
     .join(stackEOL)
   isStack(restOfStack).should.be.true()
-  // MUDO restOfStack.should.containEql(subject._rawStack)
+  restOfStack.should.containEql(subject.rawStack)
 }
 
 export function expectInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(ContractError)
   const ceSubject = subject as ContractError
 
-  expectOwnFrozenProperty(ContractError.prototype, 'name')
-  ContractError.prototype.name.should.be.a.String()
-  ContractError.prototype.name.should.equal(ContractError.name)
-  expectOwnFrozenProperty(Object.getPrototypeOf(ceSubject), 'name')
   ceSubject.name.should.be.a.String()
   ceSubject.name.should.equal(ceSubject.constructor.name)
 
-  expectOwnFrozenProperty(ContractError.prototype, 'message')
   ceSubject.message.should.be.a.String()
 
-  expectOwnFrozenProperty(ceSubject, '_rawStack')
-  // MUDO isStack(ceSubject._rawStack).should.be.true()
+  expectOwnFrozenProperty(ceSubject, 'rawStack')
+  isStack(ceSubject.rawStack).should.be.true()
+
   expectStackInvariants(ceSubject)
 }
 
@@ -60,7 +56,7 @@ export function expectConstructorPost(result: unknown, message: string, rawStack
   const ceResult = result as ContractError
   ceResult.should.have.property('name', ceResult.constructor.name)
   ceResult.should.have.property('message', message)
-  // MUDO result._rawStack.should.equal(rawStack)
+  ceResult.should.have.property('rawStack', rawStack)
 }
 
 export function generatePrototypeMethodsDescriptions<CE extends ContractError>(

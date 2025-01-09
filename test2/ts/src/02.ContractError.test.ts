@@ -17,7 +17,7 @@
 import { ContractError, contractErrorMessage } from '../../../src/ContractError.ts'
 import { frozenDerived, setAndFreeze } from '../../../src/private/property.ts'
 import { testName } from '../../util/testName.ts'
-import { log } from '../../util/testUtil.ts'
+import { expectConfigurableDerivedPropertyOnAPrototype, expectOwnFrozenProperty, log } from '../../util/testUtil.ts'
 import { raw as rawStack } from '../../../src/private/stack.ts'
 import { expectConstructorPost, expectInvariants, generatePrototypeMethodsDescriptions } from './ContractErrorCommon.ts'
 
@@ -35,6 +35,24 @@ class CE extends ContractError {
 }
 
 describe(testName(import.meta), function () {
+  describe('prototype', function () {
+    it('has the expected properties', function () {
+      expectOwnFrozenProperty(ContractError.prototype, 'name')
+      ContractError.prototype.name.should.be.a.String()
+      ContractError.prototype.name.should.equal(ContractError.name)
+
+      expectOwnFrozenProperty(ContractError.prototype, 'message')
+      ContractError.prototype.message.should.be.a.String()
+      ContractError.prototype.message.should.equal(contractErrorMessage)
+
+      expectOwnFrozenProperty(ContractError.prototype, 'rawStack')
+      ContractError.prototype.rawStack.should.be.a.String()
+      ContractError.prototype.rawStack.should.containEql('ContractError')
+
+      expectConfigurableDerivedPropertyOnAPrototype(ContractError.prototype, 'stack')
+    })
+  })
+
   describe('#ContractError()', function () {
     it('creates an instance with all toppings', function () {
       const stackHere = rawStack()
@@ -43,7 +61,9 @@ describe(testName(import.meta), function () {
       log('result.toString():\n%s', result.toString())
       expectConstructorPost(result, message, stackHere)
       expectInvariants(result)
+      result.should.not.have.ownProperty('name')
       result.should.not.have.ownProperty('message')
+      result.should.not.have.ownProperty('stack')
       log('result.stack:\n%s', result.stack)
     })
 
