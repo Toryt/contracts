@@ -20,10 +20,10 @@ import { expectOwnFrozenProperty } from '../../util/testUtil.ts'
 import {
   expectInvariants as expectAbstractErrorInvariants,
   expectConstructorPost as expectAbstractErrorConstructorPost
-} from '../ContractErrorCommon.ts' // MUDO mv to this dir
+} from './ContractErrorCommon.ts'
 import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 
-export { generatePrototypeMethodsDescriptions } from '../ContractErrorCommon.ts'
+export { generatePrototypeMethodsDescriptions } from './ContractErrorCommon.ts'
 
 export function expectInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(AbstractError)

@@ -19,11 +19,7 @@ import { frozenDerived, setAndFreeze } from '../../../src/private/property.ts'
 import { testName } from '../../util/testName.ts'
 import { log } from '../../util/testUtil.ts'
 import { raw as rawStack } from '../../../src/private/stack.ts'
-import {
-  expectConstructorPost,
-  expectInvariants,
-  generatePrototypeMethodsDescriptions
-} from '../ContractErrorCommon.ts'
+import { expectConstructorPost, expectInvariants, generatePrototypeMethodsDescriptions } from './ContractErrorCommon.ts'
 
 const message = `CE ${contractErrorMessage}`
 
