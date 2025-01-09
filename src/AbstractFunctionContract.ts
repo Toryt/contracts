@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+import { ContractError } from './ContractError.ts'
 import { frozenOwnProperty } from './private/is.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
@@ -21,6 +22,32 @@ import assert, { ok, strictEqual } from 'assert'
 import { location as stackLocation } from './private/stack.ts'
 import { setAndFreeze } from './private/property.ts'
 import { namePrefix } from './private/report.ts'
+import { stack as isStack } from './private/is.ts'
+
+export const abstractErrorMessage = 'an abstract function cannot be executed'
+
+/**
+ * Thrown when an abstract method is called. You shouldn't.
+ */
+export class AbstractError<AFC extends AbstractFunctionContract<UnknownFunction>> extends ContractError {
+  static {
+    setAndFreeze(this.prototype, 'name', AbstractError.name)
+    setAndFreeze(this.prototype, 'message', abstractErrorMessage)
+    setAndFreeze(this.prototype, 'contract', null)
+  }
+
+  readonly contract!: AFC
+
+  constructor(contract: AFC, rawStack: string) {
+    ok(contract instanceof AbstractFunctionContract, 'contract must be an AbstractFunctionContract')
+    ok(isStack(rawStack), 'rawStack must be a stack')
+
+    super(rawStack)
+    setAndFreeze(this, 'name', AbstractError.name)
+    setAndFreeze(this, 'message', abstractErrorMessage)
+    setAndFreeze(this, 'contract', contract)
+  }
+}
 
 export type InternalLocation = Readonly<{
   toString: () => 'INTERNAL'
@@ -401,29 +428,6 @@ export abstract class AbstractFunctionContract<Signature extends UnknownFunction
 //   AbstractContract.internalLocation
 // )
 //
-// const message = 'an abstract function cannot be executed'
-//
-// /**
-//  * Thrown when an abstract method is called. You shouldn't.
-//  *
-//  * @constructor
-//  */
-// function AbstractError(contract, rawStack) {
-//   assert(contract instanceof AbstractContract, 'contract is an AbstractContract')
-//   assert(is.stack(rawStack), 'rawStack is a stack')
-//
-//   ContractError.call(this, rawStack)
-//   property.setAndFreeze(this, 'name', AbstractError.name)
-//   property.setAndFreeze(this, 'message', message)
-//   property.setAndFreeze(this, 'contract', contract)
-// }
-//
-// AbstractError.prototype = new ContractError(stack.raw())
-// AbstractError.prototype.constructor = AbstractError
-// property.setAndFreeze(AbstractError.prototype, 'name', AbstractError.name)
-// property.setAndFreeze(AbstractError.prototype, 'message', message)
-// property.setAndFreeze(AbstractError.prototype, 'contract', null)
-//
-// AbstractError.message = message
+
 //
 // AbstractContract.AbstractError = AbstractError
