@@ -25,6 +25,7 @@ import { testName } from '../../util/testName.ts'
 import {
   createCandidateContractFunction,
   expectConstructorPost,
+  expectInvariants,
   generateIAGCFTests,
   notAFunctionNorAContract
 } from './AbstractFunctionContractCommon.ts'
@@ -60,16 +61,18 @@ describe(testName(import.meta), function () {
       // AbstractFunctionContract.should.have.ownProperty('callee')
       // AbstractFunctionContract.callee.should.be.a.Function()
       //
-      // AbstractFunctionContract.should.have.ownProperty('root')
-      // AbstractFunctionContract.root.should.be.an.instanceof(AbstractFunctionContract)
-      // const root = AbstractFunctionContract.root
-      // common.expectInvariants(root)
+      AbstractFunctionContract.should.have.ownProperty('root')
+      AbstractFunctionContract.root.should.be.an.instanceof(AbstractFunctionContract)
+      const root = AbstractFunctionContract.root
+      expectInvariants(root)
+      // MUDO
       // root.pre.should.have.length(1)
       // root.pre[0].should.equal(AbstractFunctionContract.falseCondition)
       // root.post.should.be.empty()
       // root.exception.should.be.empty()
       // root.location.should.equal(AbstractFunctionContract.internalLocation)
       // AbstractFunctionContract.should.have.ownProperty('AbstractError')
+      // MUDO
       // AbstractFunctionContract.AbstractError.should.be.a.Function()
       // AbstractFunctionContract.AbstractError.prototype.should.be.an.instanceof(Error)
       // AbstractFunctionContract.should.have.ownProperty('prototype')

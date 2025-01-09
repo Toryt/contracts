@@ -139,6 +139,21 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
   })
 
   /**
+   * The most general {@link AbstractFunctionContract}. This has the most strict preconditions (nothing is allowed),
+   * which can be weakened by specializations, and the most general nominal and exceptional postconditions (anything
+   * goes), which can be strengthened by specializations.
+   */
+  static readonly root: AbstractFunctionContract<UnknownFunction> = new AbstractFunctionContract(
+    {
+      // MUDO
+      // pre: AbstractContract.mustNotHappen,
+      // post: [],
+      // exception: []
+    },
+    AbstractFunctionContract.internalLocation
+  )
+
+  /**
    * Function that always returns <code>false</code>.
    */
   static falseCondition(): boolean {
