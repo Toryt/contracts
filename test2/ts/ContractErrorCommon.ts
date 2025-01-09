@@ -38,14 +38,17 @@ export function expectStackInvariants(subject: ContractError): void {
 export function expectInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(ContractError)
   const ceSubject = subject as ContractError
+
   expectOwnFrozenProperty(ContractError.prototype, 'name')
   ContractError.prototype.name.should.be.a.String()
   ContractError.prototype.name.should.equal(ContractError.name)
   expectOwnFrozenProperty(Object.getPrototypeOf(ceSubject), 'name')
   ceSubject.name.should.be.a.String()
   ceSubject.name.should.equal(ceSubject.constructor.name)
+
   expectOwnFrozenProperty(ContractError.prototype, 'message')
   ceSubject.message.should.be.a.String()
+
   expectOwnFrozenProperty(ceSubject, '_rawStack')
   // MUDO isStack(ceSubject._rawStack).should.be.true()
   expectStackInvariants(ceSubject)
