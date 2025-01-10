@@ -42,6 +42,9 @@ export class AbstractError<AFC extends AbstractFunctionContract<UnknownFunction>
     ok(isStack(rawStack), 'rawStack is a stack')
 
     super(rawStack)
+    // make the name and message non-configurable and non-overwritable
+    /* TODO Consider freezing the entire object. Is there something in he history why this is no good? Do we need to
+            keep the possibility to add properties for instance, for tests? */
     setAndFreeze(this, 'name', AbstractError.name)
     setAndFreeze(this, 'message', abstractErrorMessage)
     setAndFreeze(this, 'contract', contract)
