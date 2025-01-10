@@ -71,6 +71,9 @@ export const contractErrorMessage = 'abstract type'
  * The main feature of a `ContractError` is that it provides a safe, cross-platform stack trace.
  * Instances should be frozen before they are thrown.
  *
+ * This class is not used directly in this library. Only subclasses are used. It is not abstract, because there is no
+ * need for the class to be abstract: there are no abstract methods.
+ *
  * ### Invariants
  *
  *   * {@link ContractError#name} is a mandatory property, and refers to a `string`
@@ -81,7 +84,7 @@ export const contractErrorMessage = 'abstract type'
  *     {@link ContractError#name}, the string `': '`, and {@link ContractError#message}, and is followed by instance’s
  *     {@link ContractError#rawStack}.
  */
-export abstract class ContractError extends Error {
+export class ContractError extends Error {
   static {
     setAndFreeze(this.prototype, 'name', ContractError.name)
     setAndFreeze(this.prototype, 'message', contractErrorMessage)
@@ -93,10 +96,14 @@ export abstract class ContractError extends Error {
 
   readonly rawStack!: string
 
-  protected constructor(rawStack: string) {
+  constructor(rawStack: string) {
     ok(isStack(rawStack), 'rawStack must be a stack')
 
     super()
     setAndFreeze(this, 'rawStack', rawStack)
+    /* On some platforms (notably, Node), when using the class syntax, the `super()` call to the `Error` constructor
+       creates an own property `stack`, which we do not want. If it exists, we delete it. We do want to use the given
+       `rawStack` and the defined derived property on the prototype in all cases. */
+    delete this.stack
   }
 }

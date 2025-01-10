@@ -16,7 +16,7 @@
 
 import should from 'should'
 import { ContractError } from '../../../src/ContractError.ts'
-import { expectOwnFrozenProperty, regExpEscape } from '../../util/testUtil.ts'
+import { expectOwnFrozenProperty } from '../../util/testUtil.ts'
 import { stack as isStack } from '../../../src/private/is.ts'
 import { stack as stackEOL } from '../../../src/private/eol.ts'
 
@@ -24,7 +24,7 @@ export function expectStackInvariants(subject: ContractError): void {
   const stack = subject.stack
   should(stack).be.a.String()
   const startOfStack = `${subject.name}: ${subject.message}${stackEOL}`
-  stack!.should.match(new RegExp('^' + regExpEscape(startOfStack)))
+  stack!.startsWith(startOfStack).should.be.true()
   const restOfStack = stack!
     .replace(startOfStack, '')
     .split(stackEOL)

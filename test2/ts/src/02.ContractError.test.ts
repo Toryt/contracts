@@ -15,24 +15,11 @@
  */
 
 import { ContractError, contractErrorMessage } from '../../../src/ContractError.ts'
-import { frozenDerived, setAndFreeze } from '../../../src/private/property.ts'
+import { frozenDerived } from '../../../src/private/property.ts'
 import { testName } from '../../util/testName.ts'
 import { expectConfigurableDerivedPropertyOnAPrototype, expectOwnFrozenProperty, log } from '../../util/testUtil.ts'
 import { raw as rawStack } from '../../../src/private/stack.ts'
 import { expectConstructorPost, expectInvariants, generatePrototypeMethodsDescriptions } from './ContractErrorCommon.ts'
-
-const message = `CE ${contractErrorMessage}`
-
-class CE extends ContractError {
-  static {
-    setAndFreeze(this.prototype, 'name', CE.name)
-    setAndFreeze(this.prototype, 'message', message)
-  }
-
-  constructor(rawStack: string) {
-    super(rawStack)
-  }
-}
 
 describe(testName(import.meta), function () {
   describe('prototype', function () {
@@ -53,39 +40,43 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('#ContractError()', function () {
+  describe('ContractError()', function () {
     it('creates an instance with all toppings', function () {
       const stackHere = rawStack()
-      const result = new CE(stackHere)
+      const result = new ContractError(stackHere)
       log('result:\n%s', result)
       log('result.toString():\n%s', result.toString())
-      expectConstructorPost(result, message, stackHere)
-      expectInvariants(result)
+      expectConstructorPost(result, contractErrorMessage, stackHere)
       result.should.not.have.ownProperty('name')
       result.should.not.have.ownProperty('message')
       result.should.not.have.ownProperty('stack')
-      log('result.stack:\n%s', result.stack)
-    })
-
-    it('can get a message set', function () {
-      const result = new CE(rawStack())
-      const message = 'another message'
-      frozenDerived(result, 'message', function () {
-        return message
-      })
-      result.should.have.ownProperty('message')
-      result.message.should.equal(message)
       expectInvariants(result)
+      log('result.stack:\n%s', result.stack)
     })
   })
 
-  generatePrototypeMethodsDescriptions(
-    () => new CE(rawStack()),
-    [
-      {
-        subject: () => new CE(rawStack()),
-        description: 'a contract error'
-      }
-    ]
-  )
+  describe('instance', function () {
+    describe('#message', function () {
+      it('can get a message set', function () {
+        const result = new ContractError(rawStack())
+        const message = 'another message'
+        frozenDerived(result, 'message', function () {
+          return message
+        })
+        result.should.have.ownProperty('message')
+        result.message.should.equal(message)
+        expectInvariants(result)
+      })
+    })
+
+    generatePrototypeMethodsDescriptions(
+      () => new ContractError(rawStack()),
+      [
+        {
+          subject: () => new ContractError(rawStack()),
+          description: 'a contract error'
+        }
+      ]
+    )
+  })
 })
