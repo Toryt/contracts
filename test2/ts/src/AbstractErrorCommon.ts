@@ -18,27 +18,26 @@ import should from 'should'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { expectOwnFrozenProperty } from '../../util/testUtil.ts'
 import {
-  expectInvariants as expectAbstractErrorInvariants,
-  expectConstructorPost as expectAbstractErrorConstructorPost
+  expectInvariants as expectContractErrorInvariants,
+  expectConstructorPost as expectContractErrorConstructorPost,
+  generatePrototypeMethodsDescriptions as generateContractErrorMethodsDescriptions
 } from './ContractErrorCommon.ts'
 import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 
-export { generatePrototypeMethodsDescriptions } from './ContractErrorCommon.ts'
-
 export function expectInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(AbstractError)
-  expectAbstractErrorInvariants(subject)
+  expectContractErrorInvariants(subject)
+
   const aeSubject = subject as AbstractError<AbstractFunctionContract<UnknownFunction>>
 
-  expectOwnFrozenProperty(Object.getPrototypeOf(aeSubject), 'name')
-  Object.getPrototypeOf(aeSubject).name.should.equal(AbstractError.name)
   expectOwnFrozenProperty(aeSubject, 'name')
   aeSubject.name.should.equal(AbstractError.name)
 
-  expectOwnFrozenProperty(AbstractError.prototype, 'message')
-  Object.getPrototypeOf(subject).message.should.equal(abstractErrorMessage)
   expectOwnFrozenProperty(aeSubject, 'message')
   aeSubject.message.should.equal(abstractErrorMessage)
+
+  expectOwnFrozenProperty(aeSubject, 'contract')
+  aeSubject.contract.should.be.instanceof(AbstractFunctionContract)
 }
 
 /**
@@ -54,12 +53,10 @@ export function expectConstructorPost(
   result.should.have.property('contract', contract)
 }
 
-// MUDO
-// export function generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators) {
-//   common.generatePrototypeMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
-//
-//   // NOP: no methods here
-// }
+export function generatePrototypeMethodsDescriptions<
+  AE extends AbstractError<AbstractFunctionContract<UnknownFunction>>
+>(oneSubjectGenerator: () => AE, allSubjectGenerators: { subject: () => AE; description: string }[]): void {
+  generateContractErrorMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 
-// MUDO remove
-// Object.setPrototypeOf(test, common)
+  // NOP: no methods here
+}
