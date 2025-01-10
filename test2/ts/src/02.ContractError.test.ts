@@ -70,10 +70,10 @@ describe(testName(import.meta), function () {
     })
 
     generatePrototypeMethodsDescriptions(
-      () => new ContractError(rawStack()),
+      (): ContractError => new ContractError(rawStack()),
       [
         {
-          subject: () => new ContractError(rawStack()),
+          subject: (): ContractError => new ContractError(rawStack()),
           description: 'a contract error'
         }
       ]
