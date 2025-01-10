@@ -15,8 +15,14 @@
  */
 
 import should from 'should'
-import { functionArguments, primitive, stackLocation, stack, frozenOwnProperty } from '../../../build/src/private/is.js'
-import { n, rn, stack as stackEOL } from '../../../build/src/private/eol.js'
+import {
+  functionArguments,
+  primitive,
+  stackLocation,
+  stack,
+  isFrozenOwnProperty
+} from '../../../build/src/private/is.js'
+import { nEOL, rnEOL, stackEOL } from '../../../build/src/private/eol.js'
 import { notStackEOL } from '../../../build/test2/util/cases.js'
 import { generateStuff } from '../../../build/test2/util/_stuff.js'
 import { x, log, safeToString, showStack } from '../../../build/test2/util/testUtil.js'
@@ -65,13 +71,13 @@ describe('_private/is', function () {
     it('says no to a multi-line string with \\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = stackLocation('this is a' + n + 'multi-line' + n + 'string')
+      const result = stackLocation('this is a' + nEOL + 'multi-line' + nEOL + 'string')
       result.should.be.false()
     })
     it('says no to a multi-line string with \\r\\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = stackLocation('this is a' + rn + 'multi-line' + rn + 'string')
+      const result = stackLocation('this is a' + rnEOL + 'multi-line' + rnEOL + 'string')
       result.should.be.false()
     })
     it('says yes to all lines of a stack trace', function () {
@@ -176,18 +182,18 @@ describe('_private/is', function () {
       })
       if (!configurable && enumerable && !writable && Object.prototype.hasOwnProperty.call(subject, propName)) {
         it('reports true if the property is an own property, and it is enumerable, not configurable and not writable', function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).be.ok()
         })
       } else {
         it(`reports false if the property is an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`, function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).not.be.ok()
         })
       }
 
       it('reports false if the property does not exist', function () {
-        const result = frozenOwnProperty(subject, 'some other, non-existing property name')
+        const result = isFrozenOwnProperty(subject, 'some other, non-existing property name')
         should(result).not.be.ok()
       })
 
@@ -196,7 +202,7 @@ describe('_private/is', function () {
       should(specialized[propName]).equal(propValue) // check inheritance — test code validity
 
       it(`reports false if the property is not an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`, function () {
-        const specializedResult = frozenOwnProperty(specialized, propName)
+        const specializedResult = isFrozenOwnProperty(specialized, propName)
         should(specializedResult).not.be.ok()
       })
     })
@@ -205,7 +211,7 @@ describe('_private/is', function () {
     notObjects.forEach(notAnObject => {
       // cannot set a property on primitives
       it(`reports false if the first parameter is a primitive (${typeof notAnObject})`, function () {
-        const result = frozenOwnProperty(notAnObject, propName)
+        const result = isFrozenOwnProperty(notAnObject, propName)
         should(result).not.be.ok()
       })
     })
@@ -227,12 +233,12 @@ describe('_private/is', function () {
         Object.prototype.hasOwnProperty.call(subject, propName)
       ) {
         it('reports true if the property is an own property, and it is enumerable, and not configurable, has a getter, but not a setter', function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).be.ok()
         })
       } else {
         it(`reports false if the property is an own property, enumerable === ${enumerable} configurable === ${configurable} get === ${get} set === ${set}`, function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).not.be.ok()
         })
       }

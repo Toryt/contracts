@@ -14,29 +14,29 @@
   limitations under the License.
  */
 
-import { n, rn, stack, os } from '../../../build/src/private/eol.js'
+import { nEOL, rnEOL, stackEOL, osEOL } from '../../../build/src/private/eol.js'
 import { notStackEOL } from '../../../build/test2/util/cases.js'
 import { EOL } from 'os'
 
 describe('_private/eol', function () {
   it('#nEOL', function () {
-    n.should.equal('\n')
+    nEOL.should.equal('\n')
   })
   it('#rnEOL', function () {
-    rn.should.equal('\r\n')
+    rnEOL.should.equal('\r\n')
   })
   describe('#EOL', function () {
     it('is either nEOL or rnEOL', function () {
-      const result = stack === n || stack === rn
+      const result = stackEOL === nEOL || stackEOL === rnEOL
       result.should.be.true()
     })
     it('a stack contains the expected EOL', function () {
       const err = new Error('just an error')
-      err.stack.should.containEql(stack)
+      err.stack.should.containEql(stackEOL)
       err.stack.should.not.containEql(notStackEOL)
     })
   })
   it('#osEOL', function () {
-    os.should.equal(EOL)
+    osEOL.should.equal(EOL)
   })
 })
