@@ -41,15 +41,17 @@ export function expectInvariants(subject: unknown): void {
   aeSubject.message.should.equal(abstractErrorMessage)
 }
 
+/**
+ * Precondition: `expectInvariants` has been called
+ */
 export function expectConstructorPost(
-  result: unknown,
+  result: AbstractError<AbstractFunctionContract<UnknownFunction>>,
   message: string,
   contract: AbstractFunctionContract<UnknownFunction>,
   rawStack: string
 ): void {
-  expectAbstractErrorConstructorPost(result, message, rawStack)
-  const aeResult = result as AbstractError<AbstractFunctionContract<UnknownFunction>>
-  aeResult.should.have.property('contract', contract)
+  expectContractErrorConstructorPost(result, message, rawStack)
+  result.should.have.property('contract', contract)
 }
 
 // MUDO

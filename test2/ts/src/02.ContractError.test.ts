@@ -40,17 +40,17 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('ContractError()', function () {
+  describe('constructor', function () {
     it('creates an instance with all toppings', function () {
       const stackHere = rawStack()
       const result = new ContractError(stackHere)
       log('result:\n%s', result)
       log('result.toString():\n%s', result.toString())
+      expectInvariants(result)
       expectConstructorPost(result, contractErrorMessage, stackHere)
       result.should.not.have.ownProperty('name')
       result.should.not.have.ownProperty('message')
       result.should.not.have.ownProperty('stack')
-      expectInvariants(result)
       log('result.stack:\n%s', result.stack)
     })
   })

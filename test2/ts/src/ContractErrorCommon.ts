@@ -50,13 +50,14 @@ export function expectInvariants(subject: unknown): void {
   expectStackInvariants(ceSubject)
 }
 
-export function expectConstructorPost(result: unknown, message: string, rawStack: string): void {
-  should(result).be.an.instanceof(ContractError)
+/**
+ * Precondition: `expectInvariants` has been called
+ */
+export function expectConstructorPost(result: ContractError, message: string, rawStack: string): void {
   Object.isExtensible(result).should.be.true()
-  const ceResult = result as ContractError
-  ceResult.should.have.property('name', ceResult.constructor.name)
-  ceResult.should.have.property('message', message)
-  ceResult.should.have.property('rawStack', rawStack)
+  result.should.have.property('name', result.constructor.name)
+  result.should.have.property('message', message)
+  result.should.have.property('rawStack', rawStack)
 }
 
 export function generatePrototypeMethodsDescriptions<CE extends ContractError>(
