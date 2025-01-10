@@ -426,21 +426,3 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 // AbstractContract.outcome = outcome
 // // noinspection JSAnnotator
 // AbstractContract.callee = callee
-//
-// /**
-//  * The most general function AbstractContract. This has the most strict preconditions (nothing is allowed), which can
-//  * be weakened by specializations, and the most general nominal and exceptional postconditions (anything goes),
-//  * which can be strengthened by specializations.
-//  */
-// AbstractContract.root = new AbstractContract(
-//   {
-//     pre: AbstractContract.mustNotHappen,
-//     post: [],
-//     exception: []
-//   },
-//   AbstractContract.internalLocation
-// )
-//
-
-//
-// AbstractContract.AbstractError = AbstractError
