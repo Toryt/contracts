@@ -15,7 +15,7 @@
  */
 
 import should from 'should'
-import { functionArguments, primitive, stackLocation, stack, frozenOwnProperty } from '../../../../src/private/is.ts'
+import { functionArguments, primitive, stackLocation, stack, isFrozenOwnProperty } from '../../../../src/private/is.ts'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { generateStuff } from '../../../util/_stuff.ts'
@@ -162,7 +162,7 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('#frozenOwnProperty()', function () {
+  describe('#isFrozenOwnProperty()', function () {
     const propName = 'test prop name'
     const propValue = 'dummy value'
     const truths = [true, false]
@@ -176,18 +176,18 @@ describe(testName(import.meta), function () {
       })
       if (!configurable && enumerable && !writable && Object.prototype.hasOwnProperty.call(subject, propName)) {
         it('reports true if the property is an own property, and it is enumerable, not configurable and not writable', function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).be.ok()
         })
       } else {
         it(`reports false if the property is an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`, function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).not.be.ok()
         })
       }
 
       it('reports false if the property does not exist', function () {
-        const result = frozenOwnProperty(subject, 'some other, non-existing property name')
+        const result = isFrozenOwnProperty(subject, 'some other, non-existing property name')
         should(result).not.be.ok()
       })
 
@@ -196,7 +196,7 @@ describe(testName(import.meta), function () {
       should(specialized[propName]).equal(propValue) // check inheritance — test code validity
 
       it(`reports false if the property is not an own property, and enumerable === ${enumerable} configurable === ${configurable} writable === ${writable}`, function () {
-        const specializedResult = frozenOwnProperty(specialized, propName)
+        const specializedResult = isFrozenOwnProperty(specialized, propName)
         should(specializedResult).not.be.ok()
       })
     })
@@ -205,7 +205,7 @@ describe(testName(import.meta), function () {
     notObjects.forEach(notAnObject => {
       // cannot set a property on primitives
       it(`reports false if the first parameter is a primitive (${typeof notAnObject})`, function () {
-        const result = frozenOwnProperty(notAnObject, propName)
+        const result = isFrozenOwnProperty(notAnObject, propName)
         should(result).not.be.ok()
       })
     })
@@ -227,12 +227,12 @@ describe(testName(import.meta), function () {
         Object.prototype.hasOwnProperty.call(subject, propName)
       ) {
         it('reports true if the property is an own property, and it is enumerable, and not configurable, has a getter, but not a setter', function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).be.ok()
         })
       } else {
         it(`reports false if the property is an own property, enumerable === ${enumerable} configurable === ${configurable} get === ${get} set === ${set}`, function () {
-          const result = frozenOwnProperty(subject, propName)
+          const result = isFrozenOwnProperty(subject, propName)
           should(result).not.be.ok()
         })
       }

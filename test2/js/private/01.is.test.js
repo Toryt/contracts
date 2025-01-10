@@ -162,7 +162,7 @@ describe('_private/is', function () {
     })
   })
 
-  describe('#frozenOwnProperty()', function () {
+  describe('#isFrozenOwnProperty()', function () {
     const propName = 'test prop name'
     const propValue = 'dummy value'
     const truths = [true, false]

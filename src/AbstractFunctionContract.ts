@@ -21,7 +21,7 @@ import assert, { ok, strictEqual } from 'assert'
 import { location as stackLocation } from './private/stack.ts'
 import { setAndFreeze } from './private/property.ts'
 import { namePrefix } from './private/report.ts'
-import { stack as isStack, frozenOwnProperty } from './private/is.ts'
+import { stack as isStack, isFrozenOwnProperty } from './private/is.ts'
 
 export const abstractErrorMessage = 'an abstract function cannot be executed'
 
@@ -203,17 +203,17 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
     // freeze it, and not guaranteed in all engines.
     return (
       typeof f === 'function' &&
-      frozenOwnProperty(f, 'contract') &&
+      isFrozenOwnProperty(f, 'contract') &&
       f.contract instanceof AbstractFunctionContract &&
-      frozenOwnProperty(f, 'implementation') &&
+      isFrozenOwnProperty(f, 'implementation') &&
       typeof f.implementation === 'function' &&
-      frozenOwnProperty(f, 'location') &&
+      isFrozenOwnProperty(f, 'location') &&
       !!f.location
       // &&
       // MUDO
       // (f === f.implementation || f.name === conciseCondition(AbstractFunctionContract.namePrefix, f.implementation))
       // &&
-      // frozenOwnProperty(f, 'bind')
+      // isFrozenOwnProperty(f, 'bind')
       // &&
       // f.bind === AbstractContract.bindContractFunction &&
       // (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||

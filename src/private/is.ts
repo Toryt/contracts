@@ -68,7 +68,7 @@ export function stack(stack: unknown): stack is string {
 
 export type NotNullAndNotUndefined<T = unknown> = T extends null ? never : T extends undefined ? never : T
 
-export function frozenOwnProperty<
+export function isFrozenOwnProperty<
   Obj extends NotNullAndNotUndefined,
   PropertyName extends string,
   PropertyType extends unknown
