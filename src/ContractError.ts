@@ -97,7 +97,7 @@ export class ContractError extends Error {
   readonly rawStack!: string
 
   constructor(rawStack: string) {
-    ok(isStack(rawStack), 'rawStack must be a stack')
+    ok(isStack(rawStack), 'rawStack is a stack')
 
     super()
     setAndFreeze(this, 'rawStack', rawStack)

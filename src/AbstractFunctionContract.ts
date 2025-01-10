@@ -39,8 +39,8 @@ export class AbstractError<AFC extends AbstractFunctionContract<UnknownFunction>
   readonly contract!: AFC
 
   constructor(contract: AFC, rawStack: string) {
-    ok(contract instanceof AbstractFunctionContract, 'contract must be an AbstractFunctionContract')
-    ok(isStack(rawStack), 'rawStack must be a stack')
+    ok(contract instanceof AbstractFunctionContract, 'contract is an AbstractContract')
+    ok(isStack(rawStack), 'rawStack is a stack')
 
     super(rawStack)
     setAndFreeze(this, 'name', AbstractError.name)
