@@ -19,7 +19,11 @@ import { frozenDerived } from '../../../src/private/property.ts'
 import { testName } from '../../util/testName.ts'
 import { expectConfigurableDerivedPropertyOnAPrototype, expectOwnFrozenProperty, log } from '../../util/testUtil.ts'
 import { raw as rawStack } from '../../../src/private/stack.ts'
-import { expectConstructorPost, expectInvariants, generatePrototypeMethodsDescriptions } from './ContractErrorCommon.ts'
+import {
+  expectContractErrorConstructorPost,
+  expectContractErrorInvariants,
+  generateContractErrorMethodsDescriptions
+} from './ContractErrorCommon.ts'
 
 describe(testName(import.meta), function () {
   describe('prototype', function () {
@@ -46,8 +50,8 @@ describe(testName(import.meta), function () {
       const result = new ContractError(stackHere)
       log('result:\n%s', result)
       log('result.toString():\n%s', result.toString())
-      expectInvariants(result)
-      expectConstructorPost(result, contractErrorMessage, stackHere)
+      expectContractErrorInvariants(result)
+      expectContractErrorConstructorPost(result, contractErrorMessage, stackHere)
       result.should.not.have.ownProperty('name')
       result.should.not.have.ownProperty('message')
       result.should.not.have.ownProperty('stack')
@@ -65,11 +69,11 @@ describe(testName(import.meta), function () {
         })
         result.should.have.ownProperty('message')
         result.message.should.equal(message)
-        expectInvariants(result)
+        expectContractErrorInvariants(result)
       })
     })
 
-    generatePrototypeMethodsDescriptions(
+    generateContractErrorMethodsDescriptions(
       (): ContractError => new ContractError(rawStack()),
       [
         {

@@ -19,7 +19,11 @@ import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '.
 import { raw as rawStack } from '../../../src/private/stack.ts'
 import { testName } from '../../util/testName.ts'
 import { expectOwnFrozenProperty, log } from '../../util/testUtil.ts'
-import { expectConstructorPost, expectInvariants, generatePrototypeMethodsDescriptions } from './AbstractErrorCommon.ts'
+import {
+  expectAbstractErrorConstructorPost,
+  expectAbstractErrorInvariants,
+  generateAbstractErrorMethodsDescriptions
+} from './AbstractErrorCommon.ts'
 
 describe(testName(import.meta), function () {
   describe('prototype', function () {
@@ -43,14 +47,14 @@ describe(testName(import.meta), function () {
     it('creates an instance with all toppings for `AbstractContract.root`', function () {
       const rStack = rawStack()
       const result = new AbstractError(AbstractFunctionContract.root, rStack)
-      expectInvariants(result)
-      expectConstructorPost(result, abstractErrorMessage, AbstractFunctionContract.root, rStack)
+      expectAbstractErrorInvariants(result)
+      expectAbstractErrorConstructorPost(result, abstractErrorMessage, AbstractFunctionContract.root, rStack)
       log('result.stack:\n%s', result.stack)
     })
   })
 
   describe('instance', function () {
-    generatePrototypeMethodsDescriptions(
+    generateAbstractErrorMethodsDescriptions(
       (): AbstractError<AbstractFunctionContract<UnknownFunction>> =>
         new AbstractError(AbstractFunctionContract.root, rawStack()),
       [

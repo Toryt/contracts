@@ -35,7 +35,7 @@ export function expectStackInvariants(subject: ContractError): void {
   restOfStack.should.containEql(subject.rawStack)
 }
 
-export function expectInvariants(subject: unknown): void {
+export function expectContractErrorInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(ContractError)
   const ceSubject = subject as ContractError
 
@@ -51,16 +51,16 @@ export function expectInvariants(subject: unknown): void {
 }
 
 /**
- * Precondition: `expectInvariants` has been called
+ * Precondition: `expectContractErrorInvariants` has been called
  */
-export function expectConstructorPost(result: ContractError, message: string, rawStack: string): void {
+export function expectContractErrorConstructorPost(result: ContractError, message: string, rawStack: string): void {
   Object.isExtensible(result).should.be.true()
   result.should.have.property('name', result.constructor.name)
   result.should.have.property('message', message)
   result.should.have.property('rawStack', rawStack)
 }
 
-export function generatePrototypeMethodsDescriptions<CE extends ContractError>(
+export function generateContractErrorMethodsDescriptions<CE extends ContractError>(
   oneSubjectGenerator: () => CE,
   allSubjectGenerators: { subject: () => CE; description: string }[]
 ): void {

@@ -18,13 +18,13 @@ import should from 'should'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { expectOwnFrozenProperty } from '../../util/testUtil.ts'
 import {
-  expectInvariants as expectContractErrorInvariants,
-  expectConstructorPost as expectContractErrorConstructorPost,
-  generatePrototypeMethodsDescriptions as generateContractErrorMethodsDescriptions
+  expectContractErrorInvariants,
+  expectContractErrorConstructorPost,
+  generateContractErrorMethodsDescriptions
 } from './ContractErrorCommon.ts'
 import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 
-export function expectInvariants(subject: unknown): void {
+export function expectAbstractErrorInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(AbstractError)
   expectContractErrorInvariants(subject)
 
@@ -41,9 +41,9 @@ export function expectInvariants(subject: unknown): void {
 }
 
 /**
- * Precondition: `expectInvariants` has been called
+ * Precondition: `expectAbstractErrorInvariants` has been called
  */
-export function expectConstructorPost(
+export function expectAbstractErrorConstructorPost(
   result: AbstractError<AbstractFunctionContract<UnknownFunction>>,
   message: string,
   contract: AbstractFunctionContract<UnknownFunction>,
@@ -53,7 +53,7 @@ export function expectConstructorPost(
   result.should.have.property('contract', contract)
 }
 
-export function generatePrototypeMethodsDescriptions<
+export function generateAbstractErrorMethodsDescriptions<
   AE extends AbstractError<AbstractFunctionContract<UnknownFunction>>
 >(oneSubjectGenerator: () => AE, allSubjectGenerators: { subject: () => AE; description: string }[]): void {
   generateContractErrorMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
