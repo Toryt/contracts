@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { type EOL, stack, rn, n } from '../../src/private/eol.ts'
+import { type EOL, stackEOL, rnEOL, nEOL } from '../../src/private/eol.ts'
 
 // noinspection JSPrimitiveTypeWrapperUsage
 export const any: unknown[] = [
@@ -68,4 +68,4 @@ intentionallyRejectedPromise.catch(() => {})
 
 export const intentionallyRejectingArrow = (): Promise<never> => intentionallyRejectedPromise
 
-export const notStackEOL: EOL = stack === n ? rn : n
+export const notStackEOL: EOL = stackEOL === nEOL ? rnEOL : nEOL

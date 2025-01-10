@@ -25,7 +25,7 @@ import {
   extensiveThrown,
   type
 } from '../../../../src/private/report.ts'
-import { n, rn, stack as stackEOL } from '../../../../src/private/eol.ts'
+import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
 import { generateMutableStuff, generateStuff } from '../../../util/_stuff.ts'
 import { safeToString, log, anyCasesGenerators } from '../../../util/testUtil.ts'
@@ -57,8 +57,8 @@ describe(testName(import.meta), function () {
       log('result: %s', result)
       should(result).be.a.String()
       const stringResult = result as string
-      stringResult.should.not.containEql(n)
-      stringResult.should.not.containEql(rn)
+      stringResult.should.not.containEql(nEOL)
+      stringResult.should.not.containEql(rnEOL)
       stringResult.length.should.be.lessThanOrEqual(maxLengthOfConciseRepresentation)
       stringResult.trim().should.equal(result)
       isAConciseVersion(expected, stringResult).should.be.ok()

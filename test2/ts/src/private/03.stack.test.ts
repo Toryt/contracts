@@ -16,7 +16,7 @@
 
 import should from 'should'
 import { stackLocation as isStackLocation, stack as isStack } from '../../../../src/private/is.ts'
-import { n as nEOL, rn as rnEOL, stack as stackEOL } from '../../../../src/private/eol.ts'
+import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { log, environment } from '../../../util/testUtil.ts'
 import { location, raw, skipsForEach } from '../../../../src/private/stack.ts'
 import { testName } from '../../../util/testName.ts'

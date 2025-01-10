@@ -19,14 +19,14 @@ import { notStackEOL } from '../../../build/test2/util/cases.js'
 import { EOL } from 'os'
 
 describe('_private/eol', function () {
-  it('#n', function () {
+  it('#nEOL', function () {
     n.should.equal('\n')
   })
-  it('#rn', function () {
+  it('#rnEOL', function () {
     rn.should.equal('\r\n')
   })
   describe('#EOL', function () {
-    it('is either n or rn', function () {
+    it('is either nEOL or rnEOL', function () {
       const result = stack === n || stack === rn
       result.should.be.true()
     })
@@ -36,7 +36,7 @@ describe('_private/eol', function () {
       err.stack.should.not.containEql(notStackEOL)
     })
   })
-  it('#os', function () {
+  it('#osEOL', function () {
     os.should.equal(EOL)
   })
 })

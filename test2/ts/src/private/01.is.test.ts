@@ -16,7 +16,7 @@
 
 import should from 'should'
 import { functionArguments, primitive, stackLocation, stack, frozenOwnProperty } from '../../../../src/private/is.ts'
-import { n, rn, stack as stackEOL } from '../../../../src/private/eol.ts'
+import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { generateStuff } from '../../../util/_stuff.ts'
 import { x, log, safeToString, showStack } from '../../../util/testUtil.ts'
@@ -66,13 +66,13 @@ describe(testName(import.meta), function () {
     it('says no to a multi-line string with \\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = stackLocation('this is a' + n + 'multi-line' + n + 'string')
+      const result = stackLocation('this is a' + nEOL + 'multi-line' + nEOL + 'string')
       result.should.be.false()
     })
     it('says no to a multi-line string with \\r\\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = stackLocation('this is a' + rn + 'multi-line' + rn + 'string')
+      const result = stackLocation('this is a' + rnEOL + 'multi-line' + rnEOL + 'string')
       result.should.be.false()
     })
     it('says yes to all lines of a stack trace', function () {
@@ -107,7 +107,7 @@ describe(testName(import.meta), function () {
       const result = stack('abc')
       result.should.be.true()
     })
-    it('says yes to a multi-line string with `eol.stack`', function () {
+    it('says yes to a multi-line string with `stackEOL`', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const candidate = 'this is a' + stackEOL + 'multi-line' + stackEOL + 'string'
@@ -121,7 +121,7 @@ describe(testName(import.meta), function () {
       const result = stack(candidate)
       result.should.be.true()
     })
-    it('says no to a multi-line string with a blank line with `eol.stack`', function () {
+    it('says no to a multi-line string with a blank line with `stackEOL`', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = stack(

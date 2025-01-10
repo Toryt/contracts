@@ -14,32 +14,32 @@
   limitations under the License.
  */
 
-import { n, rn, stack, os } from '../../../../src/private/eol.ts'
+import { nEOL, rnEOL, stackEOL, osEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { EOL } from 'os'
 import { testName } from '../../../util/testName.ts'
 
 describe(testName(import.meta), function () {
-  it('#n', function () {
-    n.should.equal('\n')
+  it('#nEOL', function () {
+    nEOL.should.equal('\n')
   })
-  it('#rn', function () {
-    rn.should.equal('\r\n')
+  it('#rnEOL', function () {
+    rnEOL.should.equal('\r\n')
   })
   describe('#EOL', function () {
     /* TODO unnecessary test in TS
-    it('is either n or rn', function () {
-      const result = stack === n || stack === rn
+    it('is either nEOL or rnEOL', function () {
+      const result = stackEOL === nEOL || stackEOL === rnEOL
       result.should.be.true()
     })
     */
     it('a stack contains the expected EOL', function () {
       const err = new Error('just an error')
-      err.stack!.should.containEql(stack)
+      err.stack!.should.containEql(stackEOL)
       err.stack!.should.not.containEql(notStackEOL)
     })
   })
-  it('#os', function () {
-    os.should.equal(EOL)
+  it('#osEOL', function () {
+    osEOL.should.equal(EOL)
   })
 })

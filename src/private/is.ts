@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { rn as rnEOL, n as nEOL, stack as stackEOL } from './eol.ts'
+import { rnEOL, nEOL, stackEOL } from './eol.ts'
 import { notStrictEqual, strictEqual } from 'assert'
 
 const anArgumentsToString: string = (function (): string {

@@ -18,7 +18,7 @@ import should from 'should'
 import { ContractError } from '../../../src/ContractError.ts'
 import { expectOwnFrozenProperty } from '../../util/testUtil.ts'
 import { stack as isStack } from '../../../src/private/is.ts'
-import { stack as stackEOL } from '../../../src/private/eol.ts'
+import { stackEOL } from '../../../src/private/eol.ts'
 
 export function expectStackInvariants(subject: ContractError): void {
   const stack = subject.stack

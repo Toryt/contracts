@@ -18,7 +18,7 @@ import { ok } from 'assert'
 import { stack as isStack } from './private/is.ts'
 import { configurableDerived, setAndFreeze } from './private/property.ts'
 import { raw as rawStack } from './private/stack.ts'
-import { stack as stackEOL } from './private/eol.ts'
+import { stackEOL } from './private/eol.ts'
 
 // eslint-disable-next-line no-secrets/no-secrets
 /* Custom Error types are notoriously difficult in JavaScript.

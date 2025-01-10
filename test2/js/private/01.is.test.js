@@ -107,7 +107,7 @@ describe('_private/is', function () {
       const result = stack('abc')
       result.should.be.true()
     })
-    it('says yes to a multi-line string with `eol.stack`', function () {
+    it('says yes to a multi-line string with `stackEOL`', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const candidate = 'this is a' + stackEOL + 'multi-line' + stackEOL + 'string'
@@ -121,7 +121,7 @@ describe('_private/is', function () {
       const result = stack(candidate)
       result.should.be.true()
     })
-    it('says no to a multi-line string with a blank line with `eol.stack`', function () {
+    it('says no to a multi-line string with a blank line with `stackEOL`', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = stack(
@@ -223,7 +223,7 @@ describe('_private/is', function () {
         !configurable &&
         enumerable &&
         ((typeof get === 'function' && set === undefined) ||
-          (get === undefined && set === undefined) /* writable is false by default, so it is frozen */) &&
+          (get === undefined && set === undefined)) /* writable is false by default, so it is frozen */ &&
         Object.prototype.hasOwnProperty.call(subject, propName)
       ) {
         it('reports true if the property is an own property, and it is enumerable, and not configurable, has a getter, but not a setter', function () {

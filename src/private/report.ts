@@ -17,7 +17,7 @@
 import assert, { strictEqual } from 'assert'
 import { inspect } from 'node:util'
 import { functionArguments, primitive } from './is.ts'
-import { stack as stackEOL } from './eol.ts'
+import { stackEOL } from './eol.ts'
 
 function safeToString(s: unknown): string {
   try {

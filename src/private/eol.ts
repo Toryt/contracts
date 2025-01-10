@@ -14,12 +14,12 @@
   limitations under the License.
  */
 
-export { EOL as os } from 'os'
+export { EOL as osEOL } from 'os'
 
 export type EOL = '\n' | '\r\n'
 
-export const n = '\n'
-export const rn = '\r\n'
+export const nEOL = '\n'
+export const rnEOL = '\r\n'
 
 const message = 'STACK MESSAGE'
 const stackError = new Error(message)
@@ -28,7 +28,7 @@ const stackError = new Error(message)
  * Determine the EOL used by this JavaScript engine in Error stack traces. It turns out this is not always `os.EOL`.
  * The default is '\n' (Unix).
  */
-export const stack: EOL =
-  'stack' in stackError && stackError.stack.startsWith(message + rn)
-    ? /* istanbul ignore next: platform dependent */ rn
-    : n
+export const stackEOL: EOL =
+  'stack' in stackError && stackError.stack.startsWith(message + rnEOL)
+    ? /* istanbul ignore next: platform dependent */ rnEOL
+    : nEOL

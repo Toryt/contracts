@@ -15,7 +15,7 @@
  */
 
 import assert from 'assert'
-import { stack as stackEOL } from './eol.ts'
+import { stackEOL } from './eol.ts'
 
 /* Chrome limits the number of frames in a stack trace to 10 by default.
    https://github.com/v8/v8/wiki/Stack-Trace-API
