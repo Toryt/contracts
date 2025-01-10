@@ -18,7 +18,7 @@ import should from 'should'
 import { stackLocation as isStackLocation, stack as isStack } from '../../../../src/private/is.ts'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { log, environment } from '../../../util/testUtil.ts'
-import { location, raw, skipsForEach } from '../../../../src/private/stack.ts'
+import { location, rawStack, stackSkipsForEach } from '../../../../src/private/stack.ts'
 import { testName } from '../../../util/testName.ts'
 
 describe(testName(import.meta), function () {
@@ -72,7 +72,7 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('raw', function () {
+  describe('rawStack', function () {
     function checkRaw(result: string): void {
       const lines = result.split(stackEOL)
       lines.length.should.be.greaterThanOrEqual(1)
@@ -90,7 +90,7 @@ describe(testName(import.meta), function () {
     it('returns the expected stack without arguments', function () {
       function aFourthFunction(): string {
         function aFifthFunction(): string {
-          return raw()
+          return rawStack()
         }
 
         return aFifthFunction()
@@ -118,7 +118,7 @@ describe(testName(import.meta), function () {
     it('returns the expected stack, 2 deep', function () {
       function skipTwo(skip: number): string {
         function skipOne(skip: number): string {
-          return raw(skip + 1)
+          return rawStack(skip + 1)
         }
 
         return skipOne(skip + 1)
@@ -159,10 +159,10 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('skipsForEach', function () {
+  describe('stackSkipsForEach', function () {
     it('return the expected value for this platform', function () {
-      log('stack.skipsForEach:', skipsForEach)
-      skipsForEach.should.equal(environment === 'firefox')
+      log('stackSkipsForEach:', stackSkipsForEach)
+      stackSkipsForEach.should.equal(environment === 'firefox')
     })
   })
 })
