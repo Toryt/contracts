@@ -40,7 +40,7 @@ function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper2<Primitive>> {
     { subject: -456, description: 'negative integer' },
     { subject: Math.PI, description: 'positive float' },
     { subject: -Math.E, description: 'negative float' },
-    { subject: 0.1, description: 'non-decimal float' },
+    { subject: 0.1, description: 'non-binary float' }, // 10 * 0.1 !== 1
     { subject: Number.POSITIVE_INFINITY, description: 'positive infinity' },
     { subject: Number.NEGATIVE_INFINITY, description: 'negative infinity' },
     { subject: Number.MAX_SAFE_INTEGER, description: 'max safe integer' },
@@ -162,7 +162,9 @@ export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
       }),
       description: 'complex object'
     },
-    { generate: (): [] => [], description: 'empty array' }
+    { generate: (): [] => [], description: 'empty array' },
+    { generate: (): unknown[] => [4, 'z', { a: 'a' }, true, ['b', 12]], description: 'simple array' } // no Symbols
+
     // MUDO add circular stuff
   ]
 
