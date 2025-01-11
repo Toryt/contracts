@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+// eslint-disable-next-line no-new-func
 const getGlobal = new Function('return this;')
 export const global: object = getGlobal()
 
@@ -21,13 +22,13 @@ export type Primitive = undefined | string | number | boolean | symbol | bigint 
 export type PrimitiveOrNull = Primitive | null
 
 export interface StuffWrapper2<T extends PrimitiveOrNull = PrimitiveOrNull> {
-  subject: T
-  description: string
-  primitive: boolean
-  mutable: boolean
+  readonly subject: T
+  readonly description: string
+  readonly primitive: boolean
+  readonly mutable: boolean
 }
 
-function buildPrimitiveStuff(): StuffWrapper2<Primitive>[] {
+function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper2<Primitive>> {
   const base: Omit<StuffWrapper2<Primitive>, 'primitive' | 'mutable'>[] = [
     { subject: undefined, description: 'undefined' },
     { subject: 'abc', description: 'string' },
@@ -63,9 +64,9 @@ function buildPrimitiveStuff(): StuffWrapper2<Primitive>[] {
   return base.map(s => ({ ...s, primitive: true, mutable: false }))
 }
 
-export const primitiveStuff: StuffWrapper2<Primitive>[] = buildPrimitiveStuff()
+export const primitiveStuff: ReadonlyArray<StuffWrapper2<Primitive>> = buildPrimitiveStuff()
 
-export const primitiveAndNullStuff: StuffWrapper2[] = [
+export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper2> = [
   {
     subject: null,
     description: 'null',
@@ -75,11 +76,13 @@ export const primitiveAndNullStuff: StuffWrapper2[] = [
   ...primitiveStuff
 ]
 
+// MUDO missing: immutable, non-primitive stuff (Math, JSON, …)
+
 export interface StuffGeneratorWrapper<T extends unknown = unknown> {
-  generate: () => T
-  description: string
-  primitive: boolean
-  mutable: boolean
+  readonly generate: () => T
+  readonly description: string
+  readonly primitive: boolean
+  readonly mutable: boolean
 }
 
 export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
@@ -90,21 +93,21 @@ export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
     {
       generate: (): (() => string) =>
         function (): string {
-          return `an anonymous function`
+          return 'an anonymous function'
         },
       description: 'anonymous function'
     },
     {
       generate: (): (() => string) =>
         function namedFunction(): string {
-          return `a named function`
+          return 'a named function'
         },
       description: 'named function'
     },
-    { generate: (): (() => string) => (): string => `an arrow function`, description: 'arrow function' },
+    { generate: (): (() => string) => (): string => 'an arrow function', description: 'arrow function' },
     {
       generate: (): (() => string) => {
-        const arrowFunction = (): string => `an arrow function in a const`
+        const arrowFunction = (): string => 'an arrow function in a const'
         return arrowFunction
       },
       description: 'arrow function in a const'
@@ -112,24 +115,24 @@ export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
     {
       generate: (): (() => Promise<string>) =>
         async function (): Promise<string> {
-          return `an anonymous async function`
+          return 'an anonymous async function'
         },
       description: 'anonymous async function'
     },
     {
       generate: (): (() => Promise<string>) =>
         async function asyncNamedFunction(): Promise<string> {
-          return `an async named function`
+          return 'an async named function'
         },
       description: 'async named function'
     },
     {
-      generate: (): (() => Promise<string>) => async (): Promise<string> => `an async arrow function`,
+      generate: (): (() => Promise<string>) => async (): Promise<string> => 'an async arrow function',
       description: 'async arrow function'
     },
     {
       generate: (): (() => Promise<string>) => {
-        const asyncArrowFunction = async (): Promise<string> => `an async arrow function in a const`
+        const asyncArrowFunction = async (): Promise<string> => 'an async arrow function in a const'
         return asyncArrowFunction
       },
       description: 'async arrow function in a const'
@@ -140,6 +143,7 @@ export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
     { generate: (): Boolean => new Boolean(false), description: 'Boolean' },
     // eslint-disable-next-line no-new-wrappers
     { generate: (): String => new String('string wrapper object'), description: 'String' },
+    // NOTE: IArguments already has a frozen name `null` (at least in Node) ??!??!!?
     { generate: (): IArguments => arguments, description: 'arguments object' },
     { generate: (): {} => ({}), description: 'empty object' },
     {
@@ -163,8 +167,8 @@ export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
   ]
 
   const arrayWithAllInIt: StuffGeneratorWrapper<Array<unknown>> = {
-    generate: () => [...primitiveAndNullStuff, base.map(({ generate }) => generate())],
-    description: ' complex array',
+    generate: () => [...primitiveAndNullStuff.map(({ subject }) => subject), ...base.map(({ generate }) => generate())],
+    description: 'complex array',
     primitive: false,
     mutable: true
   }
@@ -172,8 +176,8 @@ export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
   return [...base.map(sg => ({ ...sg, primitive: false, mutable: true })), arrayWithAllInIt]
 }
 
-export const mutableStuffGenerators: StuffGeneratorWrapper<object>[] = buildMutableStuffGenerators()
-export const stuffGenerators: StuffGeneratorWrapper[] = [
+export const mutableStuffGenerators: ReadonlyArray<StuffGeneratorWrapper<object>> = buildMutableStuffGenerators()
+export const stuffGenerators: ReadonlyArray<StuffGeneratorWrapper> = [
   ...primitiveAndNullStuff.map(({ subject, description, primitive, mutable }) => ({
     generate: () => subject,
     description,
@@ -227,7 +231,7 @@ export function generateMutableStuff(): Array<StuffWrapper<object>> {
     // eslint-disable-next-line no-new-wrappers
     { subject: new Boolean(true), expected: 'boolean' },
     { subject: arguments, expected: 'arguments' },
-    // eslint-disable-next-line no-secrets/no-secrets
+
     { subject: [Symbol('symbol in array'), true, 4, '', 'abc', Math], expected: 'array' }
   ]
 
@@ -250,7 +254,7 @@ export function generateStuff(): Array<StuffWrapper> {
     { subject: '', expected: 'string', isPrimitive: true },
     { subject: 4, expected: 'number', isPrimitive: true },
     { subject: false, expected: 'boolean', isPrimitive: true },
-    // eslint-disable-next-line no-secrets/no-secrets
+
     { subject: Symbol('isolated symbol'), expected: 'symbol', isPrimitive: false }
   ]
   return base.concat(generateMutableStuff())
