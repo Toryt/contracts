@@ -21,6 +21,7 @@ import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { primitive } from '../../../../src/private/is.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
 import {
+  safeToString,
   conciseCondition,
   conciseSeparator,
   extensiveThrown,
@@ -31,9 +32,21 @@ import {
 } from '../../../../src/private/report.ts'
 import { mutableStuffGenerators, stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
-import { anyCasesGenerators, log, safeToString } from '../../../util/testUtil.ts'
+import { anyCasesGenerators, log } from '../../../util/testUtil.ts'
 
 describe(testName(import.meta), function () {
+  describe('safeToString', function () {
+    stuffGenerators.forEach(({ generate, description }) => {
+      it(`returns a string from a ${description}`, function () {
+        const subject = generate()
+        log(`${description}: ${inspect(subject)}`)
+        const result = safeToString(subject)
+        log(`result: '${result}'`)
+        result.should.be.a.String()
+      })
+    })
+  })
+
   describe('conciseCondition', function () {
     function isAConciseVersion(original: string, concise: string): boolean {
       const split = ('' + concise).split(conciseSeparator)

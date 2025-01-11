@@ -278,6 +278,7 @@ export function mustBeCallerLocation(actual: unknown, expected: unknown): void {
   trimLineAndColumnPattern(expected as string).should.equal(trimLineAndColumnPattern(actual as string))
 }
 
+// MUDO REMOVE THIS and use the version in private/report
 // also deals with arrays that contain Symbol
 export function safeToString(s: unknown): string {
   try {

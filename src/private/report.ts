@@ -19,10 +19,15 @@ import { inspect } from 'node:util'
 import { functionArguments, primitive } from './is.ts'
 import { stackEOL } from './eol.ts'
 
-function safeToString(s: unknown): string {
+/**
+ * Returns “a” `string` without crashing for anything. The intention is to return the defined `string` representation of
+ * the given `s` when possible.
+ */
+export function safeToString(s: unknown): string {
   try {
     return String(s)
   } catch (ignore) {
+    /* `s` probably contains a `Symbol` deep down. But, whatever: revert to the most basic string representation: */
     return Object.prototype.toString.call(s)
   }
 }
