@@ -161,18 +161,16 @@ this function should have a name   ` // trim
     stuff.forEach(({ subject, description }): void => {
       if (!hasProperty(subject, 'name')) {
         it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${description}`, function () {
-          const result = conciseCondition(prefix, subject)
           log(`${description}: ${inspect(subject)}`)
-          log(`result: ${result}`)
+          const result = conciseCondition(prefix, subject)
           expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject))
         })
       } else {
         it(`returns the name with the prefix, when there is an \`f\` and it has a name, for ${description}`, function () {
-          const result = conciseCondition(prefix, subject)
-          log(`${description}: ${inspect(subject)}`)
+          // log(`${description}: ${inspect(subject)}`) NOTE: inspect cannot deal with a symbol name??!?!?
           log(`name: ${inspect(subject.name)}`)
-          log(`result: ${result}`)
-          expectGeneralPostconditions(result, prefix + ' ' + subject.name)
+          const result = conciseCondition(prefix, subject)
+          expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject.name))
         })
       }
     })
