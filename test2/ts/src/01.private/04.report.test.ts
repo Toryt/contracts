@@ -14,22 +14,24 @@
   limitations under the License.
  */
 
-import * as util from 'util'
+import { inspect } from 'node:util'
 import should from 'should'
-import { primitive } from '../../../../src/private/is.ts'
-import {
-  conciseSeparator,
-  maxLengthOfConciseRepresentation,
-  conciseCondition,
-  value,
-  extensiveThrown,
-  type
-} from '../../../../src/private/report.ts'
+import * as util from 'util'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
+import { primitive } from '../../../../src/private/is.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
-import { generateMutableStuff, generateStuff } from '../../../util/_stuff.ts'
-import { safeToString, log, anyCasesGenerators } from '../../../util/testUtil.ts'
+import {
+  conciseCondition,
+  conciseSeparator,
+  extensiveThrown,
+  hasProperty,
+  maxLengthOfConciseRepresentation,
+  type,
+  value
+} from '../../../../src/private/report.ts'
+import { mutableStuffGenerators, stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
+import { anyCasesGenerators, log, safeToString } from '../../../util/testUtil.ts'
 
 describe(testName(import.meta), function () {
   describe('conciseCondition', function () {
@@ -65,14 +67,47 @@ describe(testName(import.meta), function () {
     }
 
     const prefix = 'This is a test prefix'
-    const alternativeName = 'This is an alternative name'
-    const namedStuff = generateMutableStuff()
-    namedStuff.forEach(({ subject }): void => {
-      setAndFreeze(subject, 'name', alternativeName)
-    })
+
+    interface Named {
+      readonly name: unknown
+    }
+
+    interface StuffCase<T extends unknown> {
+      readonly subject: T
+      readonly description: string
+    }
+
+    const namedStuff: StuffCase<Named>[] = mutableStuffGenerators.reduce<StuffCase<Named>[]>(
+      function addArrayOfNamedSubjectsToAcc(acc, { generate: generateSubject, description: subjectDescription }) {
+        if (subjectDescription === 'arguments object') {
+          return [
+            ...acc,
+            {
+              subject: generateSubject() as Named, // NOTE: IArguments already has a frozen name `null` ??!??!!?
+              description: `${subjectDescription} with an already frozen name \`null\``
+            }
+          ]
+        }
+
+        return [
+          ...acc,
+          ...stuffGenerators.map(function addFrozenNameToSubject({
+            generate: generateName,
+            description: nameDescription
+          }) {
+            return {
+              subject: setAndFreeze(generateSubject(), 'name', generateName()),
+              description: `${subjectDescription} with ${nameDescription} name`
+            }
+          })
+        ]
+      },
+      []
+    )
 
     function generateMultiLineAnonymousFunction(): () => string {
       return function (): string {
+        // NOTE: string in place to make the _source_ multi-line
         // trim: spaces at start
         let x = '  This is a multi-line function'
         x += 'The intention of this test'
@@ -84,19 +119,20 @@ describe(testName(import.meta), function () {
         x += 'is to shortened version of this'
         x += 'as a concise representation'
         x += 'this function should have no name  ' // trim
+
         return x
       }
     }
 
-    const stuffToo = generateStuff()
-      .concat(namedStuff)
-      .map(s => s.subject)
-    stuffToo.push(generateMultiLineAnonymousFunction())
-    const other = generateMultiLineAnonymousFunction()
-    setAndFreeze(
-      other,
-      'name',
-      `   This is a multi-line name
+    const stuff: StuffCase<unknown>[] = [
+      ...stuffGenerators.map(({ generate, description }) => ({ subject: generate(), description })),
+      ...namedStuff,
+      { subject: generateMultiLineAnonymousFunction(), description: 'multi-line anonymous function' },
+      {
+        subject: setAndFreeze(
+          generateMultiLineAnonymousFunction(),
+          'name',
+          `   This is a multi-line name
 The intention of this test
 is to verify
 
@@ -104,23 +140,26 @@ whether we get an acceptable
 is to shortened version of this
 as a concise representation
 this function should have a name   ` // trim
-    )
-    stuffToo.push(other)
+        ),
+        description: 'multi-line anonymous function with frozen name'
+      }
+    ]
 
-    stuffToo.forEach((f: unknown): void => {
-      if (!f || (typeof f !== 'object' && typeof f !== 'function') || !('name' in f)) {
-        it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${safeToString(
-          f
-        )}`, function () {
-          const result = conciseCondition(prefix, f)
-          expectGeneralPostconditions(result, prefix + ' ' + safeToString(f))
+    stuff.forEach(({ subject, description }): void => {
+      if (!hasProperty(subject, 'name')) {
+        it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${description}`, function () {
+          const result = conciseCondition(prefix, subject)
+          log(`${description}: ${inspect(subject)}`)
+          log(`result: ${result}`)
+          expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject))
         })
       } else {
-        it(`returns the name with the prefix, when there is an \`f\` and it has a name, for ${safeToString(
-          f
-        )}`, function () {
-          const result = conciseCondition(prefix, f)
-          expectGeneralPostconditions(result, prefix + ' ' + f.name)
+        it(`returns the name with the prefix, when there is an \`f\` and it has a name, for ${description}`, function () {
+          const result = conciseCondition(prefix, subject)
+          log(`${description}: ${inspect(subject)}`)
+          log(`name: ${inspect(subject.name)}`)
+          log(`result: ${result}`)
+          expectGeneralPostconditions(result, prefix + ' ' + subject.name)
         })
       }
     })
@@ -181,8 +220,9 @@ this function should have a name   ` // trim
   })
 
   describe('type', function () {
-    generateStuff().forEach(({ subject }) => {
-      it(`returns a string that is expected for ${safeToString(subject)}`, function () {
+    stuffGenerators.forEach(({ generate, description }) => {
+      it(`returns a string that is expected for ${description}`, function () {
+        const subject: unknown = generate()
         const result = type(subject)
         log(result)
         result.should.be.a.String()
@@ -209,8 +249,9 @@ this function should have a name   ` // trim
   })
 
   describe('value', function () {
-    generateStuff().forEach(({ subject }) => {
-      it(`returns a string that is expected for ${safeToString(subject)}`, function () {
+    stuffGenerators.forEach(({ generate, description }) => {
+      it(`returns a string that is expected for ${description}`, function () {
+        const subject: unknown = generate()
         const result = value(subject)
         log(result)
         result.should.be.a.String()
