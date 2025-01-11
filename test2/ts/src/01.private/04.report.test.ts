@@ -167,7 +167,7 @@ this function should have a name   ` // trim
         })
       } else {
         it(`returns the name with the prefix, when there is an \`f\` and it has a name, for ${description}`, function () {
-          // log(`${description}: ${inspect(subject)}`) NOTE: inspect cannot deal with a symbol name??!?!?
+          // log(`${description}: ${inspect(subject)}`) // NOTE: inspect cannot deal with a symbol name??!?!?
           log(`name: ${inspect(subject.name)}`)
           const result = conciseCondition(prefix, subject)
           expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject.name))
