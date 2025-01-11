@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import assert, { strictEqual } from 'assert'
+import { strictEqual } from 'assert'
 import { inspect } from 'node:util'
 import { functionArguments, primitive } from './is.ts'
 import { stackEOL } from './eol.ts'
@@ -33,16 +33,34 @@ export const conciseSeparator = ' … '
 export const namePrefix = '𝕋⚖️'
 
 /**
- * Returns a concise representation of <code>f</code> to be used in output.
+ * `x` is an object (something that can have a property), and has a property with the given name, of any type.
+ */
+export function hasProperty<X extends unknown, PropertyName extends string>(
+  x: X,
+  propertyName: PropertyName
+): x is X & { [P in PropertyName]: unknown } {
+  strictEqual(typeof propertyName, 'string')
+
+  return ((typeof x === 'object' && x !== null) || typeof x === 'function') && propertyName in x
+}
+
+/**
+ * Returns a concise representation of `f` to be used in output with a `prefix`.
+ *
+ * This is intended to represent a function in a concise way, but since this is used in reporting errors, it must never
+ * fail, and deal with any input for `f`.
+ *
+ * The representation is single-line, and has a {@link maxLengthOfConciseRepresentation maximum length}.
+ *
+ * @param prefix - a string prefixed to a concise representation of `f`
+ * @param f - anything; intended to be a function, with or without a `name`
+ * @returns If `f` exists and has a `name`, the representation is based on the `name`. If `f` does not have a `name`,
+ *          the representation is based on the string representation of `f` itself.
  */
 export function conciseCondition(prefix: string, f: unknown): string {
   strictEqual(typeof prefix, 'string')
-  assert(!f || (typeof f !== 'object' && typeof f !== 'function') || !('name' in f) || typeof f.name !== 'symbol')
-  /* IDEA Instead of using safeToString (with an ugly catch) consider saying in a precondition that f must be a
-            function */
 
-  let result =
-    prefix + ' ' + (f && (typeof f === 'object' || typeof f === 'function') && 'name' in f ? f.name : safeToString(f))
+  let result = prefix + ' ' + (hasProperty(f, 'name') ? safeToString(f.name) : safeToString(f))
   result = result.replace(/[\r\n]/g, ' ').replace(/\s\s+/g, ' ')
   if (maxLengthOfConciseRepresentation < result.length) {
     const startLength = maxLengthOfConciseRepresentation - lengthOfEndConciseRepresentation - conciseSeparator.length
