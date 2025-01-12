@@ -139,7 +139,8 @@ export function buildMutableStuffGenerators() {
         b: 'b',
         c: {},
         d: { d1: undefined, d2: 'd2', d3: { d31: 31 } },
-        e: [5, 'c', true]
+        e: [5, 'c', true],
+        f: Symbol('f')
       }),
       description: 'complex object'
     },
