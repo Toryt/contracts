@@ -14,6 +14,8 @@
   limitations under the License.
  */
 
+/* NOTE: submitted as https://github.com/nodejs/node/issues/56570 */
+
 import { inspect } from 'node:util'
 import { strictEqual, notStrictEqual } from 'node:assert'
 
