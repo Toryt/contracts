@@ -16,7 +16,17 @@
 
 import { inspect } from 'node:util'
 import { strictEqual, notStrictEqual } from 'node:assert'
-import { setAndFreeze } from '../../../build/src/private/property.js'
+
+function setAndFreeze(obj, propertyName, value) {
+  Object.defineProperty(obj, propertyName, {
+    configurable: false,
+    enumerable: true,
+    writable: false,
+    value
+  })
+
+  return obj
+}
 
 function buildPrimitiveStuff() {
   const base = [
