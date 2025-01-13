@@ -66,6 +66,11 @@ export function conciseCondition(prefix: string, f: unknown): string {
   strictEqual(typeof prefix, 'string')
 
   const realPrefix = prefix !== '' ? prefix + ' ' : ''
+
+  if (f === '') {
+    return realPrefix + '[empty string]'
+  }
+
   const optionalName: string | undefined = hasProperty(f, 'name') ? safeToString(f.name) : undefined
   let result = realPrefix + (optionalName !== undefined && optionalName !== '' ? optionalName : safeToString(f))
   result = result.replace(/[\r\n]/g, ' ').replace(/\s\s+/g, ' ')
