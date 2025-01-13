@@ -62,8 +62,8 @@ describe(testName(import.meta), function () {
         result =
           split[0] !== undefined &&
           split[1] !== undefined &&
-          cleanOriginal.indexOf(split[0]) === 0 &&
-          cleanOriginal.indexOf(split[1]) === cleanOriginal.length - split[1].length
+          cleanOriginal.startsWith(split[0]) &&
+          cleanOriginal.endsWith(split[1])
       }
       return result
     }
