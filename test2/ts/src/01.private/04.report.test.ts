@@ -43,6 +43,10 @@ describe(testName(import.meta), function () {
         const result = safeToString(subject)
         log(`result: '${result}'`)
         result.should.be.a.String()
+        if (Array.isArray(subject)) {
+          result.should.startWith('[')
+          result.should.endWith(']')
+        }
       })
     })
   })
