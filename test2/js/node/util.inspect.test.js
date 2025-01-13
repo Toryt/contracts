@@ -276,9 +276,7 @@ describe('node util.inspect', function () {
     console.info(`symbolName: ${triage.symbolName.length}`)
     triage.symbolName.forEach(({ subject, description }) => {
       it(`fails for a ${description}`, function () {
-        const result = inspect(subject)
-        strictEqual(typeof result, 'string')
-        notStrictEqual(result, '')
+        inspect.bind(undefined, subject).should.throw(TypeError)
       })
     })
   })
@@ -286,9 +284,7 @@ describe('node util.inspect', function () {
     console.info(`complexArrayName: ${triage.complexArrayName.length}`)
     triage.complexArrayName.forEach(({ subject, description }) => {
       it(`fails for a ${description}`, function () {
-        const result = inspect(subject)
-        strictEqual(typeof result, 'string')
-        notStrictEqual(result, '')
+        inspect.bind(undefined, subject).should.throw(TypeError)
       })
     })
   })
@@ -296,9 +292,7 @@ describe('node util.inspect', function () {
     console.info(`regExpName: ${triage.regExpName.length}`)
     triage.regExpName.forEach(({ subject, description }) => {
       it(`fails for a ${description}`, function () {
-        const result = inspect(subject)
-        strictEqual(typeof result, 'string')
-        notStrictEqual(result, '')
+        inspect.bind(undefined, subject).should.throw(TypeError)
       })
     })
   })
@@ -306,9 +300,7 @@ describe('node util.inspect', function () {
     console.info(`failRest: ${triage.failRest.length}`)
     triage.failRest.forEach(({ subject, description }) => {
       it(`fails for a ${description}`, function () {
-        const result = inspect(subject)
-        strictEqual(typeof result, 'string')
-        notStrictEqual(result, '')
+        inspect.bind(undefined, subject).should.throw(TypeError)
       })
     })
   })
