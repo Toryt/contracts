@@ -65,7 +65,9 @@ export function hasProperty<X extends unknown, PropertyName extends string>(
 export function conciseCondition(prefix: string, f: unknown): string {
   strictEqual(typeof prefix, 'string')
 
-  let result = (prefix !== '' ? prefix + ' ' : '') + (hasProperty(f, 'name') ? safeToString(f.name) : safeToString(f))
+  const realPrefix = prefix !== '' ? prefix + ' ' : ''
+  const optionalName: string | undefined = hasProperty(f, 'name') ? safeToString(f.name) : undefined
+  let result = realPrefix + (optionalName !== undefined && optionalName !== '' ? optionalName : safeToString(f))
   result = result.replace(/[\r\n]/g, ' ').replace(/\s\s+/g, ' ')
   if (maxLengthOfConciseRepresentation < result.length) {
     const startLength = maxLengthOfConciseRepresentation - lengthOfEndConciseRepresentation - conciseSeparator.length

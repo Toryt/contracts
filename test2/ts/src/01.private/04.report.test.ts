@@ -178,7 +178,12 @@ this function should have a name   ` // trim
           */
           log(`name: ${inspect(subject.name)}`)
           const result = conciseCondition(prefix, subject)
-          expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject.name))
+          const name = safeToString(subject.name)
+          if (name !== '') {
+            expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject.name))
+          } else {
+            expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject))
+          }
         })
         it(`returns the name without a prefix, when there is an \`f\` and it has a name, for ${description}`, function () {
           /* NOTE: inspect cannot deal with a symbol name: https://github.com/nodejs/node/issues/56570
@@ -186,7 +191,12 @@ this function should have a name   ` // trim
           */
           log(`name: ${inspect(subject.name)}`)
           const result = conciseCondition('', subject)
-          expectGeneralPostconditions(result, safeToString(subject.name))
+          const name = safeToString(subject.name)
+          if (name !== '') {
+            expectGeneralPostconditions(result, safeToString(subject.name))
+          } else {
+            expectGeneralPostconditions(result, safeToString(subject))
+          }
         })
       }
     })
