@@ -106,6 +106,7 @@ export function value(v: unknown): string {
     return conciseCondition('', v)
   } else {
     try {
+      // NOTE: inspect cannot deal with a symbol name: https://github.com/nodejs/node/issues/56570
       return inspect(v, { depth: 0, maxArrayLength: 5, breakLength: 120 })
     } catch (err: unknown) /* istanbul ignore next */ {
       /* There are several libraries that we might use that make util.inspect fail on circular data structures,
