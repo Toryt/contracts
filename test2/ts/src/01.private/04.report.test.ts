@@ -48,7 +48,7 @@ describe(testName(import.meta), function () {
   })
 
   describe('conciseCondition', function () {
-    function isAConciseVersion(original: string, concise: string): boolean {
+    function isAConciseCondition(original: string, concise: string): boolean {
       const split = ('' + concise).split(conciseSeparator)
       const cleanOriginal = original
         .replace(/[\r\n]/g, ' ')
@@ -77,7 +77,7 @@ describe(testName(import.meta), function () {
       stringResult.should.not.containEql(rnEOL)
       stringResult.length.should.be.lessThanOrEqual(maxLengthOfConciseRepresentation)
       stringResult.trim().should.equal(result)
-      isAConciseVersion(expected, stringResult).should.be.ok()
+      isAConciseCondition(expected, stringResult).should.be.ok()
     }
 
     const prefix = 'This is a test prefix'
