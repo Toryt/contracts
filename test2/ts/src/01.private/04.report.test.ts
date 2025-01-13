@@ -72,6 +72,7 @@ describe(testName(import.meta), function () {
       log('result: %s', result)
       should(result).be.a.String()
       const stringResult = result as string
+      stringResult.should.not.equal('')
       stringResult.should.not.containEql(nEOL)
       stringResult.should.not.containEql(rnEOL)
       stringResult.length.should.be.lessThanOrEqual(maxLengthOfConciseRepresentation)
