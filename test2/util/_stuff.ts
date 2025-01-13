@@ -20,8 +20,16 @@ export const global: object = getGlobal()
 
 export type Primitive = undefined | string | number | boolean | symbol | bigint // according to `typeof`, `null` is an `object`
 export type PrimitiveOrNull = Primitive | null
+export type ImmutableSingleton =
+  | typeof Math
+  | typeof JSON
+  | typeof Reflect
+  | typeof Atomics
+  | typeof Intl
+  | typeof WebAssembly
+export type Immutable = PrimitiveOrNull | ImmutableSingleton
 
-export interface StuffWrapper2<T extends PrimitiveOrNull = PrimitiveOrNull> {
+export interface StuffWrapper2<T extends Immutable = Immutable> {
   readonly subject: T
   readonly description: string
   readonly primitive: boolean
@@ -66,7 +74,7 @@ function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper2<Primitive>> {
 
 export const primitiveStuff: ReadonlyArray<StuffWrapper2<Primitive>> = buildPrimitiveStuff()
 
-export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper2> = [
+export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper2<PrimitiveOrNull>> = [
   {
     subject: null,
     description: 'null',
@@ -76,7 +84,31 @@ export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper2> = [
   ...primitiveStuff
 ]
 
-// MUDO missing: immutable, non-primitive stuff (Math, JSON, …)
+function buildImmutableSingletonStuff(): ReadonlyArray<StuffWrapper2<ImmutableSingleton>> {
+  // TODO: missing: `globalThis`
+  const base: Omit<StuffWrapper2<ImmutableSingleton>, 'primitive' | 'mutable'>[] = [
+    { subject: Math, description: 'Math' },
+    { subject: JSON, description: 'JSON' },
+    { subject: Reflect, description: 'Reflect' },
+    { subject: Atomics, description: 'Atomics' },
+    { subject: Intl, description: 'Intl' },
+    { subject: WebAssembly, description: 'WebAssembly' }
+  ]
+
+  return base.map(({ subject, description }) => ({
+    subject,
+    description,
+    primitive: false,
+    mutable: false
+  }))
+}
+
+export const immutableSingletonStuff: ReadonlyArray<StuffWrapper2<ImmutableSingleton>> = buildImmutableSingletonStuff()
+
+export const immutableStuff: ReadonlyArray<StuffWrapper2<Immutable>> = [
+  ...primitiveAndNullStuff,
+  ...immutableSingletonStuff
+]
 
 export interface StuffGeneratorWrapper<T extends unknown = unknown> {
   readonly generate: () => T
@@ -180,7 +212,7 @@ export function buildMutableStuffGenerators(): StuffGeneratorWrapper<object>[] {
 
 export const mutableStuffGenerators: ReadonlyArray<StuffGeneratorWrapper<object>> = buildMutableStuffGenerators()
 export const stuffGenerators: ReadonlyArray<StuffGeneratorWrapper> = [
-  ...primitiveAndNullStuff.map(({ subject, description, primitive, mutable }) => ({
+  ...immutableStuff.map(({ subject, description, primitive, mutable }) => ({
     generate: () => subject,
     description,
     primitive,
