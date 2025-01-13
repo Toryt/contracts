@@ -96,7 +96,7 @@ export function type(v: unknown): string {
 export function value(v: unknown): string {
   if (v === global) {
     /* browserified util.inspect has trouble with Safari Window; this works around this by showing a concise
-         representation of this complex object */
+       representation of this complex object */
     return '{global}'
   } else if (typeof v === 'string' || v instanceof String) {
     return `'${v}'`
