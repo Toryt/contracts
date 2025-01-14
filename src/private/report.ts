@@ -133,28 +133,30 @@ export function value(v: unknown): string {
 }
 
 /**
- * <p>Returns a moderately normalized extensive, multi-line representation of a <em>thrown</em>.</p>
- * <p>Anything can be thrown, not only Error instances.</p>
- * <p>The stack of an Error is different in different environments. In node and Chrome, the first line of the
- *   stack is actually the toString of the Error, followed by the true stack, one call per line, that starts
- *   with <code>/^    at/</code>, followed by the path of the file where the call was made.
- *   In Firefox and Safari, the stack only contains the true stack, and the lines
- *   are the name of the called function (or the empty string for anonymous functions), followed by <code>@</code>,
- *   followed by the path of the file where the call was made.</p>
- * <p>If the <em>thrown</em> does not have a stack property, its standard string representation is returned.</p>
- * <p>If the <em>thrown</em> does have a stack property, its stack is returned. If the stack starts with
- *   the string representation of the <em>thrown</em>, that's it. Otherwise, the string representation of the
- *   <em>thrown</em> is added in the front on a separate line.</p>
+ * Returns a moderately normalized extensive, multi-line representation of a _thrown_.
+ *
+ * Anything can be thrown, not only `Error` instances.
+ *
+ * The stack of an {@link Error} is different in different environments. In Node and Chrome, the first line of the stack
+ * is the {@link Error.toString()} of the {@link Error}, followed by the true stack, one call per line, that starts with
+ * `/^    at/`, followed by the path of the file where the call was made. In Firefox and Safari, the stack only contains
+ * the true stack, and the lines are the name of the called function (or the empty string for anonymous functions),
+ * followed by `@`, and the path of the file where the call was made.
+ *
+ * * If the _thrown_ does not have a `stack` property, its standard string representation is returned.
+ *
+ * * If the _thrown_ does have a `stack` property, its stack is returned. If the stack starts with the string
+ *   representation of the _thrown_, that's it. Otherwise, the string representation of the _thrown_ is added in the
+ *   front on a separate line.
  */
 export function extensiveThrown(thrown: unknown): string {
   const thrownString = value(thrown)
-  const stack =
-    thrown && (typeof thrown === 'object' || typeof thrown === 'function') && 'stack' in thrown && thrown.stack
+  const stack = hasProperty(thrown, 'stack') && thrown.stack
   if (!stack) {
     return thrownString
   }
   const stackString = '' + stack // make sure it is a string
-  /* On node and chrome, the stack starts with thrown.toString (name and message).
-       On safari and FF, it doesn't: thrown.stack it is the pure stack. We add the toString ourselves */
-  return stackString.indexOf(thrownString) === 0 ? stackString : thrownString + stackEOL + stackString
+  /* In Node and Chrome, the stack starts with `thrown.toString` (name and message). In Safari and FF, it doesn't:
+     `thrown.stack` it is the pure stack. We add the `toString` ourselves. */
+  return stackString.startsWith(thrownString) ? stackString : thrownString + stackEOL + stackString
 }
