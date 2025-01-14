@@ -37,12 +37,18 @@ export interface StuffWrapper<T extends Immutable = Immutable> {
   readonly mutable: boolean
 }
 
-function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper<Primitive>> {
-  const base: Omit<StuffWrapper<Primitive>, 'primitive' | 'mutable'>[] = [
-    { subject: undefined, description: 'undefined' },
-    { subject: 'abc', description: 'string' },
-    { subject: '', description: 'empty string' },
-    { subject: 0, description: 'zero (0)' },
+export const stringStuff: ReadonlyArray<StuffWrapper<string>> = [
+  { subject: 'abc', description: 'string', primitive: true, mutable: false },
+  { subject: '', description: 'empty string', primitive: true, mutable: false }
+]
+
+export const booleanStuff: ReadonlyArray<StuffWrapper<boolean>> = [
+  { subject: false, description: 'false', primitive: true, mutable: false },
+  { subject: true, description: 'true', primitive: true, mutable: false }
+]
+
+function buildNumberStuff(): ReadonlyArray<StuffWrapper<number>> {
+  const base: Omit<StuffWrapper<number>, 'primitive' | 'mutable'>[] = [
     { subject: 1, description: 'one (1)' },
     { subject: -1, description: 'minus one (-1)' },
     { subject: 4, description: 'natural' },
@@ -57,10 +63,16 @@ function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper<Primitive>> {
     { subject: Number.MAX_VALUE, description: 'max number' },
     { subject: Number.MIN_VALUE, description: 'min number' },
     { subject: Number.EPSILON, description: 'epsilon' },
-    { subject: Number.NaN, description: 'NaN' },
-    { subject: false, description: 'false' },
-    { subject: true, description: 'true' },
-    { subject: Symbol('isolated symbol as stuff'), description: 'symbol' },
+    { subject: Number.NaN, description: 'NaN' }
+  ]
+
+  return base.map(s => ({ ...s, primitive: true, mutable: false }))
+}
+
+export const numberStuff: ReadonlyArray<StuffWrapper<Primitive>> = buildNumberStuff()
+
+function buildBigIntStuff(): ReadonlyArray<StuffWrapper<bigint>> {
+  const base: Omit<StuffWrapper<bigint>, 'primitive' | 'mutable'>[] = [
     { subject: 0n, description: 'zero bigint (0n)' },
     { subject: 1n, description: 'one bigint (1n)' },
     { subject: -1n, description: 'minus one bigint (-1n)' },
@@ -73,7 +85,16 @@ function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper<Primitive>> {
   return base.map(s => ({ ...s, primitive: true, mutable: false }))
 }
 
-export const primitiveStuff: ReadonlyArray<StuffWrapper<Primitive>> = buildPrimitiveStuff()
+export const bigIntStuff: ReadonlyArray<StuffWrapper<Primitive>> = buildBigIntStuff()
+
+export const primitiveStuff: ReadonlyArray<StuffWrapper<Primitive>> = [
+  { subject: undefined, description: 'undefined', primitive: true, mutable: false },
+  ...stringStuff,
+  ...numberStuff,
+  ...bigIntStuff,
+  ...booleanStuff,
+  { subject: Symbol('isolated symbol as stuff'), description: 'symbol', primitive: true, mutable: false }
+]
 
 export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper<PrimitiveOrNull>> = [
   {
