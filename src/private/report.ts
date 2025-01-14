@@ -174,7 +174,7 @@ export function value(v: unknown): string {
  *   representation of the _thrown_, that's it. Otherwise, the string representation of the _thrown_ is added in the
  *   front on a separate line.
  */
-export function extensiveThrown(thrown: unknown): string {
+export function extensiveThrownRepresentation(thrown: unknown): string {
   const thrownString = value(thrown)
 
   if (!hasProperty(thrown, 'stack')) {

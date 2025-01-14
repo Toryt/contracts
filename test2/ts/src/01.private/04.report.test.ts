@@ -23,7 +23,7 @@ import {
   safeToString,
   conciseRepresentation,
   conciseSeparator,
-  extensiveThrown,
+  extensiveThrownRepresentation,
   hasProperty,
   maxLengthOfConciseRepresentation,
   typeRepresentation,
@@ -295,7 +295,7 @@ this function should have a name   ` // trim
     })
   })
 
-  describe('extensiveThrown', function () {
+  describe('extensiveThrownRepresentation', function () {
     const toStringString = 'This is the toString'
     const stackString = 'This is the stack'
 
@@ -345,7 +345,7 @@ this function should have a name   ` // trim
     caseGenerators.forEach(({ generate, description }) => {
       it(`returns the expected, normalized string representation for ${description}`, function () {
         const thrown = generate()
-        const result = extensiveThrown(thrown)
+        const result = extensiveThrownRepresentation(thrown)
 
         result.should.be.a.String()
         const thrownString = value(thrown)
