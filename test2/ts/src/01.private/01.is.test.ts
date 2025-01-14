@@ -19,7 +19,8 @@ import { functionArguments, stackLocation, stack, isFrozenOwnProperty } from '..
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { generateStuff } from '../../../util/_stuff.ts'
-import { log, safeToString, showStack } from '../../../util/testUtil.ts'
+import { log, showStack } from '../../../util/testUtil.ts'
+import { safeToString } from '../../../../src/private/representation.ts'
 import { x } from '../../../util/cartesian.ts'
 import { testName } from '../../../util/testName.ts'
 

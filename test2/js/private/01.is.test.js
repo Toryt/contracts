@@ -17,9 +17,11 @@
 import should from 'should'
 import { functionArguments, stackLocation, stack, isFrozenOwnProperty } from '../../../build/src/private/is.js'
 import { nEOL, rnEOL, stackEOL } from '../../../build/src/private/eol.js'
+import { safeToString } from '../../../build/src/private/representation.js'
 import { notStackEOL } from '../../../build/test2/util/cases.js'
 import { generateStuff } from '../../../build/test2/util/_stuff.js'
-import { x, log, safeToString, showStack } from '../../../build/test2/util/testUtil.js'
+import { log, showStack } from '../../../build/test2/util/testUtil.js'
+import { x } from '../../../build/test2/util/cartesian.js'
 
 describe('_private/is', function () {
   describe('#arguments', function () {
