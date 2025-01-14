@@ -224,7 +224,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
    * When this result is used as a line on its own, it is clickable to navigate to the referred source code in most
    * consoles.
    */
-  readonly location!: FunctionContractLocation // initialized with setAndFreeze
+  readonly location!: Location // initialized with setAndFreeze
 
   verify: boolean = true
   verifyPostconditions: boolean = false
