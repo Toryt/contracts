@@ -31,7 +31,7 @@ import {
 } from '../../../../src/private/representation.ts'
 import { mutableStuffGenerators, stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
-import { log } from '../../../util/testUtil.ts'
+import { log } from '../../../util/log.ts'
 
 describe(testName(import.meta), function () {
   describe('safeToString', function () {

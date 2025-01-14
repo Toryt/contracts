@@ -15,21 +15,6 @@
  */
 
 import should from 'should'
-import { EOL } from 'os'
-
-const doLog = false
-
-export function log(...args: unknown[]): void {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (doLog) {
-    console.log(...args)
-    console.log()
-  }
-}
-
-export function showStack(exc: { stack?: string }): void {
-  log('Exception stack%s---------------%s%s', EOL, EOL, exc.stack)
-}
 
 export function regExpEscape(s: string): string {
   // http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript

@@ -18,7 +18,7 @@ import { ContractError, contractErrorMessage } from '../../../src/ContractError.
 import { frozenDerived } from '../../../src/private/property.ts'
 import { testName } from '../../util/testName.ts'
 import { expectConfigurableDerivedPropertyOnAPrototype, expectOwnFrozenProperty } from '../../util/expectProperty.ts'
-import { log } from '../../util/testUtil.ts'
+import { log } from '../../util/log.ts'
 import { rawStack } from '../../../src/private/stack.ts'
 import {
   expectContractErrorConstructorPost,

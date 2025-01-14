@@ -19,7 +19,7 @@ import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '.
 import { rawStack } from '../../../src/private/stack.ts'
 import { testName } from '../../util/testName.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
-import { log } from '../../util/testUtil.ts'
+import { log } from '../../util/log.ts'
 import {
   expectAbstractErrorConstructorPost,
   expectAbstractErrorInvariants,
