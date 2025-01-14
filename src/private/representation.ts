@@ -16,7 +16,7 @@
 
 import { strictEqual } from 'assert'
 import { inspect } from 'node:util'
-import { isFunctionArguments } from './is.ts'
+import { isFunctionArguments } from './arguments.ts'
 import { isTruePrimitive } from '../types/typeof.ts'
 import { stackEOL } from './eol.ts'
 

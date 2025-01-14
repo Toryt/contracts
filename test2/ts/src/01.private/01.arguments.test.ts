@@ -15,7 +15,7 @@
  */
 
 import should from 'should'
-import { isFunctionArguments } from '../../../../src/private/is.ts'
+import { isFunctionArguments } from '../../../../src/private/arguments.ts'
 import { stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
 
