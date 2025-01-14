@@ -30,15 +30,15 @@ export type ImmutableSingleton =
   | typeof WebAssembly
 export type Immutable = PrimitiveOrNull | ImmutableSingleton
 
-export interface StuffWrapper2<T extends Immutable = Immutable> {
+export interface StuffWrapper<T extends Immutable = Immutable> {
   readonly subject: T
   readonly description: string
   readonly primitive: boolean
   readonly mutable: boolean
 }
 
-function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper2<Primitive>> {
-  const base: Omit<StuffWrapper2<Primitive>, 'primitive' | 'mutable'>[] = [
+function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper<Primitive>> {
+  const base: Omit<StuffWrapper<Primitive>, 'primitive' | 'mutable'>[] = [
     { subject: undefined, description: 'undefined' },
     { subject: 'abc', description: 'string' },
     { subject: '', description: 'empty string' },
@@ -73,9 +73,9 @@ function buildPrimitiveStuff(): ReadonlyArray<StuffWrapper2<Primitive>> {
   return base.map(s => ({ ...s, primitive: true, mutable: false }))
 }
 
-export const primitiveStuff: ReadonlyArray<StuffWrapper2<Primitive>> = buildPrimitiveStuff()
+export const primitiveStuff: ReadonlyArray<StuffWrapper<Primitive>> = buildPrimitiveStuff()
 
-export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper2<PrimitiveOrNull>> = [
+export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper<PrimitiveOrNull>> = [
   {
     subject: null,
     description: 'null',
@@ -85,9 +85,9 @@ export const primitiveAndNullStuff: ReadonlyArray<StuffWrapper2<PrimitiveOrNull>
   ...primitiveStuff
 ]
 
-function buildImmutableSingletonStuff(): ReadonlyArray<StuffWrapper2<ImmutableSingleton>> {
+function buildImmutableSingletonStuff(): ReadonlyArray<StuffWrapper<ImmutableSingleton>> {
   // TODO: missing: `globalThis`
-  const base: Omit<StuffWrapper2<ImmutableSingleton>, 'primitive' | 'mutable'>[] = [
+  const base: Omit<StuffWrapper<ImmutableSingleton>, 'primitive' | 'mutable'>[] = [
     { subject: Math, description: 'Math' },
     { subject: JSON, description: 'JSON' },
     { subject: Reflect, description: 'Reflect' },
@@ -104,9 +104,9 @@ function buildImmutableSingletonStuff(): ReadonlyArray<StuffWrapper2<ImmutableSi
   }))
 }
 
-export const immutableSingletonStuff: ReadonlyArray<StuffWrapper2<ImmutableSingleton>> = buildImmutableSingletonStuff()
+export const immutableSingletonStuff: ReadonlyArray<StuffWrapper<ImmutableSingleton>> = buildImmutableSingletonStuff()
 
-export const immutableStuff: ReadonlyArray<StuffWrapper2<Immutable>> = [
+export const immutableStuff: ReadonlyArray<StuffWrapper<Immutable>> = [
   ...primitiveAndNullStuff,
   ...immutableSingletonStuff
 ]
