@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+import { type TruePrimitive, truePrimitiveTypeofs, type Typeof } from '../types/typeof.ts'
 import { rnEOL, nEOL, stackEOL } from './eol.ts'
 import { notStrictEqual, strictEqual } from 'assert'
 
@@ -31,12 +32,17 @@ export function functionArguments(a: unknown): a is IArguments {
 }
 
 /**
- * p is a true primitive, i.e., not null, undefined, an object (which implies, not a Date, Math or JSON, nor any
- * Error, and not an array or arguments, and wrapped primitives), not a function. p is a true string, number or
- * boolean.
+ * `p` is a true primitive, i.e., not `null`, `undefined`, an object (which implies, not a Date, Math or JSON, nor any
+ * Error, and not an array or arguments, and wrapped primitives), not a function. `p` is a true
+ *
+ * * `string`,
+ * * `number`,
+ * * `boolean`,
+ * * `symbol`, or
+ * * `bigint`
  */
-export function primitive(p: unknown): p is number | string | boolean {
-  return p !== null && ['number', 'string', 'boolean'].indexOf(typeof p) >= 0
+export function primitive(p: unknown): p is TruePrimitive {
+  return (truePrimitiveTypeofs as readonly Typeof[]).includes(typeof p)
 }
 
 /**
