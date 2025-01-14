@@ -16,7 +16,6 @@
 
 import { inspect } from 'node:util'
 import should from 'should'
-import * as util from 'util'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { primitive } from '../../../../src/private/is.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
@@ -331,7 +330,7 @@ this function should have a name   ` // trim
         } else if (typeof subject === 'function') {
           result.should.equal(conciseRepresentation('', subject))
         } else {
-          const expected = util.inspect(subject, {
+          const expected = inspect(subject, {
             depth: 0,
             maxArrayLength: 5,
             breakLength: 120
