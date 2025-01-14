@@ -67,7 +67,7 @@ export function hasProperty<X extends unknown, PropertyName extends string>(
  * @returns If `f` exists and has a `name`, the representation is based on the `name`. If `f` does not have a `name`,
  *          the representation is based on the string representation of `f` itself.
  */
-export function conciseCondition(prefix: string, f: unknown): string {
+export function conciseRepresentation(prefix: string, f: unknown): string {
   strictEqual(typeof prefix, 'string')
 
   const optionalName: string | undefined = hasProperty(f, 'name') ? safeToString(f.name) : undefined
@@ -110,7 +110,7 @@ export function value(v: unknown): string {
   } else if (primitive(v) || v instanceof Date || v instanceof Error || v instanceof Number || v instanceof Boolean) {
     return '' + v
   } else if (typeof v === 'function') {
-    return conciseCondition('', v)
+    return conciseRepresentation('', v)
   } else {
     try {
       // NOTE: inspect cannot deal with a symbol name: https://github.com/nodejs/node/issues/56570

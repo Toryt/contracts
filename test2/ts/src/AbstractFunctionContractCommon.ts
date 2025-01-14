@@ -226,7 +226,7 @@ export function createCandidateContractFunction<FunctionContract extends Abstrac
   //   'name',
   //   otherPropertyName === 'name'
   //     ? otherPropertyValue
-  //     : report.conciseCondition(AbstractFunctionContract.namePrefix, implementation)
+  //     : report.conciseRepresentation(AbstractFunctionContract.namePrefix, implementation)
   // )
   candidate.prototype = Object.create(impl.prototype, {
     constructor: { value: candidate }

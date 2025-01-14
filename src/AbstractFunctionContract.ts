@@ -211,7 +211,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
       !!f.location
       // &&
       // MUDO
-      // (f === f.implementation || f.name === conciseCondition(AbstractFunctionContract.namePrefix, f.implementation))
+      // (f === f.implementation || f.name === conciseRepresentation(AbstractFunctionContract.namePrefix, f.implementation))
       // &&
       // isFrozenOwnProperty(f, 'bind')
       // &&
@@ -303,7 +303,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 //
 //   const bound = Function.prototype.bind.apply(this, arguments)
 //   const boundImplementation = Function.prototype.bind.apply(this.implementation, arguments)
-//   property.frozenDerived(boundImplementation, 'name', () => report.conciseCondition('bound', this.implementation))
+//   property.frozenDerived(boundImplementation, 'name', () => report.conciseRepresentation('bound', this.implementation))
 //   AbstractContract.bless(bound, this.contract, boundImplementation, this.location)
 //   return bound
 // }
@@ -394,7 +394,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 //       configurable: implNamePropertyDescriptor.configurable,
 //       enumerable: implNamePropertyDescriptor.enumerable,
 //       writable: implNamePropertyDescriptor.writable,
-//       value: report.conciseCondition(report.namePrefix, implFunction)
+//       value: report.conciseRepresentation(report.namePrefix, implFunction)
 //     })
 //   }
 // }

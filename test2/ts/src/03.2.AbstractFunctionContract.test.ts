@@ -134,13 +134,13 @@ describe(testName(import.meta), function () {
   //     contractFunction.bind.should.equal(AbstractFunctionContract.bindContractFunction)
   //     contractFunction.should.have.ownProperty('name')
   //     contractFunction.name.should.equal(
-  //       report.conciseCondition(AbstractFunctionContract.namePrefix, contractFunction.implementation)
+  //       report.conciseRepresentation(AbstractFunctionContract.namePrefix, contractFunction.implementation)
   //     )
   //     const implFunctionNamePropDesc = Object.getOwnPropertyDescriptor(implFunction, 'name')
   //     delete implFunctionNamePropDesc.value
   //     const contractFunctionNamePropDesc = Object.getOwnPropertyDescriptor(contractFunction, 'name')
   //     contractFunctionNamePropDesc.value.should.equal(
-  //       report.conciseCondition(AbstractFunctionContract.namePrefix, contractFunction.implementation)
+  //       report.conciseRepresentation(AbstractFunctionContract.namePrefix, contractFunction.implementation)
   //     )
   //     delete contractFunctionNamePropDesc.value
   //     contractFunctionNamePropDesc.should.deepEqual(implFunctionNamePropDesc)

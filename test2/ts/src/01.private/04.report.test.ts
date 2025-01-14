@@ -22,7 +22,7 @@ import { primitive } from '../../../../src/private/is.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
 import {
   safeToString,
-  conciseCondition,
+  conciseRepresentation,
   conciseSeparator,
   extensiveThrown,
   hasProperty,
@@ -70,8 +70,8 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('conciseCondition', function () {
-    function isAConciseCondition(original: string, concise: string): boolean {
+  describe('conciseRepresentation', function () {
+    function isAConciseRepresentation(original: string, concise: string): boolean {
       const split = ('' + concise).split(conciseSeparator)
       const cleanOriginal = original
         .replace(/[\r\n]/g, ' ')
@@ -100,7 +100,7 @@ describe(testName(import.meta), function () {
       stringResult.should.not.containEql(rnEOL)
       stringResult.length.should.be.lessThanOrEqual(maxLengthOfConciseRepresentation)
       stringResult.trim().should.equal(result)
-      isAConciseCondition(expected, stringResult).should.be.ok()
+      isAConciseRepresentation(expected, stringResult).should.be.ok()
     }
 
     const prefix = 'This is a test prefix'
@@ -186,12 +186,12 @@ this function should have a name   ` // trim
       if (!hasProperty(subject, 'name')) {
         it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${description}`, function () {
           log(`${description}: ${inspect(subject)}`)
-          const result = conciseCondition(prefix, subject)
+          const result = conciseRepresentation(prefix, subject)
           expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject, true))
         })
         it(`returns the string representation without a prefix, when there is no f, or it has no name, for ${description}`, function () {
           log(`${description}: ${inspect(subject)}`)
-          const result = conciseCondition('', subject)
+          const result = conciseRepresentation('', subject)
           expectGeneralPostconditions(result, safeToString(subject, true))
         })
       } else {
@@ -200,7 +200,7 @@ this function should have a name   ` // trim
           log(`${description}: ${inspect(subject)}`)
           */
           log(`name: ${inspect(subject.name)}`)
-          const result = conciseCondition(prefix, subject)
+          const result = conciseRepresentation(prefix, subject)
           const name = safeToString(subject.name)
           if (name !== '') {
             expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject.name))
@@ -213,7 +213,7 @@ this function should have a name   ` // trim
           log(`${description}: ${inspect(subject)}`)
           */
           log(`name: ${inspect(subject.name)}`)
-          const result = conciseCondition('', subject)
+          const result = conciseRepresentation('', subject)
           const name = safeToString(subject.name)
           if (name !== '') {
             expectGeneralPostconditions(result, safeToString(subject.name))
@@ -330,7 +330,7 @@ this function should have a name   ` // trim
         ) {
           result.should.equal('' + subject)
         } else if (typeof subject === 'function') {
-          result.should.equal(conciseCondition('', subject))
+          result.should.equal(conciseRepresentation('', subject))
         } else {
           const expected = util.inspect(subject, {
             depth: 0,
