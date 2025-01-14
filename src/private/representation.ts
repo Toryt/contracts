@@ -16,7 +16,7 @@
 
 import { strictEqual } from 'assert'
 import { inspect } from 'node:util'
-import { functionArguments } from './is.ts'
+import { isFunctionArguments } from './is.ts'
 import { isTruePrimitive } from '../types/typeof.ts'
 import { stackEOL } from './eol.ts'
 
@@ -122,7 +122,7 @@ export function typeRepresentation(v: unknown): string {
                 ? 'Intl'
                 : v === WebAssembly
                   ? 'WebAssembly'
-                  : functionArguments(v)
+                  : isFunctionArguments(v)
                     ? 'arguments'
                     : v.constructor.name
 }

@@ -15,16 +15,16 @@
  */
 
 import should from 'should'
-import { functionArguments } from '../../../../src/private/is.ts'
+import { isFunctionArguments } from '../../../../src/private/is.ts'
 import { stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
 
 describe(testName(import.meta), function () {
-  describe('arguments', function () {
+  describe('isFunctionArguments', function () {
     stuffGenerators.forEach(({ generate, description }) => {
       it(`returns the expected result for ${description}`, function () {
         const subject = generate()
-        const result = functionArguments(subject)
+        const result = isFunctionArguments(subject)
         if (Object.prototype.toString.call(arguments) === Object.prototype.toString.call(subject)) {
           result.should.be.true()
         } else {

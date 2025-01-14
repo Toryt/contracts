@@ -18,9 +18,7 @@ const anArgumentsToString: string = (function (): string {
   return Object.prototype.toString.call(arguments)
 })()
 
-// MUDO rename functions to `is…`
-
-export function functionArguments(a: unknown): a is IArguments {
+export function isFunctionArguments(a: unknown): a is IArguments {
   /* NOTE: It is hard to determine whether something is an `arguments`, and it has become harder still since we have
              Symbols. This solution is derived from
              https://stackoverflow.com/questions/7656280/how-do-i-check-whether-an-object-is-an-arguments-object-in-javascript/7656333#7656333 */
