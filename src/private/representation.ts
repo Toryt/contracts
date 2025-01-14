@@ -40,7 +40,8 @@ export function safeToString(s: unknown, surroundString: boolean = false): strin
 export const maxLengthOfConciseRepresentation = 80
 export const lengthOfEndConciseRepresentation = 15
 export const conciseSeparator = ' … '
-export const namePrefix = '𝕋⚖️'
+// MUDO namePrefix belongs somewhere else
+export const namePrefix = '𝕋📜'
 
 /**
  * `x` is an object (something that can have a property), and has a property with the given name, of any type.
