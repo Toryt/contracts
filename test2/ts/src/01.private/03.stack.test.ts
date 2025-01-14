@@ -20,60 +20,10 @@ import { stuffGenerators } from '../../../util/_stuff.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { environment } from '../../../util/environment.ts'
 import { log, showStack } from '../../../util/log.ts'
-import { location, rawStack, stackSkipsForEach, isLocation, isStack } from '../../../../src/private/stack.ts'
+import { rawStack, stackSkipsForEach, isStackLine, isStack } from '../../../../src/private/stack.ts'
 import { testName } from '../../../util/testName.ts'
 
 describe(testName(import.meta), function () {
-  describe('location', function () {
-    function checkStackLocation(result: string): void {
-      log(result)
-      should(result).be.a.String()
-      // must be a single line with any EOL
-      result.split(rnEOL).length.should.equal(1)
-      result.split(nEOL).length.should.equal(1)
-      if (environment !== 'safari' && environment !== 'safari <= 12') {
-        result.should.containEql('aSecondFunction')
-      }
-      isLocation(result).should.be.true()
-    }
-
-    it('returns the expected line without arguments', function () {
-      function aFirstFunction(): string {
-        // target location
-        function aSecondFunction(): string {
-          return location()
-        }
-
-        return aSecondFunction()
-      }
-
-      const result = aFirstFunction()
-      checkStackLocation(result)
-    })
-
-    it('returns the expected line 2 deep', function () {
-      function aFirstFunction(): string {
-        // target location
-        function aSecondFunction(): string {
-          function aThirdFunction(): string {
-            function aFourthFunction(): string {
-              return location(2)
-            }
-
-            return aFourthFunction()
-          }
-
-          return aThirdFunction()
-        }
-
-        return aSecondFunction()
-      }
-
-      const result = aFirstFunction()
-      checkStackLocation(result)
-    })
-  })
-
   describe('rawStack', function () {
     function checkRaw(result: string): void {
       const lines = result.split(stackEOL)
@@ -168,34 +118,34 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('isLocation', function () {
+  describe('isStackLine', function () {
     stuffGenerators
       .filter(({ description }) => !description.includes('string'))
       .forEach(({ generate, description }) => {
         it(`says no to ${description}`, function () {
           const subject = generate()
-          const result = isLocation(subject)
+          const result = isStackLine(subject)
           result.should.be.false()
         })
       })
     it("says no to ''", function () {
-      const result = isLocation('')
+      const result = isStackLine('')
       result.should.be.false()
     })
     it("says yes to 'abc'", function () {
-      const result = isLocation('abc')
+      const result = isStackLine('abc')
       result.should.be.true()
     })
     it('says no to a multi-line string with \\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = isLocation('this is a' + nEOL + 'multi-line' + nEOL + 'string')
+      const result = isStackLine('this is a' + nEOL + 'multi-line' + nEOL + 'string')
       result.should.be.false()
     })
     it('says no to a multi-line string with \\r\\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = isLocation('this is a' + rnEOL + 'multi-line' + rnEOL + 'string')
+      const result = isStackLine('this is a' + rnEOL + 'multi-line' + rnEOL + 'string')
       result.should.be.false()
     })
     it('says yes to all lines of a stack trace', function () {
@@ -206,7 +156,7 @@ describe(testName(import.meta), function () {
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
         .filter(line => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
         .forEach(line => {
-          const result = isLocation(line)
+          const result = isStackLine(line)
           log(`${result}: ${line}`)
           result.should.be.true()
         })

@@ -23,7 +23,7 @@ import { hasProperty } from './property.ts'
    This changes overrides that limit. Other browsers do not limit. */
 Error.stackTraceLimit = Number.POSITIVE_INFINITY
 
-function createStackLines(): string[] {
+export function createStackLines(): string[] {
   const stackSource = new Error()
   // most environments add the stackSource.toString() at the beginning of the stack; Firefox does not
   const stackSourceStr = stackSource.toString()
@@ -32,37 +32,6 @@ function createStackLines(): string[] {
   const stack = stackSource.stack.replace(stackSourceStr + stackEOL, '')
 
   return stack.split(stackEOL)
-}
-
-/**
- * The (depth + 1)nd line from a stack trace created here, after the `toString()` (the `toString()` might be prepended
- * to the stack).
- *
- * When this result is used as a line on its own, it is clickable to navigate to the referred source code
- * in most consoles.
- *
- * Note that in Safari, the result cannot be trusted. Safari skips (optimized?) stack frames. In Safari, this
- * will return 'a' stack line, but not necessarily a semantic meaningful one.
- */
-export function location(depth?: number): string {
-  assert(!depth || Number.isInteger(depth), 'optional depth is an integer')
-  assert(!depth || depth >= 0, 'optional depth is positive')
-
-  const stackLines = createStackLines()
-  /* Return the line at 2 + (depth || 0) (because the stack is created 1 level deeper in `createStackLines()`, while the
-     description explains this in the context of `location()`.
-
-     Since Safari skips stack frames, this might not work in Safari.
-     There will however be at least 1 element in stack frames.
-     The Math.min protects this call for Safari for array out of bounds problems.
-     This returns a technical result (a string), without real semantic meaning.
-     Furthermore, when used via Web Driver, that stack is again different in Safari, and contains many empty
-     lines. A warning string is returned: there is nothing we can do. */
-  return (
-    stackLines[Math.min(2 + (depth || 0), stackLines.length - 1)] ||
-    /* istanbul ignore next: only in Safari via Web Driver */
-    '    ⚠︎ location could not be determined (happens in Safari, when used with remote commands) ⚠'
-  )
 }
 
 /**
@@ -122,7 +91,7 @@ function determineSkipsForEach(): boolean {
 export const stackSkipsForEach: boolean = determineSkipsForEach()
 
 /**
- * <code>location</code> is a stack line location.
+ * A stack line.
  *
  * Over Node, cross-platform, and different browsers, we can only say this has to be a none-empty string, that is not
  * multi-line.
@@ -130,7 +99,7 @@ export const stackSkipsForEach: boolean = determineSkipsForEach()
  * It does not always end with a line number and column number (native code), it does not always start with 'at'
  * (Firefox), …
  */
-export function isLocation(location: unknown): location is string {
+export function isStackLine(location: unknown): location is string {
   return !!location && typeof location === 'string' && location.indexOf(rnEOL) < 0 && location.indexOf(nEOL) < 0
 }
 
@@ -145,5 +114,5 @@ export function isLocation(location: unknown): location is string {
  */
 export function isStack(stack: unknown): stack is string {
   const lines = !!stack && typeof stack === 'string' && stack.split(stackEOL)
-  return lines && lines.length > 0 && lines.every(l => isLocation(l))
+  return lines && lines.length > 0 && lines.every(l => isStackLine(l))
 }

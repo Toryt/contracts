@@ -18,7 +18,14 @@ import { ContractError } from './ContractError.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
 import assert, { ok, strictEqual } from 'assert'
-import { location as stackLocation, isStack } from './private/stack.ts'
+import {
+  type FunctionContractLocation,
+  internalLocation,
+  type InternalLocation,
+  isLocation,
+  location
+} from './location.ts'
+import { isStack } from './private/stack.ts'
 import { setAndFreeze, isFrozenOwnProperty } from './private/property.ts'
 import { namePrefix } from './private/representation.ts'
 
@@ -27,7 +34,9 @@ export const abstractErrorMessage = 'an abstract function cannot be executed'
 /**
  * Thrown when an abstract method is called. You shouldn't.
  */
-export class AbstractError<AFC extends AbstractFunctionContract<UnknownFunction>> extends ContractError {
+export class AbstractError<
+  AFC extends AbstractFunctionContract<UnknownFunction, FunctionContractLocation>
+> extends ContractError {
   static {
     setAndFreeze(this.prototype, 'name', AbstractError.name)
     setAndFreeze(this.prototype, 'message', abstractErrorMessage)
@@ -50,37 +59,33 @@ export class AbstractError<AFC extends AbstractFunctionContract<UnknownFunction>
   }
 }
 
-export type InternalLocation = Readonly<{
-  toString: () => 'INTERNAL'
-}>
-
-export type FunctionContractLocation = string | InternalLocation
-
 export interface GeneralContractFunctionProperties<
   ContractSignature extends UnknownFunction,
-  ImplementationSignature extends ContractSignature
+  ImplementationSignature extends ContractSignature,
+  Location extends FunctionContractLocation
 > {
-  contract: AbstractFunctionContract<ContractSignature>
+  contract: AbstractFunctionContract<ContractSignature, Location>
   implementation: ImplementationSignature
-  location: FunctionContractLocation
+  location: Location
 }
 
 export type GeneralContractFunction<
   ContractSignature extends UnknownFunction,
-  ImplementationSignature extends ContractSignature
-> = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ImplementationSignature>
+  ImplementationSignature extends ContractSignature,
+  Location extends FunctionContractLocation
+> = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ImplementationSignature, Location>
 
 export interface ContractFunctionProperties<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature
-> extends GeneralContractFunctionProperties<ContractSignature, ImplementationSignature> {
+> extends GeneralContractFunctionProperties<ContractSignature, ImplementationSignature, string> {
   location: string
 }
 
 export type ContractFunction<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature
-> = GeneralContractFunction<ContractSignature, ImplementationSignature> &
+> = GeneralContractFunction<ContractSignature, ImplementationSignature, string> &
   ContractFunctionProperties<ContractSignature, ImplementationSignature>
 
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
@@ -126,32 +131,23 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  *
  * The `_location` argument is for internal use, and might be removed.
  */
-export class AbstractFunctionContract<Signature extends UnknownFunction> {
+export class AbstractFunctionContract<Signature extends UnknownFunction, Location extends FunctionContractLocation> {
   // MUDO rename: this is not abstract (see root)
   static readonly namePrefix: typeof namePrefix = namePrefix
-
-  /**
-   * Object to be used as location for contracts and implementations that are generated inside this library.
-   */
-  static readonly internalLocation: InternalLocation = Object.freeze({
-    toString: function (): 'INTERNAL' {
-      return 'INTERNAL'
-    }
-  })
 
   /**
    * The most general {@link AbstractFunctionContract}. This has the most strict preconditions (nothing is allowed),
    * which can be weakened by specializations, and the most general nominal and exceptional postconditions (anything
    * goes), which can be strengthened by specializations.
    */
-  static readonly root: AbstractFunctionContract<UnknownFunction> = new AbstractFunctionContract(
+  static readonly root: AbstractFunctionContract<UnknownFunction, InternalLocation> = new AbstractFunctionContract(
     {
       // MUDO
       // pre: AbstractContract.mustNotHappen,
       // post: [],
       // exception: []
     },
-    AbstractFunctionContract.internalLocation
+    internalLocation
   )
 
   /**
@@ -194,10 +190,9 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
    * understand what contract function this is. The {@link GeneralContractFunction#name} however is controlled by the
    * JavaScript engine. We cannot freeze it, and it is not guaranteed to exist or have a specific value in all engines.
    */
-  static isAGeneralContractFunction<
-    ContractSignature extends UnknownFunction,
-    ImplementationSignature extends ContractSignature
-  >(f: unknown): f is GeneralContractFunction<ContractSignature, ImplementationSignature> {
+  static isAGeneralContractFunction(
+    f: unknown
+  ): f is GeneralContractFunction<UnknownFunction, UnknownFunction, FunctionContractLocation> {
     // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
     // freeze it, and not guaranteed in all engines.
     return (
@@ -244,7 +239,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
     // assert(!kwargs.pre || Array.isArray(kwargs.pre), 'optional kwargs.pre is an array')
     // assert(!kwargs.exception || Array.isArray(kwargs.exception), 'optional kwargs.exception is an array')
     assert(
-      !_location || _location === AbstractFunctionContract.internalLocation || typeof _location === 'string',
+      !_location || _location === internalLocation || isLocation(_location),
       'optional private _location is internal or a string'
     )
 
@@ -256,8 +251,8 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
     //   throw new AbstractContract.AbstractError(self, rawStack())
     // }
 
-    const location: FunctionContractLocation = _location || stackLocation(1)
-    // AbstractContract.bless(abstract, self, abstract, location)
+    const theLocation: FunctionContractLocation = _location || location(1)
+    // AbstractContract.bless(abstract, self, abstract, theLocation)
     // property.setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []))
     // property.setAndFreeze(self, '_post', Object.freeze(kwargs.post ? kwargs.post.slice() : []))
     // property.setAndFreeze(
@@ -265,7 +260,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
     //   '_exception',
     //   Object.freeze(kwargs.exception ? kwargs.exception.slice() : mustNotHappen)
     // )
-    setAndFreeze(self, 'location', Object.freeze(location))
+    setAndFreeze(self, 'location', Object.freeze(theLocation))
     // property.setAndFreeze(self, 'abstract', abstract)
   }
 }

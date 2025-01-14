@@ -18,7 +18,7 @@ import { inspect } from 'node:util'
 import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
 import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
-import { location as stackLocation } from '../../../src/private/stack.ts'
+import { type FunctionContractLocation, location } from '../../../src/location.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
 
@@ -101,9 +101,9 @@ export const notAFunctionNorAContract: unknown[] = [
 //
 // export const location = eol.stack + '    at /'
 
-export function expectInvariants<Signature extends UnknownFunction>(
+export function expectInvariants<Signature extends UnknownFunction, Location extends FunctionContractLocation>(
   subject: unknown
-): AbstractFunctionContract<Signature> {
+): AbstractFunctionContract<Signature, FunctionContractLocation> {
   should(subject).be.an.instanceof(AbstractFunctionContract)
   // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
@@ -146,7 +146,7 @@ export function expectInvariants<Signature extends UnknownFunction>(
   //   stack.split(eol.stack)[0].should.containEql('abstract')
   //   testUtil.log(stack)
   // }
-  return subject as AbstractFunctionContract<Signature>
+  return subject as AbstractFunctionContract<Signature, Location>
 }
 
 // function expectArrayPost(result, array, propName, privatePropName) {
@@ -179,9 +179,11 @@ export function expectConstructorPost(/* pre, post, exception, */ location: stri
 
 type Constructor<T> = new (...args: unknown[]) => T
 
-class AFC extends AbstractFunctionContract<UnknownFunction> {}
+class AFC extends AbstractFunctionContract<UnknownFunction, string> {}
 
-export function createCandidateContractFunction<FunctionContract extends AbstractFunctionContract<UnknownFunction>>(
+export function createCandidateContractFunction<
+  FunctionContract extends AbstractFunctionContract<UnknownFunction, string>
+>(
   ContractConstructor?: Constructor<FunctionContract>,
   doNotFreezeProperty?: string,
   otherPropertyName?: string,
@@ -196,7 +198,7 @@ export function createCandidateContractFunction<FunctionContract extends Abstrac
     contract = Object.create(contract)
   }
   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
-  const location = otherPropertyName === 'location' ? otherPropertyValue : stackLocation()
+  const theLocation = otherPropertyName === 'location' ? otherPropertyValue : location()
   // MUDO
   // const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractFunctionContract.bindContractFunction
 
@@ -211,9 +213,9 @@ export function createCandidateContractFunction<FunctionContract extends Abstrac
     setAndFreeze(candidate, 'implementation', implementation)
   }
   if (doNotFreezeProperty === 'location') {
-    candidate.location = location
+    candidate.location = theLocation
   } else {
-    setAndFreeze(candidate, 'location', location)
+    setAndFreeze(candidate, 'location', theLocation)
   }
   // MUDO
   // if (doNotFreezeProperty === 'bind') {
@@ -234,7 +236,9 @@ export function createCandidateContractFunction<FunctionContract extends Abstrac
   return candidate
 }
 
-export function generateIAGCFTests<FunctionContract extends AbstractFunctionContract<UnknownFunction>>(
+export function generateIAGCFTests<
+  FunctionContract extends AbstractFunctionContract<UnknownFunction, FunctionContractLocation>
+>(
   isAXXXContractFunction: typeof AbstractFunctionContract.isAGeneralContractFunction,
   ContractConstructor?: Constructor<FunctionContract>
 ): void {
