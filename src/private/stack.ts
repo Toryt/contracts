@@ -130,7 +130,7 @@ export const stackSkipsForEach: boolean = determineSkipsForEach()
  * It does not always end with a line number and column number (native code), it does not always start with 'at'
  * (Firefox), …
  */
-export function isStackLocation(location: unknown): location is string {
+export function isLocation(location: unknown): location is string {
   return !!location && typeof location === 'string' && location.indexOf(rnEOL) < 0 && location.indexOf(nEOL) < 0
 }
 
@@ -145,5 +145,5 @@ export function isStackLocation(location: unknown): location is string {
  */
 export function isStack(stack: unknown): stack is string {
   const lines = !!stack && typeof stack === 'string' && stack.split(stackEOL)
-  return lines && lines.length > 0 && lines.every(l => isStackLocation(l))
+  return lines && lines.length > 0 && lines.every(l => isLocation(l))
 }

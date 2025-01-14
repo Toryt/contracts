@@ -128,7 +128,7 @@ export function expectInvariants<Signature extends UnknownFunction>(
   // testUtil.expectToBeArrayOfFunctions(subject.exception)
   // testUtil.expectOwnFrozenProperty(subject, 'location')
   // const location = subject.location
-  // ;(location === AbstractFunctionContract.internalLocation || is.isStackLocation(location)).should.be.true()
+  // ;(location === AbstractFunctionContract.internalLocation || is.isLocation(location)).should.be.true()
   // testUtil.expectOwnFrozenProperty(subject, 'abstract')
   // const abstract = subject.abstract
   // AbstractFunctionContract.isAGeneralContractFunction(abstract).should.be.true()

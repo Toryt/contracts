@@ -20,7 +20,7 @@ import { stuffGenerators } from '../../../util/_stuff.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { environment } from '../../../util/environment.ts'
 import { log, showStack } from '../../../util/log.ts'
-import { location, rawStack, stackSkipsForEach, isStackLocation, isStack } from '../../../../src/private/stack.ts'
+import { location, rawStack, stackSkipsForEach, isLocation, isStack } from '../../../../src/private/stack.ts'
 import { testName } from '../../../util/testName.ts'
 
 describe(testName(import.meta), function () {
@@ -34,7 +34,7 @@ describe(testName(import.meta), function () {
       if (environment !== 'safari' && environment !== 'safari <= 12') {
         result.should.containEql('aSecondFunction')
       }
-      isStackLocation(result).should.be.true()
+      isLocation(result).should.be.true()
     }
 
     it('returns the expected line without arguments', function () {
@@ -168,34 +168,34 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('isStackLocation', function () {
+  describe('isLocation', function () {
     stuffGenerators
       .filter(({ description }) => !description.includes('string'))
       .forEach(({ generate, description }) => {
         it(`says no to ${description}`, function () {
           const subject = generate()
-          const result = isStackLocation(subject)
+          const result = isLocation(subject)
           result.should.be.false()
         })
       })
     it("says no to ''", function () {
-      const result = isStackLocation('')
+      const result = isLocation('')
       result.should.be.false()
     })
     it("says yes to 'abc'", function () {
-      const result = isStackLocation('abc')
+      const result = isLocation('abc')
       result.should.be.true()
     })
     it('says no to a multi-line string with \\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = isStackLocation('this is a' + nEOL + 'multi-line' + nEOL + 'string')
+      const result = isLocation('this is a' + nEOL + 'multi-line' + nEOL + 'string')
       result.should.be.false()
     })
     it('says no to a multi-line string with \\r\\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = isStackLocation('this is a' + rnEOL + 'multi-line' + rnEOL + 'string')
+      const result = isLocation('this is a' + rnEOL + 'multi-line' + rnEOL + 'string')
       result.should.be.false()
     })
     it('says yes to all lines of a stack trace', function () {
@@ -206,7 +206,7 @@ describe(testName(import.meta), function () {
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
         .filter(line => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
         .forEach(line => {
-          const result = isStackLocation(line)
+          const result = isLocation(line)
           log(`${result}: ${line}`)
           result.should.be.true()
         })

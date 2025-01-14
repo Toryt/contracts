@@ -319,7 +319,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 //  * </ul>
 //  */
 // AbstractContract.isAContractFunction = function (f) {
-//   return AbstractContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.isStackLocation(f.location)
+//   return AbstractContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.isLocation(f.location)
 // }
 //
 // /**
@@ -350,7 +350,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 //   assert(contract instanceof AbstractContract, 'contract is an AbstractContract')
 //   assert.strictEqual(typeof implFunction, 'function')
 //   assert(
-//     location === AbstractContract.internalLocation || is.isStackLocation(location),
+//     location === AbstractContract.internalLocation || is.isLocation(location),
 //     'location is internal, or a stack location'
 //   )
 //
