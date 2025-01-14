@@ -19,7 +19,7 @@ import type { UnknownFunction } from '../types/UnknownFunction.ts'
 /**
  * Comprehensive map of all possible `typeof` results to their corresponding TypeScript types.
  */
-type TypeofMap = {
+interface TypeofMap {
   undefined: undefined
   string: string
   number: number
