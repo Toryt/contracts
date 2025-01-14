@@ -21,7 +21,7 @@ import assert, { ok, strictEqual } from 'assert'
 import { location as stackLocation } from './private/stack.ts'
 import { setAndFreeze, isFrozenOwnProperty } from './private/property.ts'
 import { namePrefix } from './private/representation.ts'
-import { stack as isStack } from './private/is.ts'
+import { isStack } from './private/is.ts'
 
 export const abstractErrorMessage = 'an abstract function cannot be executed'
 
@@ -320,7 +320,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 //  * </ul>
 //  */
 // AbstractContract.isAContractFunction = function (f) {
-//   return AbstractContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.stackLocation(f.location)
+//   return AbstractContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.isStackLocation(f.location)
 // }
 //
 // /**
@@ -351,7 +351,7 @@ export class AbstractFunctionContract<Signature extends UnknownFunction> {
 //   assert(contract instanceof AbstractContract, 'contract is an AbstractContract')
 //   assert.strictEqual(typeof implFunction, 'function')
 //   assert(
-//     location === AbstractContract.internalLocation || is.stackLocation(location),
+//     location === AbstractContract.internalLocation || is.isStackLocation(location),
 //     'location is internal, or a stack location'
 //   )
 //

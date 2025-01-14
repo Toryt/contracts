@@ -15,7 +15,7 @@
  */
 
 import { ok } from 'assert'
-import { stack as isStack } from './private/is.ts'
+import { isStack } from './private/is.ts'
 import { configurableDerived, setAndFreeze } from './private/property.ts'
 import { rawStack } from './private/stack.ts'
 import { stackEOL } from './private/eol.ts'

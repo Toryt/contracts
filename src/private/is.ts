@@ -38,7 +38,7 @@ export function functionArguments(a: unknown): a is IArguments {
  * It does not always end with a line number and column number (native code), it does not always start with 'at'
  * (Firefox), …
  */
-export function stackLocation(location: unknown): location is string {
+export function isStackLocation(location: unknown): location is string {
   return !!location && typeof location === 'string' && location.indexOf(rnEOL) < 0 && location.indexOf(nEOL) < 0
 }
 
@@ -51,7 +51,7 @@ export function stackLocation(location: unknown): location is string {
  * Lines do not always end with a line number and column number (native code), do not always start with 'at'
  * (Firefox), …
  */
-export function stack(stack: unknown): stack is string {
+export function isStack(stack: unknown): stack is string {
   const lines = !!stack && typeof stack === 'string' && stack.split(stackEOL)
-  return lines && lines.length > 0 && lines.every(l => stackLocation(l))
+  return lines && lines.length > 0 && lines.every(l => isStackLocation(l))
 }
