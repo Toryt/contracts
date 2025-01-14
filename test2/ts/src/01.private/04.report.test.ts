@@ -47,6 +47,25 @@ describe(testName(import.meta), function () {
           result.should.startWith('[')
           result.should.endWith(']')
         }
+        if (typeof subject === 'string') {
+          result.should.not.startWith("'")
+          result.should.not.endWith("'")
+        }
+      })
+      it(`returns a string from a ${description}, with strings surrounded by quotes when asked`, function () {
+        const subject = generate()
+        log(`${description}: ${inspect(subject)}`)
+        const result = safeToString(subject, true)
+        log(`result: '${result}'`)
+        result.should.be.a.String()
+        if (Array.isArray(subject)) {
+          result.should.startWith('[')
+          result.should.endWith(']')
+        }
+        if (typeof subject === 'string') {
+          result.should.startWith("'")
+          result.should.endWith("'")
+        }
       })
     })
   })

@@ -19,20 +19,21 @@ import { inspect } from 'node:util'
 import { functionArguments, primitive } from './is.ts'
 import { stackEOL } from './eol.ts'
 
-function surroundForArray(s: unknown, result: string): string {
-  return Array.isArray(s) ? `[${result}]` : result
+function surroundForArray(s: unknown, result: string, surroundString: boolean): string {
+  return Array.isArray(s) ? `[${result}]` : surroundString && typeof s === 'string' ? `'${result}'` : result
 }
 
 /**
  * Returns “a” `string` without crashing for anything. The intention is to return the defined `string` representation of
- * the given `s` when possible.
+ * the given `s` when possible. Arrays are surrounded with `[…]`. When `surroundString` is `true` strings are surrounded
+ * with `'…'`. This makes it possible to recognize empty arrays and strings.
  */
-export function safeToString(s: unknown): string {
+export function safeToString(s: unknown, surroundString: boolean = false): string {
   try {
-    return surroundForArray(s, String(s))
+    return surroundForArray(s, String(s), surroundString)
   } catch (ignore) {
     /* `s` probably contains a `Symbol` deep down. But, whatever: revert to the most basic string representation: */
-    return surroundForArray(s, Object.prototype.toString.call(s))
+    return surroundForArray(s, Object.prototype.toString.call(s), surroundString)
   }
 }
 
