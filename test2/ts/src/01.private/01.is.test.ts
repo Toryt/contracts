@@ -18,7 +18,7 @@ import should from 'should'
 import { functionArguments, stackLocation, stack, isFrozenOwnProperty } from '../../../../src/private/is.ts'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
-import { generateStuff } from '../../../util/_stuff.ts'
+import { generateStuff, stuffGenerators } from '../../../util/_stuff.ts'
 import { log, showStack } from '../../../util/log.ts'
 import { safeToString } from '../../../../src/private/representation.ts'
 import { x } from '../../../util/cartesian.ts'
@@ -38,11 +38,12 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('#stackLocation', function () {
-    generateStuff()
-      .filter(({ subject }) => typeof subject !== 'string')
-      .forEach(({ subject }) => {
-        it(`says no to ${safeToString(subject)}`, function () {
+  describe('stackLocation', function () {
+    stuffGenerators
+      .filter(({ description }) => !description.includes('string'))
+      .forEach(({ generate, description }) => {
+        it(`says no to ${description}`, function () {
+          const subject = generate()
           const result = stackLocation(subject)
           result.should.be.false()
         })
