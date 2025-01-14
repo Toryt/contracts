@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+export type * from './types/typeof.ts'
 export type * from './types/UnknownFunction.ts'
 export type * from './types/NeverFunction.ts'
 export type * from './Postcondition.ts'
