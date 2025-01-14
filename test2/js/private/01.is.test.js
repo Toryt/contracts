@@ -15,13 +15,7 @@
  */
 
 import should from 'should'
-import {
-  functionArguments,
-  primitive,
-  stackLocation,
-  stack,
-  isFrozenOwnProperty
-} from '../../../build/src/private/is.js'
+import { functionArguments, stackLocation, stack, isFrozenOwnProperty } from '../../../build/src/private/is.js'
 import { nEOL, rnEOL, stackEOL } from '../../../build/src/private/eol.js'
 import { notStackEOL } from '../../../build/test2/util/cases.js'
 import { generateStuff } from '../../../build/test2/util/_stuff.js'
@@ -37,16 +31,6 @@ describe('_private/is', function () {
         } else {
           should(result).not.be.ok()
         }
-      })
-    })
-  })
-
-  describe('#primitive()', function () {
-    generateStuff().forEach(({ subject, isPrimitive }) => {
-      it(`correctly decides whether the argument is a primitive for ${safeToString(subject)}`, function () {
-        const result = primitive(subject)
-        result.should.be.a.Boolean()
-        result.should.equal(isPrimitive)
       })
     })
   })
