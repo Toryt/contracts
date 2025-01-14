@@ -18,7 +18,7 @@ import should from 'should'
 import { functionArguments, primitive, stackLocation, stack, isFrozenOwnProperty } from '../../../../src/private/is.ts'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
-import { generateStuff } from '../../../util/_stuff.ts'
+import { generateStuff, stuffGenerators } from '../../../util/_stuff.ts'
 import { x, log, safeToString, showStack } from '../../../util/testUtil.ts'
 import { testName } from '../../../util/testName.ts'
 
@@ -37,11 +37,12 @@ describe(testName(import.meta), function () {
   })
 
   describe('#primitive()', function () {
-    generateStuff().forEach(({ subject, isPrimitive }) => {
-      it(`correctly decides whether the argument is a primitive for ${safeToString(subject)}`, function () {
+    stuffGenerators.forEach(({ generate, description, primitive: isPrimitive }) => {
+      it(`correctly decides whether the argument is a primitive for ${description})`, function () {
+        const subject = generate()
         const result = primitive(subject)
         result.should.be.a.Boolean()
-        result.should.equal(isPrimitive)
+        result.should.equal(isPrimitive && subject !== undefined)
       })
     })
   })
