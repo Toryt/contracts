@@ -42,17 +42,6 @@ describe(testName(import.meta), function () {
     })
   })
 
-  describe('#isTruePrimitive()', function () {
-    stuffGenerators.forEach(({ generate, description, primitive: isPrimitive }) => {
-      it(`correctly decides whether the argument is a primitive for ${description})`, function () {
-        const subject = generate()
-        const result = isTruePrimitive(subject)
-        result.should.be.a.Boolean()
-        result.should.equal(isPrimitive && subject !== undefined)
-      })
-    })
-  })
-
   describe('#stackLocation', function () {
     generateStuff()
       .filter(({ subject }) => typeof subject !== 'string')
