@@ -77,18 +77,17 @@ describe(testName(import.meta), function () {
         .replace(/[\r\n]/g, ' ')
         .replace(/\s\s+/g, ' ')
         .trim()
-      let result
       if (split.length < 2) {
-        result = cleanOriginal === concise
-      } else {
-        // > 2 is not supported right now, and will fail
-        result =
-          split[0] !== undefined &&
-          split[1] !== undefined &&
-          cleanOriginal.startsWith(split[0]) &&
-          cleanOriginal.endsWith(split[1])
+        return cleanOriginal === concise
       }
-      return result
+
+      // > 2 is not supported right now, and will fail
+      return (
+        split[0] !== undefined &&
+        split[1] !== undefined &&
+        cleanOriginal.startsWith(split[0]) &&
+        cleanOriginal.endsWith(split[1])
+      )
     }
 
     function expectGeneralPostconditions(result: unknown, expected: string): void {
