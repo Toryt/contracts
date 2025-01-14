@@ -134,7 +134,7 @@ export function valueRepresentation(v: unknown): string {
   } else if (typeof v === 'string' || v instanceof String) {
     return `'${v}'`
   } else if (primitive(v) || v instanceof Date || v instanceof Error || v instanceof Number || v instanceof Boolean) {
-    return '' + v
+    return safeToString(v)
   } else if (typeof v === 'function') {
     return conciseRepresentation('', v)
   } else {

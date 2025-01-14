@@ -274,7 +274,7 @@ this function should have a name   ` // trim
         } else if (typeof subject === 'string' || subject instanceof String) {
           result.should.equal(`'${subject}'`)
         } else if (
-          primitive(subject) ||
+          (primitive(subject) && typeof subject !== 'symbol') ||
           subject instanceof Date ||
           subject instanceof Error ||
           subject instanceof Number ||
