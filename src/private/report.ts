@@ -125,7 +125,7 @@ export function typeRepresentation(v: unknown): string {
                     : v.constructor.name
 }
 
-export function value(v: unknown): string {
+export function valueRepresentation(v: unknown): string {
   if (v === global) {
     /* browserified util.inspect has trouble with Safari Window; this works around this by showing a concise
        representation of this complex object */
@@ -175,7 +175,7 @@ export function value(v: unknown): string {
  *   front on a separate line.
  */
 export function extensiveThrownRepresentation(thrown: unknown): string {
-  const thrownString = value(thrown)
+  const thrownString = valueRepresentation(thrown)
 
   if (!hasProperty(thrown, 'stack')) {
     return thrownString

@@ -27,7 +27,7 @@ import {
   hasProperty,
   maxLengthOfConciseRepresentation,
   typeRepresentation,
-  value
+  valueRepresentation
 } from '../../../../src/private/report.ts'
 import { mutableStuffGenerators, stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
@@ -264,7 +264,7 @@ this function should have a name   ` // trim
     stuffGenerators.forEach(({ generate, description }) => {
       it(`returns a string that is expected for ${description}`, function () {
         const subject: unknown = generate()
-        const result = value(subject)
+        const result = valueRepresentation(subject)
         log(result)
         result.should.be.a.String()
         result.should.not.equal('')
@@ -348,7 +348,7 @@ this function should have a name   ` // trim
         const result = extensiveThrownRepresentation(thrown)
 
         result.should.be.a.String()
-        const thrownString = value(thrown)
+        const thrownString = valueRepresentation(thrown)
         if (hasProperty(thrown, 'stack')) {
           result.should.startWith(thrownString)
           const prefixedStack = stackEOL + safeToString(thrown.stack)
