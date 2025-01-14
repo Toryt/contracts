@@ -25,11 +25,12 @@ import { x } from '../../../util/cartesian.ts'
 import { testName } from '../../../util/testName.ts'
 
 describe(testName(import.meta), function () {
-  describe('#arguments', function () {
-    generateStuff().forEach(({ subject, expected }) => {
-      it(`returns ${expected === 'arguments' ? 'true' : 'false'} for ${safeToString(subject)}`, function () {
+  describe('arguments', function () {
+    stuffGenerators.forEach(({ generate, description }) => {
+      it(`returns the expected result for ${description}`, function () {
+        const subject = generate()
         const result = functionArguments(subject)
-        if (expected === 'arguments') {
+        if (Object.prototype.toString.call(arguments) === Object.prototype.toString.call(subject)) {
           result.should.be.true()
         } else {
           should(result).not.be.ok()
