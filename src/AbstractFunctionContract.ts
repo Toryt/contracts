@@ -19,9 +19,9 @@ import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
 import assert, { ok, strictEqual } from 'assert'
 import { location as stackLocation } from './private/stack.ts'
-import { setAndFreeze } from './private/property.ts'
+import { setAndFreeze, isFrozenOwnProperty } from './private/property.ts'
 import { namePrefix } from './private/representation.ts'
-import { stack as isStack, isFrozenOwnProperty } from './private/is.ts'
+import { stack as isStack } from './private/is.ts'
 
 export const abstractErrorMessage = 'an abstract function cannot be executed'
 

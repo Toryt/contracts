@@ -14,12 +14,12 @@
   limitations under the License.
  */
 
-import { isFrozenOwnProperty } from '../../../../src/private/is.ts'
 import {
   configurableDerived,
   frozenDerived,
   frozenReadOnlyArray,
-  setAndFreeze
+  setAndFreeze,
+  isFrozenOwnProperty
 } from '../../../../src/private/property.ts'
 import { booleanStuff } from '../../../util/_stuff.ts'
 import { x } from '../../../util/cartesian.ts'

@@ -109,3 +109,23 @@ export function frozenReadOnlyArray<
     }
   )
 }
+
+export type NotNullAndNotUndefined<T = unknown> = T extends null ? never : T extends undefined ? never : T
+
+export function isFrozenOwnProperty<
+  Obj extends NotNullAndNotUndefined,
+  PropertyName extends string,
+  PropertyType extends unknown
+>(obj: Obj, propName: PropertyName): obj is Obj & { [K in PropertyName]: PropertyType } {
+  notStrictEqual(obj, null)
+  notStrictEqual(obj, undefined)
+  strictEqual(typeof propName, 'string')
+
+  const descriptor = Object.getOwnPropertyDescriptor(obj, propName)
+  return (
+    !!descriptor &&
+    descriptor.enumerable === true &&
+    descriptor.configurable === false &&
+    (descriptor.writable === false || (typeof descriptor.get === 'function' && !descriptor.set))
+  )
+}
