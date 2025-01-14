@@ -21,45 +21,6 @@ export function regExpEscape(s: string): string {
   return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-export function anyCasesGenerators(discriminator: string): (() => unknown)[] {
-  // noinspection JSPrimitiveTypeWrapperUsage
-  const generators = [
-    (): Error => new Error('This is a ' + discriminator + ' case'),
-    (): undefined => undefined,
-    (): null => null,
-    (): number => 1,
-    (): number => 0,
-    (): string => 'a string that is used as a ' + discriminator,
-    (): string => '',
-    (): boolean => true,
-    (): boolean => false,
-    (): Date => new Date(),
-    (): RegExp => /foo/,
-    (): (() => string) =>
-      function (): string {
-        return 'this simulates a ' + discriminator
-      },
-    // eslint-disable-next-line no-new-wrappers
-    (): Number => new Number(42),
-    // eslint-disable-next-line no-new-wrappers
-    (): Boolean => new Boolean(false),
-    // eslint-disable-next-line no-new-wrappers
-    (): String => new String(discriminator + ' string'),
-    (): IArguments => arguments,
-    (): {} => ({}),
-    (): { a: number; b: string; c: {}; d: { d1: undefined; d2: string; d3: { d31: number } } } => ({
-      a: 1,
-      b: 'b',
-      c: {},
-      d: { d1: undefined, d2: 'd2', d3: { d31: 31 } }
-    }),
-    (): [] => []
-  ]
-  const result = generators.slice()
-  result.push(() => generators.map(g => g()))
-  return result
-}
-
 function trimLineAndColumnPattern(stackLine: string): string {
   return (
     stackLine
