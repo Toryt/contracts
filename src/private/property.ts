@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { primitive } from './is.ts'
+import { isTruePrimitive } from './is.ts'
 import { notStrictEqual, ok, strictEqual } from 'assert'
 
 type WithReadonlyProperty<O extends object | unknown, PropertyName extends string, PropertyType> = O & {
@@ -26,7 +26,7 @@ export function setAndFreeze<O extends object, PropertyName extends string, Prop
   propertyName: PropertyName,
   value?: PropertyType
 ): WithReadonlyProperty<O, PropertyName, PropertyType> {
-  ok(!primitive(obj))
+  ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
 
   Object.defineProperty(obj, propertyName, {
@@ -49,7 +49,7 @@ export function configurableDerived<
   derivation: Derivation
 ): WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
   ok(obj)
-  ok(!primitive(obj))
+  ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
   strictEqual(typeof derivation, 'function')
 
@@ -72,7 +72,7 @@ export function frozenDerived<
   derivation: Derivation
 ): WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
   ok(obj)
-  ok(!primitive(obj))
+  ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
   strictEqual(typeof derivation, 'function')
 
@@ -96,7 +96,7 @@ export function frozenReadOnlyArray<
   privatePropName: PrivatePropertyName extends PropertyName ? never : PrivatePropertyName
 ): WithReadonlyProperty<O, PropertyName, ElementType[]> {
   ok(obj)
-  ok(!primitive(obj))
+  ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
   strictEqual(typeof privatePropName, 'string')
   notStrictEqual(propertyName, privatePropName)

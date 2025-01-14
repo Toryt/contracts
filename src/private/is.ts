@@ -41,7 +41,7 @@ export function functionArguments(a: unknown): a is IArguments {
  * * `symbol`, or
  * * `bigint`
  */
-export function primitive(p: unknown): p is TruePrimitive {
+export function isTruePrimitive(p: unknown): p is TruePrimitive {
   return (truePrimitiveTypeofs as readonly Typeof[]).includes(typeof p)
 }
 

@@ -17,7 +17,7 @@
 import { inspect } from 'node:util'
 import should from 'should'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
-import { primitive } from '../../../../src/private/is.ts'
+import { isTruePrimitive } from '../../../../src/private/is.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
 import {
   safeToString,
@@ -274,7 +274,7 @@ this function should have a name   ` // trim
         } else if (typeof subject === 'string' || subject instanceof String) {
           result.should.equal(`'${subject}'`)
         } else if (
-          (primitive(subject) && typeof subject !== 'symbol') ||
+          (isTruePrimitive(subject) && typeof subject !== 'symbol') ||
           subject instanceof Date ||
           subject instanceof Error ||
           subject instanceof Number ||

@@ -16,7 +16,7 @@
 
 import { strictEqual } from 'assert'
 import { inspect } from 'node:util'
-import { functionArguments, primitive } from './is.ts'
+import { functionArguments, isTruePrimitive } from './is.ts'
 import { stackEOL } from './eol.ts'
 
 function surroundForArray(s: unknown, result: string, surroundString: boolean): string {
@@ -133,7 +133,13 @@ export function valueRepresentation(v: unknown): string {
     return '{global}'
   } else if (typeof v === 'string' || v instanceof String) {
     return `'${v}'`
-  } else if (primitive(v) || v instanceof Date || v instanceof Error || v instanceof Number || v instanceof Boolean) {
+  } else if (
+    isTruePrimitive(v) ||
+    v instanceof Date ||
+    v instanceof Error ||
+    v instanceof Number ||
+    v instanceof Boolean
+  ) {
     return safeToString(v)
   } else if (typeof v === 'function') {
     return conciseRepresentation('', v)
