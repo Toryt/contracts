@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { isTruePrimitive } from './is.ts'
+import { isTruePrimitive } from '../types/typeof.ts'
 import { notStrictEqual, ok, strictEqual } from 'assert'
 
 type WithReadonlyProperty<O extends object | unknown, PropertyName extends string, PropertyType> = O & {

@@ -15,16 +15,10 @@
  */
 
 import should from 'should'
-import {
-  functionArguments,
-  isTruePrimitive,
-  stackLocation,
-  stack,
-  isFrozenOwnProperty
-} from '../../../../src/private/is.ts'
+import { functionArguments, stackLocation, stack, isFrozenOwnProperty } from '../../../../src/private/is.ts'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
-import { generateStuff, stuffGenerators } from '../../../util/_stuff.ts'
+import { generateStuff } from '../../../util/_stuff.ts'
 import { x, log, safeToString, showStack } from '../../../util/testUtil.ts'
 import { testName } from '../../../util/testName.ts'
 

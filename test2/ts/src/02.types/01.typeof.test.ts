@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { isTruePrimitive } from '../../../../src/private/is.ts'
+import { isTruePrimitive } from '../../../../src/types/typeof.ts'
 import { stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
 

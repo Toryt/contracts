@@ -17,7 +17,7 @@
 import { inspect } from 'node:util'
 import should from 'should'
 import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
-import { isTruePrimitive } from '../../../../src/private/is.ts'
+import { isTruePrimitive } from '../../../../src/types/typeof.ts'
 import { setAndFreeze } from '../../../../src/private/property.ts'
 import {
   safeToString,

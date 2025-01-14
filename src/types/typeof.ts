@@ -89,3 +89,17 @@ export const typeofs: readonly (PrimitiveTypeof | 'object' | 'function')[] = [
  * `'function'`.
  */
 export type Typeof = (typeof typeofs)[number]
+
+/**
+ * `p` is a true primitive, i.e., not `null`, `undefined`, an object (which implies, not a Date, Math or JSON, nor any
+ * Error, and not an array or arguments, and wrapped primitives), not a function. `p` is a true
+ *
+ * * `string`,
+ * * `number`,
+ * * `boolean`,
+ * * `symbol`, or
+ * * `bigint`
+ */
+export function isTruePrimitive(p: unknown): p is TruePrimitive {
+  return (truePrimitiveTypeofs as readonly Typeof[]).includes(typeof p)
+}

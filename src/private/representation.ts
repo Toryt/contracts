@@ -16,7 +16,8 @@
 
 import { strictEqual } from 'assert'
 import { inspect } from 'node:util'
-import { functionArguments, isTruePrimitive } from './is.ts'
+import { functionArguments } from './is.ts'
+import { isTruePrimitive } from '../types/typeof.ts'
 import { stackEOL } from './eol.ts'
 
 function surroundForArray(s: unknown, result: string, surroundString: boolean): string {
