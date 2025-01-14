@@ -152,7 +152,7 @@ export function value(v: unknown): string {
          `require`. See, e.g., https://stackoverflow.com/a/68299987.
 
          Also note that the issues mentioned above have been fixed by now. */
-      return `${namePrefix} [[failed to represent the value]] (${(!!err && (typeof err === 'object' || typeof err === 'function') && 'message' in err && err.message) || err})`
+      return `${namePrefix} [[failed to represent the value]] (${(hasProperty(err, 'message') && err.message) || err})`
     }
   }
 }
