@@ -16,6 +16,7 @@
 
 import assert from 'assert'
 import { nEOL, rnEOL, stackEOL } from './eol.ts'
+import { hasProperty } from './property.ts'
 
 /* Chrome limits the number of frames in a stack trace to 10 by default.
    https://github.com/v8/v8/wiki/Stack-Trace-API
@@ -108,7 +109,7 @@ function determineSkipsForEach(): boolean {
     return false // unreachable code
   } catch (err: unknown) {
     // not part of the standard, but this is true in all relevant environments
-    assert(!!err && (typeof err === 'object' || typeof err === 'function') && 'stack' in err)
+    assert(hasProperty(err, 'stack'))
     const stack = err.stack as string
     return stack.indexOf('forEach') < 0
   }

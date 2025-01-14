@@ -110,6 +110,18 @@ export function frozenReadOnlyArray<
   )
 }
 
+/**
+ * `x` is an object (something that can have a property), and has a property with the given name, of any type.
+ */
+export function hasProperty<X extends unknown, PropertyName extends string>(
+  x: X,
+  propertyName: PropertyName
+): x is X & { [P in PropertyName]: unknown } {
+  strictEqual(typeof propertyName, 'string')
+
+  return ((typeof x === 'object' && x !== null) || typeof x === 'function') && propertyName in x
+}
+
 export type NotNullAndNotUndefined<T = unknown> = T extends null ? never : T extends undefined ? never : T
 
 export function isFrozenOwnProperty<

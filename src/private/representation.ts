@@ -19,6 +19,7 @@ import { inspect } from 'node:util'
 import { isFunctionArguments } from './arguments.ts'
 import { isTruePrimitive } from '../types/typeof.ts'
 import { stackEOL } from './eol.ts'
+import { hasProperty } from './property.ts'
 
 function surroundForArray(s: unknown, result: string, surroundString: boolean): string {
   return Array.isArray(s) ? `[${result}]` : surroundString && typeof s === 'string' ? `'${result}'` : result
@@ -43,18 +44,6 @@ export const lengthOfEndConciseRepresentation = 15
 export const conciseSeparator = ' … '
 // MUDO namePrefix belongs somewhere else
 export const namePrefix = '𝕋📜'
-
-/**
- * `x` is an object (something that can have a property), and has a property with the given name, of any type.
- */
-export function hasProperty<X extends unknown, PropertyName extends string>(
-  x: X,
-  propertyName: PropertyName
-): x is X & { [P in PropertyName]: unknown } {
-  strictEqual(typeof propertyName, 'string')
-
-  return ((typeof x === 'object' && x !== null) || typeof x === 'function') && propertyName in x
-}
 
 /**
  * Returns a concise representation of `f` to be used in output with a `prefix`.
