@@ -304,6 +304,14 @@ this function should have a name   ` // trim
             result.should.equal('Math')
           } else if (subject === JSON) {
             result.should.equal('JSON')
+          } else if (subject === Reflect) {
+            result.should.equal('Reflect')
+          } else if (subject === Atomics) {
+            result.should.equal('Atomics')
+          } else if (subject === Intl) {
+            result.should.equal('Intl')
+          } else if (subject === WebAssembly) {
+            result.should.equal('WebAssembly')
           } else if (Array.isArray(subject)) {
             result.should.equal('Array')
           } else if (subject.toString().indexOf('Arguments') >= 0) {

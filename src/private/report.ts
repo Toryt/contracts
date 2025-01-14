@@ -83,6 +83,23 @@ export function conciseRepresentation(prefix: string, f: unknown): string {
   return result.trim()
 }
 
+// MUDO makes no sense, since constructor.name could be any string
+// export type WellKnownNonConstructorTypeRepresentation =
+//   | 'undefined'
+//   | 'string'
+//   | 'number'
+//   | 'boolean'
+//   | 'symbol'
+//   | 'bigint'
+//   | 'null'
+//   | 'Math'
+//   | 'JSON'
+//   | 'Reflect'
+//   | 'Atomics'
+//   | 'Intl'
+//   | 'WebAssembly'
+//   | 'arguments'
+
 /**
  * Return a string that is a human-readable description of the type of `v`, as good as possible
  */
@@ -95,9 +112,17 @@ export function type(v: unknown): string {
         ? 'Math'
         : v === JSON
           ? 'JSON'
-          : functionArguments(v)
-            ? 'arguments'
-            : v.constructor.name
+          : v === Reflect
+            ? 'Reflect'
+            : v === Atomics
+              ? 'Atomics'
+              : v === Intl
+                ? 'Intl'
+                : v === WebAssembly
+                  ? 'WebAssembly'
+                  : functionArguments(v)
+                    ? 'arguments'
+                    : v.constructor.name
 }
 
 export function value(v: unknown): string {
