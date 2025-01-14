@@ -15,9 +15,8 @@
  */
 
 import { ok } from 'assert'
-import { isStack } from './private/is.ts'
 import { configurableDerived, setAndFreeze } from './private/property.ts'
-import { rawStack } from './private/stack.ts'
+import { rawStack, isStack } from './private/stack.ts'
 import { stackEOL } from './private/eol.ts'
 
 // eslint-disable-next-line no-secrets/no-secrets
