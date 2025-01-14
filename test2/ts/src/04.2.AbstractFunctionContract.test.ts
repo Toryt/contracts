@@ -18,7 +18,6 @@
 
 import { inspect } from 'node:util'
 import should from 'should'
-import type { UnknownFunction } from '../../../src/index.ts'
 import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 import { internalLocation, location } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
@@ -184,18 +183,6 @@ describe(testName(import.meta), function () {
   // })
 
   describe('AbstractFunctionContract()', function () {
-    class AFCWithoutLocationCorrection<Signature extends UnknownFunction> extends AbstractFunctionContract<
-      Signature,
-      string
-    > {
-      readonly expectedLocation: string
-
-      constructor() {
-        super({}) // this is where the function where we determine the location is called; remember the location
-        this.expectedLocation = location()
-      }
-    }
-
     // common.constructorPreCases.forEach(pre => {
     //   common.constructorPostCases.forEach(post => {
     //     common.constructorExceptionCases.forEach(exception => {
@@ -203,36 +190,34 @@ describe(testName(import.meta), function () {
       // const preConditions = pre()
       // const postConditions = post()
       // const exceptionConditions = exception()
-      const result = new AFCWithoutLocationCorrection(/* {
+      const result = new AbstractFunctionContract({
+        /*
         // pre: preConditions,
         // post: postConditions,
         // exception: exceptionConditions
-      } */)
+        */
+      })
       /* location is expected to contain the name of the `AFCWithoutLocationCorrection` constructor, because the
          `AbstractFunctionContract`, where the location is determined as “1-up”, is called there. */
-      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, */ result.expectedLocation, result)
+      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, */ location(), result)
     })
 
-    class AFC<Signature extends UnknownFunction> extends AbstractFunctionContract<Signature, string> {
-      constructor() {
-        super(
-          {},
-          location(1) /* do not point to the AbstractFunctionContract constructor, but to the AFC constructor */
-        )
-      }
-    }
-
-    it('works', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFConstructor() {
+    it('works with a given location', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFConstructor() {
+      const theLocation = location(2) // just some random location
       // const preConditions = pre()
       // const postConditions = post()
       // const exceptionConditions = exception()
-      const result = new AFC(/* {
+      const result = new AbstractFunctionContract(
+        {
+          /*
         // pre: preConditions,
         // post: postConditions,
         // exception: exceptionConditions
-      } */)
-      // location is expected to contain the name of this test function, because `new AFC(…)` was called here
-      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, */ location(), result)
+        */
+        },
+        theLocation
+      )
+      expectConstructorPost(/* preConditions, postConditions, exceptionConditions, */ theLocation, result)
     })
     //     })
     //   })

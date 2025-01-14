@@ -179,8 +179,6 @@ export function expectConstructorPost(/* pre, post, exception, */ location: stri
 
 type Constructor<T> = new (...args: unknown[]) => T
 
-class AFC extends AbstractFunctionContract<UnknownFunction, string> {}
-
 export function createCandidateContractFunction<
   FunctionContract extends AbstractFunctionContract<UnknownFunction, FunctionContractLocation>
 >(
@@ -193,7 +191,8 @@ export function createCandidateContractFunction<
 
   function impl(): void {}
 
-  let contract = otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AFC)({})
+  let contract =
+    otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AbstractFunctionContract)({})
   if (typeof contract === 'object') {
     contract = Object.create(contract)
   }
@@ -275,7 +274,7 @@ export function generateIAGCFTests<
     {
       propertyName: 'implementation',
       expected: 'a Function',
-      extra: [new AFC({})]
+      extra: [new AbstractFunctionContract({})]
     }
     // MUDO
     // {
