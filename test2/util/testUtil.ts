@@ -17,25 +17,6 @@
 import should from 'should'
 import { EOL } from 'os'
 
-export function x<T extends unknown[]>(...args: { [K in keyof T]: T[K][] }): { [K in keyof T]: T[K] }[] {
-  if (args.length <= 0) {
-    return []
-  }
-
-  return args.reduce<{ [K in keyof T]: T[K] }[]>(
-    (acc, arrayI) => {
-      const ret: { [K in keyof T]: T[K] }[] = []
-      acc.forEach(elementSoFar => {
-        arrayI.forEach(elementOfI => {
-          ret.push([...elementSoFar, elementOfI] as { [K in keyof T]: T[K] })
-        })
-      })
-      return ret
-    },
-    [[] as { [K in keyof T]: T[K] }]
-  )
-}
-
 export function expectOwnFrozenProperty(subject: object, propertyName: string): void {
   const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
   should(propertyDescriptor).be.ok()

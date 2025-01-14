@@ -20,6 +20,7 @@ import { nEOL, rnEOL, stackEOL } from '../../../../src/private/eol.ts'
 import { notStackEOL } from '../../../util/cases.ts'
 import { generateStuff } from '../../../util/_stuff.ts'
 import { x, log, safeToString, showStack } from '../../../util/testUtil.ts'
+import { x } from '../../../util/cartesian.ts'
 import { testName } from '../../../util/testName.ts'
 
 describe(testName(import.meta), function () {
