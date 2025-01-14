@@ -330,7 +330,7 @@ this function should have a name   ` // trim
         mutable: true
       },
       ...stuffGenerators.map(({ generate: stackGenerate, description }) => ({
-        generate: () => ({
+        generate: (): unknown => ({
           stack: stackGenerate(),
           toString: function (): string {
             return toStringString
