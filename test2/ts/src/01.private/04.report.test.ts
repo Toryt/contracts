@@ -31,7 +31,7 @@ import {
 } from '../../../../src/private/report.ts'
 import { mutableStuffGenerators, stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
-import { anyCasesGenerators, log } from '../../../util/testUtil.ts'
+import { log } from '../../../util/testUtil.ts'
 
 describe(testName(import.meta), function () {
   describe('safeToString', function () {
@@ -224,43 +224,55 @@ this function should have a name   ` // trim
   })
 
   describe('extensiveThrown', function () {
-    let caseGenerators = anyCasesGenerators('thrown')
     const toStringString = 'This is the toString'
     const stackString = 'This is the stack'
 
-    function stackDoesNotContainToString(): unknown {
-      return {
-        stack: stackString,
-        toString: function (): string {
-          return toStringString
-        }
-      }
-    }
-
-    function stackDoesContainToString(): unknown {
-      return {
-        stack: toStringString + stackEOL + stackString,
-        toString: function (): string {
-          return toStringString
-        }
-      }
-    }
-
-    caseGenerators.push(stackDoesNotContainToString)
-    caseGenerators.push(stackDoesContainToString)
-    caseGenerators = caseGenerators.concat(
-      anyCasesGenerators('throw stack').map(ac => (): unknown => ({
-        stack: ac(),
-        toString: function (): string {
-          return toStringString
-        }
+    const caseGenerators = [
+      ...stuffGenerators,
+      {
+        generate: () =>
+          function stackDoesNotContainToString(): unknown {
+            return {
+              stack: stackString,
+              toString: function (): string {
+                return toStringString
+              }
+            }
+          },
+        description: 'function stackDoesNotContainToString',
+        primitive: false,
+        mutable: true
+      },
+      {
+        generate: () =>
+          function stackDoesContainToString(): unknown {
+            return {
+              stack: toStringString + stackEOL + stackString,
+              toString: function (): string {
+                return toStringString
+              }
+            }
+          },
+        description: 'function stackDoesContainToString',
+        primitive: false,
+        mutable: true
+      },
+      ...stuffGenerators.map(({ generate: stackGenerate, description }) => ({
+        generate: () => ({
+          stack: stackGenerate(),
+          toString: function (): string {
+            return toStringString
+          }
+        }),
+        description,
+        primitive: false,
+        mutable: true
       }))
-    )
+    ]
 
-    caseGenerators.forEach(thrownGenerator => {
-      const thrown = thrownGenerator()
-
-      it(`returns the expected, normalized string representation for ${thrown}`, function () {
+    caseGenerators.forEach(({ generate, description }) => {
+      it(`returns the expected, normalized string representation for ${description}`, function () {
+        const thrown = generate()
         const result = extensiveThrown(thrown)
 
         result.should.be.a.String()
