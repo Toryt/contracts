@@ -70,14 +70,8 @@ export function hasProperty<X extends unknown, PropertyName extends string>(
 export function conciseCondition(prefix: string, f: unknown): string {
   strictEqual(typeof prefix, 'string')
 
-  const realPrefix = prefix !== '' ? prefix + ' ' : ''
-
-  if (f === '') {
-    return realPrefix + '[empty string]'
-  }
-
   const optionalName: string | undefined = hasProperty(f, 'name') ? safeToString(f.name) : undefined
-  let result = realPrefix + (optionalName !== undefined && optionalName !== '' ? optionalName : safeToString(f))
+  let result = prefix + ' ' + (optionalName !== undefined && optionalName !== '' ? optionalName : safeToString(f, true))
   result = result.replace(/[\r\n]/g, ' ').replace(/\s\s+/g, ' ')
   if (maxLengthOfConciseRepresentation < result.length) {
     const startLength = maxLengthOfConciseRepresentation - lengthOfEndConciseRepresentation - conciseSeparator.length
@@ -85,6 +79,7 @@ export function conciseCondition(prefix: string, f: unknown): string {
     const end = result.slice(-lengthOfEndConciseRepresentation)
     result = start + conciseSeparator + end
   }
+  // when `prefix` is `''`, `trim` will remove the extra space in front
   return result.trim()
 }
 
