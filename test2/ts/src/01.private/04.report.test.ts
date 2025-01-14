@@ -223,7 +223,7 @@ this function should have a name   ` // trim
     })
   })
 
-  describe('type', function () {
+  describe('typeRepresentation', function () {
     stuffGenerators.forEach(({ generate, description }) => {
       it(`returns a string that is expected for ${description}`, function () {
         const subject: unknown = generate()
