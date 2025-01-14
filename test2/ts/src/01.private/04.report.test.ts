@@ -223,72 +223,6 @@ this function should have a name   ` // trim
     })
   })
 
-  describe('extensiveThrown', function () {
-    const toStringString = 'This is the toString'
-    const stackString = 'This is the stack'
-
-    const caseGenerators = [
-      ...stuffGenerators,
-      {
-        generate: () =>
-          function stackDoesNotContainToString(): unknown {
-            return {
-              stack: stackString,
-              toString: function (): string {
-                return toStringString
-              }
-            }
-          },
-        description: 'function stackDoesNotContainToString',
-        primitive: false,
-        mutable: true
-      },
-      {
-        generate: () =>
-          function stackDoesContainToString(): unknown {
-            return {
-              stack: toStringString + stackEOL + stackString,
-              toString: function (): string {
-                return toStringString
-              }
-            }
-          },
-        description: 'function stackDoesContainToString',
-        primitive: false,
-        mutable: true
-      },
-      ...stuffGenerators.map(({ generate: stackGenerate, description }) => ({
-        generate: () => ({
-          stack: stackGenerate(),
-          toString: function (): string {
-            return toStringString
-          }
-        }),
-        description,
-        primitive: false,
-        mutable: true
-      }))
-    ]
-
-    caseGenerators.forEach(({ generate, description }) => {
-      it(`returns the expected, normalized string representation for ${description}`, function () {
-        const thrown = generate()
-        const result = extensiveThrown(thrown)
-
-        result.should.be.a.String()
-        result.indexOf(value(thrown)).should.equal(0)
-        const stack =
-          thrown && (typeof thrown === 'object' || typeof thrown === 'function') && 'stack' in thrown && thrown.stack
-        if (stack) {
-          const prefixedStack = stackEOL + stack
-          const expectedStart = result.length - prefixedStack.length
-          result.lastIndexOf(prefixedStack).should.equal(expectedStart)
-        }
-        log(result)
-      })
-    })
-  })
-
   describe('type', function () {
     stuffGenerators.forEach(({ generate, description }) => {
       it(`returns a string that is expected for ${description}`, function () {
@@ -357,6 +291,72 @@ this function should have a name   ` // trim
           })
           result.should.equal(expected)
         }
+      })
+    })
+  })
+
+  describe('extensiveThrown', function () {
+    const toStringString = 'This is the toString'
+    const stackString = 'This is the stack'
+
+    const caseGenerators = [
+      ...stuffGenerators,
+      {
+        generate: () =>
+          function stackDoesNotContainToString(): unknown {
+            return {
+              stack: stackString,
+              toString: function (): string {
+                return toStringString
+              }
+            }
+          },
+        description: 'function stackDoesNotContainToString',
+        primitive: false,
+        mutable: true
+      },
+      {
+        generate: () =>
+          function stackDoesContainToString(): unknown {
+            return {
+              stack: toStringString + stackEOL + stackString,
+              toString: function (): string {
+                return toStringString
+              }
+            }
+          },
+        description: 'function stackDoesContainToString',
+        primitive: false,
+        mutable: true
+      },
+      ...stuffGenerators.map(({ generate: stackGenerate, description }) => ({
+        generate: () => ({
+          stack: stackGenerate(),
+          toString: function (): string {
+            return toStringString
+          }
+        }),
+        description,
+        primitive: false,
+        mutable: true
+      }))
+    ]
+
+    caseGenerators.forEach(({ generate, description }) => {
+      it(`returns the expected, normalized string representation for ${description}`, function () {
+        const thrown = generate()
+        const result = extensiveThrown(thrown)
+
+        result.should.be.a.String()
+        result.indexOf(value(thrown)).should.equal(0)
+        const stack =
+          thrown && (typeof thrown === 'object' || typeof thrown === 'function') && 'stack' in thrown && thrown.stack
+        if (stack) {
+          const prefixedStack = stackEOL + stack
+          const expectedStart = result.length - prefixedStack.length
+          result.lastIndexOf(prefixedStack).should.equal(expectedStart)
+        }
+        log(result)
       })
     })
   })
