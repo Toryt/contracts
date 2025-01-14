@@ -18,7 +18,8 @@ import type { UnknownFunction } from '../../../src/index.ts'
 import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
 import { rawStack } from '../../../src/private/stack.ts'
 import { testName } from '../../util/testName.ts'
-import { expectOwnFrozenProperty, log } from '../../util/testUtil.ts'
+import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
+import { log } from '../../util/testUtil.ts'
 import {
   expectAbstractErrorConstructorPost,
   expectAbstractErrorInvariants,

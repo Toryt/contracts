@@ -25,7 +25,7 @@ import {
   expectFrozenDerivedPropertyOnAPrototype,
   expectFrozenReadOnlyArrayPropertyWithPrivateBackingField,
   expectOwnFrozenProperty
-} from '../../../util/testUtil.ts'
+} from '../../../util/expectProperty.ts'
 import should from 'should'
 import { testName } from '../../../util/testName.ts'
 

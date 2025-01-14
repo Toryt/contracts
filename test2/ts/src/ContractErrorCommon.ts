@@ -16,7 +16,7 @@
 
 import should from 'should'
 import { ContractError } from '../../../src/ContractError.ts'
-import { expectOwnFrozenProperty } from '../../util/testUtil.ts'
+import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
 import { stack as isStack } from '../../../src/private/is.ts'
 import { stackEOL } from '../../../src/private/eol.ts'
 
