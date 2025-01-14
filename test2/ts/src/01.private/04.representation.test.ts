@@ -28,7 +28,7 @@ import {
   maxLengthOfConciseRepresentation,
   typeRepresentation,
   valueRepresentation
-} from '../../../../src/private/report.ts'
+} from '../../../../src/private/representation.ts'
 import { mutableStuffGenerators, stuffGenerators } from '../../../util/_stuff.ts'
 import { testName } from '../../../util/testName.ts'
 import { log } from '../../../util/testUtil.ts'
