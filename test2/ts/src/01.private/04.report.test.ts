@@ -336,7 +336,7 @@ this function should have a name   ` // trim
             return toStringString
           }
         }),
-        description,
+        description: `${description} stack`,
         primitive: false,
         mutable: true
       }))
