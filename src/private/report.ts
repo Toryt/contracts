@@ -103,7 +103,7 @@ export function conciseRepresentation(prefix: string, f: unknown): string {
 /**
  * Return a string that is a human-readable description of the type of `v`, as good as possible
  */
-export function type(v: unknown): string {
+export function typeRepresentation(v: unknown): string {
   return typeof v !== 'object'
     ? typeof v
     : v === null

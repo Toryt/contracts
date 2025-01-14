@@ -26,7 +26,7 @@ import {
   extensiveThrown,
   hasProperty,
   maxLengthOfConciseRepresentation,
-  type,
+  typeRepresentation,
   value
 } from '../../../../src/private/report.ts'
 import { mutableStuffGenerators, stuffGenerators } from '../../../util/_stuff.ts'
@@ -293,7 +293,7 @@ this function should have a name   ` // trim
     stuffGenerators.forEach(({ generate, description }) => {
       it(`returns a string that is expected for ${description}`, function () {
         const subject: unknown = generate()
-        const result = type(subject)
+        const result = typeRepresentation(subject)
         log(result)
         result.should.be.a.String()
         result.should.not.equal('')
