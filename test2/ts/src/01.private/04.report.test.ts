@@ -187,14 +187,12 @@ this function should have a name   ` // trim
         it(`returns the string representation with the prefix, when there is no f, or it has no name, for ${description}`, function () {
           log(`${description}: ${inspect(subject)}`)
           const result = conciseCondition(prefix, subject)
-          const safeString = subject === '' ? '[empty string]' : safeToString(subject)
-          expectGeneralPostconditions(result, prefix + ' ' + safeString)
+          expectGeneralPostconditions(result, prefix + ' ' + safeToString(subject, true))
         })
         it(`returns the string representation without a prefix, when there is no f, or it has no name, for ${description}`, function () {
           log(`${description}: ${inspect(subject)}`)
           const result = conciseCondition('', subject)
-          const safeString = subject === '' ? '[empty string]' : safeToString(subject)
-          expectGeneralPostconditions(result, safeString)
+          expectGeneralPostconditions(result, safeToString(subject, true))
         })
       } else {
         it(`returns the name with the prefix, when there is an \`f\` and it has a name, for ${description}`, function () {
