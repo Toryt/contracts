@@ -93,3 +93,10 @@ export function expectToBeArrayOfFunctions(a: unknown): void {
     should(element).be.a.Function()
   })
 }
+
+// MUDO unused?
+// function propertyIsWritable(object: object, propertyName: string): boolean {
+//   const prototype = prototypeThatHasOwnPropertyDescriptor(object, propertyName)
+//   const pd = prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
+//   return !pd || pd.writable === true
+// }

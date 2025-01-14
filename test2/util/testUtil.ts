@@ -36,13 +36,6 @@ export function regExpEscape(s: string): string {
   return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
-// MUDO unused?
-// function propertyIsWritable(object: object, propertyName: string): boolean {
-//   const prototype = prototypeThatHasOwnPropertyDescriptor(object, propertyName)
-//   const pd = prototype && Object.getOwnPropertyDescriptor(prototype, propertyName)
-//   return !pd || pd.writable === true
-// }
-
 export function anyCasesGenerators(discriminator: string): (() => unknown)[] {
   // noinspection JSPrimitiveTypeWrapperUsage
   const generators = [
