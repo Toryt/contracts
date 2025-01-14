@@ -348,9 +348,8 @@ this function should have a name   ` // trim
         const result = extensiveThrown(thrown)
 
         result.should.be.a.String()
-        result.indexOf(value(thrown)).should.equal(0)
-        const stack =
-          thrown && (typeof thrown === 'object' || typeof thrown === 'function') && 'stack' in thrown && thrown.stack
+        result.should.startWith(value(thrown))
+        const stack = hasProperty(thrown, 'stack') && thrown.stack
         if (stack) {
           const prefixedStack = stackEOL + stack
           const expectedStart = result.length - prefixedStack.length
