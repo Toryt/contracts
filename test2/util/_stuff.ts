@@ -14,11 +14,12 @@
   limitations under the License.
  */
 
+import type { Primitive } from '../../src/index.ts'
+
 // eslint-disable-next-line no-new-func
 const getGlobal = new Function('return this;')
 export const global: object = getGlobal()
 
-export type Primitive = undefined | string | number | boolean | symbol | bigint // according to `typeof`, `null` is an `object`
 export type PrimitiveOrNull = Primitive | null
 export type ImmutableSingleton =
   | typeof Math
