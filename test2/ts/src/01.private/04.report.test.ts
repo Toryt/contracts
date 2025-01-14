@@ -348,12 +348,14 @@ this function should have a name   ` // trim
         const result = extensiveThrown(thrown)
 
         result.should.be.a.String()
-        result.should.startWith(value(thrown))
-        const stack = hasProperty(thrown, 'stack') && thrown.stack
-        if (stack) {
-          const prefixedStack = stackEOL + stack
+        const thrownString = value(thrown)
+        if (hasProperty(thrown, 'stack')) {
+          result.should.startWith(thrownString)
+          const prefixedStack = stackEOL + safeToString(thrown.stack)
           const expectedStart = result.length - prefixedStack.length
           result.lastIndexOf(prefixedStack).should.equal(expectedStart)
+        } else {
+          result.should.equal(thrownString)
         }
         log(result)
       })

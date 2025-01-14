@@ -176,11 +176,12 @@ export function value(v: unknown): string {
  */
 export function extensiveThrown(thrown: unknown): string {
   const thrownString = value(thrown)
-  const stack = hasProperty(thrown, 'stack') && thrown.stack
-  if (!stack) {
+
+  if (!hasProperty(thrown, 'stack')) {
     return thrownString
   }
-  const stackString = '' + stack // make sure it is a string
+
+  const stackString = safeToString(thrown.stack)
   /* In Node and Chrome, the stack starts with `thrown.toString` (name and message). In Safari and FF, it doesn't:
      `thrown.stack` it is the pure stack. We add the `toString` ourselves. */
   return stackString.startsWith(thrownString) ? stackString : thrownString + stackEOL + stackString
