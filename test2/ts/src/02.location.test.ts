@@ -78,13 +78,13 @@ describe(testName(import.meta), function () {
     ;[
       ...stuffGenerators,
       {
-        generate: () => 'this is a' + nEOL + 'multi-line' + nEOL + 'string',
+        generate: (): string => 'this is a' + nEOL + 'multi-line' + nEOL + 'string',
         description: 'a multi-line string with \\n as EOL',
         primitive: true,
         mutable: false
       },
       {
-        generate: () => 'this is a' + rnEOL + 'multi-line' + rnEOL + 'string',
+        generate: (): string => 'this is a' + rnEOL + 'multi-line' + rnEOL + 'string',
         description: 'a multi-line string with \\r\\n as EOL',
         primitive: true,
         mutable: false
