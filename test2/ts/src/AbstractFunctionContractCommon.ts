@@ -182,7 +182,7 @@ type Constructor<T> = new (...args: unknown[]) => T
 class AFC extends AbstractFunctionContract<UnknownFunction, string> {}
 
 export function createCandidateContractFunction<
-  FunctionContract extends AbstractFunctionContract<UnknownFunction, string>
+  FunctionContract extends AbstractFunctionContract<UnknownFunction, FunctionContractLocation>
 >(
   ContractConstructor?: Constructor<FunctionContract>,
   doNotFreezeProperty?: string,
