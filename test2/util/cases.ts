@@ -16,37 +16,6 @@
 
 import { type EOL, stackEOL, rnEOL, nEOL } from '../../src/private/eol.ts'
 
-// noinspection JSPrimitiveTypeWrapperUsage
-export const any: unknown[] = [
-  undefined,
-  null,
-  4,
-  -1,
-  '',
-  'A string',
-  new Date(),
-  true,
-  false,
-  {},
-  /foo/,
-  function (): void {},
-  (): string => '',
-  [],
-  new ReferenceError(),
-  Math,
-  JSON,
-  // eslint-disable-next-line no-new-wrappers
-  new Number(4),
-  // eslint-disable-next-line no-new-wrappers
-  new String('abc'),
-  // eslint-disable-next-line no-new-wrappers
-  new Boolean(false),
-  Object,
-  (function (): IArguments {
-    return arguments
-  })()
-]
-
 export const intentionalError: Error = new Error('This condition intentionally fails.')
 
 export function intentionallyFailingFunction(): never {
