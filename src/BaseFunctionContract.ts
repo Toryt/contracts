@@ -239,7 +239,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     // assert(!kwargs.exception || Array.isArray(kwargs.exception), 'optional kwargs.exception is an array')
     assert(
       !_location || _location === internalLocation || isLocation(_location),
-      'optional private _location is internal or a string'
+      'optional private _location is internal, or a location'
     )
 
     const self = this
