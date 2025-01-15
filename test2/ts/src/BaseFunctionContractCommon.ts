@@ -17,7 +17,7 @@
 import { inspect } from 'node:util'
 import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
-import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
+import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
 import { type FunctionContractLocation, location } from '../../../src/location.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
@@ -103,8 +103,8 @@ export const notAFunctionNorAContract: unknown[] = [
 
 export function expectInvariants<Signature extends UnknownFunction, Location extends FunctionContractLocation>(
   subject: unknown
-): AbstractFunctionContract<Signature, FunctionContractLocation> {
-  should(subject).be.an.instanceof(AbstractFunctionContract)
+): BaseFunctionContract<Signature, FunctionContractLocation> {
+  should(subject).be.an.instanceof(BaseFunctionContract)
   // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
   // /* MUDO given a contract c, and contract function cf = c.implementation(…), cf.contract !== c, but
@@ -128,32 +128,32 @@ export function expectInvariants<Signature extends UnknownFunction, Location ext
   // testUtil.expectToBeArrayOfFunctions(subject.exception)
   // testUtil.expectOwnFrozenProperty(subject, 'location')
   // const location = subject.location
-  // ;(location === AbstractFunctionContract.internalLocation || is.isLocation(location)).should.be.true()
+  // ;(location === BaseFunctionContract.internalLocation || is.isLocation(location)).should.be.true()
   // testUtil.expectOwnFrozenProperty(subject, 'abstract')
   // const abstract = subject.abstract
-  // AbstractFunctionContract.isAGeneralContractFunction(abstract).should.be.true()
+  // BaseFunctionContract.isAGeneralContractFunction(abstract).should.be.true()
   // abstract.location.should.equal(location)
   // subject.isImplementedBy(abstract).should.be.true()
-  // abstract.should.throw(AbstractFunctionContract.AbstractError, {
-  //   message: AbstractFunctionContract.AbstractError.message
+  // abstract.should.throw(BaseFunctionContract.AbstractError, {
+  //   message: BaseFunctionContract.AbstractError.message
   // })
   // try {
   //   abstract()
   // } catch (err) {
   //   const stack = err.stack
-  //   stack.should.containEql(AbstractFunctionContract.AbstractError.message)
-  //   stack.should.containEql(AbstractFunctionContract.AbstractError.name)
+  //   stack.should.containEql(BaseFunctionContract.AbstractError.message)
+  //   stack.should.containEql(BaseFunctionContract.AbstractError.name)
   //   stack.split(eol.stack)[0].should.containEql('abstract')
   //   testUtil.log(stack)
   // }
-  return subject as AbstractFunctionContract<Signature, Location>
+  return subject as BaseFunctionContract<Signature, Location>
 }
 
 // function expectArrayPost(result, array, propName, privatePropName) {
 //   result[propName].should.be.an.Array()
 //   if (!array) {
 //     if (propName === 'exception' || propName === 'fastException') {
-//       result[propName].should.eql(AbstractFunctionContract.mustNotHappen)
+//       result[propName].should.eql(BaseFunctionContract.mustNotHappen)
 //     } else {
 //       result[propName].should.be.empty()
 //     }
@@ -180,7 +180,7 @@ export function expectConstructorPost(/* pre, post, exception, */ location: stri
 type Constructor<T> = new (...args: unknown[]) => T
 
 export function createCandidateContractFunction<
-  FunctionContract extends AbstractFunctionContract<UnknownFunction, FunctionContractLocation>
+  FunctionContract extends BaseFunctionContract<UnknownFunction, FunctionContractLocation>
 >(
   ContractConstructor?: Constructor<FunctionContract>,
   doNotFreezeProperty?: string,
@@ -192,14 +192,14 @@ export function createCandidateContractFunction<
   function impl(): void {}
 
   let contract =
-    otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || AbstractFunctionContract)({})
+    otherPropertyName === 'contract' ? otherPropertyValue : new (ContractConstructor || BaseFunctionContract)({})
   if (typeof contract === 'object') {
     contract = Object.create(contract)
   }
   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
   const theLocation = otherPropertyName === 'location' ? otherPropertyValue : location()
   // MUDO
-  // const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractFunctionContract.bindContractFunction
+  // const bind = otherPropertyName === 'bind' ? otherPropertyValue : BaseFunctionContract.bindContractFunction
 
   if (doNotFreezeProperty === 'contract') {
     candidate.contract = contract
@@ -227,7 +227,7 @@ export function createCandidateContractFunction<
   //   'name',
   //   otherPropertyName === 'name'
   //     ? otherPropertyValue
-  //     : report.conciseRepresentation(AbstractFunctionContract.namePrefix, implementation)
+  //     : report.conciseRepresentation(BaseFunctionContract.namePrefix, implementation)
   // )
   candidate.prototype = Object.create(impl.prototype, {
     constructor: { value: candidate }
@@ -236,13 +236,13 @@ export function createCandidateContractFunction<
 }
 
 export function generateIAGCFTests<
-  FunctionContract extends AbstractFunctionContract<UnknownFunction, FunctionContractLocation>
+  FunctionContract extends BaseFunctionContract<UnknownFunction, FunctionContractLocation>
 >(
-  isAXXXContractFunction: typeof AbstractFunctionContract.isAGeneralContractFunction,
+  isAXXXContractFunction: typeof BaseFunctionContract.isAGeneralContractFunction,
   ContractConstructor?: Constructor<FunctionContract>
 ): void {
   it(
-    'says yes if there is an implementation Function, an AbstractFunctionContract, and a location, and all 3 ' +
+    'says yes if there is an implementation Function, an BaseFunctionContract, and a location, and all 3 ' +
       'properties are frozen, and it has the expected name',
     function () {
       const candidate = createCandidateContractFunction(ContractConstructor)
@@ -268,24 +268,24 @@ export function generateIAGCFTests<
   const cases = [
     {
       propertyName: 'contract',
-      expected: 'an AbstractFunctionContract',
+      expected: 'an BaseFunctionContract',
       extra: [function (): void {}]
     },
     {
       propertyName: 'implementation',
       expected: 'a Function',
-      extra: [new AbstractFunctionContract({})]
+      extra: [new BaseFunctionContract({})]
     }
     // MUDO
     // {
     //   propertyName: 'bind',
-    //   expected: 'AbstractFunctionContract.bindContractFunction',
+    //   expected: 'BaseFunctionContract.bindContractFunction',
     //   extra: []
     // },
     // {
     //   propertyName: 'name',
     //   expected: 'the contractFunction.name',
-    //   extra: ['candidate', AbstractFunctionContract.namePrefix]
+    //   extra: ['candidate', BaseFunctionContract.namePrefix]
     // }
   ]
 
@@ -305,11 +305,11 @@ export function generateIAGCFTests<
 //     generateIAGCFTests(ContractConstructor, ContractConstructor.isAContractFunction)
 //     notAFunctionNorAContract
 //       .filter(t => !t || typeof t !== 'string' || t.indexOf(eol.n) >= 0 || t.indexOf(eol.rn) >= 0)
-//       .concat([{}, AbstractFunctionContract.internalLocation])
+//       .concat([{}, BaseFunctionContract.internalLocation])
 //       .forEach(v => {
 //         it(`says no if the location is not a location outside this library but ${v}`, function () {
 //           const candidate = createCandidateContractFunction(null, 'location', v)
-//           should(AbstractFunctionContract.isAContractFunction(candidate)).not.be.ok()
+//           should(BaseFunctionContract.isAContractFunction(candidate)).not.be.ok()
 //         })
 //       })
 //     notAFunctionNorAContract

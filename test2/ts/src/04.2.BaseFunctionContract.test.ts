@@ -18,7 +18,7 @@
 
 import { inspect } from 'node:util'
 import should from 'should'
-import { AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
+import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
 import { internalLocation, location } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
 import {
@@ -27,7 +27,7 @@ import {
   expectInvariants,
   generateIAGCFTests,
   notAFunctionNorAContract
-} from './AbstractFunctionContractCommon.ts'
+} from './BaseFunctionContractCommon.ts'
 
 // const testUtil = require('./_util/testUtil')
 // const stack = require('../lib/_private/stack')
@@ -36,93 +36,93 @@ import {
 // const should = require('should')
 
 describe(testName(import.meta), function () {
-  describe('AbstractFunctionContract', function () {
+  describe('BaseFunctionContract', function () {
     it('has the expected properties', function () {
-      AbstractFunctionContract.should.have.ownProperty('namePrefix')
-      AbstractFunctionContract.namePrefix.should.be.a.String()
-      // AbstractFunctionContract.should.have.ownProperty('bindContractFunction')
-      // AbstractFunctionContract.bindContractFunction.should.be.a.Function()
-      // AbstractFunctionContract.should.have.ownProperty('isAContractFunction')
-      // AbstractFunctionContract.isAContractFunction.should.be.a.Function()
-      // AbstractFunctionContract.should.have.ownProperty('bless')
-      // AbstractFunctionContract.bless.should.be.a.Function()
-      // AbstractFunctionContract.should.have.ownProperty('internalLocation')
-      // AbstractFunctionContract.internalLocation.should.be.an.Object()
-      // ;('' + AbstractFunctionContract.internalLocation).should.be.equal('INTERNAL')
-      AbstractFunctionContract.should.have.ownProperty('falseCondition')
-      AbstractFunctionContract.falseCondition.should.be.a.Function()
-      AbstractFunctionContract.should.have.ownProperty('mustNotHappen')
-      AbstractFunctionContract.mustNotHappen.should.be.an.Array()
-      AbstractFunctionContract.mustNotHappen.should.have.length(1)
-      should(AbstractFunctionContract.mustNotHappen[0]).equal(AbstractFunctionContract.falseCondition)
-      // AbstractFunctionContract.should.have.ownProperty('outcome')
-      // AbstractFunctionContract.outcome.should.be.a.Function()
-      // AbstractFunctionContract.should.have.ownProperty('callee')
-      // AbstractFunctionContract.callee.should.be.a.Function()
+      BaseFunctionContract.should.have.ownProperty('namePrefix')
+      BaseFunctionContract.namePrefix.should.be.a.String()
+      // BaseFunctionContract.should.have.ownProperty('bindContractFunction')
+      // BaseFunctionContract.bindContractFunction.should.be.a.Function()
+      // BaseFunctionContract.should.have.ownProperty('isAContractFunction')
+      // BaseFunctionContract.isAContractFunction.should.be.a.Function()
+      // BaseFunctionContract.should.have.ownProperty('bless')
+      // BaseFunctionContract.bless.should.be.a.Function()
+      // BaseFunctionContract.should.have.ownProperty('internalLocation')
+      // BaseFunctionContract.internalLocation.should.be.an.Object()
+      // ;('' + BaseFunctionContract.internalLocation).should.be.equal('INTERNAL')
+      BaseFunctionContract.should.have.ownProperty('falseCondition')
+      BaseFunctionContract.falseCondition.should.be.a.Function()
+      BaseFunctionContract.should.have.ownProperty('mustNotHappen')
+      BaseFunctionContract.mustNotHappen.should.be.an.Array()
+      BaseFunctionContract.mustNotHappen.should.have.length(1)
+      should(BaseFunctionContract.mustNotHappen[0]).equal(BaseFunctionContract.falseCondition)
+      // BaseFunctionContract.should.have.ownProperty('outcome')
+      // BaseFunctionContract.outcome.should.be.a.Function()
+      // BaseFunctionContract.should.have.ownProperty('callee')
+      // BaseFunctionContract.callee.should.be.a.Function()
       //
-      AbstractFunctionContract.should.have.ownProperty('root')
-      AbstractFunctionContract.root.should.be.an.instanceof(AbstractFunctionContract)
-      const root = AbstractFunctionContract.root
+      BaseFunctionContract.should.have.ownProperty('root')
+      BaseFunctionContract.root.should.be.an.instanceof(BaseFunctionContract)
+      const root = BaseFunctionContract.root
       expectInvariants(root)
       // MUDO
       // root.pre.should.have.length(1)
-      // root.pre[0].should.equal(AbstractFunctionContract.falseCondition)
+      // root.pre[0].should.equal(BaseFunctionContract.falseCondition)
       // root.post.should.be.empty()
       // root.exception.should.be.empty()
-      // root.location.should.equal(AbstractFunctionContract.internalLocation)
-      // AbstractFunctionContract.should.have.ownProperty('AbstractError')
+      // root.location.should.equal(BaseFunctionContract.internalLocation)
+      // BaseFunctionContract.should.have.ownProperty('AbstractError')
       // MUDO
-      // AbstractFunctionContract.AbstractError.should.be.a.Function()
-      // AbstractFunctionContract.AbstractError.prototype.should.be.an.instanceof(Error)
-      // AbstractFunctionContract.should.have.ownProperty('prototype')
-      // AbstractFunctionContract.prototype.should.be.an.Object()
-      // const prototype = AbstractFunctionContract.prototype
+      // BaseFunctionContract.AbstractError.should.be.a.Function()
+      // BaseFunctionContract.AbstractError.prototype.should.be.an.instanceof(Error)
+      // BaseFunctionContract.should.have.ownProperty('prototype')
+      // BaseFunctionContract.prototype.should.be.an.Object()
+      // const prototype = BaseFunctionContract.prototype
       // should(prototype._pre).be.null()
       // should(prototype._post).be.null()
       // should(prototype._exception).be.null()
-      // prototype.location.should.equal(AbstractFunctionContract.internalLocation)
+      // prototype.location.should.equal(BaseFunctionContract.internalLocation)
       // should(prototype.abstract).be.null()
       // prototype.isImplementedBy.should.be.a.Function()
     })
   })
 
-  // describe('AbstractFunctionContract.bindContractFunction', function () {
+  // describe('BaseFunctionContract.bindContractFunction', function () {
   //   it('behaves as expected', function () {
-  //     const subject = common.createCandidateContractFunction(AbstractFunctionContract)
-  //     const result = AbstractFunctionContract.bindContractFunction.apply(subject)
-  //     AbstractFunctionContract.isAGeneralContractFunction(result).should.be.true()
+  //     const subject = common.createCandidateContractFunction(BaseFunctionContract)
+  //     const result = BaseFunctionContract.bindContractFunction.apply(subject)
+  //     BaseFunctionContract.isAGeneralContractFunction(result).should.be.true()
   //     Object.getPrototypeOf(result.contract).should.equal(subject.contract)
   //     result.location.should.equal(subject.location)
-  //     if (AbstractFunctionContract.isAContractFunction(subject)) {
-  //       AbstractFunctionContract.isAContractFunction(result).should.be.true()
+  //     if (BaseFunctionContract.isAContractFunction(subject)) {
+  //       BaseFunctionContract.isAContractFunction(result).should.be.true()
   //     }
   //   })
   // })
 
   describe('isAGeneralContractFunction', function () {
-    generateIAGCFTests(AbstractFunctionContract.isAGeneralContractFunction)
+    generateIAGCFTests(BaseFunctionContract.isAGeneralContractFunction)
     notAFunctionNorAContract
       .filter(v => !!v)
       .concat(['    at', 'at /', {}, internalLocation])
       .forEach(v => {
         it(`says yes if there is an implementation Function, an AbstractFunctionContract, and a location that is ${inspect(v)}, and all 3 properties are frozen, and it has the expected name`, function () {
           const candidate = createCandidateContractFunction(undefined, undefined, 'location', v)
-          AbstractFunctionContract.isAGeneralContractFunction(candidate).should.be.ok()
+          BaseFunctionContract.isAGeneralContractFunction(candidate).should.be.ok()
         })
       })
   })
 
-  // common.generateConstructorMethodsDescriptions(AbstractFunctionContract)
+  // common.generateConstructorMethodsDescriptions(BaseFunctionContract)
   //
-  // describe('AbstractFunctionContract.bless', function () {
+  // describe('BaseFunctionContract.bless', function () {
   //   it('behaves as expected', function () {
   //     const contractFunction = function () {}
-  //     const contract = new AbstractFunctionContract({})
+  //     const contract = new BaseFunctionContract({})
   //     const implFunction = function () {}
   //     const location = stack.location()
   //     should(implFunction.prototype).be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
-  //     AbstractFunctionContract.bless(contractFunction, contract, implFunction, location)
-  //     AbstractFunctionContract.isAContractFunction(contractFunction).should.be.true()
+  //     BaseFunctionContract.bless(contractFunction, contract, implFunction, location)
+  //     BaseFunctionContract.isAContractFunction(contractFunction).should.be.true()
   //     testUtil.expectOwnFrozenProperty(contractFunction, 'contract')
   //     Object.getPrototypeOf(contractFunction.contract).should.equal(contract)
   //     testUtil.expectOwnFrozenProperty(contractFunction, 'implementation')
@@ -130,25 +130,25 @@ describe(testName(import.meta), function () {
   //     testUtil.expectOwnFrozenProperty(contractFunction, 'location')
   //     contractFunction.location.should.equal(location)
   //     testUtil.expectOwnFrozenProperty(contractFunction, 'bind')
-  //     contractFunction.bind.should.equal(AbstractFunctionContract.bindContractFunction)
+  //     contractFunction.bind.should.equal(BaseFunctionContract.bindContractFunction)
   //     contractFunction.should.have.ownProperty('name')
   //     contractFunction.name.should.equal(
-  //       report.conciseRepresentation(AbstractFunctionContract.namePrefix, contractFunction.implementation)
+  //       report.conciseRepresentation(BaseFunctionContract.namePrefix, contractFunction.implementation)
   //     )
   //     const implFunctionNamePropDesc = Object.getOwnPropertyDescriptor(implFunction, 'name')
   //     delete implFunctionNamePropDesc.value
   //     const contractFunctionNamePropDesc = Object.getOwnPropertyDescriptor(contractFunction, 'name')
   //     contractFunctionNamePropDesc.value.should.equal(
-  //       report.conciseRepresentation(AbstractFunctionContract.namePrefix, contractFunction.implementation)
+  //       report.conciseRepresentation(BaseFunctionContract.namePrefix, contractFunction.implementation)
   //     )
   //     delete contractFunctionNamePropDesc.value
   //     contractFunctionNamePropDesc.should.deepEqual(implFunctionNamePropDesc)
   //   })
   // })
   //
-  // describe('AbstractFunctionContract.falseCondition', function () {
+  // describe('BaseFunctionContract.falseCondition', function () {
   //   it('always returns false', function () {
-  //     const result = AbstractFunctionContract.falseCondition()
+  //     const result = BaseFunctionContract.falseCondition()
   //     result.should.be.false()
   //   })
   // })
@@ -164,33 +164,33 @@ describe(testName(import.meta), function () {
   //   { a: args.apply(null, argsCase), d: 'arguments' }
   // ]
   //
-  // describe('AbstractFunctionContract.outcome', function () {
+  // describe('BaseFunctionContract.outcome', function () {
   //   argsCases.forEach(c => {
   //     it(`returns the expected element for an ${c.d} argument`, function () {
-  //       const result = AbstractFunctionContract.outcome(c.a)
+  //       const result = BaseFunctionContract.outcome(c.a)
   //       result.should.equal(argsResult)
   //     })
   //   })
   // })
   //
-  // describe('AbstractFunctionContract.callee', function () {
+  // describe('BaseFunctionContract.callee', function () {
   //   argsCases.forEach(c => {
   //     it(`returns the expected element for an ${c.d} argument`, function () {
-  //       const result = AbstractFunctionContract.callee(c.a)
+  //       const result = BaseFunctionContract.callee(c.a)
   //       result.should.equal(argsCallee)
   //     })
   //   })
   // })
 
-  describe('AbstractFunctionContract()', function () {
+  describe('BaseFunctionContract()', function () {
     // common.constructorPreCases.forEach(pre => {
     //   common.constructorPostCases.forEach(post => {
     //     common.constructorExceptionCases.forEach(exception => {
-    it('works with the AbstractFunctionContract location', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFCWithoutLocationCorrection() {
+    it('works with the BaseFunctionContract location', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFCWithoutLocationCorrection() {
       // const preConditions = pre()
       // const postConditions = post()
       // const exceptionConditions = exception()
-      const result = new AbstractFunctionContract({
+      const result = new BaseFunctionContract({
         /*
         // pre: preConditions,
         // post: postConditions,
@@ -198,7 +198,7 @@ describe(testName(import.meta), function () {
         */
       })
       /* location is expected to contain the name of the `AFCWithoutLocationCorrection` constructor, because the
-         `AbstractFunctionContract`, where the location is determined as “1-up”, is called there. */
+         `BaseFunctionContract`, where the location is determined as “1-up”, is called there. */
       expectConstructorPost(/* preConditions, postConditions, exceptionConditions, */ location(), result)
     })
 
@@ -207,7 +207,7 @@ describe(testName(import.meta), function () {
       // const preConditions = pre()
       // const postConditions = post()
       // const exceptionConditions = exception()
-      const result = new AbstractFunctionContract(
+      const result = new BaseFunctionContract(
         {
           /*
         // pre: preConditions,
@@ -225,12 +225,12 @@ describe(testName(import.meta), function () {
   })
 
   // common.generatePrototypeMethodsDescriptions(
-  //   () => new AbstractFunctionContract({}),
+  //   () => new BaseFunctionContract({}),
   //   testUtil
   //     .x(common.constructorPreCases, common.constructorPostCases, common.constructorExceptionCases)
   //     .map(parameters => ({
   //       subject: () =>
-  //         new AbstractFunctionContract({
+  //         new BaseFunctionContract({
   //           pre: parameters[0](),
   //           post: parameters[1](),
   //           exception: parameters[2]()

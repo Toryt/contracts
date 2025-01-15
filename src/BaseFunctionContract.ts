@@ -35,7 +35,7 @@ export const abstractErrorMessage = 'an abstract function cannot be executed'
  * Thrown when an abstract method is called. You shouldn't.
  */
 export class AbstractError<
-  AFC extends AbstractFunctionContract<UnknownFunction, FunctionContractLocation>
+  AFC extends BaseFunctionContract<UnknownFunction, FunctionContractLocation>
 > extends ContractError {
   static {
     setAndFreeze(this.prototype, 'name', AbstractError.name)
@@ -46,7 +46,7 @@ export class AbstractError<
   readonly contract!: AFC
 
   constructor(contract: AFC, rawStack: string) {
-    ok(contract instanceof AbstractFunctionContract, 'contract is an AbstractContract')
+    ok(contract instanceof BaseFunctionContract, 'contract is an BaseFunctionContract')
     ok(isStack(rawStack), 'rawStack is a stack')
 
     super(rawStack)
@@ -64,7 +64,7 @@ export interface GeneralContractFunctionProperties<
   ImplementationSignature extends ContractSignature,
   Location extends FunctionContractLocation
 > {
-  contract: AbstractFunctionContract<ContractSignature, Location>
+  contract: BaseFunctionContract<ContractSignature, Location>
   implementation: ImplementationSignature
   location: Location
 }
@@ -95,7 +95,7 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
 /**
  * Abstract definition of a function contract.
  *
- * An AbstractContract consists of an array of preconditions, an array of nominal postconditions,
+ * An BaseFunctionContract consists of an array of preconditions, an array of nominal postconditions,
  * and an array of exceptional postconditions.
  *
  * The conditions are functions whose result is interpreted as a booleany value.
@@ -108,11 +108,11 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  * definitions inside conditions from `arguments`.
  *
  * The default preconditions and postconditions are the empty array (anything goes). For exceptions, the default
- * condition is `AbstractContract.mustNotHappen` (any exception is a violation).
+ * condition is `BaseFunctionContract.mustNotHappen` (any exception is a violation).
  *
  * Furthermore, an instance contains a `location` property, which is a line of text
  * that refers to the source code where the contract was created. For internal contracts, this is
- * `AbstractContract.internalLocation.
+ * `BaseFunctionContract.internalLocation.
  *
  * If `verify` and `verifyPostconditions` are both truthy, contract function verification will verify preconditions,
  * postconditions and exception conditions. If `verify` is truthy, but `verifyPostconditions` is falsy, contract
@@ -131,19 +131,18 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  *
  * The `_location` argument is for internal use, and might be removed.
  */
-export class AbstractFunctionContract<Signature extends UnknownFunction, Location extends FunctionContractLocation> {
-  // MUDO rename: this is not abstract (see root)
+export class BaseFunctionContract<Signature extends UnknownFunction, Location extends FunctionContractLocation> {
   static readonly namePrefix: typeof namePrefix = namePrefix
 
   /**
-   * The most general {@link AbstractFunctionContract}. This has the most strict preconditions (nothing is allowed),
+   * The most general {@link BaseFunctionContract}. This has the most strict preconditions (nothing is allowed),
    * which can be weakened by specializations, and the most general nominal and exceptional postconditions (anything
    * goes), which can be strengthened by specializations.
    */
-  static readonly root: AbstractFunctionContract<UnknownFunction, InternalLocation> = new AbstractFunctionContract(
+  static readonly root: BaseFunctionContract<UnknownFunction, InternalLocation> = new BaseFunctionContract(
     {
       // MUDO
-      // pre: AbstractContract.mustNotHappen,
+      // pre: BaseFunctionContract.mustNotHappen,
       // post: [],
       // exception: []
     },
@@ -158,29 +157,29 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
   }
 
   /**
-   * Singleton array of {@linkplain AbstractFunctionContract#falseCondition}. Can be used the clearly signal
+   * Singleton array of {@linkplain BaseFunctionContract#falseCondition}. Can be used the clearly signal
    * that a function should never throw exceptions, or never end nominally, or should never be called,
    * because the conditions will always fail.
    */
-  static readonly mustNotHappen: readonly (typeof AbstractFunctionContract.falseCondition)[] = Object.freeze([
-    AbstractFunctionContract.falseCondition
+  static readonly mustNotHappen: readonly (typeof BaseFunctionContract.falseCondition)[] = Object.freeze([
+    BaseFunctionContract.falseCondition
   ])
 
   /**
-   * A {@link GeneralContractFunction} is an {@link AbstractFunctionContract#implementation} of an
-   * {@link AbstractFunctionContract}. This function verifies whether a function given as a parameter is a
+   * A {@link GeneralContractFunction} is an {@link BaseFunctionContract#implementation} of an
+   * {@link BaseFunctionContract}. This function verifies whether a function given as a parameter is a
    * General Contract Function.
    *
    * To be a {@link GeneralContractFunction}, the subject must
    *
    *   * be a function,
    *   * have a frozen {@link GeneralContractFunction#contract} property that refers to an
-   *     {@link AbstractFunctionContract},
+   *     {@link BaseFunctionContract},
    *   * have a frozen {@link GeneralContractFunction#implementation} property that refers to a function (that realizes
    *     the contract),
    *   * have a frozen {@link GeneralContractFunction#location} property, that has a value,
    *   * have a frozen {@link GeneralContractFunction#bind} property, that is
-   *     {@link AbstractContract.bindContractFunction}, and
+   *     {@link BaseFunctionContract.bindContractFunction}, and
    *   * if the {@link GeneralContractFunction#implementation} function has a `prototype`, have a `prototype` property,
    *       * that is an object,
    *       * that has a `constructor` property that is the contract function, and
@@ -198,18 +197,18 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
     return (
       typeof f === 'function' &&
       isFrozenOwnProperty(f, 'contract') &&
-      f.contract instanceof AbstractFunctionContract &&
+      f.contract instanceof BaseFunctionContract &&
       isFrozenOwnProperty(f, 'implementation') &&
       typeof f.implementation === 'function' &&
       isFrozenOwnProperty(f, 'location') &&
       !!f.location
       // &&
       // MUDO
-      // (f === f.implementation || f.name === conciseRepresentation(AbstractFunctionContract.namePrefix, f.implementation))
+      // (f === f.implementation || f.name === conciseRepresentation(BaseFunctionContract.namePrefix, f.implementation))
       // &&
       // isFrozenOwnProperty(f, 'bind')
       // &&
-      // f.bind === AbstractContract.bindContractFunction &&
+      // f.bind === BaseFunctionContract.bindContractFunction &&
       // (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||
       //   (typeof f.prototype === 'object' &&
       //     f.prototype.constructor === f &&
@@ -248,11 +247,11 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
     // /* This cannot be defined in the prototype. The `self` is the contract, not the `this`. When this function is called
     //    as a method of a random object, that random object is the `this`, not this contract. */
     // function abstract(): never {
-    //   throw new AbstractContract.AbstractError(self, rawStack())
+    //   throw new BaseFunctionContract.AbstractError(self, rawStack())
     // }
 
     const theLocation: FunctionContractLocation = _location || location(1)
-    // AbstractContract.bless(abstract, self, abstract, theLocation)
+    // BaseFunctionContract.bless(abstract, self, abstract, theLocation)
     // property.setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []))
     // property.setAndFreeze(self, '_post', Object.freeze(kwargs.post ? kwargs.post.slice() : []))
     // property.setAndFreeze(
@@ -269,36 +268,36 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
 //   return obj === proto || (obj !== Object.prototype && isOrHasAsPrototype(Object.getPrototypeOf(obj), proto))
 // }
 //
-// AbstractContract.prototype = {
-//   constructor: AbstractContract,
+// BaseFunctionContract.prototype = {
+//   constructor: BaseFunctionContract,
 //   _pre: null,
 //   _post: null,
 //   _exception: null,
 //   isImplementedBy: function (f) {
-//     return AbstractContract.isAGeneralContractFunction(f) && isOrHasAsPrototype(f.contract, this)
+//     return BaseFunctionContract.isAGeneralContractFunction(f) && isOrHasAsPrototype(f.contract, this)
 //   }
 // }
-// property.frozenReadOnlyArray(AbstractContract.prototype, 'pre', '_pre')
-// property.frozenReadOnlyArray(AbstractContract.prototype, 'post', '_post')
-// property.frozenReadOnlyArray(AbstractContract.prototype, 'exception', '_exception')
-// property.setAndFreeze(AbstractContract.prototype, 'location', AbstractContract.internalLocation)
-// property.setAndFreeze(AbstractContract.prototype, 'abstract', null)
+// property.frozenReadOnlyArray(BaseFunctionContract.prototype, 'pre', '_pre')
+// property.frozenReadOnlyArray(BaseFunctionContract.prototype, 'post', '_post')
+// property.frozenReadOnlyArray(BaseFunctionContract.prototype, 'exception', '_exception')
+// property.setAndFreeze(BaseFunctionContract.prototype, 'location', BaseFunctionContract.internalLocation)
+// property.setAndFreeze(BaseFunctionContract.prototype, 'abstract', null)
 
 // /**
 //  * This function is intended to be used as the bind function of contract functions. It makes sure
 //  * that, when applied to a contract function, the result
-//  * [is also a contract function]{@linkplain AbstractContract#isAContractFunction}.
+//  * [is also a contract function]{@linkplain BaseFunctionContract#isAContractFunction}.
 //  * The bind aspect of the functionality is the same as {@link Function#prototype#bind}.
 //  * The implementation of the resulting contract function is also bound in the same
 //  * way as the resulting contract function itself.
 //  */
-// AbstractContract.bindContractFunction = function bind() {
-//   assert(AbstractContract.isAGeneralContractFunction(this), 'this is a general contract function')
+// BaseFunctionContract.bindContractFunction = function bind() {
+//   assert(BaseFunctionContract.isAGeneralContractFunction(this), 'this is a general contract function')
 //
 //   const bound = Function.prototype.bind.apply(this, arguments)
 //   const boundImplementation = Function.prototype.bind.apply(this.implementation, arguments)
 //   property.frozenDerived(boundImplementation, 'name', () => report.conciseRepresentation('bound', this.implementation))
-//   AbstractContract.bless(bound, this.contract, boundImplementation, this.location)
+//   BaseFunctionContract.bless(bound, this.contract, boundImplementation, this.location)
 //   return bound
 // }
 //
@@ -313,27 +312,27 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
 //  *     outside this library.</li>
 //  * </ul>
 //  */
-// AbstractContract.isAContractFunction = function (f) {
-//   return AbstractContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.isLocation(f.location)
+// BaseFunctionContract.isAContractFunction = function (f) {
+//   return BaseFunctionContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.isLocation(f.location)
 // }
 //
 // /**
 //  * Helper function that transforms any function given as <code>contractFunction</code>
-//  * into a [contract function]{@linkplain AbstractContract#isAContractFunction}
+//  * into a [contract function]{@linkplain BaseFunctionContract#isAContractFunction}
 //  * for the given parameters.
 //  * If {@code implFunction#prototype} exists, the {@code contractFunction#prototype} is changed to
 //  * an object that refers to {@code contractFunction} as {@code contractFunction.prototype.constructor},
 //  * is otherwise empty, and has {@code implFunction#prototype} as prototype.
 //  *
 //  * @param contractFunction {Function} the regular {Function} to be transformed into a contract function
-//  * @param contract {AbstractContract} the contract <code>contractFunction</code> is a realisation of
+//  * @param contract {BaseFunctionContract} the contract <code>contractFunction</code> is a realisation of
 //  * @param implFunction {Function} the function that is used in <code>contractFunction</code>
 //  *                     to realize the postconditions of <code>contract</code> under its preconditions
 //  * @param location {String} the location outside this library that the resulting
-//  *                          [contract function]{@linkplain AbstractContract#isAContractFunction} will carry,
+//  *                          [contract function]{@linkplain BaseFunctionContract#isAContractFunction} will carry,
 //  *                          that says where it is defined.
 //  */
-// AbstractContract.bless = function bless(contractFunction, contract, implFunction, location) {
+// BaseFunctionContract.bless = function bless(contractFunction, contract, implFunction, location) {
 //   assert.strictEqual(typeof contractFunction, 'function')
 //   // noinspection JSUnresolvedReference
 //   assert.ok(!contractFunction.contract)
@@ -342,17 +341,17 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
 //   // noinspection JSUnresolvedReference
 //   assert.ok(!contractFunction.location)
 //   assert.strictEqual(contractFunction.bind, Function.prototype.bind)
-//   assert(contract instanceof AbstractContract, 'contract is an AbstractContract')
+//   assert(contract instanceof BaseFunctionContract, 'contract is an BaseFunctionContract')
 //   assert.strictEqual(typeof implFunction, 'function')
 //   assert(
-//     location === AbstractContract.internalLocation || is.isLocation(location),
+//     location === BaseFunctionContract.internalLocation || is.isLocation(location),
 //     'location is internal, or a stack location'
 //   )
 //
 //   property.setAndFreeze(contractFunction, 'contract', Object.create(contract))
 //   property.setAndFreeze(contractFunction, 'implementation', implFunction)
 //   property.setAndFreeze(contractFunction, 'location', location)
-//   property.setAndFreeze(contractFunction, 'bind', AbstractContract.bindContractFunction)
+//   property.setAndFreeze(contractFunction, 'bind', BaseFunctionContract.bindContractFunction)
 //   if (contractFunction !== implFunction) {
 //     /* `abstract` refers to itself as implementation; we do not change its name (it would create a circular name
 //        definition) */
@@ -419,6 +418,6 @@ export class AbstractFunctionContract<Signature extends UnknownFunction, Locatio
 //   return args[args.length - 1]
 // }
 //
-// AbstractContract.outcome = outcome
+// BaseFunctionContract.outcome = outcome
 // // noinspection JSAnnotator
-// AbstractContract.callee = callee
+// BaseFunctionContract.callee = callee

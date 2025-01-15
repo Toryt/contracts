@@ -23,13 +23,13 @@ import {
   expectContractErrorConstructorPost,
   generateContractErrorMethodsDescriptions
 } from './ContractErrorCommon.ts'
-import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
+import { AbstractError, abstractErrorMessage, BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
 
 export function expectAbstractErrorInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(AbstractError)
   expectContractErrorInvariants(subject)
 
-  const aeSubject = subject as AbstractError<AbstractFunctionContract<UnknownFunction, FunctionContractLocation>>
+  const aeSubject = subject as AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>>
 
   expectOwnFrozenProperty(aeSubject, 'name')
   aeSubject.name.should.equal(AbstractError.name)
@@ -38,16 +38,16 @@ export function expectAbstractErrorInvariants(subject: unknown): void {
   aeSubject.message.should.equal(abstractErrorMessage)
 
   expectOwnFrozenProperty(aeSubject, 'contract')
-  aeSubject.contract.should.be.instanceof(AbstractFunctionContract)
+  aeSubject.contract.should.be.instanceof(BaseFunctionContract)
 }
 
 /**
  * Precondition: `expectAbstractErrorInvariants` has been called
  */
 export function expectAbstractErrorConstructorPost(
-  result: AbstractError<AbstractFunctionContract<UnknownFunction, FunctionContractLocation>>,
+  result: AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>>,
   message: string,
-  contract: AbstractFunctionContract<UnknownFunction, FunctionContractLocation>,
+  contract: BaseFunctionContract<UnknownFunction, FunctionContractLocation>,
   rawStack: string
 ): void {
   expectContractErrorConstructorPost(result, message, rawStack)
@@ -55,7 +55,7 @@ export function expectAbstractErrorConstructorPost(
 }
 
 export function generateAbstractErrorMethodsDescriptions<
-  AE extends AbstractError<AbstractFunctionContract<UnknownFunction, FunctionContractLocation>>
+  AE extends AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>>
 >(oneSubjectGenerator: () => AE, allSubjectGenerators: { subject: () => AE; description: string }[]): void {
   generateContractErrorMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 

@@ -15,7 +15,7 @@
  */
 
 import type { UnknownFunction } from '../../../src/index.ts'
-import { AbstractError, abstractErrorMessage, AbstractFunctionContract } from '../../../src/AbstractFunctionContract.ts'
+import { AbstractError, abstractErrorMessage, BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
 import type { FunctionContractLocation } from '../../../src/location.ts'
 import { rawStack } from '../../../src/private/stack.ts'
 import { testName } from '../../util/testName.ts'
@@ -48,22 +48,22 @@ describe(testName(import.meta), function () {
   describe('constructor', function () {
     it('creates an instance with all toppings for `AbstractContract.root`', function () {
       const rStack = rawStack()
-      const result = new AbstractError(AbstractFunctionContract.root, rStack)
+      const result = new AbstractError(BaseFunctionContract.root, rStack)
       expectAbstractErrorInvariants(result)
-      expectAbstractErrorConstructorPost(result, abstractErrorMessage, AbstractFunctionContract.root, rStack)
+      expectAbstractErrorConstructorPost(result, abstractErrorMessage, BaseFunctionContract.root, rStack)
       log('result.stack:\n%s', result.stack)
     })
   })
 
   describe('instance', function () {
     generateAbstractErrorMethodsDescriptions(
-      (): AbstractError<AbstractFunctionContract<UnknownFunction, FunctionContractLocation>> =>
-        new AbstractError(AbstractFunctionContract.root, rawStack()),
+      (): AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>> =>
+        new AbstractError(BaseFunctionContract.root, rawStack()),
       [
         {
-          subject: (): AbstractError<AbstractFunctionContract<UnknownFunction, FunctionContractLocation>> =>
-            new AbstractError(AbstractFunctionContract.root, rawStack()),
-          description: 'AbstractFunctionContract.root'
+          subject: (): AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>> =>
+            new AbstractError(BaseFunctionContract.root, rawStack()),
+          description: 'BaseFunctionContract.root'
         }
       ]
     )
