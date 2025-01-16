@@ -26,8 +26,8 @@ import {
   location
 } from './location.ts'
 import { isStack } from './private/stack.ts'
-import { setAndFreeze, isFrozenOwnProperty } from './private/property.ts'
-import { namePrefix } from './private/representation.ts'
+import { setAndFreeze, isFrozenOwnProperty, frozenDerived } from './private/property.ts'
+import { conciseRepresentation, namePrefix } from './private/representation.ts'
 
 export const abstractErrorMessage = 'an abstract function cannot be executed'
 
@@ -114,6 +114,8 @@ type BoundSignature<Signature extends UnknownFunction, BoundArgs extends unknown
       ) => ReturnType<Signature>
     : never
 
+export const boundPrefix = 'bound'
+
 /**
  * bind(this: Function, thisArg: any, ...argArray: any[]): any;
  * This function is intended to be used as the {@link Function.bind} function of {@link ContractFunction}.
@@ -142,11 +144,17 @@ export const contractFunctionBind = function bind<
 > {
   assert(BaseFunctionContract.isAGeneralContractFunction(this), 'this is a general contract function')
 
-  const bound = Function.prototype.bind.apply(this, [thisArgToBind, ...argsArrayToBind])
-  const boundImplementation = Function.prototype.bind.apply(this.implementation, [thisArgToBind, ...argsArrayToBind])
-  frozenDerived(boundImplementation, 'name', () => conciseRepresentation('bound', this.implementation))
-  bless(bound, this.contract, boundImplementation, this.location)
-  return bound
+  const bound: BoundSignature<ContractSignature, ArgsToBind> = Function.prototype.bind.apply(this, [
+    thisArgToBind,
+    ...argsArrayToBind
+  ])
+  const boundImplementation: BoundSignature<ImplementationSignature, ArgsToBind> = Function.prototype.bind.apply(
+    this.implementation,
+    [thisArgToBind, ...argsArrayToBind]
+  )
+  frozenDerived(boundImplementation, 'name', () => conciseRepresentation(boundPrefix, this.implementation))
+
+  return bless(bound, this.contract, boundImplementation, this.location)
 }
 
 /**
