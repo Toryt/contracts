@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+import { type } from 'node:os'
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { NeverFunction, UnknownFunction } from '../../../src/index.ts'
 import type {
@@ -78,3 +79,20 @@ expectNotAssignable<NeverFunction>((a: number, b: number): unknown => a | b)
 expectNotAssignable<NeverFunction>((...args: never[]): unknown => {
   return 'booh!'
 })
+
+// NOTE: demonstrate TS weirdness
+
+type SpecificFunction = (this: string, arg: number) => string
+
+expectAssignable<SpecificFunction>(aNeverFunction)
+
+function testGenericContext<T extends UnknownFunction>(func: T) {
+  expectNotAssignable<T>(aNeverFunction)
+  /* TS2345: Argument of type NeverFunction is not assignable to parameter of type T
+       NeverFunction is assignable to the constraint of type T, but T could be instantiated with a different subtype of
+       constraint UnknownFunction
+      Although `aNeverFunction` as assignable to any signature, and we can call the function with that below:
+      `aNeverFunction` _is_ assignable to `T`, but not in this generic context. */
+}
+
+testGenericContext<SpecificFunction>(aNeverFunction)
