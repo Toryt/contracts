@@ -76,6 +76,56 @@ export type GeneralContractFunction<
   Location extends FunctionContractLocation
 > = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ImplementationSignature, Location>
 
+/**
+ * A {@link GeneralContractFunction} is an {@link BaseFunctionContract#implementation} of an
+ * {@link BaseFunctionContract}. This function verifies whether a function given as a parameter is a
+ * General Contract Function.
+ *
+ * To be a {@link GeneralContractFunction}, the subject must
+ *
+ *   * be a function,
+ *   * have a frozen {@link GeneralContractFunction#contract} property that refers to an
+ *     {@link BaseFunctionContract},
+ *   * have a frozen {@link GeneralContractFunction#implementation} property that refers to a function (that realizes
+ *     the contract),
+ *   * have a frozen {@link GeneralContractFunction#location} property, that has a value,
+ *   * have a frozen {@link GeneralContractFunction#bind} property, that is
+ *     {@link contractFunctionBind}, and
+ *   * if the {@link GeneralContractFunction#implementation} function has a `prototype`, have a `prototype` property,
+ *       * that is an object,
+ *       * that has a `constructor` property that is the contract function, and
+ *       * that has `f.implementation.prototype` in its prototype chain, or is equal to it, and
+ *
+ * should have a {@link GeneralContractFunction#name}, which is a string that gives information for a programmer to
+ * understand what contract function this is. The {@link GeneralContractFunction#name} however is controlled by the
+ * JavaScript engine. We cannot freeze it, and it is not guaranteed to exist or have a specific value in all engines.
+ */
+export function isAGeneralContractFunction(
+  f: unknown
+): f is GeneralContractFunction<UnknownFunction, UnknownFunction, FunctionContractLocation> {
+  // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
+  // freeze it, and not guaranteed in all engines.
+  return (
+    typeof f === 'function' &&
+    isFrozenOwnProperty(f, 'contract') &&
+    f.contract instanceof BaseFunctionContract &&
+    isFrozenOwnProperty(f, 'implementation') &&
+    typeof f.implementation === 'function' &&
+    isFrozenOwnProperty(f, 'location') &&
+    !!f.location
+    // &&
+    // MUDO
+    // (f === f.implementation || f.name === conciseRepresentation(BaseFunctionContract.namePrefix, f.implementation))
+    // &&
+    // isFrozenOwnProperty(f, 'bind')
+    // &&
+    // f.bind === BaseFunctionContract.bindContractFunction &&
+    // (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||
+    //   (typeof f.prototype === 'object' &&
+    //     f.prototype.constructor === f &&
+    //     (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation)))
+  )
+}
 export interface ContractFunctionProperties<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature
@@ -143,7 +193,7 @@ export const contractFunctionBind = function bind<
   BoundSignature<ImplementationSignature, ArgsToBind>,
   FunctionContractLocation
 > {
-  assert(BaseFunctionContract.isAGeneralContractFunction(this), 'this is a general contract function')
+  assert(isAGeneralContractFunction(this), 'this is a general contract function')
 
   const bound: BoundSignature<ContractSignature, ArgsToBind> = Function.prototype.bind.apply(this, [
     thisArgToBind,
@@ -230,57 +280,6 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
   static readonly mustNotHappen: readonly (typeof BaseFunctionContract.falseCondition)[] = Object.freeze([
     BaseFunctionContract.falseCondition
   ])
-
-  /**
-   * A {@link GeneralContractFunction} is an {@link BaseFunctionContract#implementation} of an
-   * {@link BaseFunctionContract}. This function verifies whether a function given as a parameter is a
-   * General Contract Function.
-   *
-   * To be a {@link GeneralContractFunction}, the subject must
-   *
-   *   * be a function,
-   *   * have a frozen {@link GeneralContractFunction#contract} property that refers to an
-   *     {@link BaseFunctionContract},
-   *   * have a frozen {@link GeneralContractFunction#implementation} property that refers to a function (that realizes
-   *     the contract),
-   *   * have a frozen {@link GeneralContractFunction#location} property, that has a value,
-   *   * have a frozen {@link GeneralContractFunction#bind} property, that is
-   *     {@link contractFunctionBind}, and
-   *   * if the {@link GeneralContractFunction#implementation} function has a `prototype`, have a `prototype` property,
-   *       * that is an object,
-   *       * that has a `constructor` property that is the contract function, and
-   *       * that has `f.implementation.prototype` in its prototype chain, or is equal to it, and
-   *
-   * should have a {@link GeneralContractFunction#name}, which is a string that gives information for a programmer to
-   * understand what contract function this is. The {@link GeneralContractFunction#name} however is controlled by the
-   * JavaScript engine. We cannot freeze it, and it is not guaranteed to exist or have a specific value in all engines.
-   */
-  static isAGeneralContractFunction(
-    f: unknown
-  ): f is GeneralContractFunction<UnknownFunction, UnknownFunction, FunctionContractLocation> {
-    // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
-    // freeze it, and not guaranteed in all engines.
-    return (
-      typeof f === 'function' &&
-      isFrozenOwnProperty(f, 'contract') &&
-      f.contract instanceof BaseFunctionContract &&
-      isFrozenOwnProperty(f, 'implementation') &&
-      typeof f.implementation === 'function' &&
-      isFrozenOwnProperty(f, 'location') &&
-      !!f.location
-      // &&
-      // MUDO
-      // (f === f.implementation || f.name === conciseRepresentation(BaseFunctionContract.namePrefix, f.implementation))
-      // &&
-      // isFrozenOwnProperty(f, 'bind')
-      // &&
-      // f.bind === BaseFunctionContract.bindContractFunction &&
-      // (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||
-      //   (typeof f.prototype === 'object' &&
-      //     f.prototype.constructor === f &&
-      //     (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation)))
-    )
-  }
 
   /**
    * A reference to the line where the `…FunctionContract` is constructed. This representation contains the name of the

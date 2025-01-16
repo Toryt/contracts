@@ -17,7 +17,11 @@
 import { inspect } from 'node:util'
 import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
-import { BaseFunctionContract, type GeneralContractFunction } from '../../../src/BaseFunctionContract.ts'
+import {
+  BaseFunctionContract,
+  type GeneralContractFunction,
+  isAGeneralContractFunction
+} from '../../../src/BaseFunctionContract.ts'
 import { type FunctionContractLocation, location } from '../../../src/location.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
@@ -245,7 +249,7 @@ export function createCandidateContractFunction<
 export function generateIAGCFTests<
   FunctionContract extends BaseFunctionContract<UnknownFunction, FunctionContractLocation>
 >(
-  isAXXXContractFunction: typeof BaseFunctionContract.isAGeneralContractFunction,
+  isAXXXContractFunction: typeof isAGeneralContractFunction,
   ContractConstructor?: Constructor<FunctionContract>
 ): void {
   it(

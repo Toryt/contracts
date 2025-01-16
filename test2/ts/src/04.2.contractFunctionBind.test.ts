@@ -18,7 +18,8 @@ import {
   BaseFunctionContract,
   boundPrefix,
   contractFunctionBind,
-  type GeneralContractFunction
+  type GeneralContractFunction,
+  isAGeneralContractFunction
 } from '../../../src/BaseFunctionContract.ts'
 import { location } from '../../../src/location.ts'
 import { conciseRepresentation } from '../../../src/private/representation.ts'
@@ -32,7 +33,7 @@ describe(testName(import.meta), function () {
       createCandidateContractFunction<GeneralContractFunction<() => void, () => void, string>>(BaseFunctionContract)
     const expectedLocation = location()
     const result = contractFunctionBind.apply(subject)
-    BaseFunctionContract.isAGeneralContractFunction(result).should.be.true()
+    isAGeneralContractFunction(result).should.be.true()
     Object.getPrototypeOf(result.contract).should.equal(subject.contract)
     result.implementation.should.not.equal(subject.implementation)
     result.implementation.name.should.equal(conciseRepresentation(boundPrefix, subject.implementation))

@@ -17,7 +17,7 @@
 'use strict'
 
 import { inspect } from 'node:util'
-import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
+import { isAGeneralContractFunction } from '../../../src/BaseFunctionContract.ts'
 import { internalLocation } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
 import {
@@ -27,14 +27,14 @@ import {
 } from './BaseFunctionContractCommon.ts'
 
 describe(testName(import.meta), function () {
-  generateIAGCFTests(BaseFunctionContract.isAGeneralContractFunction)
+  generateIAGCFTests(isAGeneralContractFunction)
   notAFunctionNorAContract
     .filter(v => !!v)
     .concat(['    at', 'at /', {}, internalLocation])
     .forEach(v => {
       it(`says yes if there is an implementation Function, an AbstractFunctionContract, and a location that is ${inspect(v)}, and all 3 properties are frozen, and it has the expected name`, function () {
         const candidate = createCandidateContractFunction(undefined, undefined, 'location', v)
-        BaseFunctionContract.isAGeneralContractFunction(candidate).should.be.ok()
+        isAGeneralContractFunction(candidate).should.be.ok()
       })
     })
 })
