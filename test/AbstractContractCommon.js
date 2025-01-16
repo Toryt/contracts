@@ -1,5 +1,5 @@
 /*
-  Copyright 2016–2024 Jan Dockx
+  Copyright 2016–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ const is = require('../lib/_private/is')
 const property = require('../lib/_private/property')
 const eol = require('../lib/_private/eol')
 const should = require('should')
+const { contractFunctionBind } = require('../src/BaseFunctionContract.js')
 
 const someConditions = [
   function () {
@@ -185,7 +186,7 @@ function createCandidateContractFunction(
   }
   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
   const location = otherPropertyName === 'location' ? otherPropertyValue : stack.location()
-  const bind = otherPropertyName === 'bind' ? otherPropertyValue : AbstractContract.bindContractFunction
+  const bind = otherPropertyName === 'bind' ? otherPropertyValue : contractFunctionBind
 
   if (doNotFreezeProperty === 'contract') {
     candidate.contract = contract

@@ -17,7 +17,7 @@
 import { inspect } from 'node:util'
 import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
-import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
+import { BaseFunctionContract, type GeneralContractFunction } from '../../../src/BaseFunctionContract.ts'
 import { type FunctionContractLocation, location } from '../../../src/location.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
@@ -179,14 +179,20 @@ export function expectConstructorPost(/* pre, post, exception, */ location: stri
 
 type Constructor<T> = new (...args: unknown[]) => T
 
+/**
+ * Mock contract function. Mimicks the structure of a {@link GeneralContractFunction}, but does nothing when you call
+ * it. Can be any type you like with generics.
+ */
 export function createCandidateContractFunction<
-  FunctionContract extends BaseFunctionContract<UnknownFunction, FunctionContractLocation>
+  ReturnType extends
+    | GeneralContractFunction<UnknownFunction, UnknownFunction, FunctionContractLocation>
+    | unknown = unknown
 >(
-  ContractConstructor?: Constructor<FunctionContract>,
+  ContractConstructor?: new (kwargs: {}) => BaseFunctionContract<UnknownFunction, FunctionContractLocation>,
   doNotFreezeProperty?: string,
   otherPropertyName?: string,
   otherPropertyValue?: unknown
-): unknown {
+): ReturnType {
   function candidate(): void {}
 
   function impl(): void {}
@@ -232,7 +238,8 @@ export function createCandidateContractFunction<
   candidate.prototype = Object.create(impl.prototype, {
     constructor: { value: candidate }
   })
-  return candidate
+
+  return candidate as ReturnType
 }
 
 export function generateIAGCFTests<
