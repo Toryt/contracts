@@ -94,6 +94,61 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
 
 /**
  * Abstract definition of a function contract.
+// MUDO interesting! does this work with overloading?
+// type Bind<Signature extends UnknownFunction, BoundArgs extends unknown[]> = (
+//   this: Signature,
+//   thisArg: ThisParameterType<Signature>,
+//   ...boundArgs: BoundArgs
+// ) => Parameters<Signature> extends [...BoundArgs, ...infer _Rest]
+//   ? (
+//       this: ThisParameterType<Signature>,
+//       ...remainingArgs: RestOfTuple<Parameters<Signature>, BoundArgs>
+//     ) => ReturnType<Signature>
+//   : never
+//
+type BoundSignature<Signature extends UnknownFunction, BoundArgs extends unknown[]> =
+  Parameters<Signature> extends [...BoundArgs, ...infer _]
+    ? (
+        this: ThisParameterType<Signature>,
+        ...remainingArgs: RestOfTuple<Parameters<Signature>, BoundArgs>
+      ) => ReturnType<Signature>
+    : never
+
+/**
+ * bind(this: Function, thisArg: any, ...argArray: any[]): any;
+ * This function is intended to be used as the {@link Function.bind} function of {@link ContractFunction}.
+ *
+ * It makes sure that, when applied to a {@link ContractFunction}, the result
+ * {@linkplain BaseFunctionContract.isAContractFunction is also a contract function}.
+ *
+ * The bind aspect of the functionality is the same as {@link Function.prototype.bind}. The
+ * {@link ContractFunctionProperties.implementation} of the resulting {@link ContractFunction} is also bound in the same
+ * way as the resulting {@link ContractFunction} itself.
+ */
+export const contractFunctionBind = function bind<
+  ContractSignature extends UnknownFunction,
+  ImplementationSignature extends ContractSignature,
+  Location extends FunctionContractLocation,
+  GFC extends GeneralContractFunction<ContractSignature, ImplementationSignature, Location>,
+  ArgsToBind extends unknown[]
+>(
+  this: GFC,
+  thisArgToBind?: ThisParameterType<ContractSignature>,
+  ...argsArrayToBind: ArgsToBind
+): GeneralContractFunction<
+  BoundSignature<ContractSignature, ArgsToBind>,
+  BoundSignature<ImplementationSignature, ArgsToBind>,
+  FunctionContractLocation
+> {
+  assert(BaseFunctionContract.isAGeneralContractFunction(this), 'this is a general contract function')
+
+  const bound = Function.prototype.bind.apply(this, [thisArgToBind, ...argsArrayToBind])
+  const boundImplementation = Function.prototype.bind.apply(this.implementation, [thisArgToBind, ...argsArrayToBind])
+  frozenDerived(boundImplementation, 'name', () => conciseRepresentation('bound', this.implementation))
+  bless(bound, this.contract, boundImplementation, this.location)
+  return bound
+}
+
  *
  * An BaseFunctionContract consists of an array of preconditions, an array of nominal postconditions,
  * and an array of exceptional postconditions.
@@ -179,7 +234,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    *     the contract),
    *   * have a frozen {@link GeneralContractFunction#location} property, that has a value,
    *   * have a frozen {@link GeneralContractFunction#bind} property, that is
-   *     {@link BaseFunctionContract.bindContractFunction}, and
+   *     {@link contractFunctionBind}, and
    *   * if the {@link GeneralContractFunction#implementation} function has a `prototype`, have a `prototype` property,
    *       * that is an object,
    *       * that has a `constructor` property that is the contract function, and
