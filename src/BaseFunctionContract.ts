@@ -158,7 +158,7 @@ export function bless<
   assert(contract instanceof BaseFunctionContract, 'contract is a BaseFunctionContract')
   assert.strictEqual(typeof implFunction, 'function')
   assert(
-    location === internalLocation || isLocation(implementationLocation),
+    implementationLocation === internalLocation || isLocation(implementationLocation),
     'implementationLocation is internal, or a location'
   )
 
