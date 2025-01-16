@@ -434,24 +434,6 @@ export const unknownFunctionContract: BaseFunctionContract<UnknownFunction, Inte
 // property.setAndFreeze(BaseFunctionContract.prototype, 'abstract', null)
 
 // /**
-//  * This function is intended to be used as the bind function of contract functions. It makes sure
-//  * that, when applied to a contract function, the result
-//  * [is also a contract function]{@linkplain BaseFunctionContract#isAContractFunction}.
-//  * The bind aspect of the functionality is the same as {@link Function#prototype#bind}.
-//  * The implementation of the resulting contract function is also bound in the same
-//  * way as the resulting contract function itself.
-//  */
-// BaseFunctionContract.bindContractFunction = function bind() {
-//   assert(BaseFunctionContract.isAGeneralContractFunction(this), 'this is a general contract function')
-//
-//   const bound = Function.prototype.bind.apply(this, arguments)
-//   const boundImplementation = Function.prototype.bind.apply(this.implementation, arguments)
-//   property.frozenDerived(boundImplementation, 'name', () => report.conciseRepresentation('bound', this.implementation))
-//   BaseFunctionContract.bless(bound, this.contract, boundImplementation, this.location)
-//   return bound
-// }
-//
-// /**
 //  * A Contract Function is an implementation of a Contract. This function verifies whether a function
 //  * given as a parameter is a Contract Function.
 //  *
@@ -465,82 +447,7 @@ export const unknownFunctionContract: BaseFunctionContract<UnknownFunction, Inte
 // BaseFunctionContract.isAContractFunction = function (f) {
 //   return BaseFunctionContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.isLocation(f.location)
 // }
-//
-// /**
-//  * Helper function that transforms any function given as <code>contractFunction</code>
-//  * into a [contract function]{@linkplain BaseFunctionContract#isAContractFunction}
-//  * for the given parameters.
-//  * If {@code implFunction#prototype} exists, the {@code contractFunction#prototype} is changed to
-//  * an object that refers to {@code contractFunction} as {@code contractFunction.prototype.constructor},
-//  * is otherwise empty, and has {@code implFunction#prototype} as prototype.
-//  *
-//  * @param contractFunction {Function} the regular {Function} to be transformed into a contract function
-//  * @param contract {BaseFunctionContract} the contract <code>contractFunction</code> is a realisation of
-//  * @param implFunction {Function} the function that is used in <code>contractFunction</code>
-//  *                     to realize the postconditions of <code>contract</code> under its preconditions
-//  * @param location {String} the location outside this library that the resulting
-//  *                          [contract function]{@linkplain BaseFunctionContract#isAContractFunction} will carry,
-//  *                          that says where it is defined.
-//  */
-// BaseFunctionContract.bless = function bless(contractFunction, contract, implFunction, location) {
-//   assert.strictEqual(typeof contractFunction, 'function')
-//   // noinspection JSUnresolvedReference
-//   assert.ok(!contractFunction.contract)
-//   // noinspection JSUnresolvedReference
-//   assert.ok(!contractFunction.implementation)
-//   // noinspection JSUnresolvedReference
-//   assert.ok(!contractFunction.location)
-//   assert.strictEqual(contractFunction.bind, Function.prototype.bind)
-//   assert(contract instanceof BaseFunctionContract, 'contract is an BaseFunctionContract')
-//   assert.strictEqual(typeof implFunction, 'function')
-//   assert(
-//     location === BaseFunctionContract.internalLocation || is.isLocation(location),
-//     'location is internal, or a stack location'
-//   )
-//
-//   property.setAndFreeze(contractFunction, 'contract', Object.create(contract))
-//   property.setAndFreeze(contractFunction, 'implementation', implFunction)
-//   property.setAndFreeze(contractFunction, 'location', location)
-//   property.setAndFreeze(contractFunction, 'bind', BaseFunctionContract.bindContractFunction)
-//   if (contractFunction !== implFunction) {
-//     /* `abstract` refers to itself as implementation; we do not change its name (it would create a circular name
-//        definition) */
-//     // IDEA defend code against more complex circular structure
-//     /* NOTE: This test should be implFunction.hasOwnProperty('prototype'). However, in Safari on iOS, tests show that
-//              'most of the time' this prototype is not set in our tests, as it should be. It seems to depend on the
-//              complexity of the function, and to be set 'late' (because it is there in isAGeneralContractFunction). If a
-//              log command is added, the prototype is set early enough. To work around this, this test is replaced with
-//              !!implFunction.prototype. This defaults to the prototype set in Function.prototype, which is an Object.
-//              This means we now replace the contractFunction prototype more often than needed, but that is not a
-//              functional problem. */
-//     if (implFunction.prototype && typeof implFunction.prototype === 'object') {
-//       contractFunction.prototype = Object.create(implFunction.prototype)
-//       property.setAndFreeze(contractFunction.prototype, 'constructor', contractFunction)
-//       // the following line is added to work around an issue in Safari on iOS. See 4ed9879c6b5544b174ae0825d7f7055fd5e147d8
-//       assert(
-//         Object.getPrototypeOf(contractFunction.prototype) === implFunction.prototype,
-//         'contractFunction prototype is set to extend `implFunction.prototype`'
-//       )
-//     }
-//     /* The name of the contract function will always be 'contractFunction', because we need to define it in
-//       `Contract.implementation`, because we need to refer to the contract function internally. We would like the result
-//       of `Contract.implementation` to get a name inferred from its syntactic position, but cannot happen: before
-//       we reach the 'syntactic position' (a.k.a, we assign the contract function to a variable or property with
-//       a name), it will already have the name `contractFunction` we need internally. Therefore, we will explicitly set
-//       the name, based on the name of implementation function.
-//       The Firefox feature `displayName` will not be used.
-//       This is a real property, and not a derived property. Earlier, it was, but this was changed in response to
-//       https://github.com/sinonjs/sinon/issues/2203 */
-//     // IDEA we might also add a name property to a Contract, and combine it with that
-//     const implNamePropertyDescriptor = Object.getOwnPropertyDescriptor(implFunction, 'name')
-//     Object.defineProperty(contractFunction, 'name', {
-//       configurable: implNamePropertyDescriptor.configurable,
-//       enumerable: implNamePropertyDescriptor.enumerable,
-//       writable: implNamePropertyDescriptor.writable,
-//       value: report.conciseRepresentation(report.namePrefix, implFunction)
-//     })
-//   }
-// }
+
 //
 // /**
 //  * Returns the second-to-last element of an Array-like argument. In post- and exception conditions,
