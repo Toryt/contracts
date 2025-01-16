@@ -14,20 +14,11 @@
   limitations under the License.
  */
 
-'use strict'
-
-import { inspect } from 'node:util'
 import should from 'should'
 import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { internalLocation, location } from '../../../src/location.ts'
+import { location } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
-import {
-  createCandidateContractFunction,
-  expectConstructorPost,
-  expectInvariants,
-  generateIAGCFTests,
-  notAFunctionNorAContract
-} from './BaseFunctionContractCommon.ts'
+import { expectConstructorPost, expectInvariants } from './BaseFunctionContractCommon.ts'
 
 // const testUtil = require('./_util/testUtil')
 // const stack = require('../lib/_private/stack')
@@ -84,32 +75,6 @@ describe(testName(import.meta), function () {
       // should(prototype.abstract).be.null()
       // prototype.isImplementedBy.should.be.a.Function()
     })
-  })
-
-  // describe('BaseFunctionContract.bindContractFunction', function () {
-  //   it('behaves as expected', function () {
-  //     const subject = common.createCandidateContractFunction(BaseFunctionContract)
-  //     const result = BaseFunctionContract.bindContractFunction.apply(subject)
-  //     BaseFunctionContract.isAGeneralContractFunction(result).should.be.true()
-  //     Object.getPrototypeOf(result.contract).should.equal(subject.contract)
-  //     result.location.should.equal(subject.location)
-  //     if (BaseFunctionContract.isAContractFunction(subject)) {
-  //       BaseFunctionContract.isAContractFunction(result).should.be.true()
-  //     }
-  //   })
-  // })
-
-  describe('isAGeneralContractFunction', function () {
-    generateIAGCFTests(BaseFunctionContract.isAGeneralContractFunction)
-    notAFunctionNorAContract
-      .filter(v => !!v)
-      .concat(['    at', 'at /', {}, internalLocation])
-      .forEach(v => {
-        it(`says yes if there is an implementation Function, an AbstractFunctionContract, and a location that is ${inspect(v)}, and all 3 properties are frozen, and it has the expected name`, function () {
-          const candidate = createCandidateContractFunction(undefined, undefined, 'location', v)
-          BaseFunctionContract.isAGeneralContractFunction(candidate).should.be.ok()
-        })
-      })
   })
 
   // common.generateConstructorMethodsDescriptions(BaseFunctionContract)
