@@ -71,37 +71,7 @@ describe(testName(import.meta), function () {
 
   // common.generateConstructorMethodsDescriptions(BaseFunctionContract)
   //
-  // describe('BaseFunctionContract.bless', function () {
-  //   it('behaves as expected', function () {
-  //     const contractFunction = function () {}
-  //     const contract = new BaseFunctionContract({})
-  //     const implFunction = function () {}
-  //     const location = stack.location()
-  //     should(implFunction.prototype).be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
-  //     BaseFunctionContract.bless(contractFunction, contract, implFunction, location)
-  //     BaseFunctionContract.isAContractFunction(contractFunction).should.be.true()
-  //     testUtil.expectOwnFrozenProperty(contractFunction, 'contract')
-  //     Object.getPrototypeOf(contractFunction.contract).should.equal(contract)
-  //     testUtil.expectOwnFrozenProperty(contractFunction, 'implementation')
-  //     contractFunction.implementation.should.equal(implFunction)
-  //     testUtil.expectOwnFrozenProperty(contractFunction, 'location')
-  //     contractFunction.location.should.equal(location)
-  //     testUtil.expectOwnFrozenProperty(contractFunction, 'bind')
-  //     contractFunction.bind.should.equal(BaseFunctionContract.bindContractFunction)
-  //     contractFunction.should.have.ownProperty('name')
-  //     contractFunction.name.should.equal(
-  //       report.conciseRepresentation(BaseFunctionContract.namePrefix, contractFunction.implementation)
-  //     )
-  //     const implFunctionNamePropDesc = Object.getOwnPropertyDescriptor(implFunction, 'name')
-  //     delete implFunctionNamePropDesc.value
-  //     const contractFunctionNamePropDesc = Object.getOwnPropertyDescriptor(contractFunction, 'name')
-  //     contractFunctionNamePropDesc.value.should.equal(
-  //       report.conciseRepresentation(BaseFunctionContract.namePrefix, contractFunction.implementation)
-  //     )
-  //     delete contractFunctionNamePropDesc.value
-  //     contractFunctionNamePropDesc.should.deepEqual(implFunctionNamePropDesc)
-  //   })
-  // })
+
   //
   // describe('BaseFunctionContract.falseCondition', function () {
   //   it('always returns false', function () {
