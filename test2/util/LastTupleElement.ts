@@ -43,7 +43,6 @@ export type LastTupleElement<T extends unknown[]> =
            Since rest elements can not be followed by optional or other rest elements, if there is a rest element in `T`,
            it is the last one. */ number extends T['length'] // T has a rest element (otherwise T['length'] would be a (union of) bounded numbers)
         ? FinalRestElement<T>
-        : // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        T extends [...start: infer _, last?: infer Last2]
+        : T extends [...start: infer _, last?: infer Last2]
           ? [Last2, 'optional'] // optional single
           : 'impossible: not empty, not required, not optional or rest'

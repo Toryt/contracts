@@ -33,7 +33,7 @@ function surroundForArray(s: unknown, result: string, surroundString: boolean): 
 export function safeToString(s: unknown, surroundString: boolean = false): string {
   try {
     return surroundForArray(s, String(s), surroundString)
-  } catch (ignore) {
+  } catch (_) {
     /* `s` probably contains a `Symbol` deep down. But, whatever: revert to the most basic string representation: */
     return surroundForArray(s, Object.prototype.toString.call(s), surroundString)
   }
