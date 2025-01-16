@@ -16,7 +16,7 @@
 
 import should from 'should'
 import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { location } from '../../../src/location.ts'
+import { internalLocation, location } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
 import { expectConstructorPost, expectInvariants } from './BaseFunctionContractCommon.ts'
 
@@ -31,15 +31,8 @@ describe(testName(import.meta), function () {
     it('has the expected properties', function () {
       BaseFunctionContract.should.have.ownProperty('namePrefix')
       BaseFunctionContract.namePrefix.should.be.a.String()
-      // BaseFunctionContract.should.have.ownProperty('bindContractFunction')
-      // BaseFunctionContract.bindContractFunction.should.be.a.Function()
       // BaseFunctionContract.should.have.ownProperty('isAContractFunction')
       // BaseFunctionContract.isAContractFunction.should.be.a.Function()
-      // BaseFunctionContract.should.have.ownProperty('bless')
-      // BaseFunctionContract.bless.should.be.a.Function()
-      // BaseFunctionContract.should.have.ownProperty('internalLocation')
-      // BaseFunctionContract.internalLocation.should.be.an.Object()
-      // ;('' + BaseFunctionContract.internalLocation).should.be.equal('INTERNAL')
       BaseFunctionContract.should.have.ownProperty('falseCondition')
       BaseFunctionContract.falseCondition.should.be.a.Function()
       BaseFunctionContract.should.have.ownProperty('mustNotHappen')
@@ -60,18 +53,17 @@ describe(testName(import.meta), function () {
       // root.pre[0].should.equal(BaseFunctionContract.falseCondition)
       // root.post.should.be.empty()
       // root.exception.should.be.empty()
-      // root.location.should.equal(BaseFunctionContract.internalLocation)
-      // BaseFunctionContract.should.have.ownProperty('AbstractError')
+      root.location.should.equal(internalLocation)
       // MUDO
       // BaseFunctionContract.AbstractError.should.be.a.Function()
       // BaseFunctionContract.AbstractError.prototype.should.be.an.instanceof(Error)
       // BaseFunctionContract.should.have.ownProperty('prototype')
-      // BaseFunctionContract.prototype.should.be.an.Object()
+      BaseFunctionContract.prototype.should.be.an.Object()
       // const prototype = BaseFunctionContract.prototype
       // should(prototype._pre).be.null()
       // should(prototype._post).be.null()
       // should(prototype._exception).be.null()
-      // prototype.location.should.equal(BaseFunctionContract.internalLocation)
+      // prototype.location.should.equal(internalLocation)
       // should(prototype.abstract).be.null()
       // prototype.isImplementedBy.should.be.a.Function()
     })
@@ -152,6 +144,7 @@ describe(testName(import.meta), function () {
     //   common.constructorPostCases.forEach(post => {
     //     common.constructorExceptionCases.forEach(exception => {
     it('works with the BaseFunctionContract location', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFCWithoutLocationCorrection() {
+      // MUDO
       // const preConditions = pre()
       // const postConditions = post()
       // const exceptionConditions = exception()
@@ -169,6 +162,7 @@ describe(testName(import.meta), function () {
 
     it('works with a given location', /* 'works for pre: ' + pre + ', post: ' + post + ', exception: ' + exception */ function testAFConstructor() {
       const theLocation = location(2) // just some random location
+      // MUDO
       // const preConditions = pre()
       // const postConditions = post()
       // const exceptionConditions = exception()
