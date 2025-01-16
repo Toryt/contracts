@@ -15,13 +15,18 @@
  */
 
 import should from 'should'
-import { BaseFunctionContract, bless, contractFunctionBind } from '../../../src/BaseFunctionContract.ts'
+import { BaseFunctionContract, bless, boundPrefix, contractFunctionBind } from '../../../src/BaseFunctionContract.ts'
 import { location } from '../../../src/location.ts'
 import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
 import { testName } from '../../util/testName.ts'
 
 describe(testName(import.meta), function () {
+  it('offers an boundPrefix', function () {
+    boundPrefix.should.be.a.String()
+    boundPrefix.should.not.be.empty()
+  })
+
   it('behaves as expected', function () {
     const contractFunction = function (): void {}
     const contract = new BaseFunctionContract({})

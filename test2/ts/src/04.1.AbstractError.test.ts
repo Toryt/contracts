@@ -34,6 +34,13 @@ import {
 } from './AbstractErrorCommon.ts'
 
 describe(testName(import.meta), function () {
+  describe('module', function () {
+    it('offers an abstractErrorMessage', function () {
+      abstractErrorMessage.should.be.a.String()
+      abstractErrorMessage.should.not.be.empty()
+    })
+  })
+
   describe('prototype', function () {
     it('has the expected properties', function () {
       const { value: name } = expectOwnFrozenProperty(AbstractError.prototype, 'name')

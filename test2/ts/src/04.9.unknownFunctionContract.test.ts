@@ -22,5 +22,11 @@ describe(testName(import.meta), function () {
   it('has the expected properties', function () {
     unknownFunctionContract.should.be.an.instanceof(BaseFunctionContract)
     expectInvariants(unknownFunctionContract)
+    // MUDO
+    // unknownFunctionContract.pre.should.have.length(1)
+    // unknownFunctionContract.pre[0].should.equal(BaseFunctionContract.falseCondition)
+    // unknownFunctionContract.post.should.be.empty()
+    // unknownFunctionContract.exception.should.be.empty()
+    // unknownFunctionContract.location.should.equal(internalLocation)
   })
 })

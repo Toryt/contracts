@@ -29,10 +29,11 @@ import { expectConstructorPost } from './BaseFunctionContractCommon.ts'
 describe(testName(import.meta), function () {
   describe('BaseFunctionContract', function () {
     it('has the expected properties', function () {
+      // MUDO move
       BaseFunctionContract.should.have.ownProperty('namePrefix')
       BaseFunctionContract.namePrefix.should.be.a.String()
-      // BaseFunctionContract.should.have.ownProperty('isAContractFunction')
-      // BaseFunctionContract.isAContractFunction.should.be.a.Function()
+      BaseFunctionContract.should.have.ownProperty('isAContractFunction')
+      BaseFunctionContract.isAContractFunction.should.be.a.Function()
       BaseFunctionContract.should.have.ownProperty('falseCondition')
       BaseFunctionContract.falseCondition.should.be.a.Function()
       BaseFunctionContract.should.have.ownProperty('mustNotHappen')
@@ -43,20 +44,6 @@ describe(testName(import.meta), function () {
       // BaseFunctionContract.outcome.should.be.a.Function()
       // BaseFunctionContract.should.have.ownProperty('callee')
       // BaseFunctionContract.callee.should.be.a.Function()
-      //
-      // MUDO
-      // unknownFunctionContract.should.be.an.instanceof(BaseFunctionContract)
-      // expectInvariants(unknownFunctionContract)
-      // MUDO
-      // unknownFunctionContract.pre.should.have.length(1)
-      // unknownFunctionContract.pre[0].should.equal(BaseFunctionContract.falseCondition)
-      // unknownFunctionContract.post.should.be.empty()
-      // unknownFunctionContract.exception.should.be.empty()
-      // unknownFunctionContract.location.should.equal(internalLocation)
-      // MUDO
-      // BaseFunctionContract.AbstractError.should.be.a.Function()
-      // BaseFunctionContract.AbstractError.prototype.should.be.an.instanceof(Error)
-      // BaseFunctionContract.should.have.ownProperty('prototype')
       BaseFunctionContract.prototype.should.be.an.Object()
       // const prototype = BaseFunctionContract.prototype
       // should(prototype._pre).be.null()
