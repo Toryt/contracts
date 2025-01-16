@@ -41,15 +41,15 @@ describe(testName(import.meta), function () {
       const propertyValue = 'a new value'
       const changed = setAndFreeze(subject, propertyName, propertyValue)
       changed.should.equal(subject)
-      expectOwnFrozenProperty(changed, propertyName)
-      changed[propertyName].should.equal(propertyValue)
+      const { value } = expectOwnFrozenProperty(changed, propertyName)
+      should(value).equal(propertyValue)
     })
     it('sets a property, without a value, and freezes it', function () {
       const subject = { a: 4 }
       const changed = setAndFreeze(subject, propertyName)
       changed.should.equal(subject)
-      expectOwnFrozenProperty(changed, propertyName)
-      should(changed[propertyName]).be.undefined()
+      const { value } = expectOwnFrozenProperty(changed, propertyName)
+      should(value).be.undefined()
     })
   })
 

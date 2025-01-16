@@ -17,7 +17,8 @@
 import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
 import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { type FunctionContractLocation } from '../../../src/location.ts'
+import { type FunctionContractLocation, internalLocation, isLocation } from '../../../src/location.ts'
+import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
 
 // type ConditionsGenerator = () => Condition<UnknownFunction>[]
@@ -103,6 +104,7 @@ export function expectInvariants<Signature extends UnknownFunction, Location ext
   subject: unknown
 ): BaseFunctionContract<Signature, FunctionContractLocation> {
   should(subject).be.an.instanceof(BaseFunctionContract)
+  const bfc: BaseFunctionContract<Signature, Location> = subject as BaseFunctionContract<Signature, Location>
   // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'pre', '_pre')
   // /* MUDO given a contract c, and contract function cf = c.implementation(…), cf.contract !== c, but
@@ -124,9 +126,8 @@ export function expectInvariants<Signature extends UnknownFunction, Location ext
   // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'exception', '_exception')
   // testUtil.expectToBeArrayOfFunctions(subject.exception)
-  // testUtil.expectOwnFrozenProperty(subject, 'location')
-  // const location = subject.location
-  // ;(location === BaseFunctionContract.internalLocation || is.isLocation(location)).should.be.true()
+  const { value: location } = expectOwnFrozenProperty(bfc, 'location')
+  ;(location === internalLocation || isLocation(location)).should.be.true()
   // testUtil.expectOwnFrozenProperty(subject, 'abstract')
   // const abstract = subject.abstract
   // BaseFunctionContract.isAGeneralContractFunction(abstract).should.be.true()
@@ -144,7 +145,7 @@ export function expectInvariants<Signature extends UnknownFunction, Location ext
   //   stack.split(eol.stack)[0].should.containEql('abstract')
   //   testUtil.log(stack)
   // }
-  return subject as BaseFunctionContract<Signature, Location>
+  return bfc
 }
 
 // function expectArrayPost(result, array, propName, privatePropName) {

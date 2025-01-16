@@ -31,14 +31,14 @@ export function expectAbstractErrorInvariants(subject: unknown): void {
 
   const aeSubject = subject as AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>>
 
-  expectOwnFrozenProperty(aeSubject, 'name')
-  aeSubject.name.should.equal(AbstractError.name)
+  const { value: name } = expectOwnFrozenProperty(aeSubject, 'name')
+  should(name).equal(AbstractError.name)
 
-  expectOwnFrozenProperty(aeSubject, 'message')
-  aeSubject.message.should.equal(abstractErrorMessage)
+  const { value: message } = expectOwnFrozenProperty(aeSubject, 'message')
+  should(message).equal(abstractErrorMessage)
 
-  expectOwnFrozenProperty(aeSubject, 'contract')
-  aeSubject.contract.should.be.instanceof(BaseFunctionContract)
+  const { value: contract } = expectOwnFrozenProperty(aeSubject, 'contract')
+  should(contract).be.instanceof(BaseFunctionContract)
 }
 
 /**

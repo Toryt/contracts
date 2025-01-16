@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+import should from 'should'
 import { ContractError, contractErrorMessage } from '../../../src/ContractError.ts'
 import { frozenDerived } from '../../../src/private/property.ts'
 import { testName } from '../../util/testName.ts'
@@ -29,17 +30,17 @@ import {
 describe(testName(import.meta), function () {
   describe('prototype', function () {
     it('has the expected properties', function () {
-      expectOwnFrozenProperty(ContractError.prototype, 'name')
-      ContractError.prototype.name.should.be.a.String()
-      ContractError.prototype.name.should.equal(ContractError.name)
+      const { value: name } = expectOwnFrozenProperty(ContractError.prototype, 'name')
+      should(name).be.a.String()
+      should(name).equal(ContractError.name)
 
-      expectOwnFrozenProperty(ContractError.prototype, 'message')
-      ContractError.prototype.message.should.be.a.String()
-      ContractError.prototype.message.should.equal(contractErrorMessage)
+      const { value: message } = expectOwnFrozenProperty(ContractError.prototype, 'message')
+      should(message).be.a.String()
+      should(message).equal(contractErrorMessage)
 
-      expectOwnFrozenProperty(ContractError.prototype, 'rawStack')
-      ContractError.prototype.rawStack.should.be.a.String()
-      ContractError.prototype.rawStack.should.containEql('ContractError')
+      const { value: rawStack } = expectOwnFrozenProperty(ContractError.prototype, 'rawStack')
+      should(rawStack).be.a.String()
+      should(rawStack).containEql('ContractError')
 
       expectConfigurableDerivedPropertyOnAPrototype(ContractError.prototype, 'stack')
     })

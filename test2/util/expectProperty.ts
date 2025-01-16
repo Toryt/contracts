@@ -16,7 +16,10 @@
 
 import should from 'should'
 
-export function expectOwnFrozenProperty(subject: object, propertyName: string): void {
+export function expectOwnFrozenProperty<S extends object, PropertyName extends string>(
+  subject: S,
+  propertyName: PropertyName
+): { subject: S & { [K in PropertyName]: unknown }; value: unknown } {
   const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
   should(propertyDescriptor).be.ok()
   should(propertyDescriptor!.enumerable).be.true()
@@ -29,6 +32,8 @@ export function expectOwnFrozenProperty(subject: object, propertyName: string): 
   }
 
   failFunction.should.throw(TypeError)
+
+  return { subject: subject as S & { [K in PropertyName]: unknown }, value: record[propertyName] }
 }
 
 function prototypeThatHasOwnPropertyDescriptor(
@@ -75,11 +80,10 @@ export function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(
   privatePropName: string
 ): void {
   should(subject).have.ownProperty(privatePropName) // array not shared
+  const { value } = expectOwnFrozenProperty(subject, privatePropName)
+  should(value).be.an.Array()
+  expectFrozenDerivedPropertyOnAPrototype(subject, propName)
   const record = subject as Record<string, unknown>
-  should(record[privatePropName]).be.an.Array()
-  expectOwnFrozenProperty(record, privatePropName)
-  should(record[propName]).be.an.Array()
-  expectFrozenDerivedPropertyOnAPrototype(record, propName)
   const failFunction = function (): void {
     record[propName] = 42 + ' some outlandish other value'
   }

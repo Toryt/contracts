@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+import should from 'should'
 import type { UnknownFunction } from '../../../src/index.ts'
 import { AbstractError, abstractErrorMessage, BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
 import type { FunctionContractLocation } from '../../../src/location.ts'
@@ -30,16 +31,16 @@ import {
 describe(testName(import.meta), function () {
   describe('prototype', function () {
     it('has the expected properties', function () {
-      expectOwnFrozenProperty(AbstractError.prototype, 'name')
-      AbstractError.prototype.name.should.be.a.String()
-      AbstractError.prototype.name.should.equal(AbstractError.name)
+      const { value: name } = expectOwnFrozenProperty(AbstractError.prototype, 'name')
+      should(name).be.a.String()
+      should(name).equal(AbstractError.name)
 
-      expectOwnFrozenProperty(AbstractError.prototype, 'message')
-      AbstractError.prototype.message.should.be.a.String()
-      AbstractError.prototype.message.should.equal(abstractErrorMessage)
+      const { value: message } = expectOwnFrozenProperty(AbstractError.prototype, 'message')
+      should(message).be.a.String()
+      should(message).equal(abstractErrorMessage)
 
-      expectOwnFrozenProperty(AbstractError.prototype, 'contract')
-      AbstractError.prototype.should.have.property('contract', null)
+      const { value: contract } = expectOwnFrozenProperty(AbstractError.prototype, 'contract')
+      should(contract).be.null()
 
       AbstractError.prototype.should.not.have.ownProperty('stack')
     })
