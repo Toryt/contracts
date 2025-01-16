@@ -38,10 +38,9 @@ describe(testName(import.meta), function () {
     result.implementation.should.not.equal(subject.implementation)
     result.implementation.name.should.equal(conciseRepresentation(boundPrefix, subject.implementation))
     mustBeCallerLocation(result.location, expectedLocation)
-    // MUDO
-    // if (BaseFunctionContract.isAContractFunction(subject)) {
-    //   BaseFunctionContract.isAContractFunction(result).should.be.true()
-    // }
+    if (BaseFunctionContract.isAContractFunction(subject)) {
+      BaseFunctionContract.isAContractFunction(result).should.be.true()
+    }
   })
 
   // MUDO incomplete: test with and without prototype, of a non-object prototype

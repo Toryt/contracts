@@ -333,6 +333,21 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
   static readonly namePrefix: typeof namePrefix = namePrefix
 
   /**
+   * A {@link ContractFunction} is an implementation of a {@link BaseFunctionContract Contract}. This function verifies
+   * whether a function given as a parameter is a {@link ContractFunction} of this subtype of
+   * {@link BaseFunctionContract}.
+   *
+   * To be a {@link ContractFunction}, the subject must
+   *
+   *   * be a {@link isAGeneralContractFunction GeneralContractFunction},
+   *   * have a frozen `location` property, which is a string that represents a location in source code, outside this
+   *     library.
+   */
+  static isAContractFunction(f: unknown): f is ContractFunction<UnknownFunction, UnknownFunction> {
+    return isAGeneralContractFunction(f) && f.contract instanceof this && isLocation(f.location)
+  }
+
+  /**
    * Function that always returns <code>false</code>.
    */
   static falseCondition(): boolean {
@@ -433,20 +448,6 @@ export const unknownFunctionContract: BaseFunctionContract<UnknownFunction, Inte
 // property.setAndFreeze(BaseFunctionContract.prototype, 'location', BaseFunctionContract.internalLocation)
 // property.setAndFreeze(BaseFunctionContract.prototype, 'abstract', null)
 
-// /**
-//  * A Contract Function is an implementation of a Contract. This function verifies whether a function
-//  * given as a parameter is a Contract Function.
-//  *
-//  * To be a Contract Function, the subject must
-//  * <ul>
-//  *   <li>be a [general contract function]{@linkplain #isAGeneralContractFunction()},</li>
-//  *   <li>have a frozen `location` property, which is a string that represents a location in source code,
-//  *     outside this library.</li>
-//  * </ul>
-//  */
-// BaseFunctionContract.isAContractFunction = function (f) {
-//   return BaseFunctionContract.isAGeneralContractFunction(f) && f.contract instanceof this && is.isLocation(f.location)
-// }
 
 //
 // /**

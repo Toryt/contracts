@@ -32,7 +32,7 @@ describe(testName(import.meta), function () {
     const blessed = bless(contractFunction, contract, implFunction, here)
 
     blessed.should.equal(contractFunction)
-    // MUDO    BaseFunctionContract.isAContractFunction(blessed).should.be.true()
+    BaseFunctionContract.isAContractFunction(blessed).should.be.true()
     const { value: contractFromBlessed } = expectOwnFrozenProperty(blessed, 'contract')
     Object.getPrototypeOf(contractFromBlessed).should.equal(contract)
     const { value: implementationFromBlessed } = expectOwnFrozenProperty(blessed, 'implementation')
