@@ -25,7 +25,7 @@ import { createCandidateContractFunction, generateIAGCFTests } from './GeneralCo
 
 describe(testName(import.meta), function () {
   generateIAGCFTests(isAGeneralContractFunction)
-  notAFunctionNorAContract
+  notAFunctionNorAContract // MUDO use stuff
     .filter(v => !!v)
     .concat(['    at', 'at /', {}, internalLocation])
     .forEach(v => {
