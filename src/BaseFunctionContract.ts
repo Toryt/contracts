@@ -149,6 +149,8 @@ export const contractFunctionBind = function bind<
   return bound
 }
 
+/**
+ * Base definition of a function contract.
  *
  * An BaseFunctionContract consists of an array of preconditions, an array of nominal postconditions,
  * and an array of exceptional postconditions.
