@@ -26,7 +26,7 @@ import {
   isLocation,
   location
 } from './location.ts'
-import { isStack } from './private/stack.ts'
+import { isStack, rawStack } from './private/stack.ts'
 import { setAndFreeze, isFrozenOwnProperty, frozenDerived } from './private/property.ts'
 import { conciseRepresentation, namePrefix } from './private/representation.ts'
 
@@ -155,7 +155,7 @@ export function bless<
   assert.ok(!('implementation' in contractFunctionToBe))
   assert.ok(!('location' in contractFunctionToBe))
   assert.strictEqual(contractFunctionToBe.bind, Function.prototype.bind)
-  assert(contract instanceof BaseFunctionContract, 'contract is a BaseFunctionContract')
+  // MUDO  assert(contract instanceof BaseFunctionContract, 'contract is a BaseFunctionContract')
   assert.strictEqual(typeof implFunction, 'function')
   assert(
     implementationLocation === internalLocation || isLocation(implementationLocation),
@@ -391,14 +391,15 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
 
     const self = this
 
-    // /* This cannot be defined in the prototype. The `self` is the contract, not the `this`. When this function is called
-    //    as a method of a random object, that random object is the `this`, not this contract. */
-    // function abstract(): never {
-    //   throw new BaseFunctionContract.AbstractError(self, rawStack())
-    // }
+    /* This cannot be defined in the prototype. The `self` is the contract, not the `this`. When this function is called
+       as a method of a random object, that random object is the `this`, not this contract. */
+    function abstract(): never {
+      throw new AbstractError(self, rawStack())
+    }
 
     const theLocation: FunctionContractLocation = _location || location(1)
-    // BaseFunctionContract.bless(abstract, self, abstract, theLocation)
+    bless(abstract, self, abstract, theLocation)
+    // MUDO
     // property.setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []))
     // property.setAndFreeze(self, '_post', Object.freeze(kwargs.post ? kwargs.post.slice() : []))
     // property.setAndFreeze(
@@ -407,7 +408,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     //   Object.freeze(kwargs.exception ? kwargs.exception.slice() : mustNotHappen)
     // )
     setAndFreeze(self, 'location', Object.freeze(theLocation))
-    // property.setAndFreeze(self, 'abstract', abstract)
+    setAndFreeze(self, 'abstract', abstract)
   }
 }
 //
