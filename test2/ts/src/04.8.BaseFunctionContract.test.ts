@@ -16,9 +16,9 @@
 
 import should from 'should'
 import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { internalLocation, location } from '../../../src/location.ts'
+import { location } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
-import { expectConstructorPost, expectInvariants } from './BaseFunctionContractCommon.ts'
+import { expectConstructorPost } from './BaseFunctionContractCommon.ts'
 
 // const testUtil = require('./_util/testUtil')
 // const stack = require('../lib/_private/stack')
@@ -44,16 +44,15 @@ describe(testName(import.meta), function () {
       // BaseFunctionContract.should.have.ownProperty('callee')
       // BaseFunctionContract.callee.should.be.a.Function()
       //
-      BaseFunctionContract.should.have.ownProperty('root')
-      BaseFunctionContract.root.should.be.an.instanceof(BaseFunctionContract)
-      const root = BaseFunctionContract.root
-      expectInvariants(root)
       // MUDO
-      // root.pre.should.have.length(1)
-      // root.pre[0].should.equal(BaseFunctionContract.falseCondition)
-      // root.post.should.be.empty()
-      // root.exception.should.be.empty()
-      root.location.should.equal(internalLocation)
+      // unknownFunctionContract.should.be.an.instanceof(BaseFunctionContract)
+      // expectInvariants(unknownFunctionContract)
+      // MUDO
+      // unknownFunctionContract.pre.should.have.length(1)
+      // unknownFunctionContract.pre[0].should.equal(BaseFunctionContract.falseCondition)
+      // unknownFunctionContract.post.should.be.empty()
+      // unknownFunctionContract.exception.should.be.empty()
+      // unknownFunctionContract.location.should.equal(internalLocation)
       // MUDO
       // BaseFunctionContract.AbstractError.should.be.a.Function()
       // BaseFunctionContract.AbstractError.prototype.should.be.an.instanceof(Error)

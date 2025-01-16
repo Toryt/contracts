@@ -16,7 +16,12 @@
 
 import should from 'should'
 import type { UnknownFunction } from '../../../src/index.ts'
-import { AbstractError, abstractErrorMessage, BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
+import {
+  AbstractError,
+  abstractErrorMessage,
+  BaseFunctionContract,
+  unknownFunctionContract
+} from '../../../src/BaseFunctionContract.ts'
 import type { FunctionContractLocation } from '../../../src/location.ts'
 import { rawStack } from '../../../src/private/stack.ts'
 import { testName } from '../../util/testName.ts'
@@ -49,9 +54,9 @@ describe(testName(import.meta), function () {
   describe('constructor', function () {
     it('creates an instance with all toppings for `AbstractContract.root`', function () {
       const rStack = rawStack()
-      const result = new AbstractError(BaseFunctionContract.root, rStack)
+      const result = new AbstractError(unknownFunctionContract, rStack)
       expectAbstractErrorInvariants(result)
-      expectAbstractErrorConstructorPost(result, abstractErrorMessage, BaseFunctionContract.root, rStack)
+      expectAbstractErrorConstructorPost(result, abstractErrorMessage, unknownFunctionContract, rStack)
       log('result.stack:\n%s', result.stack)
     })
   })
@@ -59,12 +64,12 @@ describe(testName(import.meta), function () {
   describe('instance', function () {
     generateAbstractErrorMethodsDescriptions(
       (): AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>> =>
-        new AbstractError(BaseFunctionContract.root, rawStack()),
+        new AbstractError(unknownFunctionContract, rawStack()),
       [
         {
           subject: (): AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>> =>
-            new AbstractError(BaseFunctionContract.root, rawStack()),
-          description: 'BaseFunctionContract.root'
+            new AbstractError(unknownFunctionContract, rawStack()),
+          description: 'unknownFunctionContract'
         }
       ]
     )

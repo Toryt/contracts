@@ -155,7 +155,7 @@ export function bless<
   assert.ok(!('implementation' in contractFunctionToBe))
   assert.ok(!('location' in contractFunctionToBe))
   assert.strictEqual(contractFunctionToBe.bind, Function.prototype.bind)
-  // MUDO  assert(contract instanceof BaseFunctionContract, 'contract is a BaseFunctionContract')
+  assert(contract instanceof BaseFunctionContract, 'contract is a BaseFunctionContract')
   assert.strictEqual(typeof implFunction, 'function')
   assert(
     implementationLocation === internalLocation || isLocation(implementationLocation),
@@ -333,21 +333,6 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
   static readonly namePrefix: typeof namePrefix = namePrefix
 
   /**
-   * The most general {@link BaseFunctionContract}. This has the most strict preconditions (nothing is allowed),
-   * which can be weakened by specializations, and the most general nominal and exceptional postconditions (anything
-   * goes), which can be strengthened by specializations.
-   */
-  static readonly root: BaseFunctionContract<UnknownFunction, InternalLocation> = new BaseFunctionContract(
-    {
-      // MUDO
-      // pre: BaseFunctionContract.mustNotHappen,
-      // post: [],
-      // exception: []
-    },
-    internalLocation
-  )
-
-  /**
    * Function that always returns <code>false</code>.
    */
   static falseCondition(): boolean {
@@ -411,6 +396,23 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     setAndFreeze(self, 'abstract', abstract)
   }
 }
+
+/**
+ * The most general {@link BaseFunctionContract}. This has the most strict preconditions (nothing is allowed),
+ * which can be weakened by specializations, and the most general nominal and exceptional postconditions (anything
+ * goes), which can be strengthened by specializations.
+ */
+export const unknownFunctionContract: BaseFunctionContract<UnknownFunction, InternalLocation> =
+  new BaseFunctionContract<UnknownFunction, InternalLocation>(
+    {
+      // MUDO
+      // pre: BaseFunctionContract.mustNotHappen,
+      // post: [],
+      // exception: []
+    },
+    internalLocation
+  )
+
 //
 // function isOrHasAsPrototype(obj, proto) {
 //   return obj === proto || (obj !== Object.prototype && isOrHasAsPrototype(Object.getPrototypeOf(obj), proto))
