@@ -20,11 +20,8 @@ import { inspect } from 'node:util'
 import { isAGeneralContractFunction } from '../../../src/BaseFunctionContract.ts'
 import { internalLocation } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
-import {
-  createCandidateContractFunction,
-  generateIAGCFTests,
-  notAFunctionNorAContract
-} from './BaseFunctionContractCommon.ts'
+import { notAFunctionNorAContract } from './BaseFunctionContractCommon.ts'
+import { createCandidateContractFunction, generateIAGCFTests } from './GeneralContractFunctionCommon.ts'
 
 describe(testName(import.meta), function () {
   generateIAGCFTests(isAGeneralContractFunction)
