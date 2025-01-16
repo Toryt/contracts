@@ -113,10 +113,9 @@ export function isAGeneralContractFunction(
     typeof f.implementation === 'function' &&
     isFrozenOwnProperty(f, 'location') &&
     !!f.location &&
-    // MUDO something wrong
-    // (f === f.implementation || f.name === conciseRepresentation(BaseFunctionContract.namePrefix, f.implementation)) &&
-    // isFrozenOwnProperty(f, 'bind') &&
-    // f.bind === contractFunctionBind &&
+    (f === f.implementation || f.name === conciseRepresentation(namePrefix, f.implementation)) &&
+    isFrozenOwnProperty(f, 'bind') &&
+    f.bind === contractFunctionBind &&
     (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||
       (typeof f.prototype === 'object' &&
         f.prototype.constructor === f &&

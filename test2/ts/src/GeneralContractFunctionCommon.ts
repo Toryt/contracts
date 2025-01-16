@@ -19,11 +19,13 @@ import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
 import {
   BaseFunctionContract,
+  contractFunctionBind,
   type GeneralContractFunction,
   isAGeneralContractFunction
 } from '../../../src/BaseFunctionContract.ts'
 import { type FunctionContractLocation, location } from '../../../src/location.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
+import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
 import { notAFunctionNorAContract } from './BaseFunctionContractCommon.ts'
 
 type Constructor<T> = new (...args: unknown[]) => T
@@ -53,8 +55,7 @@ export function createCandidateContractFunction<
   }
   const implementation = otherPropertyName === 'implementation' ? otherPropertyValue : impl
   const theLocation = otherPropertyName === 'location' ? otherPropertyValue : location()
-  // MUDO
-  // const bind = otherPropertyName === 'bind' ? otherPropertyValue : BaseFunctionContract.bindContractFunction
+  const bind = otherPropertyName === 'bind' ? otherPropertyValue : contractFunctionBind
 
   if (doNotFreezeProperty === 'contract') {
     candidate.contract = contract
@@ -71,19 +72,16 @@ export function createCandidateContractFunction<
   } else {
     setAndFreeze(candidate, 'location', theLocation)
   }
-  // MUDO
-  // if (doNotFreezeProperty === 'bind') {
-  //   candidate.bind = bind
-  // } else {
-  //   setAndFreeze(candidate, 'bind', bind)
-  // }
-  // property.setAndFreeze(
-  //   candidate,
-  //   'name',
-  //   otherPropertyName === 'name'
-  //     ? otherPropertyValue
-  //     : report.conciseRepresentation(BaseFunctionContract.namePrefix, implementation)
-  // )
+  if (doNotFreezeProperty === 'bind') {
+    candidate.bind = bind
+  } else {
+    setAndFreeze(candidate, 'bind', bind)
+  }
+  setAndFreeze(
+    candidate,
+    'name',
+    otherPropertyName === 'name' ? otherPropertyValue : conciseRepresentation(namePrefix, implementation)
+  )
   candidate.prototype = Object.create(impl.prototype, {
     constructor: { value: candidate }
   })
@@ -112,7 +110,7 @@ export function generateIAGCFTests<
     })
   })
 
-  const properties = ['contract', 'implementation', 'location'] /* MUDO , 'bind'] */
+  const properties = ['contract', 'implementation', 'location', 'bind']
 
   properties.forEach(doNotFreezeProperty => {
     it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
@@ -131,18 +129,17 @@ export function generateIAGCFTests<
       propertyName: 'implementation',
       expected: 'a Function',
       extra: [new BaseFunctionContract({})]
+    },
+    {
+      propertyName: 'bind',
+      expected: 'contractFunctionBind',
+      extra: []
+    },
+    {
+      propertyName: 'name',
+      expected: 'the contractFunction.name',
+      extra: ['candidate', namePrefix]
     }
-    // MUDO
-    // {
-    //   propertyName: 'bind',
-    //   expected: 'BaseFunctionContract.bindContractFunction',
-    //   extra: []
-    // },
-    // {
-    //   propertyName: 'name',
-    //   expected: 'the contractFunction.name',
-    //   extra: ['candidate', BaseFunctionContract.namePrefix]
-    // }
   ]
 
   cases.forEach(aCase => {
