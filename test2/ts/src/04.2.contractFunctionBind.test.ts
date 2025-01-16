@@ -20,20 +20,23 @@ import {
   contractFunctionBind,
   type GeneralContractFunction
 } from '../../../src/BaseFunctionContract.ts'
+import { location } from '../../../src/location.ts'
 import { conciseRepresentation } from '../../../src/private/representation.ts'
 import { testName } from '../../util/testName.ts'
+import { mustBeCallerLocation } from '../../util/testUtil.ts'
 import { createCandidateContractFunction } from './BaseFunctionContractCommon.ts'
 
 describe(testName(import.meta), function () {
   it('behaves as expected', function () {
     const subject =
       createCandidateContractFunction<GeneralContractFunction<() => void, () => void, string>>(BaseFunctionContract)
+    const expectedLocation = location()
     const result = contractFunctionBind.apply(subject)
     BaseFunctionContract.isAGeneralContractFunction(result).should.be.true()
     Object.getPrototypeOf(result.contract).should.equal(subject.contract)
     result.implementation.should.not.equal(subject.implementation)
     result.implementation.name.should.equal(conciseRepresentation(boundPrefix, subject.implementation))
-    result.location.should.equal(subject.location)
+    mustBeCallerLocation(result.location, expectedLocation)
     // MUDO
     // if (BaseFunctionContract.isAContractFunction(subject)) {
     //   BaseFunctionContract.isAContractFunction(result).should.be.true()

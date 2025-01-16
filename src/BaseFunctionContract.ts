@@ -15,6 +15,7 @@
  */
 
 import { ContractError } from './ContractError.ts'
+import type { RestOfTuple } from './types/RestOfTuple.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
 import assert, { ok, strictEqual } from 'assert'
@@ -154,7 +155,7 @@ export const contractFunctionBind = function bind<
   )
   frozenDerived(boundImplementation, 'name', () => conciseRepresentation(boundPrefix, this.implementation))
 
-  return bless(bound, this.contract, boundImplementation, this.location)
+  return bless(bound, this.contract, boundImplementation, location(1))
 }
 
 /**
