@@ -330,6 +330,10 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  * The `_location` argument is for internal use, and might be removed.
  */
 export class BaseFunctionContract<Signature extends UnknownFunction, Location extends FunctionContractLocation> {
+  static {
+    setAndFreeze(BaseFunctionContract.prototype, 'location', internalLocation)
+  }
+
   static readonly namePrefix: typeof namePrefix = namePrefix
 
   /**
@@ -445,9 +449,7 @@ export const unknownFunctionContract: BaseFunctionContract<UnknownFunction, Inte
 // property.frozenReadOnlyArray(BaseFunctionContract.prototype, 'pre', '_pre')
 // property.frozenReadOnlyArray(BaseFunctionContract.prototype, 'post', '_post')
 // property.frozenReadOnlyArray(BaseFunctionContract.prototype, 'exception', '_exception')
-// property.setAndFreeze(BaseFunctionContract.prototype, 'location', BaseFunctionContract.internalLocation)
 // property.setAndFreeze(BaseFunctionContract.prototype, 'abstract', null)
-
 
 //
 // /**

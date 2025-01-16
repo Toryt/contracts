@@ -16,7 +16,7 @@
 
 import should from 'should'
 import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { location } from '../../../src/location.ts'
+import { internalLocation, location } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
 import { expectConstructorPost } from './BaseFunctionContractCommon.ts'
 
@@ -44,13 +44,19 @@ describe(testName(import.meta), function () {
       // BaseFunctionContract.outcome.should.be.a.Function()
       // BaseFunctionContract.should.have.ownProperty('callee')
       // BaseFunctionContract.callee.should.be.a.Function()
+    })
+  })
+
+  describe('BaseFunctionContract.prototype', function () {
+    it('has the expected properties', function () {
       BaseFunctionContract.prototype.should.be.an.Object()
-      // const prototype = BaseFunctionContract.prototype
+      const prototype = BaseFunctionContract.prototype
+      // MUDO
       // should(prototype._pre).be.null()
       // should(prototype._post).be.null()
       // should(prototype._exception).be.null()
-      // prototype.location.should.equal(internalLocation)
       // should(prototype.abstract).be.null()
+      prototype.location.should.equal(internalLocation)
       // prototype.isImplementedBy.should.be.a.Function()
     })
   })
