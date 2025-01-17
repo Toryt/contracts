@@ -66,7 +66,7 @@ export const internalLocation: InternalLocation = Object.freeze({
   }
 })
 
-export type FunctionContractLocation = string | InternalLocation
+export type GeneralLocation = string | InternalLocation
 
 /**
  * <code>location</code> is a stack line location.

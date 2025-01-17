@@ -20,13 +20,7 @@ import type { RestOfTuple } from './types/RestOfTuple.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
 import assert, { ok, strictEqual } from 'assert'
-import {
-  type FunctionContractLocation,
-  internalLocation,
-  type InternalLocation,
-  isLocation,
-  location
-} from './location.ts'
+import { type GeneralLocation, internalLocation, type InternalLocation, isLocation, location } from './location.ts'
 import { isStack, rawStack } from './private/stack.ts'
 import { setAndFreeze, isFrozenOwnProperty, frozenDerived } from './private/property.ts'
 import { conciseRepresentation, namePrefix } from './private/representation.ts'
@@ -38,7 +32,7 @@ export const abstractErrorMessage = 'an abstract function cannot be executed'
  */
 export class AbstractError<
   Signature extends UnknownFunction,
-  Location extends FunctionContractLocation,
+  Location extends GeneralLocation,
   AFC extends BaseFunctionContract<Signature, Location>
 > extends ContractError {
   static {
@@ -66,7 +60,7 @@ export class AbstractError<
 export interface GeneralContractFunctionProperties<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature,
-  Location extends FunctionContractLocation
+  Location extends GeneralLocation
 > {
   contract: BaseFunctionContract<ContractSignature, Location>
   implementation: ImplementationSignature
@@ -76,7 +70,7 @@ export interface GeneralContractFunctionProperties<
 export type GeneralContractFunction<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature,
-  Location extends FunctionContractLocation
+  Location extends GeneralLocation
 > = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ImplementationSignature, Location>
 
 /**
@@ -105,7 +99,7 @@ export type GeneralContractFunction<
  */
 export function isAGeneralContractFunction(
   f: unknown
-): f is GeneralContractFunction<UnknownFunction, UnknownFunction, FunctionContractLocation> {
+): f is GeneralContractFunction<UnknownFunction, UnknownFunction, GeneralLocation> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
   return (
@@ -144,9 +138,9 @@ export function isAGeneralContractFunction(
  */
 export function bless<
   ContractSignature extends UnknownFunction,
-  BFC extends BaseFunctionContract<ContractSignature, FunctionContractLocation>,
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
   ImplementationSignature extends ContractSignature,
-  ImplementationLocation extends FunctionContractLocation
+  ImplementationLocation extends GeneralLocation
 >(
   contractFunctionToBe: UnknownFunction, // MUDO will become a Proxy, should be at least ImplementationSignature
   contract: BFC,
@@ -249,7 +243,7 @@ export const boundPrefix = 'bound'
 export const contractFunctionBind = function bind<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature,
-  Location extends FunctionContractLocation,
+  Location extends GeneralLocation,
   GFC extends GeneralContractFunction<ContractSignature, ImplementationSignature, Location>,
   ArgsToBind extends unknown[]
 >(
@@ -259,7 +253,7 @@ export const contractFunctionBind = function bind<
 ): GeneralContractFunction<
   BoundSignature<ContractSignature, ArgsToBind>,
   BoundSignature<ImplementationSignature, ArgsToBind>,
-  FunctionContractLocation
+  GeneralLocation
 > {
   assert(isAGeneralContractFunction(this), 'this is a general contract function')
 
@@ -346,7 +340,7 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  *
  * The `_location` argument is for internal use, and might be removed.
  */
-export class BaseFunctionContract<Signature extends UnknownFunction, Location extends FunctionContractLocation> {
+export class BaseFunctionContract<Signature extends UnknownFunction, Location extends GeneralLocation> {
   static {
     // MUDO
     // frozenReadOnlyArray(BaseFunctionContract.prototype, 'pre', '_pre')
@@ -403,7 +397,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
   verify: boolean = true
   verifyPostconditions: boolean = false
 
-  constructor(kwargs: FunctionContractKwargs<Signature>, _location?: FunctionContractLocation) {
+  constructor(kwargs: FunctionContractKwargs<Signature>, _location?: GeneralLocation) {
     ok(kwargs, 'kwargs is mandatory')
     strictEqual(typeof kwargs, 'object', 'kwargs must be an object')
     ok(
@@ -425,7 +419,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
       throw new AbstractError<Signature, Location, BaseFunctionContract<Signature, Location>>(self, rawStack())
     }
 
-    const theLocation: FunctionContractLocation = _location || location(1)
+    const theLocation: GeneralLocation = _location || location(1)
     bless(abstract, self, abstract, theLocation)
     // MUDO
     // property.setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []))

@@ -23,7 +23,7 @@ import {
   type GeneralContractFunction,
   isAGeneralContractFunction
 } from '../../../src/BaseFunctionContract.ts'
-import { type FunctionContractLocation, location } from '../../../src/location.ts'
+import { type GeneralLocation, location } from '../../../src/location.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
 import { notAFunctionNorAContract } from './BaseFunctionContractCommon.ts'
@@ -35,11 +35,9 @@ type Constructor<T> = new (...args: unknown[]) => T
  * it. Can be any type you like with generics.
  */
 export function createCandidateContractFunction<
-  ReturnType extends
-    | GeneralContractFunction<UnknownFunction, UnknownFunction, FunctionContractLocation>
-    | unknown = unknown
+  ReturnType extends GeneralContractFunction<UnknownFunction, UnknownFunction, GeneralLocation> | unknown = unknown
 >(
-  ContractConstructor?: new (kwargs: {}) => BaseFunctionContract<UnknownFunction, FunctionContractLocation>,
+  ContractConstructor?: new (kwargs: {}) => BaseFunctionContract<UnknownFunction, GeneralLocation>,
   doNotFreezeProperty?: string,
   otherPropertyName?: string,
   otherPropertyValue?: unknown
@@ -89,9 +87,7 @@ export function createCandidateContractFunction<
   return candidate as ReturnType
 }
 
-export function generateIAGCFTests<
-  FunctionContract extends BaseFunctionContract<UnknownFunction, FunctionContractLocation>
->(
+export function generateIAGCFTests<FunctionContract extends BaseFunctionContract<UnknownFunction, GeneralLocation>>(
   isAXXXContractFunction: typeof isAGeneralContractFunction,
   ContractConstructor?: Constructor<FunctionContract>
 ): void {

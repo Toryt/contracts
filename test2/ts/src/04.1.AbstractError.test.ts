@@ -22,7 +22,7 @@ import {
   BaseFunctionContract,
   unknownFunctionContract
 } from '../../../src/BaseFunctionContract.ts'
-import type { FunctionContractLocation } from '../../../src/location.ts'
+import type { GeneralLocation } from '../../../src/location.ts'
 import { rawStack } from '../../../src/private/stack.ts'
 import { testName } from '../../util/testName.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
@@ -70,11 +70,11 @@ describe(testName(import.meta), function () {
 
   describe('instance', function () {
     generateAbstractErrorMethodsDescriptions(
-      (): AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>> =>
+      (): AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>> =>
         new AbstractError(unknownFunctionContract, rawStack()),
       [
         {
-          subject: (): AbstractError<BaseFunctionContract<UnknownFunction, FunctionContractLocation>> =>
+          subject: (): AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>> =>
             new AbstractError(unknownFunctionContract, rawStack()),
           description: 'unknownFunctionContract'
         }

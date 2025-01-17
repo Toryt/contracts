@@ -17,7 +17,7 @@
 import should from 'should'
 import { type UnknownFunction } from '../../../src/index.ts'
 import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { type FunctionContractLocation, internalLocation, isLocation } from '../../../src/location.ts'
+import { type GeneralLocation, internalLocation, isLocation } from '../../../src/location.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
 
@@ -100,9 +100,9 @@ export const notAFunctionNorAContract: unknown[] = [
 //
 // export const location = eol.stack + '    at /'
 
-export function expectInvariants<Signature extends UnknownFunction, Location extends FunctionContractLocation>(
+export function expectInvariants<Signature extends UnknownFunction, Location extends GeneralLocation>(
   subject: unknown
-): BaseFunctionContract<Signature, FunctionContractLocation> {
+): BaseFunctionContract<Signature, GeneralLocation> {
   should(subject).be.an.instanceof(BaseFunctionContract)
   const bfc: BaseFunctionContract<Signature, Location> = subject as BaseFunctionContract<Signature, Location>
   // eslint-disable-next-line no-secrets/no-secrets
