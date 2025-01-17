@@ -29,7 +29,11 @@ export function expectAbstractErrorInvariants(subject: unknown): void {
   should(subject).be.an.instanceof(AbstractError)
   expectContractErrorInvariants(subject)
 
-  const aeSubject = subject as AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>>
+  const aeSubject = subject as AbstractError<
+    UnknownFunction,
+    GeneralLocation,
+    BaseFunctionContract<UnknownFunction, GeneralLocation>
+  >
 
   const { value: name } = expectOwnFrozenProperty(aeSubject, 'name')
   should(name).equal(AbstractError.name)
@@ -45,7 +49,7 @@ export function expectAbstractErrorInvariants(subject: unknown): void {
  * Precondition: `expectAbstractErrorInvariants` has been called
  */
 export function expectAbstractErrorConstructorPost(
-  result: AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>>,
+  result: AbstractError<UnknownFunction, GeneralLocation, BaseFunctionContract<UnknownFunction, GeneralLocation>>,
   message: string,
   contract: BaseFunctionContract<UnknownFunction, GeneralLocation>,
   rawStack: string
@@ -55,7 +59,7 @@ export function expectAbstractErrorConstructorPost(
 }
 
 export function generateAbstractErrorMethodsDescriptions<
-  AE extends AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>>
+  AE extends AbstractError<UnknownFunction, GeneralLocation, BaseFunctionContract<UnknownFunction, GeneralLocation>>
 >(oneSubjectGenerator: () => AE, allSubjectGenerators: { subject: () => AE; description: string }[]): void {
   generateContractErrorMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 

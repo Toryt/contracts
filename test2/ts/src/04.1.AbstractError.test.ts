@@ -70,12 +70,15 @@ describe(testName(import.meta), function () {
 
   describe('instance', function () {
     generateAbstractErrorMethodsDescriptions(
-      (): AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>> =>
+      (): AbstractError<UnknownFunction, GeneralLocation, BaseFunctionContract<UnknownFunction, GeneralLocation>> =>
         new AbstractError(unknownFunctionContract, rawStack()),
       [
         {
-          subject: (): AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>> =>
-            new AbstractError(unknownFunctionContract, rawStack()),
+          subject: (): AbstractError<
+            UnknownFunction,
+            GeneralLocation,
+            BaseFunctionContract<UnknownFunction, GeneralLocation>
+          > => new AbstractError(unknownFunctionContract, rawStack()),
           description: 'unknownFunctionContract'
         }
       ]
