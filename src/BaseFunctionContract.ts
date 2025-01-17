@@ -298,8 +298,7 @@ export interface ContractFunctionProperties<
 export type ContractFunction<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature
-> = GeneralContractFunction<ContractSignature, ImplementationSignature, string> &
-  ContractFunctionProperties<ContractSignature, ImplementationSignature>
+> = ContractSignature & ContractFunctionProperties<ContractSignature, ImplementationSignature>
 
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
   post?: Postcondition<Signature>[]
