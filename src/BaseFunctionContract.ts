@@ -15,6 +15,7 @@
  */
 
 import { ContractError } from './ContractError.ts'
+import type { NeverFunction } from './types/NeverFunction.ts'
 import type { RestOfTuple } from './types/RestOfTuple.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
@@ -36,7 +37,9 @@ export const abstractErrorMessage = 'an abstract function cannot be executed'
  * Thrown when an abstract method is called. You shouldn't.
  */
 export class AbstractError<
-  AFC extends BaseFunctionContract<UnknownFunction, FunctionContractLocation>
+  Signature extends UnknownFunction,
+  Location extends FunctionContractLocation,
+  AFC extends BaseFunctionContract<Signature, Location>
 > extends ContractError {
   static {
     setAndFreeze(this.prototype, 'name', AbstractError.name)
@@ -419,7 +422,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     /* This cannot be defined in the prototype. The `self` is the contract, not the `this`. When this function is called
        as a method of a random object, that random object is the `this`, not this contract. */
     function abstract(): never {
-      throw new AbstractError(self, rawStack())
+      throw new AbstractError<Signature, Location, BaseFunctionContract<Signature, Location>>(self, rawStack())
     }
 
     const theLocation: FunctionContractLocation = _location || location(1)
