@@ -276,6 +276,18 @@ export const contractFunctionBind = function bind<
   return bless(bound, this.contract, boundImplementation, location(1))
 }
 
+interface AbstractContractFunctionProperties<
+  ContractSignature extends UnknownFunction,
+  AbstractImplementation extends ContractSignature
+> extends GeneralContractFunctionProperties<ContractSignature, AbstractImplementation, InternalLocation> {
+  location: InternalLocation
+}
+
+export type AbstractContractFunction<ContractSignature extends UnknownFunction> =
+  NeverFunction extends ContractSignature
+    ? ContractSignature & AbstractContractFunctionProperties<ContractSignature, NeverFunction>
+    : never
+
 export interface ContractFunctionProperties<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature
@@ -378,6 +390,8 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    * consoles.
    */
   readonly location!: Location // initialized with setAndFreeze
+
+  readonly abstract!: AbstractContractFunction<Signature>
 
   verify: boolean = true
   verifyPostconditions: boolean = false
