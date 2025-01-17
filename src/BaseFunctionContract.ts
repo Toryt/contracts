@@ -428,6 +428,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     }
 
     const theLocation: GeneralLocation = _location || location(1)
+    // MUDO BECAUSE CONTRACTFUNCTION AND IMPLEMENTATION ARE THE SAME
     bless(abstract, self, abstract, theLocation)
     // MUDO
     // property.setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []))
