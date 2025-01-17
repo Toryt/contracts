@@ -33,7 +33,7 @@ export const abstractErrorMessage = 'an abstract function cannot be executed'
 export class AbstractError<
   Signature extends UnknownFunction,
   Location extends GeneralLocation,
-  AFC extends BaseFunctionContract<Signature, Location>
+  BFC extends BaseFunctionContract<Signature, Location>
 > extends ContractError {
   static {
     setAndFreeze(this.prototype, 'name', AbstractError.name)
@@ -41,9 +41,9 @@ export class AbstractError<
     setAndFreeze(this.prototype, 'contract', null)
   }
 
-  readonly contract!: AFC
+  readonly contract!: BFC
 
-  constructor(contract: AFC, rawStack: string) {
+  constructor(contract: BFC, rawStack: string) {
     ok(contract instanceof BaseFunctionContract, 'contract is an BaseFunctionContract')
     ok(isStack(rawStack), 'rawStack is a stack')
 
