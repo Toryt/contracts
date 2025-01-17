@@ -143,7 +143,13 @@ export function bless<
 >(
   contractFunctionToBe: ContractSignature, // MUDO will become a Proxy, should be at least ImplementationSignature
   contract: BFC,
-): GeneralContractFunction<ContractSignature, ImplementationSignature, ImplementationLocation> {
+  implFunction: NoInfer<ImplementationSignature>,
+  implementationLocation: GeneralLocation
+): asserts contractFunctionToBe is /* MUOD differ between abstract and real contract function? Location? */ GeneralContractFunction<
+  ContractSignature,
+  ContractLocation,
+  ImplementationSignature
+> {
   assert.strictEqual(typeof contractFunctionToBe, 'function')
   assert.ok(!('contract' in contractFunctionToBe))
   assert.ok(!('implementation' in contractFunctionToBe))
@@ -208,12 +214,6 @@ export function bless<
       value: conciseRepresentation(namePrefix, implFunction)
     })
   }
-
-  return contractFunctionToBe as GeneralContractFunction<
-    ContractSignature,
-    ImplementationSignature,
-    ImplementationLocation
-  >
 }
 
 type BoundSignature<Signature extends UnknownFunction, BoundArgs extends unknown[]> =
@@ -266,7 +266,9 @@ export const contractFunctionBind = function bind<
   /* MUDO TS complains about the contract here, and IS RIGHT! This contract has another signature
           `BoundSignature<ContractSignature, ArgsToBind>`, not `ContractSignature`. It means it will have less
           preconditions, and argument positions in pre and post conditions shift! */
-  return bless(bound, this.contract as any, boundImplementation, location(1))
+  bless(bound, this.contract as any, boundImplementation, location(1))
+
+  return bound
 }
 
 interface AbstractContractFunctionProperties<

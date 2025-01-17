@@ -34,20 +34,20 @@ describe(testName(import.meta), function () {
     const here = location()
     should(implFunction.prototype).be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
 
-    const blessed = bless(contractFunction, contract, implFunction, here)
+    bless(contractFunction, contract, implFunction, here)
 
-    blessed.should.equal(contractFunction)
-    BaseFunctionContract.isAContractFunction(blessed).should.be.true()
-    const { value: contractFromBlessed } = expectOwnFrozenProperty(blessed, 'contract')
+    contractFunction.should.equal(contractFunction)
+    BaseFunctionContract.isAContractFunction(contractFunction).should.be.true()
+    const { value: contractFromBlessed } = expectOwnFrozenProperty(contractFunction, 'contract')
     Object.getPrototypeOf(contractFromBlessed).should.equal(contract)
-    const { value: implementationFromBlessed } = expectOwnFrozenProperty(blessed, 'implementation')
+    const { value: implementationFromBlessed } = expectOwnFrozenProperty(contractFunction, 'implementation')
     should(implementationFromBlessed).equal(implFunction)
-    const { value: locationFromBlessed } = expectOwnFrozenProperty(blessed, 'location')
+    const { value: locationFromBlessed } = expectOwnFrozenProperty(contractFunction, 'location')
     should(locationFromBlessed).equal(here)
-    const { value: bindFromBlessed } = expectOwnFrozenProperty(blessed, 'bind')
+    const { value: bindFromBlessed } = expectOwnFrozenProperty(contractFunction, 'bind')
     should(bindFromBlessed).equal(contractFunctionBind)
-    blessed.should.have.ownProperty('name')
-    blessed.name.should.equal(conciseRepresentation(namePrefix, blessed.implementation))
+    contractFunction.should.have.ownProperty('name')
+    contractFunction.name.should.equal(conciseRepresentation(namePrefix, contractFunction.implementation))
 
     const implFunctionNamePropDesc = Object.getOwnPropertyDescriptor(implFunction, 'name')
     should(implFunctionNamePropDesc).not.be.undefined()
@@ -56,7 +56,7 @@ describe(testName(import.meta), function () {
     const contractFunctionNamePropDesc = Object.getOwnPropertyDescriptor(contractFunction, 'name')
     should(contractFunctionNamePropDesc).not.be.undefined()
     contractFunctionNamePropDesc!.value.should.equal(
-      conciseRepresentation(BaseFunctionContract.namePrefix, blessed.implementation)
+      conciseRepresentation(BaseFunctionContract.namePrefix, contractFunction.implementation)
     )
     delete contractFunctionNamePropDesc!.value
 
