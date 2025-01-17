@@ -276,7 +276,7 @@ export const contractFunctionBind = function bind<
   /* MUDO TS complains about the contract here, and IS RIGHT! This contract has another signature
           `BoundSignature<ContractSignature, ArgsToBind>`, not `ContractSignature`. It means it will have less
           preconditions, and argument positions in pre and post conditions shift! */
-  return bless(bound, this.contract, boundImplementation, location(1))
+  return bless(bound, this.contract as any, boundImplementation, location(1))
 }
 
 interface AbstractContractFunctionProperties<
