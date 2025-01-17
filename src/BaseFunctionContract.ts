@@ -345,7 +345,12 @@ export interface FunctionContractKwargs<Signature extends UnknownFunction> {
  */
 export class BaseFunctionContract<Signature extends UnknownFunction, Location extends FunctionContractLocation> {
   static {
+    // MUDO
+    // frozenReadOnlyArray(BaseFunctionContract.prototype, 'pre', '_pre')
+    // frozenReadOnlyArray(BaseFunctionContract.prototype, 'post', '_post')
+    // frozenReadOnlyArray(BaseFunctionContract.prototype, 'exception', '_exception')
     setAndFreeze(BaseFunctionContract.prototype, 'location', internalLocation)
+    setAndFreeze(BaseFunctionContract.prototype, 'abstract', null)
   }
 
   static readonly namePrefix: typeof namePrefix = namePrefix
