@@ -14,7 +14,6 @@
   limitations under the License.
  */
 
-import { type } from 'node:os'
 import { expectAssignable, expectNotAssignable } from 'tsd'
 import type { NeverFunction, UnknownFunction } from '../../../src/index.ts'
 import type {
