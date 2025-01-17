@@ -15,7 +15,6 @@
  */
 
 import { ContractError } from './ContractError.ts'
-import type { NeverFunction } from './types/NeverFunction.ts'
 import type { RestOfTuple } from './types/RestOfTuple.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
 import type { Postcondition } from './Postcondition.ts'
@@ -59,19 +58,19 @@ export class AbstractError<
 
 export interface GeneralContractFunctionProperties<
   ContractSignature extends UnknownFunction,
-  ImplementationSignature extends ContractSignature,
-  Location extends GeneralLocation
+  ContractLocation extends GeneralLocation,
+  ImplementationSignature extends ContractSignature
 > {
-  contract: BaseFunctionContract<ContractSignature, Location>
+  contract: BaseFunctionContract<ContractSignature, ContractLocation>
   implementation: ImplementationSignature
-  location: Location
+  location: GeneralLocation
 }
 
 export type GeneralContractFunction<
   ContractSignature extends UnknownFunction,
-  ImplementationSignature extends ContractSignature,
-  Location extends GeneralLocation
-> = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ImplementationSignature, Location>
+  ContractLocation extends GeneralLocation,
+  ImplementationSignature extends ContractSignature
+> = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ContractLocation, ImplementationSignature>
 
 /**
  * A {@link GeneralContractFunction} is an {@link BaseFunctionContract#implementation} of an
@@ -99,7 +98,7 @@ export type GeneralContractFunction<
  */
 export function isAGeneralContractFunction(
   f: unknown
-): f is GeneralContractFunction<UnknownFunction, UnknownFunction, GeneralLocation> {
+): f is GeneralContractFunction<UnknownFunction, GeneralLocation, UnknownFunction> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
   return (
@@ -138,14 +137,12 @@ export function isAGeneralContractFunction(
  */
 export function bless<
   ContractSignature extends UnknownFunction,
-  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
-  ImplementationSignature extends ContractSignature,
-  ImplementationLocation extends GeneralLocation
+  ContractLocation extends GeneralLocation,
+  BFC extends BaseFunctionContract<ContractSignature, ContractLocation>,
+  ImplementationSignature extends ContractSignature
 >(
-  contractFunctionToBe: UnknownFunction, // MUDO will become a Proxy, should be at least ImplementationSignature
+  contractFunctionToBe: ContractSignature, // MUDO will become a Proxy, should be at least ImplementationSignature
   contract: BFC,
-  implFunction: ImplementationSignature,
-  implementationLocation: ImplementationLocation
 ): GeneralContractFunction<ContractSignature, ImplementationSignature, ImplementationLocation> {
   assert.strictEqual(typeof contractFunctionToBe, 'function')
   assert.ok(!('contract' in contractFunctionToBe))
@@ -243,8 +240,7 @@ export const boundPrefix = 'bound'
 export const contractFunctionBind = function bind<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature,
-  Location extends GeneralLocation,
-  GFC extends GeneralContractFunction<ContractSignature, ImplementationSignature, Location>,
+  GFC extends GeneralContractFunction<ContractSignature, GeneralLocation, ImplementationSignature>,
   ArgsToBind extends unknown[]
 >(
   this: GFC,
@@ -252,8 +248,8 @@ export const contractFunctionBind = function bind<
   ...argsArrayToBind: ArgsToBind
 ): GeneralContractFunction<
   BoundSignature<ContractSignature, ArgsToBind>,
-  BoundSignature<ImplementationSignature, ArgsToBind>,
-  GeneralLocation
+  GeneralLocation,
+  BoundSignature<ImplementationSignature, ArgsToBind>
 > {
   assert(isAGeneralContractFunction(this), 'this is a general contract function')
 
@@ -275,20 +271,30 @@ export const contractFunctionBind = function bind<
 
 interface AbstractContractFunctionProperties<
   ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation,
   AbstractImplementation extends ContractSignature
-> extends GeneralContractFunctionProperties<ContractSignature, AbstractImplementation, InternalLocation> {
-  location: InternalLocation
+> extends GeneralContractFunctionProperties<ContractSignature, ContractLocation, AbstractImplementation> {
+  location: ContractLocation // abstract location === contract location
 }
 
-export type AbstractContractFunction<ContractSignature extends UnknownFunction> =
-  NeverFunction extends ContractSignature
-    ? ContractSignature & AbstractContractFunctionProperties<ContractSignature, NeverFunction>
+type NeverSignature<Signature extends UnknownFunction> = (
+  this: ThisParameterType<Signature>,
+  ...args: Parameters<Signature>
+) => never
+
+export type AbstractContractFunction<
+  ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation
+> =
+  NeverSignature<ContractSignature> extends ContractSignature
+    ? ContractSignature &
+        AbstractContractFunctionProperties<ContractSignature, ContractLocation, NeverSignature<ContractSignature>>
     : never
 
 export interface ContractFunctionProperties<
   ContractSignature extends UnknownFunction,
   ImplementationSignature extends ContractSignature
-> extends GeneralContractFunctionProperties<ContractSignature, ImplementationSignature, string> {
+> extends GeneralContractFunctionProperties<ContractSignature, string, ImplementationSignature> {
   location: string
 }
 
@@ -392,7 +398,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    */
   readonly location!: Location // initialized with setAndFreeze
 
-  readonly abstract!: AbstractContractFunction<Signature>
+  readonly abstract!: AbstractContractFunction<Signature, Location>
 
   verify: boolean = true
   verifyPostconditions: boolean = false

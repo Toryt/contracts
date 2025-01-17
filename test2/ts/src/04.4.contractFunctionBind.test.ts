@@ -30,7 +30,7 @@ import { createCandidateContractFunction } from './GeneralContractFunctionCommon
 describe(testName(import.meta), function () {
   it('behaves as expected', function () {
     const subject =
-      createCandidateContractFunction<GeneralContractFunction<() => void, () => void, string>>(BaseFunctionContract)
+      createCandidateContractFunction<GeneralContractFunction<() => void, string, () => void>>(BaseFunctionContract)
     const expectedLocation = location()
     const result = contractFunctionBind.apply(subject)
     isAGeneralContractFunction(result).should.be.true()
