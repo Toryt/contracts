@@ -270,6 +270,9 @@ export const contractFunctionBind = function bind<
   )
   frozenDerived(boundImplementation, 'name', () => conciseRepresentation(boundPrefix, this.implementation))
 
+  /* MUDO TS complains about the contract here, and IS RIGHT! This contract has another signature
+          `BoundSignature<ContractSignature, ArgsToBind>`, not `ContractSignature`. It means it will have less
+          preconditions, and argument positions in pre and post conditions shift! */
   return bless(bound, this.contract, boundImplementation, location(1))
 }
 
