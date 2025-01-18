@@ -260,7 +260,7 @@ export const contractFunctionBind = function bind<
           is wrong. We do need a new contract instance. */
   bless(
     bound,
-    Object.create(this.contract) /* MUDO as is a lie! */ as BaseFunctionContract<
+    this.contract /* MUDO following as is a lie! */ as unknown as BaseFunctionContract<
       BoundSignature<ContractSignature, ArgsToBind>,
       ContractLocation
     >,

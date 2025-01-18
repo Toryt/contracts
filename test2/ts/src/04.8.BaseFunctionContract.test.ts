@@ -40,6 +40,7 @@ describe(testName(import.meta), function () {
       BaseFunctionContract.mustNotHappen.should.be.an.Array()
       BaseFunctionContract.mustNotHappen.should.have.length(1)
       should(BaseFunctionContract.mustNotHappen[0]).equal(BaseFunctionContract.falseCondition)
+      // MUDO
       // BaseFunctionContract.should.have.ownProperty('outcome')
       // BaseFunctionContract.outcome.should.be.a.Function()
       // BaseFunctionContract.should.have.ownProperty('callee')
@@ -55,8 +56,8 @@ describe(testName(import.meta), function () {
       // should(prototype._pre).be.null()
       // should(prototype._post).be.null()
       // should(prototype._exception).be.null()
-      // should(prototype.abstract).be.null()
       prototype.location.should.equal(internalLocation)
+      should(prototype.abstract).be.null()
       // prototype.isImplementedBy.should.be.a.Function()
     })
   })
