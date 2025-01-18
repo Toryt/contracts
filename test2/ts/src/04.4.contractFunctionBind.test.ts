@@ -17,8 +17,8 @@
 import {
   BaseFunctionContract,
   boundPrefix,
+  type ContractFunction,
   contractFunctionBind,
-  type GeneralContractFunction,
   isAGeneralContractFunction
 } from '../../../src/BaseFunctionContract.ts'
 import { location } from '../../../src/location.ts'
@@ -30,7 +30,7 @@ import { createCandidateContractFunction } from './GeneralContractFunctionCommon
 describe(testName(import.meta), function () {
   it('behaves as expected', function () {
     const subject =
-      createCandidateContractFunction<GeneralContractFunction<() => void, string, () => void>>(BaseFunctionContract)
+      createCandidateContractFunction<ContractFunction<() => void, string, () => void>>(BaseFunctionContract)
     const expectedLocation = location()
     const result = contractFunctionBind.apply(subject)
     isAGeneralContractFunction(result).should.be.true()

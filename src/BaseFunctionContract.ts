@@ -56,49 +56,45 @@ export class AbstractError<
   }
 }
 
-export interface GeneralContractFunctionProperties<
+export interface BaseContractFunctionProperties<
   ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
-  ImplementationSignature extends ContractSignature
+  ContractLocation extends GeneralLocation
 > {
   contract: BaseFunctionContract<ContractSignature, ContractLocation>
-  implementation: ImplementationSignature
-  location: GeneralLocation
 }
 
-export type GeneralContractFunction<
+export type BaseContractFunction<
   ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
-  ImplementationSignature extends ContractSignature
-> = ContractSignature & GeneralContractFunctionProperties<ContractSignature, ContractLocation, ImplementationSignature>
+  ContractLocation extends GeneralLocation
+> = ContractSignature & BaseContractFunctionProperties<ContractSignature, ContractLocation>
 
 /**
- * A {@link GeneralContractFunction} is an {@link BaseFunctionContract#implementation} of an
+ * A {@link BaseContractFunction} is an {@link BaseFunctionContract#implementation} of an
  * {@link BaseFunctionContract}. This function verifies whether a function given as a parameter is a
  * General Contract Function.
  *
- * To be a {@link GeneralContractFunction}, the subject must
+ * To be a {@link BaseContractFunction}, the subject must
  *
  *   * be a function,
- *   * have a frozen {@link GeneralContractFunction#contract} property that refers to an
+ *   * have a frozen {@link BaseContractFunction#contract} property that refers to an
  *     {@link BaseFunctionContract},
- *   * have a frozen {@link GeneralContractFunction#implementation} property that refers to a function (that realizes
+ *   * have a frozen {@link BaseContractFunction#implementation} property that refers to a function (that realizes
  *     the contract),
- *   * have a frozen {@link GeneralContractFunction#location} property, that has a value,
- *   * have a frozen {@link GeneralContractFunction#bind} property, that is
+ *   * have a frozen {@link BaseContractFunction#location} property, that has a value,
+ *   * have a frozen {@link BaseContractFunction#bind} property, that is
  *     {@link contractFunctionBind}, and
- *   * if the {@link GeneralContractFunction#implementation} function has a `prototype`, have a `prototype` property,
+ *   * if the {@link BaseContractFunction#implementation} function has a `prototype`, have a `prototype` property,
  *       * that is an object,
  *       * that has a `constructor` property that is the contract function, and
  *       * that has `f.implementation.prototype` in its prototype chain, or is equal to it, and
  *
- * should have a {@link GeneralContractFunction#name}, which is a string that gives information for a programmer to
- * understand what contract function this is. The {@link GeneralContractFunction#name} however is controlled by the
+ * should have a {@link BaseContractFunction#name}, which is a string that gives information for a programmer to
+ * understand what contract function this is. The {@link BaseContractFunction#name} however is controlled by the
  * JavaScript engine. We cannot freeze it, and it is not guaranteed to exist or have a specific value in all engines.
  */
 export function isAGeneralContractFunction(
   f: unknown
-): f is GeneralContractFunction<UnknownFunction, GeneralLocation, UnknownFunction> {
+): f is ContractFunction<UnknownFunction, GeneralLocation, UnknownFunction> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
   return (
@@ -127,29 +123,28 @@ export function isAGeneralContractFunction(
  * refers to {@link contractFunctionToBe} as `contractFunctionToBe.prototype.constructor`, is otherwise empty, and
  * has {@link implFunction.prototype} as prototype.
  *
+ * Note: this is not to be used by {@link abstract}, which has no `implementation`.
+ *
  * @param contractFunctionToBe - the regular `function` to be transformed into a {@link ContractFunction}
  * @param contract - the {@link BaseFunctionContract} {@link contractFunctionToBe} is a realisation of
  * @param implFunction - the `function` that is used in {@link contractFunctionToBe} to realize the postconditions of
  *                       `this` under its preconditions
  * @param implementationLocation - the {@link isLocation location} outside this library that the resulting
  *                                 {@link ContractFunction} will carry, that says where it is defined
- * @returns {@link contractFunctionToBe}, as a  {@link isAGeneralContractFunction}
+ * @returns {@link contractFunctionToBe}, as a {@link isAGeneralContractFunction}
  */
 export function bless<
   ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
-  BFC extends BaseFunctionContract<ContractSignature, ContractLocation>,
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
   ImplementationSignature extends ContractSignature
 >(
   contractFunctionToBe: ContractSignature, // MUDO will become a Proxy, should be at least ImplementationSignature
   contract: BFC,
-  implFunction: NoInfer<ImplementationSignature>,
-  implementationLocation: GeneralLocation
-): asserts contractFunctionToBe is /* MUOD differ between abstract and real contract function? Location? */ GeneralContractFunction<
-  ContractSignature,
-  ContractLocation,
-  ImplementationSignature
-> {
+  implFunction: ImplementationSignature,
+  implementationLocation: string
+): asserts contractFunctionToBe is BFC extends BaseFunctionContract<ContractSignature, infer ContractLocation>
+  ? ContractFunction<ContractSignature, ContractLocation, ImplementationSignature>
+  : never {
   assert.strictEqual(typeof contractFunctionToBe, 'function')
   assert.ok(!('contract' in contractFunctionToBe))
   assert.ok(!('implementation' in contractFunctionToBe))
@@ -157,10 +152,8 @@ export function bless<
   assert.strictEqual(contractFunctionToBe.bind, Function.prototype.bind)
   assert(contract instanceof BaseFunctionContract, 'contract is a BaseFunctionContract')
   assert.strictEqual(typeof implFunction, 'function')
-  assert(
-    implementationLocation === internalLocation || isLocation(implementationLocation),
-    'implementationLocation is internal, or a location'
-  )
+  assert.notStrictEqual(contractFunctionToBe, implFunction)
+  assert(isLocation(implementationLocation), 'implementationLocation a location (not internal)')
 
   // intermediate contract instance, specifically for this contract function
   setAndFreeze(contractFunctionToBe, 'contract', Object.create(contract))
@@ -169,34 +162,32 @@ export function bless<
   setAndFreeze(
     contractFunctionToBe,
     'bind',
-    contractFunctionBind // MUDO <GeneralContractFunction<ContractSignature, ImplementationSignature, ImplementationLocation>>
+    contractFunctionBind // MUDO <BaseContractFunction<ContractSignature, ImplementationSignature, ImplementationLocation>>
   )
-  if (contractFunctionToBe !== implFunction) {
-    /* `abstract` refers to itself as implementation; we do not change its name (it would create a circular name
-     definition) */
-    // IDEA defend code against more complex circular structure
-    /* NOTE: This test should be implFunction.hasOwnProperty('prototype'). However, in Safari on iOS, tests show that
+  // IDEA defend code against more complex circular structure
+  /* NOTE: This test should be implFunction.hasOwnProperty('prototype'). However, in Safari on iOS, tests show that
            'most of the time' this prototype is not set in our tests, as it should be. It seems to depend on the
            complexity of the function, and to be set 'late' (because it is there in isAGeneralContractFunction). If a
            log command is added, the prototype is set early enough. To work around this, this test is replaced with
-           !!implFunction.prototype. This defaults to the prototype set in Function.prototype, which is an Object.
-           This means we now replace the contractFunction prototype more often than needed, but that is not a
+           `'prototype in implFunction'`. This defaults to the prototype set in Function.prototype, which is an
+           `object`.
+           This means we now replace the `contractFunction` prototype more often than needed, but that is not a
            functional problem. */
-    if (!!implFunction.prototype && typeof implFunction.prototype === 'object') {
-      /* The same prototype as `implFunction`, but with a clean intermediate. This makes the function work as a
+  if ('prototype' in implFunction && typeof implFunction.prototype === 'object') {
+    /* The same prototype as `implFunction`, but with a clean intermediate. This makes the function work as a
        constructor, if `implFunction` was intended that way. */
-      contractFunctionToBe.prototype = Object.create(implFunction.prototype)
-      if ('constructor' in implFunction.prototype && implFunction.prototype.constructor === implFunction) {
-        setAndFreeze(contractFunctionToBe.prototype, 'constructor', contractFunctionToBe)
-        // the following line is added to work around an issue in Safari on iOS. See 4ed9879c6b5544b174ae0825d7f7055fd5e147d8
-        assert(
-          Object.getPrototypeOf(contractFunctionToBe.prototype) === implFunction.prototype,
-          'contractFunction prototype is set to extend `implFunction.prototype`'
-        )
-      }
+    contractFunctionToBe.prototype = Object.create(implFunction.prototype)
+    if ('constructor' in implFunction.prototype && implFunction.prototype.constructor === implFunction) {
+      setAndFreeze(contractFunctionToBe.prototype, 'constructor', contractFunctionToBe)
+      // the following line is added to work around an issue in Safari on iOS. See 4ed9879c6b5544b174ae0825d7f7055fd5e147d8
+      assert(
+        Object.getPrototypeOf(contractFunctionToBe.prototype) === implFunction.prototype,
+        'contractFunction prototype is set to extend `implFunction.prototype`'
+      )
     }
-    // MUDO with proxies, this is no longer true. Verify
-    /* The name of the contract function will always be 'contractFunction', because we need to define it in
+  }
+  // MUDO with proxies, this is no longer true. Verify
+  /* The name of the contract function will always be 'contractFunction', because we need to define it in
     `Contract.implementation`, because we need to refer to the contract function internally. We would like the result
     of `Contract.implementation` to get a name inferred from its syntactic position, but cannot happen: before
     we reach the 'syntactic position' (a.k.a, we assign the contract function to a variable or property with
@@ -205,15 +196,14 @@ export function bless<
     The Firefox feature `displayName` will not be used.
     This is a real property, and not a derived property. Earlier, it was, but this was changed in response to
     https://github.com/sinonjs/sinon/issues/2203 */
-    // IDEA we might also add a name property to a Contract, and combine it with that
-    const implNamePropertyDescriptor = Object.getOwnPropertyDescriptor(implFunction, 'name')
-    Object.defineProperty(contractFunctionToBe, 'name', {
-      configurable: implNamePropertyDescriptor?.configurable ?? false,
-      enumerable: implNamePropertyDescriptor?.enumerable ?? true,
-      writable: implNamePropertyDescriptor?.writable ?? false,
-      value: conciseRepresentation(namePrefix, implFunction)
-    })
-  }
+  // IDEA we might also add a name property to a Contract, and combine it with that
+  const implNamePropertyDescriptor = Object.getOwnPropertyDescriptor(implFunction, 'name')
+  Object.defineProperty(contractFunctionToBe, 'name', {
+    configurable: implNamePropertyDescriptor?.configurable ?? false,
+    enumerable: implNamePropertyDescriptor?.enumerable ?? true,
+    writable: implNamePropertyDescriptor?.writable ?? false,
+    value: conciseRepresentation(namePrefix, implFunction)
+  })
 }
 
 type BoundSignature<Signature extends UnknownFunction, BoundArgs extends unknown[]> =
@@ -239,16 +229,17 @@ export const boundPrefix = 'bound'
  */
 export const contractFunctionBind = function bind<
   ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation,
   ImplementationSignature extends ContractSignature,
-  GFC extends GeneralContractFunction<ContractSignature, GeneralLocation, ImplementationSignature>,
+  CF extends ContractFunction<ContractSignature, ContractLocation, ImplementationSignature>,
   ArgsToBind extends unknown[]
 >(
-  this: GFC,
+  this: CF,
   thisArgToBind?: ThisParameterType<ContractSignature>,
   ...argsArrayToBind: ArgsToBind
-): GeneralContractFunction<
+): ContractFunction<
   BoundSignature<ContractSignature, ArgsToBind>,
-  GeneralLocation,
+  ContractLocation, // MUDO well, actually … this is a new and separate contract, and where is that defined?
   BoundSignature<ImplementationSignature, ArgsToBind>
 > {
   assert(isAGeneralContractFunction(this), 'this is a general contract function')
@@ -265,45 +256,49 @@ export const contractFunctionBind = function bind<
 
   /* MUDO TS complains about the contract here, and IS RIGHT! This contract has another signature
           `BoundSignature<ContractSignature, ArgsToBind>`, not `ContractSignature`. It means it will have less
-          preconditions, and argument positions in pre and post conditions shift! */
-  bless(bound, this.contract as any, boundImplementation, location(1))
+          preconditions, and argument positions in pre and post conditions shift! Also, the contract of its `abstract`
+          is wrong. We do need a new contract instance. */
+  bless(
+    bound,
+    Object.create(this.contract) /* MUDO as is a lie! */ as BaseFunctionContract<
+      BoundSignature<ContractSignature, ArgsToBind>,
+      ContractLocation
+    >,
+    boundImplementation,
+    location(1)
+  )
 
   return bound
 }
 
-interface AbstractContractFunctionProperties<
-  ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
-  AbstractImplementation extends ContractSignature
-> extends GeneralContractFunctionProperties<ContractSignature, ContractLocation, AbstractImplementation> {
-  location: ContractLocation // abstract location === contract location
-}
-
-type NeverSignature<Signature extends UnknownFunction> = (
-  this: ThisParameterType<Signature>,
-  ...args: Parameters<Signature>
-) => never
-
-export type AbstractContractFunction<
-  ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation
-> =
-  NeverSignature<ContractSignature> extends ContractSignature
-    ? ContractSignature &
-        AbstractContractFunctionProperties<ContractSignature, ContractLocation, NeverSignature<ContractSignature>>
-    : never
+// type NeverSignature<Signature extends UnknownFunction> = (
+//   this: ThisParameterType<Signature>,
+//   ...args: Parameters<Signature>
+// ) => never
+//
+// // MUDO remove: it does not add anything
+// export type AbstractContractFunction<
+//   ContractSignature extends UnknownFunction,
+//   ContractLocation extends GeneralLocation
+// > =
+//   NeverSignature<ContractSignature> extends ContractSignature
+//     ? ContractSignature & BaseContractFunction<ContractSignature, ContractLocation>
+//     : never
 
 export interface ContractFunctionProperties<
   ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation,
   ImplementationSignature extends ContractSignature
-> extends GeneralContractFunctionProperties<ContractSignature, string, ImplementationSignature> {
+> extends BaseContractFunctionProperties<ContractSignature, ContractLocation> {
+  implementation: ImplementationSignature
   location: string
 }
 
 export type ContractFunction<
   ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation,
   ImplementationSignature extends ContractSignature
-> = ContractSignature & ContractFunctionProperties<ContractSignature, ImplementationSignature>
+> = ContractSignature & ContractFunctionProperties<ContractSignature, ContractLocation, ImplementationSignature>
 
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
   post?: Postcondition<Signature>[]
@@ -367,11 +362,11 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    *
    * To be a {@link ContractFunction}, the subject must
    *
-   *   * be a {@link isAGeneralContractFunction GeneralContractFunction},
+   *   * be a {@link isAGeneralContractFunction BaseContractFunction},
    *   * have a frozen `location` property, which is a string that represents a location in source code, outside this
    *     library.
    */
-  static isAContractFunction(f: unknown): f is ContractFunction<UnknownFunction, UnknownFunction> {
+  static isAContractFunction(f: unknown): f is ContractFunction<UnknownFunction, GeneralLocation, UnknownFunction> {
     return isAGeneralContractFunction(f) && f.contract instanceof this && isLocation(f.location)
   }
 
@@ -400,7 +395,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    */
   readonly location!: Location // initialized with setAndFreeze
 
-  readonly abstract!: AbstractContractFunction<Signature, Location>
+  readonly abstract!: BaseContractFunction<Signature, Location>
 
   verify: boolean = true
   verifyPostconditions: boolean = false
@@ -419,17 +414,22 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
       'optional private _location is internal, or a location'
     )
 
+    const theLocation: GeneralLocation = _location || location(1)
     const self = this
 
     /* This cannot be defined in the prototype. The `self` is the contract, not the `this`. When this function is called
        as a method of a random object, that random object is the `this`, not this contract. */
     function abstract(): never {
+      // MUDO why is this generic specification needed?
       throw new AbstractError<Signature, Location, BaseFunctionContract<Signature, Location>>(self, rawStack())
     }
+    // intermediate contract instance, specifically for this contract function
+    setAndFreeze(abstract, 'contract', Object.create(this))
+    // `abstract` now is a `BaseContractFunction`
 
-    const theLocation: GeneralLocation = _location || location(1)
-    // MUDO BECAUSE CONTRACTFUNCTION AND IMPLEMENTATION ARE THE SAME
-    bless(abstract, self, abstract, theLocation)
+    setAndFreeze(self, 'location', Object.freeze(theLocation))
+    setAndFreeze(self, 'abstract', abstract)
+
     // MUDO
     // property.setAndFreeze(self, '_pre', Object.freeze(kwargs.pre ? kwargs.pre.slice() : []))
     // property.setAndFreeze(self, '_post', Object.freeze(kwargs.post ? kwargs.post.slice() : []))
@@ -438,8 +438,6 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     //   '_exception',
     //   Object.freeze(kwargs.exception ? kwargs.exception.slice() : mustNotHappen)
     // )
-    setAndFreeze(self, 'location', Object.freeze(theLocation))
-    setAndFreeze(self, 'abstract', abstract)
   }
 }
 
