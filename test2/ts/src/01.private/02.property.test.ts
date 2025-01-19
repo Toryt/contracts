@@ -19,9 +19,10 @@ import {
   frozenDerived,
   frozenReadOnlyArray,
   setAndFreeze,
-  isFrozenOwnProperty
+  isFrozenOwnProperty,
+  hasProperty
 } from '../../../../src/private/property.ts'
-import { booleanStuff } from '../../../util/_stuff.ts'
+import { booleanStuff, stuffGenerators } from '../../../util/_stuff.ts'
 import { x } from '../../../util/cartesian.ts'
 import {
   expectConfigurableDerivedPropertyOnAPrototype,
@@ -135,6 +136,44 @@ describe(testName(import.meta), function () {
       )
       arrayProperty.should.not.equal(array)
       arrayProperty.should.eql(array)
+    })
+  })
+
+  describe('hasProperty()', function () {
+    const propertyName = 'propertyName to look for'
+    const propertyValue = 'property value'
+    it('returns true when `x` is an object, and it has a property with the given name, directly', function () {
+      const subject = { [propertyName]: propertyValue }
+      const result = hasProperty(subject, propertyName)
+      result.should.be.true()
+    })
+    it('returns true when `x` is an object, and it has a property with the given name in a prototype', function () {
+      const prototype = { [propertyName]: propertyValue }
+      const subject = Object.create(Object.create(Object.create(prototype)))
+      const result = hasProperty(subject, propertyName)
+      result.should.be.true()
+    })
+    it('returns true when `x` is a function, and it has a property with the given name, directly', function () {
+      function subject(): void {}
+      subject[propertyName] = propertyValue
+      const result = hasProperty(subject, propertyName)
+      result.should.be.true()
+    })
+    it('returns true when `x` is a function, and it has a property with the given name in a prototype', function () {
+      function subject(): void {}
+      const prototype = Object.create(subject.prototype)
+      prototype[propertyName] = propertyValue
+      Object.setPrototypeOf(subject, Object.create(prototype))
+      subject()
+      const result = hasProperty(subject, propertyName)
+      result.should.be.true()
+    })
+    stuffGenerators.forEach(({ generate, description }) => {
+      it(`returns false when \`x\` is ${description} without a property with the given name`, function () {
+        const subject = generate()
+        const result = hasProperty(subject, propertyName)
+        result.should.be.false()
+      })
     })
   })
 

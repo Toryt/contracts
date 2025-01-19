@@ -104,7 +104,6 @@ export function frozenReadOnlyArray<
   )
 }
 
-// MUDO test
 /**
  * `x` is an object (something that can have a property), and has a property with the given name, of any type.
  */
