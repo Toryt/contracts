@@ -85,7 +85,7 @@ type SpecificFunction = (this: string, arg: number) => string
 
 expectAssignable<SpecificFunction>(aNeverFunction)
 
-function testGenericContext<T extends UnknownFunction>(func: T) {
+function testGenericContext<T extends UnknownFunction>(func: T): void {
   expectNotAssignable<T>(aNeverFunction)
   /* TS2345: Argument of type NeverFunction is not assignable to parameter of type T
        NeverFunction is assignable to the constraint of type T, but T could be instantiated with a different subtype of

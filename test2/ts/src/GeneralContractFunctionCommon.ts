@@ -20,7 +20,6 @@ import { type UnknownFunction } from '../../../src/index.ts'
 import {
   BaseFunctionContract,
   contractFunctionBind,
-  type BaseContractFunction,
   isAGeneralContractFunction,
   type ContractFunction
 } from '../../../src/BaseFunctionContract.ts'
@@ -32,7 +31,7 @@ import { notAFunctionNorAContract } from './BaseFunctionContractCommon.ts'
 type Constructor<T> = new (...args: unknown[]) => T
 
 /**
- * Mock contract function. Mimicks the structure of a {@link BaseContractFunction}, but does nothing when you call
+ * Mock contract function. Mimics the structure of a {@link BaseContractFunction}, but does nothing when you call
  * it. Can be any type you like with generics.
  */
 export function createCandidateContractFunction<
