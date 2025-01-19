@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectAssignable, expectNotAssignable } from 'tsd'
+import { expectAssignable, expectNotAssignable, expectType } from 'tsd'
 import type { NeverFunction, UnknownFunction } from '../../../src/index.ts'
 import type {
   ASignature,
@@ -81,7 +81,13 @@ expectNotAssignable<NeverFunction>((...args: never[]): unknown => {
 
 // NOTE: demonstrate TS weirdness
 
-type SpecificFunction = (this: string, arg: number) => string
+type SpecificFunction = (arg1: number, arg2: string) => string
+
+const subSpecificFunction: (arg1: number) => 'hello' = (arg1: number) => 'hello'
+type SubSpecificFunction = typeof subSpecificFunction
+expectType<SubSpecificFunction>(subSpecificFunction)
+
+expectAssignable<SpecificFunction>(subSpecificFunction)
 
 expectAssignable<SpecificFunction>(aNeverFunction)
 
@@ -92,6 +98,12 @@ function testGenericContext<T extends UnknownFunction>(func: T): void {
        constraint UnknownFunction
       Although `aNeverFunction` as assignable to any signature, and we can call the function with that below:
       `aNeverFunction` _is_ assignable to `T`, but not in this generic context. */
+  expectNotAssignable<T>(subSpecificFunction)
+  /* TS2345: Argument of type (arg1: number) => 'hello' is not assignable to parameter of type T
+        (arg1: number) => 'hello' is assignable to the constraint of type T, but T could be instantiated with a
+        different subtype of constraint UnknownFunction
+      This is the correct assesment. T could, e.g., be NeverFunction */
 }
 
 testGenericContext<SpecificFunction>(aNeverFunction)
+testGenericContext<SpecificFunction>(subSpecificFunction)
