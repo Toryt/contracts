@@ -16,31 +16,29 @@
 
 import { expectAssignable, expectNotAssignable, expectType } from 'tsd'
 import type { NeverFunction, UnknownFunction } from '../../../src/index.ts'
-import type {
-  ASignature,
-  ASignatureWithOptionalArgs,
-  DoubleOptionalAfterRestSignature,
-  DoubleOptionalBeforeRestSignature,
-  FinalOptionalArgumentSignature,
-  FinalRestArgumentSignature,
-  MultipleFinalOptionalArgumentsSignature,
-  NoArgumentsSignature,
-  OneArgumentSignature,
-  OneRestInTheMiddleInArraysSignature,
-  OptionalAfterRestSignature,
-  OptionalBeforeRestSignature,
-  PseudoOptionalNonFinalSignature,
-  PseudoRestNonFinalSignature,
-  SingleOptionalArgumentSignature,
-  SingleRestSignature,
-  TwoArgumentsSignature,
-  UndefinedBeforeRestSignature,
-  UndefinedNonFinalSignature
+import {
+  aNeverFunction,
+  type ASignature,
+  type ASignatureWithOptionalArgs,
+  type DoubleOptionalAfterRestSignature,
+  type DoubleOptionalBeforeRestSignature,
+  type FinalOptionalArgumentSignature,
+  type FinalRestArgumentSignature,
+  type MultipleFinalOptionalArgumentsSignature,
+  type NoArgumentsSignature,
+  type OneArgumentSignature,
+  type OneRestInTheMiddleInArraysSignature,
+  type OptionalAfterRestSignature,
+  type OptionalBeforeRestSignature,
+  type PseudoOptionalNonFinalSignature,
+  type PseudoRestNonFinalSignature,
+  type SingleOptionalArgumentSignature,
+  type SingleRestSignature,
+  type TwoArgumentsSignature,
+  type UndefinedBeforeRestSignature,
+  type UndefinedNonFinalSignature
 } from '../../../test2/util/SomeSignatures.ts'
 
-const aNeverFunction: NeverFunction = function () {
-  throw new Error()
-}
 expectAssignable<UnknownFunction>(aNeverFunction)
 
 expectAssignable<NoArgumentsSignature>(aNeverFunction)

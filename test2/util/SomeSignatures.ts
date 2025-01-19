@@ -14,6 +14,7 @@
   limitations under the License.
  */
 
+import type { NeverFunction } from '../../src/index.ts'
 import { Level1AClass, type Level1BType, Level2Class, type Level2Type } from '../../test2/util/SomeTypes.ts'
 
 let consumed: unknown
@@ -153,4 +154,8 @@ export function aSignature(a: number, b: Level1BType): Level2Type {
 export type ASignatureWithOptionalArgs = (a: number, b?: Level1BType, c?: number) => Level2Type
 export function aSignatureWithOptionalArgs(a: number, b: Level1BType, c?: number): Level2Type {
   return new Level2Class(a, b.level1BProperty, new Level1AClass(c ?? 0, ''))
+}
+
+export const aNeverFunction: NeverFunction = function () {
+  throw new Error()
 }
