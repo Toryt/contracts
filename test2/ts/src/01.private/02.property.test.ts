@@ -39,16 +39,14 @@ describe(testName(import.meta), function () {
     it('sets a property, with a value, and freezes it', function () {
       const subject = { a: 4 }
       const propertyValue = 'a new value'
-      const changed = setAndFreeze(subject, propertyName, propertyValue)
-      changed.should.equal(subject)
-      const { value } = expectOwnFrozenProperty(changed, propertyName)
+      setAndFreeze(subject, propertyName, propertyValue)
+      const value = expectOwnFrozenProperty(subject, propertyName)
       should(value).equal(propertyValue)
     })
     it('sets a property, without a value, and freezes it', function () {
       const subject = { a: 4 }
-      const changed = setAndFreeze(subject, propertyName)
-      changed.should.equal(subject)
-      const { value } = expectOwnFrozenProperty(changed, propertyName)
+      setAndFreeze(subject, propertyName)
+      const value = expectOwnFrozenProperty(subject, propertyName)
       should(value).be.undefined()
     })
   })
@@ -92,10 +90,10 @@ describe(testName(import.meta), function () {
       it('sets a read-only property, with a getter', function () {
         const self = this as unknown as Fixture
 
-        const changedPrototype = configurableDerived(self.prototype, propertyName, self.getter)
+        configurableDerived(self.prototype, propertyName, self.getter)
 
-        self.shouldKeepPrototypeChainAndAddConfigurableDerivedProperty(changedPrototype)
-        const changedSubject = self.subject as typeof changedPrototype & typeof self.subject
+        self.shouldKeepPrototypeChainAndAddConfigurableDerivedProperty(self.prototype)
+        const changedSubject = self.subject as typeof self.prototype & typeof self.subject
         expectConfigurableDerivedPropertyOnAPrototype(changedSubject, propertyName)
         should(changedSubject[propertyName]).equal(changedSubject.expectedOfGetter)
       })
@@ -105,10 +103,10 @@ describe(testName(import.meta), function () {
       it('sets a frozen read-only property, with a getter', function () {
         const self = this as unknown as Fixture
 
-        const changedPrototype = frozenDerived(self.prototype, propertyName, self.getter)
+        frozenDerived(self.prototype, propertyName, self.getter)
 
-        self.shouldKeepPrototypeChainAndAddConfigurableDerivedProperty(changedPrototype)
-        const changedSubject = self.subject as typeof changedPrototype & typeof self.subject
+        self.shouldKeepPrototypeChainAndAddConfigurableDerivedProperty(self.prototype)
+        const changedSubject = self.subject as typeof self.prototype & typeof self.subject
         expectFrozenDerivedPropertyOnAPrototype(changedSubject, propertyName)
         changedSubject[propertyName].should.equal(changedSubject.expectedOfGetter)
       })
@@ -121,20 +119,22 @@ describe(testName(import.meta), function () {
       Object.setPrototypeOf(subjectBase, {})
       const privatePropertyName = '_' + propertyName
       const array = [1, 2, 3]
-      const subject = setAndFreeze(subjectBase, privatePropertyName, array)
+      setAndFreeze(subjectBase, privatePropertyName, array)
 
-      const prototype = Object.getPrototypeOf(subject)
+      const prototype = Object.getPrototypeOf(subjectBase)
 
-      const changedPrototype = frozenReadOnlyArray(prototype, propertyName, privatePropertyName)
+      frozenReadOnlyArray(prototype, propertyName, privatePropertyName)
 
-      changedPrototype.should.equal(prototype)
-      Object.getPrototypeOf(subject).should.equal(prototype)
-      should(Object.getOwnPropertyDescriptor(changedPrototype, propertyName)).be.an.Object()
-      should(Object.getOwnPropertyDescriptor(subject, propertyName)).be.undefined()
-      expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, propertyName, privatePropertyName)
-      const changedSubject = subject as typeof changedPrototype
-      changedSubject[propertyName].should.not.equal(array)
-      changedSubject[propertyName].should.eql(array)
+      Object.getPrototypeOf(subjectBase).should.equal(prototype)
+      should(Object.getOwnPropertyDescriptor(prototype, propertyName)).be.an.Object()
+      should(Object.getOwnPropertyDescriptor(subjectBase, propertyName)).be.undefined()
+      const arrayProperty = expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(
+        subjectBase,
+        propertyName,
+        privatePropertyName
+      )
+      arrayProperty.should.not.equal(array)
+      arrayProperty.should.eql(array)
     })
   })
 

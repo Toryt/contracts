@@ -129,8 +129,10 @@ describe(testName(import.meta), function () {
             generate: generateName,
             description: nameDescription
           }) {
+            const subject = generateSubject()
+            setAndFreeze(subject, 'name', generateName())
             return {
-              subject: setAndFreeze(generateSubject(), 'name', generateName()),
+              subject,
               description: `${subjectDescription} with ${nameDescription} name`
             }
           })

@@ -25,7 +25,7 @@ export function setAndFreeze<O extends object, PropertyName extends string, Prop
   obj: O,
   propertyName: PropertyName,
   value?: PropertyType
-): WithReadonlyProperty<O, PropertyName, PropertyType> {
+): asserts obj is WithReadonlyProperty<O, PropertyName, PropertyType> {
   ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
 
@@ -35,8 +35,6 @@ export function setAndFreeze<O extends object, PropertyName extends string, Prop
     writable: false,
     value
   })
-
-  return obj as WithReadonlyProperty<O, PropertyName, PropertyType>
 }
 
 export function configurableDerived<
@@ -47,7 +45,7 @@ export function configurableDerived<
   obj: O,
   propertyName: PropertyName,
   derivation: Derivation
-): WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
+): asserts obj is WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
   ok(obj)
   ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
@@ -58,8 +56,6 @@ export function configurableDerived<
     enumerable: true,
     get: derivation
   })
-
-  return obj as WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>>
 }
 
 export function frozenDerived<
@@ -70,7 +66,7 @@ export function frozenDerived<
   obj: O,
   propertyName: PropertyName,
   derivation: Derivation
-): WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
+): asserts obj is WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>> {
   ok(obj)
   ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
@@ -81,8 +77,6 @@ export function frozenDerived<
     enumerable: true,
     get: derivation
   })
-
-  return obj as WithReadonlyProperty<O, PropertyName, ReturnType<Derivation>>
 }
 
 export function frozenReadOnlyArray<
@@ -94,14 +88,14 @@ export function frozenReadOnlyArray<
   obj: O,
   propertyName: PropertyName,
   privatePropName: PrivatePropertyName extends PropertyName ? never : PrivatePropertyName
-): WithReadonlyProperty<O, PropertyName, ElementType[]> {
+): asserts obj is WithReadonlyProperty<O, PropertyName, ElementType[]> {
   ok(obj)
   ok(!isTruePrimitive(obj))
   strictEqual(typeof propertyName, 'string')
   strictEqual(typeof privatePropName, 'string')
   notStrictEqual(propertyName, privatePropName)
 
-  return frozenDerived(
+  frozenDerived(
     obj,
     propertyName,
     function (this: { readonly [P in PrivatePropertyName]: ReadonlyArray<ElementType> }): ElementType[] {
