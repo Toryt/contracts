@@ -30,15 +30,15 @@ import {
 describe(testName(import.meta), function () {
   describe('prototype', function () {
     it('has the expected properties', function () {
-      const { value: name } = expectOwnFrozenProperty(ContractError.prototype, 'name')
+      const name = expectOwnFrozenProperty(ContractError.prototype, 'name')
       should(name).be.a.String()
       should(name).equal(ContractError.name)
 
-      const { value: message } = expectOwnFrozenProperty(ContractError.prototype, 'message')
+      const message = expectOwnFrozenProperty(ContractError.prototype, 'message')
       should(message).be.a.String()
       should(message).equal(contractErrorMessage)
 
-      const { value: rawStack } = expectOwnFrozenProperty(ContractError.prototype, 'rawStack')
+      const rawStack = expectOwnFrozenProperty(ContractError.prototype, 'rawStack')
       should(rawStack).be.a.String()
       should(rawStack).containEql('ContractError')
 

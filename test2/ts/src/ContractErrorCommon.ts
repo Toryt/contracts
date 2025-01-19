@@ -44,7 +44,7 @@ export function expectContractErrorInvariants(subject: unknown): void {
 
   ceSubject.message.should.be.a.String()
 
-  const { value: rawStack } = expectOwnFrozenProperty(ceSubject, 'rawStack')
+  const rawStack = expectOwnFrozenProperty(ceSubject, 'rawStack')
   isStack(rawStack).should.be.true()
 
   expectStackInvariants(ceSubject)

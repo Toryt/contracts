@@ -35,13 +35,13 @@ export function expectAbstractErrorInvariants(subject: unknown): void {
     BaseFunctionContract<UnknownFunction, GeneralLocation>
   >
 
-  const { value: name } = expectOwnFrozenProperty(aeSubject, 'name')
+  const name = expectOwnFrozenProperty(aeSubject, 'name')
   should(name).equal(AbstractError.name)
 
-  const { value: message } = expectOwnFrozenProperty(aeSubject, 'message')
+  const message = expectOwnFrozenProperty(aeSubject, 'message')
   should(message).equal(abstractErrorMessage)
 
-  const { value: contract } = expectOwnFrozenProperty(aeSubject, 'contract')
+  const contract = expectOwnFrozenProperty(aeSubject, 'contract')
   should(contract).be.instanceof(BaseFunctionContract)
 }
 

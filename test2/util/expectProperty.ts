@@ -16,10 +16,7 @@
 
 import should from 'should'
 
-export function expectOwnFrozenProperty<S extends object, PropertyName extends string>(
-  subject: S,
-  propertyName: PropertyName
-): { subject: S & { [K in PropertyName]: unknown }; value: unknown } {
+export function expectOwnFrozenProperty(subject: object, propertyName: string): unknown {
   const propertyDescriptor = Object.getOwnPropertyDescriptor(subject, propertyName)
   should(propertyDescriptor).be.ok()
   should(propertyDescriptor!.enumerable).be.true()
@@ -33,23 +30,27 @@ export function expectOwnFrozenProperty<S extends object, PropertyName extends s
 
   failFunction.should.throw(TypeError)
 
-  return { subject: subject as S & { [K in PropertyName]: unknown }, value: record[propertyName] }
+  return record[propertyName]
 }
 
-function prototypeThatHasOwnPropertyDescriptor(
-  subject: object | null | undefined,
-  propertyName: string
-): object | null | undefined {
-  if (!subject) {
-    return subject
+function prototypeThatHasOwnPropertyDescriptor<S extends object | null | undefined, PropertyName extends string>(
+  subject: S,
+  propertyName: PropertyName
+): S extends null | undefined ? S : S & { [K in PropertyName]: unknown } {
+  if (subject === null && typeof subject === 'undefined') {
+    return subject as S extends null | undefined ? S : never
   }
   if (Object.getOwnPropertyDescriptor(subject, propertyName)) {
-    return subject
+    return subject as S extends null | undefined ? never : S & { [K in PropertyName]: unknown }
   }
   return prototypeThatHasOwnPropertyDescriptor(Object.getPrototypeOf(subject), propertyName)
 }
 
-function expectDerivedPropertyOnAPrototype(subject: object, propertyName: string, configurable: boolean): void {
+function expectDerivedPropertyOnAPrototype<PropertyName extends string>(
+  subject: object,
+  propertyName: PropertyName,
+  configurable: boolean
+): unknown {
   const prototype = prototypeThatHasOwnPropertyDescriptor(subject, propertyName)
   const propertyDescriptor = Object.getOwnPropertyDescriptor(prototype, propertyName)
   should(propertyDescriptor).be.ok()
@@ -58,14 +59,16 @@ function expectDerivedPropertyOnAPrototype(subject: object, propertyName: string
   should(propertyDescriptor).not.have.property('writable')
   should(propertyDescriptor!.get).be.a.Function()
   should(propertyDescriptor!.set).not.be.ok()
+
+  return (subject as { [K in PropertyName]: unknown })[propertyName]
 }
 
-export function expectConfigurableDerivedPropertyOnAPrototype(subject: object, propertyName: string): void {
-  expectDerivedPropertyOnAPrototype(subject, propertyName, true)
+export function expectConfigurableDerivedPropertyOnAPrototype(subject: object, propertyName: string): unknown {
+  return expectDerivedPropertyOnAPrototype(subject, propertyName, true)
 }
 
-export function expectFrozenDerivedPropertyOnAPrototype(subject: object, propertyName: string): void {
-  expectDerivedPropertyOnAPrototype(subject, propertyName, false)
+export function expectFrozenDerivedPropertyOnAPrototype(subject: object, propertyName: string): unknown {
+  return expectDerivedPropertyOnAPrototype(subject, propertyName, false)
 }
 
 export function expectFrozenPropertyOnAPrototype(subject: object, propertyName: string): void {
@@ -75,22 +78,25 @@ export function expectFrozenPropertyOnAPrototype(subject: object, propertyName: 
 }
 
 export function expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(
-  subject: Record<string, unknown>,
+  subject: object,
   propName: string,
   privatePropName: string
-): void {
+): unknown[] {
   should(subject).have.ownProperty(privatePropName) // array not shared
-  const { value } = expectOwnFrozenProperty(subject, privatePropName)
+  const value = expectOwnFrozenProperty(subject, privatePropName)
   should(value).be.an.Array()
-  expectFrozenDerivedPropertyOnAPrototype(subject, propName)
+  const derivedValue = expectFrozenDerivedPropertyOnAPrototype(subject, propName)
+  should(derivedValue).be.an.Array()
   const record = subject as Record<string, unknown>
   const failFunction = function (): void {
     record[propName] = 42 + ' some outlandish other value'
   }
   failFunction.should.throw(TypeError)
+
+  return derivedValue as unknown[]
 }
 
-export function expectToBeArrayOfFunctions(a: unknown): void {
+export function expectToBeArrayOfFunctions(a: unknown): asserts a is Function[] {
   should(a).be.an.Array()
   const arr = a as unknown[]
   arr.forEach(element => {

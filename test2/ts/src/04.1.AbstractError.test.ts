@@ -43,15 +43,15 @@ describe(testName(import.meta), function () {
 
   describe('prototype', function () {
     it('has the expected properties', function () {
-      const { value: name } = expectOwnFrozenProperty(AbstractError.prototype, 'name')
+      const name = expectOwnFrozenProperty(AbstractError.prototype, 'name')
       should(name).be.a.String()
       should(name).equal(AbstractError.name)
 
-      const { value: message } = expectOwnFrozenProperty(AbstractError.prototype, 'message')
+      const message = expectOwnFrozenProperty(AbstractError.prototype, 'message')
       should(message).be.a.String()
       should(message).equal(abstractErrorMessage)
 
-      const { value: contract } = expectOwnFrozenProperty(AbstractError.prototype, 'contract')
+      const contract = expectOwnFrozenProperty(AbstractError.prototype, 'contract')
       should(contract).be.null()
 
       AbstractError.prototype.should.not.have.ownProperty('stack')

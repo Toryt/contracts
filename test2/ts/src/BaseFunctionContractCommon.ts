@@ -126,7 +126,7 @@ export function expectInvariants<Signature extends UnknownFunction, Location ext
   // eslint-disable-next-line no-secrets/no-secrets
   // testUtil.expectFrozenReadOnlyArrayPropertyWithPrivateBackingField(subject, 'exception', '_exception')
   // testUtil.expectToBeArrayOfFunctions(subject.exception)
-  const { value: location } = expectOwnFrozenProperty(bfc, 'location')
+  const location = expectOwnFrozenProperty(bfc, 'location')
   ;(location === internalLocation || isLocation(location)).should.be.true()
   // testUtil.expectOwnFrozenProperty(subject, 'abstract')
   // const abstract = subject.abstract
