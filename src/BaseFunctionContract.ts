@@ -204,6 +204,21 @@ export function bless<
   })
 }
 
+export interface ContractFunctionProperties<
+  ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation,
+  ImplementationSignature extends ContractSignature
+> extends BaseContractFunctionProperties<BaseFunctionContract<ContractSignature, ContractLocation>> {
+  implementation: ImplementationSignature
+  location: string
+}
+
+export type ContractFunction<
+  ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation,
+  ImplementationSignature extends ContractSignature
+> = ContractSignature & ContractFunctionProperties<ContractSignature, ContractLocation, ImplementationSignature>
+
 type BoundSignature<Signature extends UnknownFunction, BoundArgs extends unknown[]> =
   Parameters<Signature> extends [...BoundArgs, ...infer _]
     ? (
@@ -282,21 +297,6 @@ export const contractFunctionBind = function bind<
 //   NeverSignature<ContractSignature> extends ContractSignature
 //     ? ContractSignature & BaseContractFunction<ContractSignature, ContractLocation>
 //     : never
-
-export interface ContractFunctionProperties<
-  ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
-  ImplementationSignature extends ContractSignature
-> extends BaseContractFunctionProperties<ContractSignature, ContractLocation> {
-  implementation: ImplementationSignature
-  location: string
-}
-
-export type ContractFunction<
-  ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
-  ImplementationSignature extends ContractSignature
-> = ContractSignature & ContractFunctionProperties<ContractSignature, ContractLocation, ImplementationSignature>
 
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
   post?: Postcondition<Signature>[]
