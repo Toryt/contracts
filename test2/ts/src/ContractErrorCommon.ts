@@ -35,7 +35,7 @@ export function expectStackInvariants(subject: ContractError): void {
   restOfStack.should.containEql(subject.rawStack)
 }
 
-export function expectContractErrorInvariants(subject: unknown): void {
+export function expectContractErrorInvariants(subject: unknown): asserts subject is ContractError {
   should(subject).be.an.instanceof(ContractError)
   const ceSubject = subject as ContractError
 

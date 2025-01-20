@@ -25,23 +25,19 @@ import {
 } from './ContractErrorCommon.ts'
 import { AbstractError, abstractErrorMessage, BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
 
-export function expectAbstractErrorInvariants(subject: unknown): void {
+export function expectAbstractErrorInvariants(
+  subject: unknown
+): asserts subject is AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>> {
   should(subject).be.an.instanceof(AbstractError)
   expectContractErrorInvariants(subject)
 
-  const aeSubject = subject as AbstractError<
-    UnknownFunction,
-    GeneralLocation,
-    BaseFunctionContract<UnknownFunction, GeneralLocation>
-  >
-
-  const name = expectOwnFrozenProperty(aeSubject, 'name')
+  const name = expectOwnFrozenProperty(subject, 'name')
   should(name).equal(AbstractError.name)
 
-  const message = expectOwnFrozenProperty(aeSubject, 'message')
+  const message = expectOwnFrozenProperty(subject, 'message')
   should(message).equal(abstractErrorMessage)
 
-  const contract = expectOwnFrozenProperty(aeSubject, 'contract')
+  const contract = expectOwnFrozenProperty(subject, 'contract')
   should(contract).be.instanceof(BaseFunctionContract)
 }
 
@@ -49,7 +45,7 @@ export function expectAbstractErrorInvariants(subject: unknown): void {
  * Precondition: `expectAbstractErrorInvariants` has been called
  */
 export function expectAbstractErrorConstructorPost(
-  result: AbstractError<UnknownFunction, GeneralLocation, BaseFunctionContract<UnknownFunction, GeneralLocation>>,
+  result: AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>>,
   message: string,
   contract: BaseFunctionContract<UnknownFunction, GeneralLocation>,
   rawStack: string
@@ -59,7 +55,7 @@ export function expectAbstractErrorConstructorPost(
 }
 
 export function generateAbstractErrorMethodsDescriptions<
-  AE extends AbstractError<UnknownFunction, GeneralLocation, BaseFunctionContract<UnknownFunction, GeneralLocation>>
+  AE extends AbstractError<BaseFunctionContract<UnknownFunction, GeneralLocation>>
 >(oneSubjectGenerator: () => AE, allSubjectGenerators: { subject: () => AE; description: string }[]): void {
   generateContractErrorMethodsDescriptions(oneSubjectGenerator, allSubjectGenerators)
 

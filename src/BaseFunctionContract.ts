@@ -29,11 +29,7 @@ export const abstractErrorMessage = 'an abstract function cannot be executed'
 /**
  * Thrown when an abstract method is called. You shouldn't.
  */
-export class AbstractError<
-  Signature extends UnknownFunction,
-  Location extends GeneralLocation,
-  BFC extends BaseFunctionContract<Signature, Location>
-> extends ContractError {
+export class AbstractError<BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>> extends ContractError {
   static {
     setAndFreeze(this.prototype, 'name', AbstractError.name)
     setAndFreeze(this.prototype, 'message', abstractErrorMessage)
@@ -421,7 +417,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
        as a method of a random object, that random object is the `this`, not this contract. */
     function abstract(): never {
       // MUDO why is this generic specification needed?
-      throw new AbstractError<Signature, Location, BaseFunctionContract<Signature, Location>>(self, rawStack())
+      throw new AbstractError(self, rawStack())
     }
     // intermediate contract instance, specifically for this contract function
     setAndFreeze(abstract, 'contract', Object.create(this))
