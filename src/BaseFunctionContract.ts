@@ -92,7 +92,7 @@ export type BaseContractFunction<
  */
 export function isAGeneralContractFunction(
   f: unknown
-): f is ContractFunction<UnknownFunction, GeneralLocation, UnknownFunction> {
+): f is ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, GeneralLocation>, UnknownFunction> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
   return (
@@ -140,9 +140,7 @@ export function bless<
   contract: BFC,
   implFunction: ImplementationSignature,
   implementationLocation: string
-): asserts contractFunctionToBe is BFC extends BaseFunctionContract<ContractSignature, infer ContractLocation>
-  ? ContractFunction<ContractSignature, ContractLocation, ImplementationSignature>
-  : never {
+): asserts contractFunctionToBe is ContractFunction<ContractSignature, BFC, ImplementationSignature> {
   assert.strictEqual(typeof contractFunctionToBe, 'function')
   assert.ok(!('contract' in contractFunctionToBe))
   assert.ok(!('implementation' in contractFunctionToBe))
@@ -206,18 +204,18 @@ export function bless<
 
 export interface ContractFunctionProperties<
   ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
   ImplementationSignature extends ContractSignature
-> extends BaseContractFunctionProperties<BaseFunctionContract<ContractSignature, ContractLocation>> {
+> extends BaseContractFunctionProperties<BFC> {
   implementation: ImplementationSignature
   location: string
 }
 
 export type ContractFunction<
   ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation,
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
   ImplementationSignature extends ContractSignature
-> = ContractSignature & ContractFunctionProperties<ContractSignature, ContractLocation, ImplementationSignature>
+> = ContractSignature & ContractFunctionProperties<ContractSignature, BFC, ImplementationSignature>
 
 type BoundSignature<Signature extends UnknownFunction, BoundArgs extends unknown[]> =
   Parameters<Signature> extends [...BoundArgs, ...infer _]
@@ -244,7 +242,11 @@ export const contractFunctionBind = function bind<
   ContractSignature extends UnknownFunction,
   ContractLocation extends GeneralLocation,
   ImplementationSignature extends ContractSignature,
-  CF extends ContractFunction<ContractSignature, ContractLocation, ImplementationSignature>,
+  CF extends ContractFunction<
+    ContractSignature,
+    BaseFunctionContract<ContractSignature, ContractLocation>,
+    ImplementationSignature
+  >,
   ArgsToBind extends unknown[]
 >(
   this: CF,
@@ -252,7 +254,7 @@ export const contractFunctionBind = function bind<
   ...argsArrayToBind: ArgsToBind
 ): ContractFunction<
   BoundSignature<ContractSignature, ArgsToBind>,
-  ContractLocation, // MUDO well, actually … this is a new and separate contract, and where is that defined?
+  BaseFunctionContract<BoundSignature<ContractSignature, ArgsToBind>, ContractLocation>, // MUDO well, actually … this is a new and separate contract, and where is that defined?
   BoundSignature<ImplementationSignature, ArgsToBind>
 > {
   assert(isAGeneralContractFunction(this), 'this is a general contract function')
@@ -364,7 +366,9 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    *   * have a frozen `location` property, which is a string that represents a location in source code, outside this
    *     library.
    */
-  static isAContractFunction(f: unknown): f is ContractFunction<UnknownFunction, GeneralLocation, UnknownFunction> {
+  static isAContractFunction(
+    f: unknown
+  ): f is ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction> {
     return isAGeneralContractFunction(f) && f.contract instanceof this && isLocation(f.location)
   }
 

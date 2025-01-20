@@ -35,7 +35,9 @@ type Constructor<T> = new (...args: unknown[]) => T
  * it. Can be any type you like with generics.
  */
 export function createCandidateContractFunction<
-  ReturnType extends ContractFunction<UnknownFunction, GeneralLocation, UnknownFunction> | unknown = unknown
+  ReturnType extends
+    | ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, GeneralLocation>, UnknownFunction>
+    | unknown = unknown
 >(
   ContractConstructor?: new (kwargs: {}) => BaseFunctionContract<UnknownFunction, GeneralLocation>,
   doNotFreezeProperty?: string,
