@@ -4,7 +4,7 @@
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Language and Environment */
-    "target": "ES2022",
+    "target": "ES2023",
 
     /* Modules */
     "module": "node16",
