@@ -30,7 +30,7 @@ import { createCandidateContractFunction } from './GeneralContractFunctionCommon
 describe(testName(import.meta), function () {
   it('behaves as expected', function () {
     const subject = createCandidateContractFunction<
-      ContractFunction<BaseFunctionContract<() => void, string>, () => void>
+      ContractFunction<() => void, BaseFunctionContract<() => void, string>, () => void>
       // eslint-disable-next-line @stylistic/indent
     >(BaseFunctionContract)
     const expectedLocation = location()

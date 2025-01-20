@@ -56,10 +56,10 @@ export interface BaseContractFunctionProperties<BFC extends BaseFunctionContract
   contract: BFC
 }
 
-export type BaseContractFunction<BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>> =
-  BFC extends BaseFunctionContract<infer ContractSignature, GeneralLocation>
-    ? ContractSignature & BaseContractFunctionProperties<BFC>
-    : never
+export type BaseContractFunction<
+  ContractSignature extends UnknownFunction,
+  ContractLocation extends GeneralLocation
+> = ContractSignature & BaseContractFunctionProperties<BaseFunctionContract<ContractSignature, ContractLocation>>
 
 /**
  * A {@link BaseContractFunction} is an {@link BaseFunctionContract#implementation} of an
@@ -92,7 +92,7 @@ export type BaseContractFunction<BFC extends BaseFunctionContract<UnknownFunctio
  */
 export function isAGeneralContractFunction(
   f: unknown
-): f is ContractFunction<BaseFunctionContract<UnknownFunction, GeneralLocation>, UnknownFunction> {
+): f is ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, GeneralLocation>, UnknownFunction> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
   return (
@@ -140,7 +140,7 @@ export function bless<
   contract: BFC,
   implFunction: ImplementationSignature,
   implementationLocation: string
-): asserts contractFunctionToBe is ContractFunction<BFC, ImplementationSignature> {
+): asserts contractFunctionToBe is ContractFunction<ContractSignature, BFC, ImplementationSignature> {
   assert.strictEqual(typeof contractFunctionToBe, 'function')
   assert.ok(!('contract' in contractFunctionToBe))
   assert.ok(!('implementation' in contractFunctionToBe))
@@ -203,24 +203,19 @@ export function bless<
 }
 
 export interface ContractFunctionProperties<
-  BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>,
-  ImplementationSignature extends UnknownFunction
+  ContractSignature extends UnknownFunction,
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
+  ImplementationSignature extends ContractSignature
 > extends BaseContractFunctionProperties<BFC> {
-  implementation: BFC extends BaseFunctionContract<infer ContractSignature, GeneralLocation>
-    ? ImplementationSignature extends ContractSignature
-      ? ImplementationSignature
-      : never
-    : never
+  implementation: ImplementationSignature
   location: string
 }
 
 export type ContractFunction<
-  BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>,
-  ImplementationSignature extends UnknownFunction
-> =
-  BFC extends BaseFunctionContract<infer ContractSignature, GeneralLocation>
-    ? ContractSignature & ContractFunctionProperties<BFC, ImplementationSignature>
-    : never
+  ContractSignature extends UnknownFunction,
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
+  ImplementationSignature extends ContractSignature
+> = ContractSignature & ContractFunctionProperties<ContractSignature, BFC, ImplementationSignature>
 
 type BoundSignature<Signature extends UnknownFunction, BoundArgs extends unknown[]> =
   Parameters<Signature> extends [...BoundArgs, ...infer _]
@@ -247,13 +242,18 @@ export const contractFunctionBind = function bind<
   ContractSignature extends UnknownFunction,
   ContractLocation extends GeneralLocation,
   ImplementationSignature extends ContractSignature,
-  CF extends ContractFunction<BaseFunctionContract<ContractSignature, ContractLocation>, ImplementationSignature>,
+  CF extends ContractFunction<
+    ContractSignature,
+    BaseFunctionContract<ContractSignature, ContractLocation>,
+    ImplementationSignature
+  >,
   ArgsToBind extends unknown[]
 >(
   this: CF,
   thisArgToBind?: ThisParameterType<ContractSignature>,
   ...argsArrayToBind: ArgsToBind
 ): ContractFunction<
+  BoundSignature<ContractSignature, ArgsToBind>,
   BaseFunctionContract<BoundSignature<ContractSignature, ArgsToBind>, ContractLocation>, // MUDO well, actually … this is a new and separate contract, and where is that defined?
   BoundSignature<ImplementationSignature, ArgsToBind>
 > {
@@ -368,7 +368,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    */
   static isAContractFunction(
     f: unknown
-  ): f is ContractFunction<BaseFunctionContract<UnknownFunction, string>, UnknownFunction> {
+  ): f is ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction> {
     return isAGeneralContractFunction(f) && f.contract instanceof this && isLocation(f.location)
   }
 
@@ -397,7 +397,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    */
   readonly location!: Location // initialized with setAndFreeze
 
-  readonly abstract!: BaseContractFunction<this>
+  readonly abstract!: BaseContractFunction<Signature, Location>
 
   verify: boolean = true
   verifyPostconditions: boolean = false
