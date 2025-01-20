@@ -66,24 +66,29 @@ export type BaseContractFunction<
  * {@link BaseFunctionContract}. This function verifies whether a function given as a parameter is a
  * General Contract Function.
  *
+ * // MUDO change to ContractFunction, or distribute otherwise
  * To be a {@link BaseContractFunction}, the subject must
  *
  *   * be a function,
- *   * have a frozen {@link BaseContractFunction#contract} property that refers to an
+ *   * have a frozen {@link BaseContractFunction.contract} property that refers to an
  *     {@link BaseFunctionContract},
- *   * have a frozen {@link BaseContractFunction#implementation} property that refers to a function (that realizes
+ *   * have a frozen {@link BaseContractFunction.implementation} property that refers to a function (that realizes
  *     the contract),
- *   * have a frozen {@link BaseContractFunction#location} property, that has a value,
- *   * have a frozen {@link BaseContractFunction#bind} property, that is
+ *   * have a frozen {@link BaseContractFunction.location} property, that has a value,
+ *   * have a frozen {@link BaseContractFunction.bind} property, that is
  *     {@link contractFunctionBind}, and
- *   * if the {@link BaseContractFunction#implementation} function has a `prototype`, have a `prototype` property,
+ *   * if the {@link BaseContractFunction.implementation} function has a `prototype`, have a `prototype` property,
  *       * that is an object,
  *       * that has a `constructor` property that is the contract function, and
  *       * that has `f.implementation.prototype` in its prototype chain, or is equal to it, and
  *
- * should have a {@link BaseContractFunction#name}, which is a string that gives information for a programmer to
- * understand what contract function this is. The {@link BaseContractFunction#name} however is controlled by the
+ * should have a {@link BaseContractFunction.name}, which is a string that gives information for a programmer to
+ * understand what contract function this is. The {@link BaseContractFunction.name} however is controlled by the
  * JavaScript engine. We cannot freeze it, and it is not guaranteed to exist or have a specific value in all engines.
+ *
+ * This function cannot dynamically infer what the exact generic type of the {@link ContractFunction.contract},
+ * {@link ContractFunction.implementation}, or {@link ContractFunction.bind} is. These could only be inferred at
+ * compile time if they were known to start with, and then calling this function has no purpose.
  */
 export function isAGeneralContractFunction(
   f: unknown
