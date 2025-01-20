@@ -52,17 +52,14 @@ export class AbstractError<BFC extends BaseFunctionContract<UnknownFunction, Gen
   }
 }
 
-export interface BaseContractFunctionProperties<
-  ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation
-> {
-  contract: BaseFunctionContract<ContractSignature, ContractLocation>
+export interface BaseContractFunctionProperties<BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>> {
+  contract: BFC
 }
 
 export type BaseContractFunction<
   ContractSignature extends UnknownFunction,
   ContractLocation extends GeneralLocation
-> = ContractSignature & BaseContractFunctionProperties<ContractSignature, ContractLocation>
+> = ContractSignature & BaseContractFunctionProperties<BaseFunctionContract<ContractSignature, ContractLocation>>
 
 /**
  * A {@link BaseContractFunction} is an {@link BaseFunctionContract#implementation} of an
