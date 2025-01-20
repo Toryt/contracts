@@ -132,11 +132,12 @@ export function isAGeneralContractFunction(
  * @returns {@link contractFunctionToBe}, as a {@link isAGeneralContractFunction}
  */
 export function bless<
-  ContractSignature extends UnknownFunction,
-  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>,
-  ImplementationSignature extends ContractSignature
+  BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>,
+  ImplementationSignature extends UnknownFunction
 >(
-  contractFunctionToBe: ContractSignature, // MUDO will become a Proxy, should be at least ImplementationSignature
+  contractFunctionToBe: BFC extends BaseFunctionContract<infer ContractSignature, GeneralLocation>
+    ? ContractSignature
+    : never, // MUDO will become a Proxy, should be at least ImplementationSignature
   contract: BFC,
   implFunction: ImplementationSignature,
   implementationLocation: string
