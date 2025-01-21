@@ -58,8 +58,8 @@ export interface BaseContractFunctionProperties<BFC extends BaseFunctionContract
 
 export type BaseContractFunction<
   ContractSignature extends UnknownFunction,
-  ContractLocation extends GeneralLocation
-> = ContractSignature & BaseContractFunctionProperties<BaseFunctionContract<ContractSignature, ContractLocation>>
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>
+> = ContractSignature & BaseContractFunctionProperties<BFC>
 
 /**
  * A {@link BaseContractFunction} is an {@link BaseFunctionContract#implementation} of an
@@ -397,7 +397,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    */
   readonly location!: Location // initialized with setAndFreeze
 
-  readonly abstract!: BaseContractFunction<Signature, Location>
+  readonly abstract!: BaseContractFunction<Signature, this>
 
   verify: boolean = true
   verifyPostconditions: boolean = false
