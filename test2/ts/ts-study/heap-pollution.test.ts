@@ -19,6 +19,8 @@ import { log } from '../../util/log.ts'
 import { testName } from '../../util/testName.ts'
 
 describe(testName(import.meta), function () {
+  /* NOTE All is explained in [https://github.com/microsoft/TypeScript/wiki/FAQ#why-method-bivariance] */
+
   it('does not prevent heap-pollution in arrays', function () {
     const strings: Array<string> = ['a string', 'another string']
     // error: strings[1] = 42

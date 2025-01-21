@@ -61,6 +61,9 @@ import { stackEOL } from './private/eol.ts'
    new Error([message[, fileName[, lineNumber]]]). We can set these properties directly in our constructor.
    For fileName and lineNumber, we have the same problem as with the stack: we need a reference to somewhere else
    than where we create the custom error.
+
+   TODO: Is there an issue as discussed in
+         https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
  */
 
 export const contractErrorMessage = 'abstract type'

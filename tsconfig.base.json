@@ -45,8 +45,12 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true
+    "noPropertyAccessFromIndexSignature": true,
+    /* "enforceReadonly": true, MUDO NOT YET IN THE BUILD? NOT YET DOCUMENTED? SHOULD BE IN 5.6. */
 
     /* Completeness */
+
+    /* Other */
+    "skipDefaultLibCheck": true
   }
 }
