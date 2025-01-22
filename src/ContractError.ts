@@ -97,6 +97,8 @@ export class ContractError extends Error {
     })
   }
 
+  override readonly name!: string
+  override readonly message!: string
   readonly rawStack!: string
   override readonly stack: string
 
