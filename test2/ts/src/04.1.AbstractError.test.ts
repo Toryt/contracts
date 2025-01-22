@@ -119,6 +119,12 @@ describe(testName(import.meta), function () {
       expectTypeOf(abstractError).toMatchTypeOf<AbstractError<typeof afc>>()
       expectTypeOf(abstractError).toEqualTypeOf<AbstractError<typeof afc>>()
     })
+    it('it has a name, message, rawStack, and stack of the expected types', function () {
+      expectTypeOf(abstractError.name).toBeString()
+      expectTypeOf(abstractError.message).toBeString()
+      expectTypeOf(abstractError.rawStack).toBeString()
+      expectTypeOf(abstractError.stack).toBeString()
+    })
     it('it has a contract of the expected types', function () {
       expectTypeOf(abstractError.contract).toMatchTypeOf<BaseFunctionContract<UnknownFunction, string>>()
       expectTypeOf(abstractError.contract).toMatchTypeOf<
