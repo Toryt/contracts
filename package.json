@@ -21,7 +21,7 @@
   },
   "scripts": {
     "status": "depcheck; ncu; npm audit || exit 0",
-    "build": "rm -Rf build && rm -Rf build-d && tsc --project tsconfig.json",
+    "build": "rm -Rf build && rm -Rf build-d && tsc --project tsconfig.json --diagnostics",
     "lint": "eslint \"{src,test-d,test2}/**/*\"",
     "tsd": "tsd --show-diff",
     "test:ts": "mocha --config .mocharc-ts.yaml",
