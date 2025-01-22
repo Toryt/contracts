@@ -315,20 +315,6 @@ export const contractFunctionBind = function bind<
   return bound
 }
 
-// type NeverSignature<Signature extends UnknownFunction> = (
-//   this: ThisParameterType<Signature>,
-//   ...args: Parameters<Signature>
-// ) => never
-//
-// // MUDO remove: it does not add anything
-// export type AbstractContractFunction<
-//   ContractSignature extends UnknownFunction,
-//   ContractLocation extends GeneralLocation
-// > =
-//   NeverSignature<ContractSignature> extends ContractSignature
-//     ? ContractSignature & BaseContractFunction<ContractSignature, ContractLocation>
-//     : never
-
 export interface FunctionContractKwargs<Signature extends UnknownFunction> {
   post?: Postcondition<Signature>[]
 }
