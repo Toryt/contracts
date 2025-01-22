@@ -56,9 +56,6 @@ export interface BaseContractFunctionProperties<BFC extends BaseFunctionContract
   contract: BFC
 }
 
-export type ContractSignature<BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>> =
-  BFC extends BaseFunctionContract<infer CS, GeneralLocation> ? CS : never
-
 /* NOTE: In principle, one generic parameter `BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation` should
          suffice. From that we can infer the `ContractSignature` with
          ```
