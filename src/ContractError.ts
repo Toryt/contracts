@@ -97,8 +97,9 @@ export class ContractError extends Error {
     })
   }
 
-  override readonly name!: string
-  override readonly message!: string
+  /* TODO: We should be able to tell TS that in this hierarchy `name` and `message` are read-only, but we cannot? Saying
+           it here introduces an own property, while we want to use the property from the prototype. Note that the value
+           of `name` and `message` can be changed in the prototypes of subclasses. */
   readonly rawStack!: string
   override readonly stack: string
 
