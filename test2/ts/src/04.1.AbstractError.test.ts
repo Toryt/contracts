@@ -14,16 +14,20 @@
   limitations under the License.
  */
 
+import { expectTypeOf } from 'expect-type'
 import should from 'should'
-import type { UnknownFunction } from '../../../src/index.ts'
+import type { ContractError } from '../../../src/ContractError.ts'
+import type { NeverFunction, UnknownFunction } from '../../../src/index.ts'
 import {
   AbstractError,
   abstractErrorMessage,
   BaseFunctionContract,
+  type FunctionContractKwargs,
   unknownFunctionContract
 } from '../../../src/BaseFunctionContract.ts'
-import type { GeneralLocation } from '../../../src/location.ts'
+import { type GeneralLocation, location } from '../../../src/location.ts'
 import { rawStack } from '../../../src/private/stack.ts'
+import { aNeverFunction } from '../../util/SomeSignatures.ts'
 import { testName } from '../../util/testName.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
 import { log } from '../../util/log.ts'
@@ -80,5 +84,50 @@ describe(testName(import.meta), function () {
         }
       ]
     )
+  })
+
+  describe('types', function () {
+    class AFunctionContract<Signature extends (a: number, b: string) => boolean> extends BaseFunctionContract<
+      Signature,
+      string
+    > {
+      constructor(kwargs: FunctionContractKwargs<Signature>) {
+        super(kwargs, location(1))
+      }
+    }
+    const aFunction = (a: number): boolean => true
+    const afc = new AFunctionContract<typeof aFunction>({})
+    const abstractError = new AbstractError(afc, rawStack())
+
+    it('has a setup that is as expected', function () {
+      expectTypeOf(aFunction).toMatchTypeOf<unknown>()
+      expectTypeOf(aFunction).toMatchTypeOf<UnknownFunction>()
+      expectTypeOf(aFunction).toMatchTypeOf<(a: number, b: string) => boolean>()
+      expectTypeOf(aNeverFunction).toMatchTypeOf<(a: number, b: string) => boolean>()
+
+      // NOTE: unexpected `not`: is this because of `toMatchTypeOf`?
+      expectTypeOf<never>().not.toMatchTypeOf<(a: number, b: string) => boolean>()
+      expectTypeOf<(a: number, b: string) => boolean>().not.toMatchTypeOf<never>()
+
+      expectTypeOf<NeverFunction>().toMatchTypeOf(aFunction)
+      expectTypeOf(aFunction).not.toMatchTypeOf<NeverFunction>()
+      expectTypeOf(aFunction).not.toMatchTypeOf<never>()
+    })
+    it('is of the expected types', function () {
+      expectTypeOf(abstractError).toMatchTypeOf<ContractError>()
+      expectTypeOf(abstractError).toMatchTypeOf<AbstractError<AFunctionContract<(a: number, b: string) => boolean>>>()
+      expectTypeOf(abstractError).toMatchTypeOf<AbstractError<typeof afc>>()
+      expectTypeOf(abstractError).toEqualTypeOf<AbstractError<typeof afc>>()
+    })
+    it('it has a contract of the expected types', function () {
+      expectTypeOf(abstractError.contract).toMatchTypeOf<BaseFunctionContract<UnknownFunction, string>>()
+      expectTypeOf(abstractError.contract).toMatchTypeOf<
+        BaseFunctionContract<(a: number, b: string) => boolean, string>
+      >()
+      expectTypeOf(abstractError.contract).toMatchTypeOf<BaseFunctionContract<typeof aFunction, string>>()
+      expectTypeOf(abstractError.contract).toMatchTypeOf<AFunctionContract<(a: number, b: string) => boolean>>()
+      expectTypeOf(abstractError.contract).toMatchTypeOf<AFunctionContract<(a: number, b: string) => boolean>>()
+      expectTypeOf(abstractError.contract).toEqualTypeOf(afc)
+    })
   })
 })

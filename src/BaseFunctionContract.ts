@@ -59,8 +59,39 @@ export interface BaseContractFunctionProperties<BFC extends BaseFunctionContract
 export type ContractSignature<BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>> =
   BFC extends BaseFunctionContract<infer CS, GeneralLocation> ? CS : never
 
-export type BaseContractFunction<BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>> =
-  ContractSignature<BFC> & BaseContractFunctionProperties<BFC>
+/* NOTE: In principle, one generic parameter `BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation` should
+         suffice. From that we can infer the `ContractSignature` with
+         ```
+         export type ContractSignature<BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>> =
+           BFC extends BaseFunctionContract<infer CS, GeneralLocation> ? CS : never
+         ```
+         However, when we do that, TypeScript develops some infinite loop, not yet recognized in detail, which seems to
+         have to do with {@link BaseFunctionContract.abstract} being a {@link BaseContractFunction<this>}, which has
+         a {@link BaseContractFunction.contract}.
+         -
+         It seems bonkers that this would introduce an infinite inference loop, since it is clear in any which direction
+         that the type of {@link BaseContractFunction.contract} is the `this` type of
+         {@link BaseFunctionContract.abstract}, and this is specified explicity.
+         -
+         It is highly annoying that I cannot find any reasonable in depth description of what this type-checking process
+         does on the internet. What is called “advanced” is actually kindergarten material. There are reference to magic
+         tricks, but nobody explains what “TS2589: Type instantiation is excessively deep and possibly infinite.”
+         actually means, and what code structure get the type checker there.
+         -
+         With the above type, there is no direct recursion. The type has a clear end condition. The is recursion via
+         `BaseFunctionContract`, but there shouldn't be. Once we find a `BaseFunctionContract`, it should be obvious
+         what `CS` is. There is no need to look for it. If the typechecker insists on again validating the type
+         of the `BaseContractFunction`, it will check the structure of its `contract`, which includes a property
+         `abstract`, whose type is the `BaseContractFunction`. This is a circle, but should not be an infinite loop.
+         I believen the typechecker does not understand this. From the type of `abstract`, which says the `contract` is
+         `this`, it should recognize the circle immediately, on first or second pass, but, if this is indeed the issue,
+         it doesn't, and gets confused first by the requested inference `ContractSignature` for some reason.
+         -
+         By having the `ContractSignature` generic parameter separate, we avoid this issue it seems. */
+export type BaseContractFunction<
+  ContractSignature,
+  BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>
+> = ContractSignature & BaseContractFunctionProperties<BFC>
 
 /**
  * A {@link BaseContractFunction} is an {@link BaseFunctionContract#implementation} of an
@@ -398,7 +429,7 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
    */
   readonly location!: Location // initialized with setAndFreeze
 
-  readonly abstract!: BaseContractFunction<this>
+  readonly abstract!: BaseContractFunction<Signature, this>
 
   verify: boolean = true
   verifyPostconditions: boolean = false
