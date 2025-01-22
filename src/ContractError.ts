@@ -110,7 +110,7 @@ export class ContractError extends Error {
     /* On some platforms (notably, Node), when using the class syntax, the `super()` call to the `Error` constructor
        creates an own property `stack`, which we do not want. If it exists, we delete it. We do want to use the given
        `rawStack` and the defined derived property on the prototype in all cases. */
-    // @ts-ignore
+    // @ts-expect-error
     delete this.stack
   }
 }
