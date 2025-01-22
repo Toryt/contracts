@@ -26,6 +26,7 @@ import {
   expectContractErrorInvariants,
   generateContractErrorMethodsDescriptions
 } from './ContractErrorCommon.ts'
+import { expectTypeOf } from 'expect-type'
 
 describe(testName(import.meta), function () {
   describe('prototype', function () {
@@ -84,5 +85,21 @@ describe(testName(import.meta), function () {
         }
       ]
     )
+  })
+
+  describe('types', function () {
+    const contractError = new ContractError(rawStack())
+
+    it('is of the expected types', function () {
+      expectTypeOf(contractError).toMatchTypeOf<Error>()
+      expectTypeOf(contractError).toMatchTypeOf<ContractError>()
+      expectTypeOf(contractError).toEqualTypeOf<ContractError>()
+    })
+    it('it has a name, message, rawStack, and stack of the expected types', function () {
+      expectTypeOf(contractError.name).toBeString()
+      expectTypeOf(contractError.message).toBeString()
+      expectTypeOf(contractError.rawStack).toBeString()
+      expectTypeOf(contractError.stack).toBeString()
+    })
   })
 })
