@@ -437,7 +437,6 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     /* This cannot be defined in the prototype. The `self` is the contract, not the `this`. When this function is called
        as a method of a random object, that random object is the `this`, not this contract. */
     function abstract(): never {
-      // MUDO why is this generic specification needed?
       throw new AbstractError(self, rawStack())
     }
     // intermediate contract instance, specifically for this contract function
