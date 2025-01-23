@@ -162,6 +162,27 @@ describe(testName(import.meta), function () {
         ContractFunction<AContractSignature, typeof afc, () => boolean>
       >()
     })
+    it('has a contract of the expected types', function () {
+      bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
+
+      expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<
+        BaseFunctionContract<UnknownFunction, GeneralLocation>
+      >()
+      expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<BaseFunctionContract<UnknownFunction, string>>()
+      expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<
+        BaseFunctionContract<AContractSignature, GeneralLocation>
+      >()
+      expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<BaseFunctionContract<AContractSignature, string>>()
+      expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<AFunctionContract<AFunctionContractSignature>>()
+      expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<AFunctionContract<AContractSignature>>()
+      expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<typeof afc>()
+      expectTypeOf(aContractFunctionToBe.contract).toEqualTypeOf<typeof afc>()
+
+      expectTypeOf(aContractFunctionToBe.contract).not.toMatchTypeOf<
+        BaseFunctionContract<typeof anImplFunction, string>
+      >()
+      expectTypeOf(aContractFunctionToBe.contract).not.toMatchTypeOf<AFunctionContract<typeof anImplFunction>>()
+    })
     it('has an implementation of the expected types', function () {
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
