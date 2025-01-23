@@ -86,8 +86,8 @@ export interface BaseContractFunctionProperties<BFC extends BaseFunctionContract
          -
          By having the `ContractSignature` generic parameter separate, we avoid this issue it seems. */
 export type BaseContractFunction<
-  ContractSignature,
-  BFC extends BaseFunctionContract<UnknownFunction, GeneralLocation>
+  ContractSignature extends UnknownFunction,
+  BFC extends BaseFunctionContract<ContractSignature, GeneralLocation>
 > = ContractSignature & BaseContractFunctionProperties<BFC>
 
 /**
