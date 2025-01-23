@@ -14,7 +14,7 @@
   limitations under the License.
  */
 
-import { expectTypeOf, type UnknownFunction } from 'expect-type'
+import { expectTypeOf } from 'expect-type'
 import should from 'should'
 import {
   type BaseContractFunction,
@@ -25,6 +25,7 @@ import {
   contractFunctionBind,
   type FunctionContractKwargs
 } from '../../../src/BaseFunctionContract.ts'
+import { type UnknownFunction } from '../../../src/types/UnknownFunction.ts'
 import { type GeneralLocation, location } from '../../../src/location.ts'
 import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
