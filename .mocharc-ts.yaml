@@ -7,3 +7,4 @@ extension:
   - test.ts
 spec:
   - test2/ts/**/*.test.ts
+enable-source-maps: true
