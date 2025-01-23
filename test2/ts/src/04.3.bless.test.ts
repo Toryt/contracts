@@ -162,5 +162,20 @@ describe(testName(import.meta), function () {
         ContractFunction<AContractSignature, typeof afc, () => boolean>
       >()
     })
+    it('has an implementation of the expected types', function () {
+      bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
+
+      expectTypeOf(aContractFunctionToBe.implementation).toMatchTypeOf<UnknownFunction>()
+      expectTypeOf(aContractFunctionToBe.implementation).toMatchTypeOf<AFunctionContractSignature>()
+      expectTypeOf(aContractFunctionToBe.implementation).toMatchTypeOf<AContractSignature>()
+      expectTypeOf(aContractFunctionToBe.implementation).toMatchTypeOf<typeof anImplFunction>()
+      expectTypeOf(aContractFunctionToBe.implementation).toEqualTypeOf<typeof anImplFunction>()
+    })
+    it('has a location of the expected type', function () {
+      bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
+
+      expectTypeOf(aContractFunctionToBe.location).toBeString()
+    })
+    // MUDO bind, name, prototype
   })
 })
