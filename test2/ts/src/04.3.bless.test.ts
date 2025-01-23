@@ -90,21 +90,6 @@ describe(testName(import.meta), function () {
     const anImplFunction = (a: number): boolean => a > 0
     const aLocation = location()
     const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
-    //
-    // it('has a setup that is as expected', function () {
-    //   expectTypeOf(aFunction).toMatchTypeOf<unknown>()
-    //   expectTypeOf(aFunction).toMatchTypeOf<UnknownFunction>()
-    //   expectTypeOf(aFunction).toMatchTypeOf<(a: number, b: string) => boolean>()
-    //   expectTypeOf(aNeverFunction).toMatchTypeOf<(a: number, b: string) => boolean>()
-    //
-    //   // NOTE: unexpected `not`: is this because of `toMatchTypeOf`?
-    //   expectTypeOf<never>().not.toMatchTypeOf<(a: number, b: string) => boolean>()
-    //   expectTypeOf<(a: number, b: string) => boolean>().not.toMatchTypeOf<never>()
-    //
-    //   expectTypeOf<NeverFunction>().toMatchTypeOf(aFunction)
-    //   expectTypeOf(aFunction).not.toMatchTypeOf<NeverFunction>()
-    //   expectTypeOf(aFunction).not.toMatchTypeOf<never>()
-    // })
     it('is of the expected types', function () {
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
       expectTypeOf(aContractFunctionToBe)
@@ -176,21 +161,5 @@ describe(testName(import.meta), function () {
         ContractFunction<AContractSignature, typeof afc, () => boolean>
       >()
     })
-    // it('it has a name, message, rawStack, and stack of the expected types', function () {
-    //   expectTypeOf(abstractError.name).toBeString()
-    //   expectTypeOf(abstractError.message).toBeString()
-    //   expectTypeOf(abstractError.rawStack).toBeString()
-    //   expectTypeOf(abstractError.stack).toBeString()
-    // })
-    // it('it has a contract of the expected types', function () {
-    //   expectTypeOf(abstractError.contract).toMatchTypeOf<BaseFunctionContract<UnknownFunction, string>>()
-    //   expectTypeOf(abstractError.contract).toMatchTypeOf<
-    //     BaseFunctionContract<(a: number, b: string) => boolean, string>
-    //   >()
-    //   expectTypeOf(abstractError.contract).toMatchTypeOf<BaseFunctionContract<typeof aFunction, string>>()
-    //   expectTypeOf(abstractError.contract).toMatchTypeOf<AFunctionContract<(a: number, b: string) => boolean>>()
-    //   expectTypeOf(abstractError.contract).toMatchTypeOf<AFunctionContract<(a: number, b: string) => boolean>>()
-    //   expectTypeOf(abstractError.contract).toEqualTypeOf(afc)
-    // })
   })
 })
