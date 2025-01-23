@@ -197,6 +197,21 @@ describe(testName(import.meta), function () {
 
       expectTypeOf(aContractFunctionToBe.location).toBeString()
     })
-    // MUDO bind, name, prototype
+    // MUDO bind
+    it('has a name of the expected type', function () {
+      bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
+
+      expectTypeOf(aContractFunctionToBe.name).toBeString()
+    })
+    it('has a prototype of the expected type', function () {
+      bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
+
+      expectTypeOf(aContractFunctionToBe.prototype).toMatchTypeOf<object>()
+      expectTypeOf(aContractFunctionToBe.prototype).toEqualTypeOf(anImplFunction.prototype)
+      // TODO there are potential improvements here (any!)
+      expectTypeOf(aContractFunctionToBe.prototype).toBeAny()
+      // should be:  expectTypeOf(aContractFunctionToBe.prototype.constructor).toEqualTypeOf(aContractFunctionToBe)
+      expectTypeOf(aContractFunctionToBe.prototype.constructor).toBeAny()
+    })
   })
 })
