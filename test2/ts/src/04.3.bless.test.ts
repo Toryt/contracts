@@ -90,15 +90,16 @@ describe(testName(import.meta), function () {
     const anImplFunction = (a: number): boolean => a > 0
     const aLocation = location()
     const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
     it('is of the expected types', function () {
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
-      expectTypeOf(aContractFunctionToBe)
-        .not /* NOTE: this is surprising */
-        .toMatchTypeOf<BaseContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, GeneralLocation>>>()
-      expectTypeOf(aContractFunctionToBe)
-        .not /* NOTE: this is surprising */
-        .toMatchTypeOf<BaseContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>>>()
-      /* MUDO: this result calls into question isGeneralContractFunction. What _is_ the most general (Base)ContractFunction? */
+
+      expectTypeOf(aContractFunctionToBe).toMatchTypeOf<
+        BaseContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, GeneralLocation>>
+      >()
+      expectTypeOf(aContractFunctionToBe).toMatchTypeOf<
+        BaseContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>>
+      >()
 
       expectTypeOf(aContractFunctionToBe).toMatchTypeOf<
         BaseContractFunction<
