@@ -87,7 +87,7 @@ describe(testName(import.meta), function () {
     }
     type AContractSignature = (a: number, b: string) => boolean
     const afc = new AFunctionContract<AContractSignature>({})
-    const anImplFunction = (a: number): boolean => true
+    const anImplFunction = (a: number): boolean => a > 0
     const aLocation = location()
     const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
     //
