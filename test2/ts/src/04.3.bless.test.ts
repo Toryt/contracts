@@ -197,7 +197,12 @@ describe(testName(import.meta), function () {
 
       expectTypeOf(aContractFunctionToBe.location).toBeString()
     })
-    // MUDO bind
+    it('has a bind of the expected type', function () {
+      bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
+
+      // MUDO our hard work is not exposed
+      expectTypeOf(aContractFunctionToBe.bind).toEqualTypeOf<CallableFunction['bind']>()
+    })
     it('has a name of the expected type', function () {
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
