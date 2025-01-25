@@ -89,9 +89,10 @@ describe(testName(import.meta), function () {
     const afc = new AFunctionContract<AContractSignature>({})
     const anImplFunction = (a: number): boolean => a > 0
     const aLocation = location()
-    const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
 
     it('is of the expected types', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       expectTypeOf(aContractFunctionToBe).toMatchTypeOf<
@@ -163,6 +164,8 @@ describe(testName(import.meta), function () {
       >()
     })
     it('has a contract of the expected types', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       expectTypeOf(aContractFunctionToBe.contract).toMatchTypeOf<
@@ -184,6 +187,8 @@ describe(testName(import.meta), function () {
       expectTypeOf(aContractFunctionToBe.contract).not.toMatchTypeOf<AFunctionContract<typeof anImplFunction>>()
     })
     it('has an implementation of the expected types', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       expectTypeOf(aContractFunctionToBe.implementation).toMatchTypeOf<UnknownFunction>()
@@ -193,22 +198,30 @@ describe(testName(import.meta), function () {
       expectTypeOf(aContractFunctionToBe.implementation).toEqualTypeOf<typeof anImplFunction>()
     })
     it('has a location of the expected type', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       expectTypeOf(aContractFunctionToBe.location).toBeString()
     })
     it('has a bind of the expected type', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       // MUDO our hard work is not exposed
       expectTypeOf(aContractFunctionToBe.bind).toEqualTypeOf<CallableFunction['bind']>()
     })
     it('has a name of the expected type', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       expectTypeOf(aContractFunctionToBe.name).toBeString()
     })
     it('has a prototype of the expected type', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       expectTypeOf(aContractFunctionToBe.prototype).toMatchTypeOf<object>()
