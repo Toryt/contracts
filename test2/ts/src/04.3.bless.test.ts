@@ -25,11 +25,14 @@ import {
   contractFunctionBind,
   type FunctionContractKwargs
 } from '../../../src/BaseFunctionContract.ts'
-import { type UnknownFunction } from '../../../src/types/UnknownFunction.ts'
 import { type GeneralLocation, location } from '../../../src/location.ts'
 import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
+import { type UnknownFunction } from '../../../src/types/UnknownFunction.ts'
+import { primitiveAndNullStuff } from '../../util/_stuff.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
 import { testName } from '../../util/testName.ts'
+
+const here = location()
 
 describe(testName(import.meta), function () {
   it('offers an boundPrefix', function () {
@@ -37,43 +40,103 @@ describe(testName(import.meta), function () {
     boundPrefix.should.not.be.empty()
   })
 
-  it('behaves as expected', function () {
-    const contractFunction = function (): void {}
-    const contract = new BaseFunctionContract({})
-    const implFunction = function (): void {}
-    const here = location()
-    should(implFunction.prototype).be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
+  describe('behavior', function () {
+    function behavesAsExpected(
+      contractFunction: UnknownFunction,
+      contract: BaseFunctionContract<UnknownFunction, GeneralLocation>,
+      implFunction: UnknownFunction
+    ): void {
+      bless(contractFunction, contract, implFunction, here)
 
-    bless(contractFunction, contract, implFunction, here)
+      BaseFunctionContract.isAContractFunction(contractFunction).should.be.true()
+      const contractFromBlessed = expectOwnFrozenProperty(contractFunction, 'contract')
+      Object.getPrototypeOf(contractFromBlessed).should.equal(contract)
+      const implementationFromBlessed = expectOwnFrozenProperty(contractFunction, 'implementation')
+      should(implementationFromBlessed).equal(implFunction)
+      const locationFromBlessed = expectOwnFrozenProperty(contractFunction, 'location')
+      should(locationFromBlessed).equal(here)
+      const bindFromBlessed = expectOwnFrozenProperty(contractFunction, 'bind')
+      should(bindFromBlessed).equal(contractFunctionBind)
+      contractFunction.should.have.ownProperty('name')
+      contractFunction.name.should.equal(conciseRepresentation(namePrefix, contractFunction.implementation))
 
-    contractFunction.should.equal(contractFunction)
-    BaseFunctionContract.isAContractFunction(contractFunction).should.be.true()
-    const contractFromBlessed = expectOwnFrozenProperty(contractFunction, 'contract')
-    Object.getPrototypeOf(contractFromBlessed).should.equal(contract)
-    const implementationFromBlessed = expectOwnFrozenProperty(contractFunction, 'implementation')
-    should(implementationFromBlessed).equal(implFunction)
-    const locationFromBlessed = expectOwnFrozenProperty(contractFunction, 'location')
-    should(locationFromBlessed).equal(here)
-    const bindFromBlessed = expectOwnFrozenProperty(contractFunction, 'bind')
-    should(bindFromBlessed).equal(contractFunctionBind)
-    contractFunction.should.have.ownProperty('name')
-    contractFunction.name.should.equal(conciseRepresentation(namePrefix, contractFunction.implementation))
+      const implFunctionNamePropDesc = Object.getOwnPropertyDescriptor(implFunction, 'name')
+      should(implFunctionNamePropDesc).not.be.undefined()
+      delete implFunctionNamePropDesc!.value
 
-    const implFunctionNamePropDesc = Object.getOwnPropertyDescriptor(implFunction, 'name')
-    should(implFunctionNamePropDesc).not.be.undefined()
-    delete implFunctionNamePropDesc!.value
+      const contractFunctionNamePropDesc = Object.getOwnPropertyDescriptor(contractFunction, 'name')
+      should(contractFunctionNamePropDesc).not.be.undefined()
+      contractFunctionNamePropDesc!.value.should.equal(
+        conciseRepresentation(BaseFunctionContract.namePrefix, contractFunction.implementation)
+      )
+      delete contractFunctionNamePropDesc!.value
 
-    const contractFunctionNamePropDesc = Object.getOwnPropertyDescriptor(contractFunction, 'name')
-    should(contractFunctionNamePropDesc).not.be.undefined()
-    contractFunctionNamePropDesc!.value.should.equal(
-      conciseRepresentation(BaseFunctionContract.namePrefix, contractFunction.implementation)
-    )
-    delete contractFunctionNamePropDesc!.value
+      contractFunctionNamePropDesc!.should.deepEqual(implFunctionNamePropDesc)
+    }
 
-    contractFunctionNamePropDesc!.should.deepEqual(implFunctionNamePropDesc)
+    it('behaves as expected without a prototype', function () {
+      const contractFunction = function (): void {}
+      const contract = new BaseFunctionContract({})
+      const implFunction = function (): void {}
+      should(implFunction.prototype).be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
+
+      behavesAsExpected(contractFunction, contract, implFunction)
+    })
+
+    primitiveAndNullStuff.forEach(({ subject, description }) => {
+      it(`behaves as expected with a prototype that is a ${description}`, function () {
+        const contractFunction = function (): void {}
+        const originalProto = contractFunction.prototype
+        const contract = new BaseFunctionContract({})
+        const implFunction = function (): void {}
+        implFunction.prototype = subject
+        should(implFunction.prototype).not.be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
+
+        behavesAsExpected(contractFunction, contract, implFunction)
+        contractFunction.prototype.should.equal(originalProto)
+      })
+    })
+
+    it('behaves as expected with a prototype without a constructor', function () {
+      const contractFunction = function (): void {}
+      const contract = new BaseFunctionContract({})
+      const implFunction = function (): void {}
+      const proto = { a: 'a prototype without a constructor property' }
+      implFunction.prototype = proto
+
+      behavesAsExpected(contractFunction, contract, implFunction)
+      contractFunction.prototype.should.be.an.Object()
+      Object.getPrototypeOf(contractFunction.prototype).should.equal(proto)
+    })
+
+    it('behaves as expected with a prototype with a constructor that is the implFunction', function () {
+      const contractFunction = function (): void {}
+      const contract = new BaseFunctionContract({})
+      const implFunction = function (): void {}
+      const proto = { a: 'a prototype without a constructor property', constructor: implFunction }
+      implFunction.prototype = proto
+
+      behavesAsExpected(contractFunction, contract, implFunction)
+      contractFunction.prototype.should.be.an.Object()
+      Object.getPrototypeOf(contractFunction.prototype).should.equal(proto)
+      contractFunction.prototype.should.have.ownProperty('constructor', contractFunction)
+    })
+
+    it('behaves as expected with a prototype with a constructor that is not the implFunction', function () {
+      const contractFunction = function (): void {}
+      const contract = new BaseFunctionContract({})
+      const implFunction = function (): void {}
+      const constructor = Symbol('not the impl function')
+      const proto = { a: 'a prototype without a constructor property', constructor }
+      implFunction.prototype = proto
+
+      behavesAsExpected(contractFunction, contract, implFunction)
+      contractFunction.prototype.should.be.an.Object()
+      Object.getPrototypeOf(contractFunction.prototype).should.equal(proto)
+      contractFunction.prototype.should.not.haveOwnProperty('constructor')
+      contractFunction.prototype.constructor.should.equal(constructor)
+    })
   })
-
-  // MUDO test all paths
 
   describe('types', function () {
     type AFunctionContractSignature = (a: number, b: string, c: symbol) => boolean
