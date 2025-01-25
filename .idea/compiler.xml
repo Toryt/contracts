@@ -3,6 +3,5 @@
   <component name="TypeScriptCompiler">
     <option name="recompileOnChanges" value="true" />
     <option name="showAllErrors" value="false" />
-    <option name="useTypesFromServer" value="true" />
   </component>
 </project>
