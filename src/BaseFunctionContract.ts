@@ -21,7 +21,7 @@ import type { Postcondition } from './Postcondition.ts'
 import assert, { ok, strictEqual } from 'assert'
 import { type GeneralLocation, internalLocation, type InternalLocation, isLocation, location } from './location.ts'
 import { isStack, rawStack } from './private/stack.ts'
-import { setAndFreeze, isFrozenOwnProperty, frozenDerived } from './private/property.ts'
+import { setAndFreeze, isFrozenOwnProperty, frozenDerived, hasProperty } from './private/property.ts'
 import { conciseRepresentation, namePrefix } from './private/representation.ts'
 
 export const abstractErrorMessage = 'an abstract function cannot be executed'
@@ -202,7 +202,7 @@ export function bless<
     /* The same prototype as `implFunction`, but with a clean intermediate. This makes the function work as a
        constructor, if `implFunction` was intended that way. */
     contractFunctionToBe.prototype = Object.create(implFunction.prototype)
-    if ('constructor' in implFunction.prototype && implFunction.prototype.constructor === implFunction) {
+    if (hasProperty(implFunction.prototype, 'constructor') && implFunction.prototype.constructor === implFunction) {
       setAndFreeze(contractFunctionToBe.prototype, 'constructor', contractFunctionToBe)
       // the following line is added to work around an issue in Safari on iOS. See 4ed9879c6b5544b174ae0825d7f7055fd5e147d8
       assert(
