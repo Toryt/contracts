@@ -219,15 +219,34 @@ describe(testName(import.meta), function () {
 
       expectTypeOf(aContractFunctionToBe.name).toBeString()
     })
-    it('has a prototype of the expected type', function () {
+    it('has no prototype', function () {
       const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+      should(anImplFunction.prototype).be.undefined()
 
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
       expectTypeOf(aContractFunctionToBe.prototype).toMatchTypeOf<object>()
-      expectTypeOf(aContractFunctionToBe.prototype).toEqualTypeOf(anImplFunction.prototype)
       // TODO there are potential improvements here (any!)
       expectTypeOf(aContractFunctionToBe.prototype).toBeAny()
+      const proto = aContractFunctionToBe.prototype
+      should(proto).be.undefined()
+      expectTypeOf(proto).toBeAny()
+      // should be:  expectTypeOf(aContractFunctionToBe.prototype.constructor).toEqualTypeOf(aContractFunctionToBe)
+    })
+    it('has a prototype of the expected type', function () {
+      const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
+      const anImplFunction = (a: number): boolean => a > 0
+      const prototype = { a: 'a property', constructor: anImplFunction }
+      anImplFunction.prototype = prototype
+
+      bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
+
+      expectTypeOf(aContractFunctionToBe.prototype).toMatchTypeOf<object>()
+      // TODO there are potential improvements here (any!)
+      expectTypeOf(aContractFunctionToBe.prototype).toBeAny()
+      const proto = aContractFunctionToBe.prototype
+      should(proto).not.be.undefined()
+      expectTypeOf(proto).toBeAny()
       // should be:  expectTypeOf(aContractFunctionToBe.prototype.constructor).toEqualTypeOf(aContractFunctionToBe)
       expectTypeOf(aContractFunctionToBe.prototype.constructor).toBeAny()
     })
