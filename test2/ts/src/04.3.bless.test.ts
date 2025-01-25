@@ -236,8 +236,7 @@ describe(testName(import.meta), function () {
     it('has a prototype of the expected type', function () {
       const aContractFunctionToBe = (a: number, b: string): boolean => String(a) === b
       const anImplFunction = (a: number): boolean => a > 0
-      const prototype = { a: 'a property', constructor: anImplFunction }
-      anImplFunction.prototype = prototype
+      anImplFunction.prototype = { a: 'a property', constructor: anImplFunction }
 
       bless(aContractFunctionToBe, afc, anImplFunction, aLocation)
 
