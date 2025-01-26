@@ -29,7 +29,7 @@ describe(testName(import.meta), function () {
     .filter(v => !!v)
     .concat(['    at', 'at /', {}, internalLocation])
     .forEach(v => {
-      it(`says yes if there is an implementation Function, an AbstractFunctionContract, and a location that is ${inspect(v)}, and all 3 properties are frozen, and it has the expected name`, function () {
+      it(`says yes if there is an implementation Function, a BaseFunctionContract, and a location that is ${inspect(v)}, and all 3 properties are frozen, and it has the expected name`, function () {
         const candidate = createCandidateContractFunction(undefined, undefined, 'location', v)
         isAGeneralContractFunction(candidate).should.be.ok()
       })
