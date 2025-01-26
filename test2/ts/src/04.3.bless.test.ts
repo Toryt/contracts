@@ -74,6 +74,9 @@ describe(testName(import.meta), function () {
       contractFunctionNamePropDesc!.should.deepEqual(implFunctionNamePropDesc)
     }
 
+    // MUDO issue when contract function would be a function (which has a prototype that cannot be deleted), and implFunction is an arrow, async, or generator (which might not have a prototype)
+    //      this will not be an issue with Proxies?
+
     it('behaves as expected without a prototype', function () {
       const contractFunction = function (): void {}
       const contract = new BaseFunctionContract({})
@@ -86,14 +89,13 @@ describe(testName(import.meta), function () {
     primitiveAndNullStuff.forEach(({ subject, description }) => {
       it(`behaves as expected with a prototype that is a ${description}`, function () {
         const contractFunction = function (): void {}
-        const originalProto = contractFunction.prototype
         const contract = new BaseFunctionContract({})
         const implFunction = function (): void {}
         implFunction.prototype = subject
         should(implFunction.prototype).not.be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
 
         behavesAsExpected(contractFunction, contract, implFunction)
-        contractFunction.prototype.should.equal(originalProto)
+        should(contractFunction.prototype).equal(subject)
       })
     })
 

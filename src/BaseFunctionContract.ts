@@ -234,17 +234,30 @@ export function bless<
            `object`.
            This means we now replace the `contractFunction` prototype more often than needed, but that is not a
            functional problem. */
-  if ('prototype' in implFunction && typeof implFunction.prototype === 'object') {
-    /* The same prototype as `implFunction`, but with a clean intermediate. This makes the function work as a
-       constructor, if `implFunction` was intended that way. */
-    contractFunctionToBe.prototype = Object.create(implFunction.prototype)
-    if (hasProperty(implFunction.prototype, 'constructor') && implFunction.prototype.constructor === implFunction) {
-      setAndFreeze(contractFunctionToBe.prototype, 'constructor', contractFunctionToBe)
-      // the following line is added to work around an issue in Safari on iOS. See 4ed9879c6b5544b174ae0825d7f7055fd5e147d8
-      assert(
-        Object.getPrototypeOf(contractFunctionToBe.prototype) === implFunction.prototype,
-        'contractFunction prototype is set to extend `implFunction.prototype`'
-      )
+  if (!('prototype' in implFunction)) {
+    /* `contractFunctionToBe` is under our control. If it is a non-arrow, non-async, non-generator function (a regular
+       `function () { … }) it has a `prototype` we cannot delete. This assert guards against that situation. */
+    // MUDO `contractFunctionToBe` will be a Proxy. What is the issue then?
+    assert(!('prototype' in contractFunctionToBe))
+  } else {
+    if (
+      (typeof implFunction.prototype !== 'object' || implFunction.prototype === null) &&
+      typeof implFunction.prototype !== 'function'
+    ) {
+      // copy the prototype
+      contractFunctionToBe.prototype = implFunction.prototype
+    } else {
+      /* The same prototype as `implFunction`, but with a clean intermediate. This makes the function work as a
+         constructor, if `implFunction` was intended that way. */
+      contractFunctionToBe.prototype = Object.create(implFunction.prototype)
+      if (hasProperty(implFunction.prototype, 'constructor') && implFunction.prototype.constructor === implFunction) {
+        setAndFreeze(contractFunctionToBe.prototype, 'constructor', contractFunctionToBe)
+        // the following line is added to work around an issue in Safari on iOS. See 4ed9879c6b5544b174ae0825d7f7055fd5e147d8
+        assert(
+          Object.getPrototypeOf(contractFunctionToBe.prototype) === implFunction.prototype,
+          'contractFunction prototype is set to extend `implFunction.prototype`'
+        )
+      }
     }
   }
   // MUDO with proxies, this is no longer true. Verify
