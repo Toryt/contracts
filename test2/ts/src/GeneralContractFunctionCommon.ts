@@ -28,7 +28,6 @@ import { type GeneralLocation, internalLocation, isLocation, location } from '..
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
 import { stuffGenerators } from '../../util/_stuff.ts'
-import { notAFunctionNorAContract } from './BaseFunctionContractCommon.ts'
 
 type Constructor<T> = new (...args: unknown[]) => T
 
@@ -134,9 +133,9 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
     }
   )
 
-  notAFunctionNorAContract.forEach(thing => {
-    it('says no if the argument is not a function, but ' + thing, function () {
-      should(isAXXXContractFunction.call(ContractConstructor, thing)).be.false()
+  stuffGenerators.forEach(({ generate, description }) => {
+    it(`says no if the argument is not a function, but ${description}`, function () {
+      should(isAXXXContractFunction.call(ContractConstructor, generate())).be.false()
     })
   })
 
@@ -191,14 +190,21 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
   ]
 
   cases.forEach(aCase => {
-    notAFunctionNorAContract.concat(aCase.extra).forEach(v => {
-      if (aCase.propertyName !== 'location' || !isLocation(v)) {
-        it(`says no if the ${aCase.propertyName} is not ${aCase.expected} but ${inspect(v)}`, function () {
+    stuffGenerators
+      .map(({ generate, description }) => ({ v: generate(), description }))
+      .concat(
+        aCase.extra.map(e => ({
+          v: e,
+          description: inspect(e)
+        }))
+      )
+      .filter(({ v }) => aCase.propertyName !== 'location' || !isLocation(v))
+      .forEach(({ v, description }) => {
+        it(`says no if the ${aCase.propertyName} is not ${aCase.expected} but ${description}`, function () {
           const candidate = createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v)
           should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
         })
-      }
-    })
+      })
   })
 
   describe('prototype', function () {

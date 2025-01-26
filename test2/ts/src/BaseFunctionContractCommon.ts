@@ -15,8 +15,8 @@
  */
 
 import should from 'should'
-import { type UnknownFunction } from '../../../src/index.ts'
 import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
+import { type UnknownFunction } from '../../../src/index.ts'
 import { type GeneralLocation, internalLocation, isLocation } from '../../../src/location.ts'
 import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
 import { mustBeCallerLocation } from '../../util/testUtil.ts'
@@ -58,26 +58,6 @@ import { mustBeCallerLocation } from '../../util/testUtil.ts'
 //     return null
 //   }
 // ].concat(someConditions)
-
-export const notAFunctionNorAContract: unknown[] = [
-  undefined,
-  null,
-  '',
-  'foo',
-  0,
-  -1,
-  true,
-  false,
-  /lala/,
-  {},
-  new Date(),
-  // eslint-disable-next-line no-new-wrappers
-  new Number(42),
-  // eslint-disable-next-line no-new-wrappers
-  new Boolean(true),
-  // eslint-disable-next-line no-new-wrappers
-  new String('lalala')
-]
 
 // // noinspection JSCheckFunctionSignatures
 // const constructorPreCases = [
