@@ -24,7 +24,7 @@ import {
   isAGeneralContractFunction
 } from '../../../src/BaseFunctionContract.ts'
 import { type UnknownFunction } from '../../../src/index.ts'
-import { type GeneralLocation, location } from '../../../src/location.ts'
+import { type GeneralLocation, internalLocation, isLocation, location } from '../../../src/location.ts'
 import { setAndFreeze } from '../../../src/private/property.ts'
 import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
 import { stuffGenerators } from '../../util/_stuff.ts'
@@ -145,6 +145,14 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
     isAXXXContractFunction.call(ContractConstructor, candidate).should.be.false()
   })
 
+  const validLocations = ['    at', 'at /']
+  validLocations.forEach(v => {
+    it(`says yes if there is an implementation Function, a BaseFunctionContract, and a location that is \`'${v}'\`, and all 3 properties are frozen, and it has the expected name`, function () {
+      const candidate = createCandidateContractFunction(undefined, undefined, 'location', v)
+      isAGeneralContractFunction(candidate).should.be.true()
+    })
+  })
+
   const properties = ['contract', 'implementation', 'location', 'bind']
 
   properties.forEach(doNotFreezeProperty => {
@@ -166,6 +174,11 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
       extra: [new BaseFunctionContract({})]
     },
     {
+      propertyName: 'location',
+      expected: 'a location',
+      extra: [internalLocation]
+    },
+    {
       propertyName: 'bind',
       expected: 'contractFunctionBind',
       extra: []
@@ -179,10 +192,12 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
 
   cases.forEach(aCase => {
     notAFunctionNorAContract.concat(aCase.extra).forEach(v => {
-      it(`says no if the ${aCase.propertyName} is not ${aCase.expected} but ${inspect(v)}`, function () {
-        const candidate = createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v)
-        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
-      })
+      if (aCase.propertyName !== 'location' || !isLocation(v)) {
+        it(`says no if the ${aCase.propertyName} is not ${aCase.expected} but ${inspect(v)}`, function () {
+          const candidate = createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v)
+          should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
+        })
+      }
     })
   })
 

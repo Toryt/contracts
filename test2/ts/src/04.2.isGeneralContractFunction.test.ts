@@ -16,22 +16,10 @@
 
 'use strict'
 
-import { inspect } from 'node:util'
 import { isAGeneralContractFunction } from '../../../src/BaseFunctionContract.ts'
-import { internalLocation } from '../../../src/location.ts'
 import { testName } from '../../util/testName.ts'
-import { notAFunctionNorAContract } from './BaseFunctionContractCommon.ts'
-import { createCandidateContractFunction, generateIAGCFTests } from './GeneralContractFunctionCommon.ts'
+import { generateIAGCFTests } from './GeneralContractFunctionCommon.ts'
 
 describe(testName(import.meta), function () {
   generateIAGCFTests(isAGeneralContractFunction)
-  notAFunctionNorAContract // MUDO use stuff
-    .filter(v => !!v)
-    .concat(['    at', 'at /', {}, internalLocation])
-    .forEach(v => {
-      it(`says yes if there is an implementation Function, a BaseFunctionContract, and a location that is ${inspect(v)}, and all 3 properties are frozen, and it has the expected name`, function () {
-        const candidate = createCandidateContractFunction(undefined, undefined, 'location', v)
-        isAGeneralContractFunction(candidate).should.be.ok()
-      })
-    })
 })
