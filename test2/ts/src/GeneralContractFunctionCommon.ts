@@ -130,13 +130,13 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
       'properties are frozen, and it has the expected name',
     function () {
       const candidate = createCandidateContractFunction(ContractConstructor)
-      isAXXXContractFunction.call(ContractConstructor, candidate).should.be.ok()
+      isAXXXContractFunction.call(ContractConstructor, candidate).should.be.true()
     }
   )
 
   notAFunctionNorAContract.forEach(thing => {
     it('says no if the argument is not a function, but ' + thing, function () {
-      should(isAXXXContractFunction.call(ContractConstructor, thing)).not.be.ok()
+      should(isAXXXContractFunction.call(ContractConstructor, thing)).be.false()
     })
   })
 
@@ -150,7 +150,7 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
   properties.forEach(doNotFreezeProperty => {
     it(`says no if the ${doNotFreezeProperty} property is not frozen`, function () {
       const candidate = createCandidateContractFunction(ContractConstructor, doNotFreezeProperty)
-      should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
+      should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
     })
   })
 
@@ -181,7 +181,7 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
     notAFunctionNorAContract.concat(aCase.extra).forEach(v => {
       it(`says no if the ${aCase.propertyName} is not ${aCase.expected} but ${inspect(v)}`, function () {
         const candidate = createCandidateContractFunction(ContractConstructor, undefined, aCase.propertyName, v)
-        should(isAXXXContractFunction.call(ContractConstructor, candidate)).not.be.ok()
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
       })
     })
   })
