@@ -217,26 +217,115 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
       should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.true()
     })
 
-    stuffGenerators.forEach(({ generate, description }) => {
-      it(
-        `says no if the implementation function has an object as a prototype, with a constructor that is the implementation function, and the contract function has a prototype with the implementation prototype as prototype, with a constructor that is ${description}`
-      )
-      it(
-        `says no if the implementation function has an object as a prototype, with a constructor that is the implementation function, and the contract function has a prototype without the implementation prototype as prototype, with a constructor that is ${description}`
-      )
+    stuffGenerators.forEach(({ generate, description, primitive }) => {
+      it(`says no if the implementation function has an object as a prototype, with a constructor that is the implementation function, and the contract function has a prototype with the implementation prototype as prototype, with a constructor that is ${description}`, function () {
+        const candidate = createCandidateContractFunction<
+          ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+        >(ContractConstructor, undefined, undefined, undefined, true)
+        candidate.implementation.prototype = { constructor: candidate.implementation }
+        candidate.prototype = Object.create(candidate.implementation.prototype, {
+          constructor: {
+            value: generate(),
+            enumerable: false,
+            writable: false,
+            configurable: false
+          }
+        })
 
-      it(
-        `says yes if the implementation function has an object as a prototype, with a constructor that is ${description}, and the contract function has a prototype with the implementation prototype as prototype, with a constructor that is ${description}`
-      )
-      it(
-        `says no if the implementation function has an object as a prototype, with a constructor that is ${description}, and the contract function has a prototype with the implementation prototype as prototype, with a constructor that is not ${description}`
-      )
-      it(
-        `says no if the implementation function has an object as a prototype, with a constructor that is ${description}, and the contract function has a prototype without the implementation prototype as prototype, with a constructor that is ${description}`
-      )
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
+      })
+      it(`says no if the implementation function has an object as a prototype, with a constructor that is the implementation function, and the contract function has a prototype without the implementation prototype as prototype, with a constructor that is ${description}`, function () {
+        const candidate = createCandidateContractFunction<
+          ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+        >(ContractConstructor, undefined, undefined, undefined, true)
+        candidate.implementation.prototype = { constructor: candidate.implementation }
+        candidate.prototype = { constructor: generate() }
 
-      it(`says yes if the implementation function has ${description} as a prototype, and the contract function has too`)
-      it(`says no if the implementation function has ${description} as a prototype, and the contract function has not`)
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
+      })
+      it(`says yes if the implementation function has an object as a prototype, with a constructor that is a ${description}, and the contract function has a prototype with the implementation prototype as prototype, with a constructor that is the same value`, function () {
+        const candidate = createCandidateContractFunction<
+          ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+        >(ContractConstructor, undefined, undefined, undefined, true)
+        const constructor = generate()
+        candidate.implementation.prototype = { constructor }
+        candidate.prototype = Object.create(candidate.implementation.prototype)
+
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.true()
+      })
+      it(`says no if the implementation function has an object as a prototype, with a constructor that is ${description}, and the contract function has a prototype with the implementation prototype as prototype, with a constructor that is not ${description}`, function () {
+        const candidate = createCandidateContractFunction<
+          ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+        >(ContractConstructor, undefined, undefined, undefined, true)
+        const constructor = generate()
+        const somethingElse = Symbol('not stuff')
+        candidate.implementation.prototype = { constructor }
+        candidate.prototype = Object.create(candidate.implementation.prototype, {
+          constructor: {
+            value: somethingElse,
+            enumerable: false,
+            writable: false,
+            configurable: false
+          }
+        })
+
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
+      })
+      it(`says no if the implementation function has an object as a prototype, with a constructor that is ${description}, and the contract function has a prototype without the implementation prototype as prototype, with a constructor that is ${description}`, function () {
+        const candidate = createCandidateContractFunction<
+          ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+        >(ContractConstructor, undefined, undefined, undefined, true)
+        const constructor = generate()
+        candidate.implementation.prototype = { constructor }
+        candidate.prototype = { constructor }
+
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
+      })
+      if (primitive) {
+        it(`says yes if the implementation function has primitive ${description} as a prototype, and the contract function has too`, function () {
+          const candidate = createCandidateContractFunction<
+            ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+          >(ContractConstructor, undefined, undefined, undefined, true)
+          const primitivePrototype = generate()
+          candidate.implementation.prototype = primitivePrototype
+          candidate.prototype = primitivePrototype
+
+          should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.true()
+        })
+      } else {
+        it(`says yes if the implementation function has an object ${description} as a prototype, and the contract has a prototype with the implementation prototype as prototype`, function () {
+          const candidate = createCandidateContractFunction<
+            ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+          >(ContractConstructor, undefined, undefined, undefined, true)
+          const prototype = generate()
+          assert((typeof prototype === 'object' && prototype !== null) || typeof prototype === 'function')
+          candidate.implementation.prototype = prototype
+          candidate.prototype = Object.create(prototype)
+
+          should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.true()
+        })
+        it(`says yes no the implementation function has an object ${description} as a prototype, and the contract has a prototype that is the implementation prototype`, function () {
+          const candidate = createCandidateContractFunction<
+            ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+          >(ContractConstructor, undefined, undefined, undefined, true)
+          const prototype = generate()
+          candidate.implementation.prototype = prototype
+          candidate.prototype = prototype
+
+          should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
+        })
+      }
+      it(`says no if the implementation function has ${description} as a prototype, and the contract function has not`, function () {
+        const candidate = createCandidateContractFunction<
+          ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
+        >(ContractConstructor, undefined, undefined, undefined, true)
+        const prototype = generate()
+        const somethingElse = Symbol('not stuff again')
+        candidate.implementation.prototype = prototype
+        candidate.prototype = somethingElse
+
+        should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
+      })
     })
   })
 }
