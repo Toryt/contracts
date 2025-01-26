@@ -14,15 +14,15 @@
   limitations under the License.
  */
 
+import assert, { ok, strictEqual } from 'assert'
 import { ContractError } from './ContractError.ts'
+import { type GeneralLocation, internalLocation, type InternalLocation, isLocation, location } from './location.ts'
+import type { Postcondition } from './Postcondition.ts'
+import { frozenDerived, hasProperty, isFrozenOwnProperty, setAndFreeze } from './private/property.ts'
+import { conciseRepresentation, namePrefix } from './private/representation.ts'
+import { isStack, rawStack } from './private/stack.ts'
 import type { RestOfTuple } from './types/RestOfTuple.ts'
 import type { UnknownFunction } from './types/UnknownFunction.ts'
-import type { Postcondition } from './Postcondition.ts'
-import assert, { ok, strictEqual } from 'assert'
-import { type GeneralLocation, internalLocation, type InternalLocation, isLocation, location } from './location.ts'
-import { isStack, rawStack } from './private/stack.ts'
-import { setAndFreeze, isFrozenOwnProperty, frozenDerived, hasProperty } from './private/property.ts'
-import { conciseRepresentation, namePrefix } from './private/representation.ts'
 
 export const abstractErrorMessage = 'an abstract function cannot be executed'
 
@@ -124,6 +124,38 @@ export function isAGeneralContractFunction(
 ): f is ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, GeneralLocation>, UnknownFunction> {
   // Apart from this, we expect f to have a name. But it is controlled by the JavaScript engine, and we cannot
   // freeze it, and not guaranteed in all engines.
+
+  function testPrototype(f: Function, implementation: Function): boolean {
+    if (!Object.prototype.hasOwnProperty.call(implementation, 'prototype')) {
+      return !Object.prototype.hasOwnProperty.call(f, 'prototype')
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(f, 'prototype')) {
+      return false
+    }
+
+    if (
+      (typeof implementation.prototype !== 'object' || implementation.prototype === null) &&
+      typeof implementation.prototype !== 'function'
+    ) {
+      return f.prototype === implementation.prototype
+    }
+
+    if (Object.getPrototypeOf(f.prototype) !== implementation.prototype) {
+      return false
+    }
+
+    if (hasProperty(implementation.prototype, 'constructor')) {
+      if (implementation.prototype.constructor === implementation) {
+        return f.prototype.constructor === f
+      }
+
+      return f.prototype.constructor === implementation.prototype.constructor
+    }
+
+    return true
+  }
+
   return (
     typeof f === 'function' &&
     isFrozenOwnProperty(f, 'contract') &&
@@ -135,10 +167,7 @@ export function isAGeneralContractFunction(
     (f === f.implementation || f.name === conciseRepresentation(namePrefix, f.implementation)) &&
     isFrozenOwnProperty(f, 'bind') &&
     f.bind === contractFunctionBind &&
-    (!Object.prototype.hasOwnProperty.call(f.implementation, 'prototype') ||
-      (typeof f.prototype === 'object' &&
-        f.prototype.constructor === f &&
-        (f.prototype === f.implementation.prototype || f.prototype instanceof f.implementation)))
+    testPrototype(f, f.implementation)
   )
 }
 
