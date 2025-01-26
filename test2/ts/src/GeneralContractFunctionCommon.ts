@@ -281,8 +281,8 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
 
         should(isAXXXContractFunction.call(ContractConstructor, candidate)).be.false()
       })
-      if (primitive) {
-        it(`says yes if the implementation function has primitive ${description} as a prototype, and the contract function has too`, function () {
+      if (primitive || description === 'null') {
+        it(`says yes if the implementation function has ${primitive ? `primitive ${description}` : 'null'} as a prototype, and the contract function has too`, function () {
           const candidate = createCandidateContractFunction<
             ContractFunction<UnknownFunction, BaseFunctionContract<UnknownFunction, string>, UnknownFunction>
           >(ContractConstructor, undefined, undefined, undefined, true)
