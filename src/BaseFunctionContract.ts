@@ -138,7 +138,10 @@ export function isAGeneralContractFunction(
       (typeof implementation.prototype !== 'object' || implementation.prototype === null) &&
       typeof implementation.prototype !== 'function'
     ) {
-      return f.prototype === implementation.prototype
+      return (
+        f.prototype === implementation.prototype ||
+        (Number.isNaN(f.prototype) && Number.isNaN(implementation.prototype))
+      )
     }
 
     if (Object.getPrototypeOf(f.prototype) !== implementation.prototype) {
@@ -150,7 +153,10 @@ export function isAGeneralContractFunction(
         return f.prototype.constructor === f
       }
 
-      return f.prototype.constructor === implementation.prototype.constructor
+      return (
+        f.prototype.constructor === implementation.prototype.constructor ||
+        (Number.isNaN(f.prototype.constructor) && Number.isNaN(implementation.prototype.constructor))
+      )
     }
 
     return true
