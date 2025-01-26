@@ -63,9 +63,9 @@
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.10.7",
+    "@types/node": "^22.10.10",
     "depcheck": "^1.4.7",
-    "eslint": "^9.18.0",
+    "eslint": "^9.19.0",
     "eslint-plugin-depend": "^0.12.0",
     "eslint-plugin-json": "^4.0.1",
     "eslint-plugin-no-secrets": "^2.1.1",
