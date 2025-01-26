@@ -168,9 +168,10 @@ export function isAGeneralContractFunction(
     f.contract instanceof BaseFunctionContract &&
     isFrozenOwnProperty(f, 'implementation') &&
     typeof f.implementation === 'function' &&
+    f.implementation !== f &&
     isFrozenOwnProperty(f, 'location') &&
-    !!f.location &&
-    (f === f.implementation || f.name === conciseRepresentation(namePrefix, f.implementation)) &&
+    isLocation(f.location) &&
+    f.name === conciseRepresentation(namePrefix, f.implementation) &&
     isFrozenOwnProperty(f, 'bind') &&
     f.bind === contractFunctionBind &&
     testPrototype(f, f.implementation)
