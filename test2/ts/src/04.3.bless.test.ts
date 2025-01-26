@@ -95,7 +95,11 @@ describe(testName(import.meta), function () {
         should(implFunction.prototype).not.be.an.Object() // this is here because Safari on iOS doesn't do this always!; by doing this test, the prototype is forced in Safari on iOS
 
         behavesAsExpected(contractFunction, contract, implFunction)
-        should(contractFunction.prototype).equal(subject)
+        if (Number.isNaN(subject)) {
+          should(contractFunction.prototype).be.NaN()
+        } else {
+          should(contractFunction.prototype).equal(subject)
+        }
       })
     })
 
