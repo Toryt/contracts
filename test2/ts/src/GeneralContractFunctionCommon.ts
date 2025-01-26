@@ -67,7 +67,13 @@ export function createCandidateContractFunction<
   const implementation =
     /* Arrow function has no prototype
        See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/prototype#description */
-    otherPropertyName === 'implementation' ? otherPropertyValue : noPrototype ? (): void => {} : impl
+    otherPropertyName === 'implementation'
+      ? otherPropertyValue === 'self'
+        ? candidate
+        : otherPropertyValue
+      : noPrototype
+        ? (): void => {}
+        : impl
   const theLocation = otherPropertyName === 'location' ? otherPropertyValue : location()
   const bind = otherPropertyName === 'bind' ? otherPropertyValue : contractFunctionBind
 
@@ -132,6 +138,11 @@ export function generateIAGCFTests<FunctionContract extends BaseFunctionContract
     it('says no if the argument is not a function, but ' + thing, function () {
       should(isAXXXContractFunction.call(ContractConstructor, thing)).not.be.ok()
     })
+  })
+
+  it('says no if the implementation function is the contract function', function () {
+    const candidate = createCandidateContractFunction(ContractConstructor, undefined, 'implementation', 'self')
+    isAXXXContractFunction.call(ContractConstructor, candidate).should.be.false()
   })
 
   const properties = ['contract', 'implementation', 'location', 'bind']
