@@ -133,13 +133,13 @@ describe(testName(import.meta), function () {
       const contract = new BaseFunctionContract({})
       const implFunction = function (): void {}
       const constructor = Symbol('not the impl function')
-      const proto = { a: 'a prototype without a constructor property', constructor }
+      const proto = { a: 'a prototype with a constructor property that is not implFunction', constructor }
       implFunction.prototype = proto
 
       behavesAsExpected(contractFunction, contract, implFunction)
       contractFunction.prototype.should.be.an.Object()
       Object.getPrototypeOf(contractFunction.prototype).should.equal(proto)
-      contractFunction.prototype.should.not.haveOwnProperty('constructor')
+      contractFunction.prototype.should.not.have.ownProperty('constructor')
       contractFunction.prototype.constructor.should.equal(constructor)
     })
   })
