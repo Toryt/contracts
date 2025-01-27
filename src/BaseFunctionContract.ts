@@ -491,6 +491,8 @@ export class BaseFunctionContract<Signature extends UnknownFunction, Location ex
     // intermediate contract instance, specifically for this contract function
     setAndFreeze(abstract, 'contract', Object.create(this))
     // `abstract` now is a `BaseContractFunction`
+    // MUDO 't would be better if this has the same properties as a ContractFunction, like before, so users can write
+    //      code with the correct type, only returning never
 
     setAndFreeze(self, 'location', Object.freeze(theLocation))
     setAndFreeze(self, 'abstract', abstract)
