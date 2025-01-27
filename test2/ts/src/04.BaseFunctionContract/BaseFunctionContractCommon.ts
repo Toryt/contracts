@@ -15,11 +15,11 @@
  */
 
 import should from 'should'
-import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { type UnknownFunction } from '../../../src/index.ts'
-import { type GeneralLocation, internalLocation, isLocation } from '../../../src/location.ts'
-import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
-import { mustBeCallerLocation } from '../../util/testUtil.ts'
+import { BaseFunctionContract } from '../../../../src/BaseFunctionContract.ts'
+import { type UnknownFunction } from '../../../../src/index.ts'
+import { type GeneralLocation, internalLocation, isLocation } from '../../../../src/location.ts'
+import { expectOwnFrozenProperty } from '../../../util/expectProperty.ts'
+import { mustBeCallerLocation } from '../../../util/testUtil.ts' // type ConditionsGenerator = () => Condition<UnknownFunction>[]
 
 // type ConditionsGenerator = () => Condition<UnknownFunction>[]
 //

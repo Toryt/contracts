@@ -16,8 +16,8 @@
 
 'use strict'
 
-import { isAGeneralContractFunction } from '../../../src/BaseFunctionContract.ts'
-import { testName } from '../../util/testName.ts'
+import { isAGeneralContractFunction } from '../../../../src/BaseFunctionContract.ts'
+import { testName } from '../../../util/testName.ts'
 import { generateIAGCFTests } from './GeneralContractFunctionCommon.ts'
 
 describe(testName(import.meta), function () {

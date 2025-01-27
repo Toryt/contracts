@@ -16,21 +16,21 @@
 
 import { expectTypeOf } from 'expect-type'
 import should from 'should'
-import type { ContractError } from '../../../src/ContractError.ts'
-import type { NeverFunction, UnknownFunction } from '../../../src/index.ts'
 import {
   AbstractError,
   abstractErrorMessage,
   BaseFunctionContract,
   type FunctionContractKwargs,
   unknownFunctionContract
-} from '../../../src/BaseFunctionContract.ts'
-import { type GeneralLocation, location } from '../../../src/location.ts'
-import { rawStack } from '../../../src/private/stack.ts'
-import { aNeverFunction } from '../../util/SomeSignatures.ts'
-import { testName } from '../../util/testName.ts'
-import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
-import { log } from '../../util/log.ts'
+} from '../../../../src/BaseFunctionContract.ts'
+import type { ContractError } from '../../../../src/ContractError.ts'
+import type { NeverFunction, UnknownFunction } from '../../../../src/index.ts'
+import { type GeneralLocation, location } from '../../../../src/location.ts'
+import { rawStack } from '../../../../src/private/stack.ts'
+import { expectOwnFrozenProperty } from '../../../util/expectProperty.ts'
+import { log } from '../../../util/log.ts'
+import { aNeverFunction } from '../../../util/SomeSignatures.ts'
+import { testName } from '../../../util/testName.ts'
 import {
   expectAbstractErrorConstructorPost,
   expectAbstractErrorInvariants,

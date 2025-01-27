@@ -22,12 +22,12 @@ import {
   type ContractFunction,
   contractFunctionBind,
   isAGeneralContractFunction
-} from '../../../src/BaseFunctionContract.ts'
-import { type UnknownFunction } from '../../../src/index.ts'
-import { type GeneralLocation, internalLocation, isLocation, location } from '../../../src/location.ts'
-import { setAndFreeze } from '../../../src/private/property.ts'
-import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
-import { stuffGenerators } from '../../util/_stuff.ts'
+} from '../../../../src/BaseFunctionContract.ts'
+import { type UnknownFunction } from '../../../../src/index.ts'
+import { type GeneralLocation, internalLocation, isLocation, location } from '../../../../src/location.ts'
+import { setAndFreeze } from '../../../../src/private/property.ts'
+import { conciseRepresentation, namePrefix } from '../../../../src/private/representation.ts'
+import { stuffGenerators } from '../../../util/_stuff.ts'
 
 type Constructor<T> = new (...args: unknown[]) => T
 

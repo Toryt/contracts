@@ -20,11 +20,11 @@ import {
   type ContractFunction,
   contractFunctionBind,
   isAGeneralContractFunction
-} from '../../../src/BaseFunctionContract.ts'
-import { location } from '../../../src/location.ts'
-import { conciseRepresentation } from '../../../src/private/representation.ts'
-import { testName } from '../../util/testName.ts'
-import { mustBeCallerLocation } from '../../util/testUtil.ts'
+} from '../../../../src/BaseFunctionContract.ts'
+import { location } from '../../../../src/location.ts'
+import { conciseRepresentation } from '../../../../src/private/representation.ts'
+import { testName } from '../../../util/testName.ts'
+import { mustBeCallerLocation } from '../../../util/testUtil.ts'
 import { createCandidateContractFunction } from './GeneralContractFunctionCommon.ts'
 
 describe(testName(import.meta), function () {

@@ -24,13 +24,13 @@ import {
   type ContractFunction,
   contractFunctionBind,
   type FunctionContractKwargs
-} from '../../../src/BaseFunctionContract.ts'
-import { type GeneralLocation, location } from '../../../src/location.ts'
-import { conciseRepresentation, namePrefix } from '../../../src/private/representation.ts'
-import { type UnknownFunction } from '../../../src/types/UnknownFunction.ts'
-import { primitiveAndNullStuff } from '../../util/_stuff.ts'
-import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
-import { testName } from '../../util/testName.ts'
+} from '../../../../src/BaseFunctionContract.ts'
+import { type GeneralLocation, location } from '../../../../src/location.ts'
+import { conciseRepresentation, namePrefix } from '../../../../src/private/representation.ts'
+import { type UnknownFunction } from '../../../../src/types/UnknownFunction.ts'
+import { primitiveAndNullStuff } from '../../../util/_stuff.ts'
+import { expectOwnFrozenProperty } from '../../../util/expectProperty.ts'
+import { testName } from '../../../util/testName.ts'
 
 const here = location()
 

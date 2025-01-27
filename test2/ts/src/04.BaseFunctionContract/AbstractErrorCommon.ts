@@ -15,15 +15,15 @@
  */
 
 import should from 'should'
-import type { UnknownFunction } from '../../../src/index.ts'
-import type { GeneralLocation } from '../../../src/location.ts'
-import { expectOwnFrozenProperty } from '../../util/expectProperty.ts'
+import { AbstractError, abstractErrorMessage, BaseFunctionContract } from '../../../../src/BaseFunctionContract.ts'
+import type { UnknownFunction } from '../../../../src/index.ts'
+import type { GeneralLocation } from '../../../../src/location.ts'
+import { expectOwnFrozenProperty } from '../../../util/expectProperty.ts'
 import {
-  expectContractErrorInvariants,
   expectContractErrorConstructorPost,
+  expectContractErrorInvariants,
   generateContractErrorMethodsDescriptions
-} from './ContractErrorCommon.ts'
-import { AbstractError, abstractErrorMessage, BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
+} from '../ContractErrorCommon.ts'
 
 export function expectAbstractErrorInvariants(
   subject: unknown

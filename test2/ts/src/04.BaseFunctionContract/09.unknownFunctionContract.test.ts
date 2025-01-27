@@ -14,8 +14,8 @@
   limitations under the License.
  */
 
-import { BaseFunctionContract, unknownFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { testName } from '../../util/testName.ts'
+import { BaseFunctionContract, unknownFunctionContract } from '../../../../src/BaseFunctionContract.ts'
+import { testName } from '../../../util/testName.ts'
 import { expectInvariants } from './BaseFunctionContractCommon.ts'
 
 describe(testName(import.meta), function () {

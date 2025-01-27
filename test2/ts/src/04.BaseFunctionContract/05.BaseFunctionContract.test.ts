@@ -15,9 +15,9 @@
  */
 
 import should from 'should'
-import { BaseFunctionContract } from '../../../src/BaseFunctionContract.ts'
-import { internalLocation, location } from '../../../src/location.ts'
-import { testName } from '../../util/testName.ts'
+import { BaseFunctionContract } from '../../../../src/BaseFunctionContract.ts'
+import { internalLocation, location } from '../../../../src/location.ts'
+import { testName } from '../../../util/testName.ts'
 import { expectConstructorPost } from './BaseFunctionContractCommon.ts'
 
 // const testUtil = require('./_util/testUtil')
