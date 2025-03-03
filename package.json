@@ -69,7 +69,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-depend": "^0.12.0",
     "eslint-plugin-json": "^4.0.1",
-    "eslint-plugin-no-secrets": "^2.1.1",
+    "eslint-plugin-no-secrets": "^2.2.1",
     "globals": "^15.14.0",
     "just.randomstring": "^0.1.1",
     "mocha": "^11.0.2",
