@@ -164,7 +164,7 @@ to create a browser distribution.
       - there are no functional changes
       - stop support for Node 14, 16, 18 (breaking)
       - code is now tested on Node 20, 22, and 24
-      - no longer test on iPhone X (no longer supported), and test on more modern iPad
+      - no longer test on iPhone X (no longer supported), but on iPhone 15
       - upgrade dependencies
         - `mochify` seems no longer maintains, but continues to work; there are however dependencies with security
           issues; `mochify` is only used as a `devDependency` however

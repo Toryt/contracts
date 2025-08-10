@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,4 +16,4 @@
 
 const common = require('./.min-wd-common')
 
-module.exports = common.mobile('iPhone 16')
+module.exports = common.mobile('iPhone 15')

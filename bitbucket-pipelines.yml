@@ -163,13 +163,13 @@ definitions:
                   - npm ci
                   - npm run wd:iphone_11
             - step:
-                name: iPhone 16
+                name: iPhone 15
                 image: node:22
                 caches:
                   - npm22
                 script:
                   - npm ci
-                  - npm run wd:iphone_16
+                  - npm run wd:iphone_15
         - step:
             name: Tag & Push to GitHub
             caches:
