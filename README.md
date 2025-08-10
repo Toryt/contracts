@@ -37,17 +37,17 @@ to create a browser distribution.
 - Node 20, 22, 24
 - Browsers **unclear — `mochify` is no longer maintained, and has security issues in its dependencies; this needs to be
   reworked**
-  - macOS 10.15
+  - macOS
     - Safari
     - Chrome
     - Edge
     - Firefox
-  - Windows 10
+  - Windows
     - Chrome
     - Edge
     - Firefox
-  - iOS 11, 12, 13
-  - Android 6, 8, 9, 10
+  - iOS
+  - Android
 
 [![Browserstack logo](https://www.browserstack.com/images/mail/browserstack-logo-footer.png)](https://www.browserstack.com/)
 
@@ -158,6 +158,17 @@ to create a browser distribution.
       - upgrade dependencies
         - `mochify` seems no longer maintains, but continues to work; there are however dependencies with security
           issues; `mochify` is only used as a `devDependency` however
+- 7
+  - 7.0
+    - 7.0.0
+      - there are no functional changes
+      - stop support for Node 14, 16, 18 (breaking)
+      - code is now tested on Node 20, 22, and 24
+      - no longer test on iPhone X (no longer supported), and test on more modern iPad
+      - upgrade dependencies
+        - `mochify` seems no longer maintains, but continues to work; there are however dependencies with security
+          issues; `mochify` is only used as a `devDependency` however
+      - formatting, refactoring, to accommodate `knip`
 
 ## Where to find
 
@@ -170,7 +181,7 @@ because open source projects are more easily found there. Issues and pull reques
 
 ### npm
 
-[@toryt/contracts-v](https://www.npmjs.com/package/@toryt/contracts-v)
+[@toryt/contracts](https://www.npmjs.com/package/@toryt/contracts)
 
 ## Browsers
 
