@@ -61,7 +61,7 @@
     "url": "https://bitbucket.org/toryt/contracts/issues"
   },
   "engines": {
-    "node": ">=v10.20.1"
+    "node": ">=v20.19.4"
   },
   "devDependencies": {
     "@types/node": "^24.2.1",
