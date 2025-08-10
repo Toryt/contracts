@@ -18,7 +18,7 @@
 
 const testUtil = require('../_util/testUtil')
 const should = require('should')
-const orderOfKeysCommon = require('./_orderOfKeysCommon')
+const { nFromRandomName, objectLiteral, prepareAnObject, prepareAnObjectWithAProto } = require('./_orderOfKeysCommon')
 const cases = require('../_cases')
 
 describe('javascript/syntax', function () {
@@ -33,24 +33,24 @@ describe('javascript/syntax', function () {
      */
     it('should return all properties in the order they were defined', function () {
       const nrOfProperties = 10000
-      const o = orderOfKeysCommon.prepareAnObject(0, nrOfProperties)
+      const o = prepareAnObject(0, nrOfProperties)
       let count = 0
       let previous = -1
       for (const key in o) {
         count++
-        const current = orderOfKeysCommon.nFromRandomName(key)
+        const current = nFromRandomName(key)
         current.should.equal(previous + 1)
         previous = current
       }
       count.should.equal(nrOfProperties)
     })
     it('should return all properties in the order they were defined, but those of the prototype last', function () {
-      const o = orderOfKeysCommon.prepareAnObjectWithAProto()
+      const o = prepareAnObjectWithAProto()
       let count = 0
       let previous = -1
       for (const key in o) {
         count++
-        const current = orderOfKeysCommon.nFromRandomName(key)
+        const current = nFromRandomName(key)
         current.should.equal(previous + 1)
         // noinspection MagicNumberJS
         previous = current === 9 ? 99 : current === 109 ? 199 : current
@@ -61,21 +61,21 @@ describe('javascript/syntax', function () {
     it('should return all properties in the order they were defined in a literal', function () {
       let count = 0
       let previous = -1
-      for (const key in orderOfKeysCommon.objectLiteral) {
+      for (const key in objectLiteral) {
         count++
-        const current = orderOfKeysCommon.nFromRandomName(key)
+        const current = nFromRandomName(key)
         current.should.equal(previous + 1)
         previous = current
       }
       count.should.equal(5)
     })
     it('should return all properties in the order they were defined in a JSON object', function () {
-      const json = JSON.stringify(orderOfKeysCommon.objectLiteral)
+      const json = JSON.stringify(objectLiteral)
       let count = 0
       let previous = -1
       for (const key in JSON.parse(json)) {
         count++
-        const current = orderOfKeysCommon.nFromRandomName(key)
+        const current = nFromRandomName(key)
         current.should.equal(previous + 1)
         previous = current
       }
