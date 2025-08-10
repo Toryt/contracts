@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 'use strict'
 
-const eol = require('../lib/_private/eol')
+const { nEOL, rnEOL, stackEOL } = require('../lib/_private/eol')
 
 // noinspection JSPrimitiveTypeWrapperUsage
 const any = [
@@ -70,7 +70,7 @@ intentionallyRejectedPromise.catch(ignore => {})
 
 const intentionallyRejectingArrow = () => intentionallyRejectedPromise
 
-const notStackEOL = eol.stack === eol.n ? eol.rn : eol.n
+const notStackEOL = stackEOL === nEOL ? rnEOL : nEOL
 
 module.exports = {
   any,

@@ -1,5 +1,5 @@
 /*
-  Copyright 2016–2024 Jan Dockx
+  Copyright 2016–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ const ConditionError = require('../lib/ConditionError')
 const AbstractContract = require('../lib/AbstractContract')
 const abstractContractCommon = require('./AbstractContractCommon')
 const should = require('should')
-const stackEOL = require('../lib/_private/eol').stack
+const { stackEOL } = require('../lib/_private/eol')
 
 const conditionCase = function () {
   return 'This simulates a condition'

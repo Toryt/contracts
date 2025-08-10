@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ const report = require('../../lib/_private/report')
 const is = require('../../lib/_private/is')
 const property = require('../../lib/_private/property')
 const { log, anyCasesGenerators, safeToString } = require('../_util/testUtil')
-const eol = require('../../lib/_private/eol')
+const { nEOL, rnEOL, stackEOL } = require('../../lib/_private/eol')
 const util = require('util')
 const stuff = require('./_stuff')
 const cases = require('../_cases')
@@ -47,8 +47,8 @@ describe('_private/report', function () {
 
     function expectGeneralPostconditions(result, expected) {
       log('result: %s', result)
-      result.should.not.containEql(eol.n)
-      result.should.not.containEql(eol.rn)
+      result.should.not.containEql(nEOL)
+      result.should.not.containEql(rnEOL)
       result.length.should.be.lessThanOrEqual(report.maxLengthOfConciseRepresentation)
       result.trim().should.equal(result)
       isAConciseVersion(expected, result).should.be.ok()
@@ -130,7 +130,7 @@ this function should have a name   ` // trim
 
     function stackDoesContainToString() {
       return {
-        stack: toStringString + eol.stack + stackString,
+        stack: toStringString + stackEOL + stackString,
         toString: function () {
           return toStringString
         }
@@ -155,7 +155,7 @@ this function should have a name   ` // trim
         result.indexOf(report.value(thrown)).should.equal(0)
         let stack = thrown && thrown.stack
         if (stack) {
-          stack = eol.stack + stack
+          stack = stackEOL + stack
           const expectedStart = result.length - stack.length
           result.lastIndexOf(stack).should.equal(expectedStart)
         }

@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 const stack = require('../../lib/_private/stack')
 const is = require('../../lib/_private/is')
 const testUtil = require('../_util/testUtil')
-const eol = require('../../lib/_private/eol')
+const { nEOL, rnEOL, stackEOL } = require('../../lib/_private/eol')
 
 describe('_private/stack', function () {
   describe('#location', function () {
@@ -36,8 +36,8 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.should.be.a.String()
       // must be a single line with any EOL
-      result.split(eol.rn).length.should.equal(1)
-      result.split(eol.n).length.should.equal(1)
+      result.split(rnEOL).length.should.equal(1)
+      result.split(nEOL).length.should.equal(1)
       if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         result.should.containEql('aSecondFunction')
       }
@@ -64,8 +64,8 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.should.be.a.String()
       // must be a single line with any EOL
-      result.split(eol.rn).length.should.equal(1)
-      result.split(eol.n).length.should.equal(1)
+      result.split(rnEOL).length.should.equal(1)
+      result.split(nEOL).length.should.equal(1)
       if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         result.should.containEql('aSecondFunction')
       }
@@ -99,7 +99,7 @@ describe('_private/stack', function () {
       testUtil.log(result)
       result.should.be.a.String()
       result.should.not.containEql('[[internal]]')
-      const lines = result.split(eol.stack)
+      const lines = result.split(stackEOL)
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         lines.length.should.be.greaterThanOrEqual(5)
@@ -151,7 +151,7 @@ describe('_private/stack', function () {
       if (testUtil.environment !== 'safari') {
         result.should.not.containEql('[[internal]]')
       }
-      const lines = result.split(eol.stack)
+      const lines = result.split(stackEOL)
       lines.length.should.be.greaterThanOrEqual(1)
       if (testUtil.environment !== 'safari' && testUtil.environment !== 'safari <= 12') {
         lines.length.should.be.greaterThanOrEqual(5)

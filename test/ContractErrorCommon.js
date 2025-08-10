@@ -1,5 +1,5 @@
 /*
-  Copyright 2016–2024 Jan Dockx
+  Copyright 2016–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 const ContractError = require('../lib/ContractError')
 const testUtil = require('./_util/testUtil')
 const is = require('../lib/_private/is')
-const stackEOL = require('../lib/_private/eol').stack
+const { stackEOL } = require('../lib/_private/eol')
 
 function expectStackInvariants(subject) {
   const stack = subject.stack

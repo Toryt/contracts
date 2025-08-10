@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,29 +16,29 @@
 
 'use strict'
 
-const eol = require('../../lib/_private/eol')
+const { nEOL, osEOL, rnEOL, stackEOL } = require('../../lib/_private/eol')
 const os = require('os')
 const cases = require('../_cases')
 
 describe('_private/eol', function () {
   it('#n', function () {
-    eol.n.should.equal('\n')
+    nEOL.should.equal('\n')
   })
   it('#rn', function () {
-    eol.rn.should.equal('\r\n')
+    rnEOL.should.equal('\r\n')
   })
   describe('#EOL', function () {
     it('is either n or rn', function () {
-      const result = eol.stack === eol.n || eol.stack === eol.rn
+      const result = stackEOL === nEOL || stackEOL === rnEOL
       result.should.be.true()
     })
     it('a stack contains the expected EOL', function () {
       const err = new Error('just an error')
-      err.stack.should.containEql(eol.stack)
+      err.stack.should.containEql(stackEOL)
       err.stack.should.not.containEql(cases.notStackEOL)
     })
   })
   it('#os', function () {
-    eol.os.should.equal(os.EOL)
+    osEOL.should.equal(os.EOL)
   })
 })

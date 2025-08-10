@@ -1,5 +1,5 @@
 /*
-  Copyright 2015–2024 Jan Dockx
+  Copyright 2015–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ const is = require('../../lib/_private/is')
 const { x, log, safeToString, showStack } = require('../_util/testUtil')
 const should = require('should')
 const stuff = require('./_stuff')
-const eol = require('../../lib/_private/eol')
+const { nEOL, rnEOL, stackEOL } = require('../../lib/_private/eol')
 const cases = require('../_cases')
 
 describe('_private/is', function () {
@@ -68,19 +68,19 @@ describe('_private/is', function () {
     it('says no to a multi-line string with \\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = is.stackLocation('this is a' + eol.n + 'multi-line' + eol.n + 'string')
+      const result = is.stackLocation('this is a' + nEOL + 'multi-line' + nEOL + 'string')
       result.should.be.false()
     })
     it('says no to a multi-line string with \\r\\n as EOL', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const result = is.stackLocation('this is a' + eol.rn + 'multi-line' + eol.rn + 'string')
+      const result = is.stackLocation('this is a' + rnEOL + 'multi-line' + rnEOL + 'string')
       result.should.be.false()
     })
     it('says yes to all lines of a stack trace', function () {
       // sadly, also to the message
       const error = new Error('This is an error to get a platform dependent stack')
-      const lines = error.stack.split(eol.stack)
+      const lines = error.stack.split(stackEOL)
       lines
         .filter((line, index) => index !== lines.length - 1 || line.length > 0) // FF adds an empty line at the end
         .filter(line => line.length > 0) // Safari has lots of empty lines, but only when used remotely (with WebDriver)
@@ -113,7 +113,7 @@ describe('_private/is', function () {
     it('says yes to a multi-line string with `eol.stack`', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
-      const candidate = 'this is a' + eol.stack + 'multi-line' + eol.stack + 'string'
+      const candidate = 'this is a' + stackEOL + 'multi-line' + stackEOL + 'string'
       const result = is.stack(candidate)
       result.should.be.true()
     })
@@ -128,7 +128,7 @@ describe('_private/is', function () {
       // do not use a multi-line template string: the EOLs in the source code (\n) are recorded, and then the test fails
       // on Windows
       const result = is.stack(
-        'this is a' + eol.stack + 'multi-line' + eol.stack + 'string, with a' + eol.stack + eol.stack + 'blank line'
+        'this is a' + stackEOL + 'multi-line' + stackEOL + 'string, with a' + stackEOL + stackEOL + 'blank line'
       )
       result.should.be.false()
     })
@@ -153,11 +153,11 @@ describe('_private/is', function () {
       // sadly, also to the message, on some platforms
       const error = new Error(message)
       showStack(error)
-      const stackLines = error.stack.split(eol.stack)
+      const stackLines = error.stack.split(stackEOL)
       const rawStack = stackLines
         // remove message line
         .filter(sl => sl && sl.indexOf(message) < 0)
-        .join(eol.stack)
+        .join(stackEOL)
       log('rawStack:')
       log(`▷${rawStack}◁`)
       const result = is.stack(rawStack)

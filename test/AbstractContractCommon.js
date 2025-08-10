@@ -1,5 +1,5 @@
 /*
-  Copyright 2016–2024 Jan Dockx
+  Copyright 2016–2025 Jan Dockx
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ const stack = require('../lib/_private/stack')
 const report = require('../lib/_private/report')
 const is = require('../lib/_private/is')
 const property = require('../lib/_private/property')
-const eol = require('../lib/_private/eol')
+const { nEOL, rnEOL, stackEOL } = require('../lib/_private/eol')
 const should = require('should')
 
 const someConditions = [
@@ -100,7 +100,7 @@ const constructorExceptionCases = [
   }
 ].concat(exceptionCases)
 
-const location = eol.stack + '    at /'
+const location = stackEOL + '    at /'
 
 function expectInvariants(/* AbstractContract */ subject) {
   subject.should.be.an.instanceof(AbstractContract)
@@ -137,7 +137,7 @@ function expectInvariants(/* AbstractContract */ subject) {
     const stack = err.stack
     stack.should.containEql(AbstractContract.AbstractError.message)
     stack.should.containEql(AbstractContract.AbstractError.name)
-    stack.split(eol.stack)[0].should.containEql('abstract')
+    stack.split(stackEOL)[0].should.containEql('abstract')
     testUtil.log(stack)
   }
 }
@@ -279,7 +279,7 @@ function generateConstructorMethodsDescriptions(ContractConstructor) {
   describe('@isAContractFunction', function () {
     generateIAGCFTests(ContractConstructor, ContractConstructor.isAContractFunction)
     notAFunctionNorAContract
-      .filter(t => !t || typeof t !== 'string' || t.indexOf(eol.n) >= 0 || t.indexOf(eol.rn) >= 0)
+      .filter(t => !t || typeof t !== 'string' || t.indexOf(nEOL) >= 0 || t.indexOf(rnEOL) >= 0)
       .concat([{}, AbstractContract.internalLocation])
       .forEach(v => {
         it(`says no if the location is not a location outside this library but ${v}`, function () {
