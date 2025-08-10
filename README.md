@@ -34,7 +34,7 @@ to create a browser distribution.
 
 ## Tested
 
-- Node 10, 12, 14
+- Node 20, 22, 24
 - Browsers **unclear — `mochify` is no longer maintained, and has security issues in its dependencies; this needs to be
   reworked**
   - macOS 10.15

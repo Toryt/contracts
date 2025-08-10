@@ -27,7 +27,7 @@ definitions:
   caches:
     npm20: ~/.npm
     npm22: ~/.npm
-    npm23: ~/.npm
+    npm24: ~/.npm
   branches:
     - branch: &fullTestAndTag
         - parallel:
@@ -51,10 +51,10 @@ definitions:
                   - bash <(curl -s https://codecov.io/bash)
             - step:
                 <<: *test
-                name: Latest Node 23
-                image: node:23
+                name: Latest Node 24
+                image: node:24
                 caches:
-                  - npm23
+                  - npm24
         - parallel:
             - step:
                 name: Chrome - OSX
