@@ -155,14 +155,6 @@ definitions:
                   - npm ci
                   - npm run wd:ipad_pro
             - step:
-                name: iPhone X
-                image: node:22
-                caches:
-                  - npm22
-                script:
-                  - npm ci
-                  - npm run wd:iphone_x
-            - step:
                 name: iPhone 11
                 image: node:22
                 caches:
@@ -170,6 +162,14 @@ definitions:
                 script:
                   - npm ci
                   - npm run wd:iphone_11
+            - step:
+                name: iPhone 16
+                image: node:22
+                caches:
+                  - npm22
+                script:
+                  - npm ci
+                  - npm run wd:iphone_16
         - step:
             name: Tag & Push to GitHub
             caches:

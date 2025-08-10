@@ -48,9 +48,9 @@ jobs:
       node_js: '14'
       script: npm run wd:ipad_pro
     - node_js: '14'
-      script: npm run wd:iphone_x
-    - node_js: '14'
       script: npm run wd:iphone_11
+    - node_js: '14'
+      script: npm run wd:iphone_16
     # stage tag
     - stage: tag
       node_js: '10'
