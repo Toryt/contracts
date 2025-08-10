@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "status": "depcheck; ncu; npm audit || exit 0",
+    "status": "depcheck; knip; ncu; npm audit || exit 0",
     "lint": "eslint \"{test,lib}/**/*\"",
     "test": "npm run lint && nyc mocha 'test/**/*Test.js'",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
@@ -64,6 +64,7 @@
     "node": ">=v10.20.1"
   },
   "devDependencies": {
+    "@types/node": "^24.2.1",
     "browserify": "^17.0.1",
     "depcheck": "^1.4.7",
     "eslint": "^9.33.0",
@@ -72,13 +73,15 @@
     "eslint-plugin-no-secrets": "^2.2.1",
     "globals": "^16.3.0",
     "just.randomstring": "^0.1.1",
+    "knip": "^5.62.0",
     "mocha": "^11.7.1",
     "mochify": "^9.2.0",
     "neostandard": "^0.12.2",
     "npm-check-updates": "^18.0.2",
     "nyc": "^17.1.0",
     "prettier": "^3.6.2",
-    "should": "^13.2.3"
+    "should": "^13.2.3",
+    "typescript": "^5.9.2"
   },
   "prettier": {
     "printWidth": 120,
