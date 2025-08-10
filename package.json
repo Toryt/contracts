@@ -19,7 +19,6 @@
     "wd:google_pixel_4xl": "mochify --wd --wd-file .min-wd-google_pixel_4xl.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:ipad_pro": "mochify --wd --wd-file .min-wd-ipad_pro.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:iphone_11": "mochify --wd --wd-file .min-wd-iphone_11.js --async-polling false --reporter dot 'test/**/*Test.js'",
-    "wd:iphone_15": "mochify --wd --wd-file .min-wd-iphone_15.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:osx-chrome": "mochify --wd --wd-file .min-wd-osx-chrome.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:osx-edge": "mochify --wd --wd-file .min-wd-osx-edge.js --async-polling false --reporter dot 'test/**/*Test.js'",
     "wd:osx-firefox": "mochify --wd --wd-file .min-wd-osx-firefox.js --async-polling false --reporter dot 'test/**/*Test.js'",
