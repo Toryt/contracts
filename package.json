@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "status": "depcheck; knip; ncu; npm audit || exit 0",
+    "status": "knip; ncu; npm audit || exit 0",
     "lint": "eslint \"{test,lib}/**/*\"",
     "test": "npm run lint && nyc mocha 'test/**/*Test.js'",
     "reportCoverage": "nyc report --reporter=text-lcov > coverage.lcov",
@@ -66,7 +66,6 @@
   "devDependencies": {
     "@types/node": "^24.2.1",
     "browserify": "^17.0.1",
-    "depcheck": "^1.4.7",
     "eslint": "^9.33.0",
     "eslint-plugin-depend": "^1.2.0",
     "eslint-plugin-json": "^4.0.1",

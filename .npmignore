@@ -12,7 +12,7 @@ contracts-*.js
 .nvmrc
 .prettierrc.yaml
 browserstack_credentials.json
-.depcheckrc.yaml
+knip.config.js
 .gitmodules
 .prettierignore
 bitbucket-pipelines.yml
