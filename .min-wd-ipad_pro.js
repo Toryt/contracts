@@ -16,4 +16,4 @@
 
 const common = require('./.min-wd-common')
 
-module.exports = common.mobile('iPad Pro 12.9 2020')
+module.exports = common.mobile('iPad Pro 13 2024')
