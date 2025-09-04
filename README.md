@@ -169,6 +169,11 @@ to create a browser distribution.
         - `mochify` seems no longer maintains, but continues to work; there are however dependencies with security
           issues; `mochify` is only used as a `devDependency` however
       - formatting, refactoring, to accommodate `knip`
+- 8
+  - 8.0
+    - 8.0.0
+      - bump minimal node engine version to 20 (from 10) — breaking
+      - upgrade dependencies
 
 ## Where to find
 
