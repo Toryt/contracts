@@ -147,14 +147,6 @@ definitions:
                   - npm ci
                   - npm run wd:osx-safari
             - step:
-                name: iPad Pro
-                image: node:22
-                caches:
-                  - npm22
-                script:
-                  - npm ci
-                  - npm run wd:ipad_pro
-            - step:
                 name: iPhone 11
                 image: node:22
                 caches:
